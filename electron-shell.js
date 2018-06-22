@@ -31,6 +31,15 @@ class WindowManager {
         alwaysOnTop: true
       }
     }
+    if (name === 'SendTransactionConfirmation') {
+      windowOptions = {
+        width: 580,
+        height: 550,
+        alwaysOnTop: true,
+        enableLargerThanScreen: false,
+        resizable: true
+      }
+    }
 
     let config = Object.assign(options, windowOptions, {
       parent: win, // The child window will always show on top of the top window.
@@ -92,6 +101,7 @@ app.on('ready', () => {
   const testPopupSubMenu = new Menu()
   testPopupSubMenu.append(popupMenu('ClientUpdateAvailable'))
   testPopupSubMenu.append(popupMenu('ConnectAccount'))
+  testPopupSubMenu.append(popupMenu('SendTransactionConfirmation'))
   const menu = new Menu()
   menu.append(new MenuItem({label: 'Test', submenu: testPopupSubMenu}))
   Menu.setApplicationMenu(menu)
