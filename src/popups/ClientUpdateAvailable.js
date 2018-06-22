@@ -32,21 +32,21 @@ class UpdateAvailable extends Component {
             version: version
           })}
           </h1>
-          <p>
+          <div>
             <br />
             <ul className="no-bullets">
               <li>{i18n.t("mist.popupWindows.updateAvailable.version")}: <strong> {version} </strong></li>
               <li>{i18n.t("mist.popupWindows.updateAvailable.downloadURL")}: <strong> {downloadUrl}</strong></li>
               <li>{i18n.t("mist.popupWindows.updateAvailable.checksum")}: <strong> {checksum} </strong></li>
             </ul>
-          </p>
+          </div>
         </div>
         <footer>
-          <div class="dapp-modal-buttons">
-            <button class="cancel" type="button">
+          <div className="dapp-modal-buttons">
+            <button className="cancel" type="button">
               {i18n.t("mist.popupWindows.updateAvailable.skipUpdate")}
             </button>
-            <button class="ok dapp-primary-button">
+            <button className="ok dapp-primary-button">
               {restart
               ? i18n.t("mist.popupWindows.updateAvailable.downloadAndRestart")
               : i18n.t("mist.popupWindows.updateAvailable.download")

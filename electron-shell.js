@@ -32,7 +32,10 @@ class WindowManager {
     })
 
     let popup = new BrowserWindow(config)
-    popup.loadURL('http://localhost:3000/index.html?app=popup')
+    popup.loadURL(`http://localhost:3000/index.html?app=popup&name=${name}`)
+
+    popup.webContents.openDevTools({detach: true})
+
 
     popup.setMenu(null)
   }
@@ -69,13 +72,17 @@ function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
-  const testPopupSubMenu = new Menu()
-  testPopupSubMenu.append(new MenuItem({
-    label: 'ClientUpdateAvailable',
+
+  let popupMenu = (name) => {return new MenuItem({
+    label: name,
     click: () => {
-      windowManager.showPopup('ClientUpdateAvailable')
+      windowManager.showPopup(name)
     }
-  }))
+  })}
+
+  const testPopupSubMenu = new Menu()
+  testPopupSubMenu.append(popupMenu('ClientUpdateAvailable'))
+  testPopupSubMenu.append(popupMenu('ConnectAccount'))
   const menu = new Menu()
   menu.append(new MenuItem({label: 'Test', submenu: testPopupSubMenu}))
   Menu.setApplicationMenu(menu)

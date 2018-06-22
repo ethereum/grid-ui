@@ -3,13 +3,16 @@ import React, { Component, Fragment } from 'react'
 import './styles/styles.css';
 
 import UpdateAvailable from './popups/ClientUpdateAvailable'
+import ConnectAccount from './popups/ConnectAccount'
 
-class PopupBase extends Component {
-  render() {
-    return (     
-      <UpdateAvailable />
-    )
-  }
+function PopupBase({ name }) {
+  console.log('popup base', arguments)
+  switch(name){
+    case 'ConnectAccount':
+      return <ConnectAccount />
+    default:
+      return <UpdateAvailable />
+  }     
 }
 
 export default PopupBase

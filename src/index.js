@@ -20,9 +20,13 @@ function getUrlVars() {
 
 var urlParams = getUrlVars()
 
+function renderPopup(name) {
+  ReactDOM.render(<Popup name={name}/>, document.getElementById('root'))
+}
+
 switch (urlParams["app"]) {
   case "popup":
-    ReactDOM.render(<Popup />, document.getElementById('root'))
+    renderPopup(urlParams["name"])
     break;
   case undefined:
   default:
