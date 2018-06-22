@@ -22,6 +22,15 @@ class WindowManager {
         maximizable: false
       }
     }
+    if (name === 'ConnectAccount') {
+      windowOptions = {
+        width: 460,
+        height: 520,
+        maximizable: false,
+        minimizable: false,
+        alwaysOnTop: true
+      }
+    }
 
     let config = Object.assign(options, windowOptions, {
       parent: win, // The child window will always show on top of the top window.
@@ -34,7 +43,7 @@ class WindowManager {
     let popup = new BrowserWindow(config)
     popup.loadURL(`http://localhost:3000/index.html?app=popup&name=${name}`)
 
-    popup.webContents.openDevTools({detach: true})
+    popup.webContents.openDevTools({mode: 'detach'})
 
 
     popup.setMenu(null)
