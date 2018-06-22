@@ -14,7 +14,15 @@ Project goals are:
 - a popular technology to encourage the community to contribute
 - no network connection or full node required to run and develop the UI
 
+
+```
+git clone https://github.com/PhilippLgh/mist-ui-react.git
+cd mist-ui-react
+yarn
+
+
 Start in 3 terminals:
-npm run watch-css  -> compile less to css and watch for changes (less + react compat workaround)
-npm run start -> start dev server for react with hot relaoding
-npm run shell:electron -> load the app from the dev server into an electron window
+yarn run watch-css  -> compile less to css and watch for changes (less + react compat workaround)
+yarn run start -> start dev server for react with hot relaoding
+yarn run shell:electron -> load the app from the dev server into an electron window
+```
