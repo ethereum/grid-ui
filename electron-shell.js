@@ -8,17 +8,33 @@ let win
 
 class WindowManager {
   showPopup(name) {
-    console.log('show popup ', name)
-    let popup = new BrowserWindow({
+    let options = {
+      width: 800, 
+      height: 400
+    }
+    let windowOptions = {}
+    if (name === 'ClientUpdateAvailable') {
+      windowOptions = {
+        width: 600,
+        height: 340,
+        alwaysOnTop: false,
+        resizable: false,
+        maximizable: false
+      }
+    }
+
+    let config = Object.assign(options, windowOptions, {
       parent: win, // The child window will always show on top of the top window.
       modal: true,
-      width: 800, 
-      height: 400,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js')
       }
     })
+
+    let popup = new BrowserWindow(config)
     popup.loadURL('http://localhost:3000/index.html?app=popup')
+
+    popup.setMenu(null)
   }
 }
 const windowManager = new WindowManager()
@@ -26,8 +42,8 @@ const windowManager = new WindowManager()
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 1200, 
-    height: 800,
+    width: 1100, 
+    height: 720,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }

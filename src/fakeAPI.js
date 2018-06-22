@@ -46,9 +46,9 @@ function init(window, lang){
     t: (str) => {
       if (!lang) { return str}
       let parts = str.split('.')
-      let cur = null
+      let cur = lang
       for(var i = 0; i < parts.length; i++) {
-        cur = parts[i]
+        cur = cur[parts[i]]
         if(!cur){ return str}
       }
       return cur

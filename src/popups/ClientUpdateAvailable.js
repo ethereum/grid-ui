@@ -1,23 +1,62 @@
 import React, { Component } from 'react'
 
-class UrlInput extends Component {
+import {i18n} from '../API'
+
+import iconPath from '../icons/icon.png'
+
+class UpdateAvailable extends Component {
   constructor(){
     super()
-
   }
   render() {
-    let permissions = {
-      admin: true
-    }
-    let url = 'www.google.com'
-    let breadcrumb = <span>{url}</span>
+    let appIconPath = iconPath
+    let mode = 'mist'
+
+    let restart = false
+
+    // from Session data object:
+    let name = '[name]'
+    let version = '[version]'
+    let downloadUrl = '[download url]'
+    let checksum = '[checksum]'
+
     return (
-      <form className="url" action="about:blank" target="dapp-form-helper-iframe" autoComplete="on">
-        {permissions.admin 
-        ? <input className="url-input" id="url-input" type="text" readOnly="true" value={url} />
-        : <div className="url-breadcrumb" >{breadcrumb}</div>
-        }
-      </form>
-    );
+      <div className="popup-windows update-available row">
+        <div className="col col-3">
+          <img className={"left-overlay" + mode} src={appIconPath} />
+        </div>
+        <div className="col col-8 text">
+          <h1>
+          {i18n.t("mist.popupWindows.updateAvailable.newVersionAvailable", {
+            name: name,
+            version: version
+          })}
+          </h1>
+          <p>
+            <br />
+            <ul className="no-bullets">
+              <li>{i18n.t("mist.popupWindows.updateAvailable.version")}: <strong> {version} </strong></li>
+              <li>{i18n.t("mist.popupWindows.updateAvailable.downloadURL")}: <strong> {downloadUrl}</strong></li>
+              <li>{i18n.t("mist.popupWindows.updateAvailable.checksum")}: <strong> {checksum} </strong></li>
+            </ul>
+          </p>
+        </div>
+        <footer>
+          <div class="dapp-modal-buttons">
+            <button class="cancel" type="button">
+              {i18n.t("mist.popupWindows.updateAvailable.skipUpdate")}
+            </button>
+            <button class="ok dapp-primary-button">
+              {restart
+              ? i18n.t("mist.popupWindows.updateAvailable.downloadAndRestart")
+              : i18n.t("mist.popupWindows.updateAvailable.download")
+              }
+            </button>
+          </div>
+        </footer>
+      </div>
+    )
   }
 }
+
+export default UpdateAvailable

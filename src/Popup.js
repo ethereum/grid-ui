@@ -2,11 +2,13 @@ import React, { Component, Fragment } from 'react'
 // import './App.css';
 import './styles/styles.css';
 
+import UpdateAvailable from './popups/ClientUpdateAvailable'
+
 class PopupBase extends Component {
   render() {
-    return (
-      <h2> I am a popup! </h2>
-    );
+    return (     
+      <UpdateAvailable />
+    )
   }
 }
 
