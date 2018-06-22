@@ -16,6 +16,9 @@ It was bootstrapped with [Create React App](https://github.com/facebookincubator
 
 ### Run
 ```
+if not installed:
+npm install -g less
+
 git clone https://github.com/PhilippLgh/mist-ui-react.git
 cd mist-ui-react
 yarn
