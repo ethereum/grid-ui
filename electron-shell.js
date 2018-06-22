@@ -1,9 +1,27 @@
 const path = require('path')
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, Menu, MenuItem} = require('electron')
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
+
+class WindowManager {
+  showPopup(name) {
+    console.log('show popup ', name)
+    let popup = new BrowserWindow({
+      parent: win, // The child window will always show on top of the top window.
+      modal: true,
+      width: 800, 
+      height: 400,
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.js')
+      }
+    })
+    popup.loadURL('http://localhost:3000/index.html?app=popup')
+  }
+}
+const windowManager = new WindowManager()
 
 function createWindow () {
   // Create the browser window.
@@ -34,7 +52,20 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  const testPopupSubMenu = new Menu()
+  testPopupSubMenu.append(new MenuItem({
+    label: 'ClientUpdateAvailable',
+    click: () => {
+      windowManager.showPopup('ClientUpdateAvailable')
+    }
+  }))
+  const menu = new Menu()
+  menu.append(new MenuItem({label: 'Test', submenu: testPopupSubMenu}))
+  Menu.setApplicationMenu(menu)
+  createWindow()
+})
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
