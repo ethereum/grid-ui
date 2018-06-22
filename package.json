@@ -1,0 +1,28 @@
+{
+  "name": "mist-ui",
+  "version": "0.1.0",
+  "private": true,
+  "main": "electron-shell.js",
+  "dependencies": {
+    "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
+    "moment": "^2.22.2",
+    "numeral": "^2.0.6",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-minimal-pie-chart": "^3.0.1",
+    "react-scripts": "1.1.4"
+  },
+  "scripts": {
+    "shell:electron": "electron .",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "build-css": "less-watch-compiler --run-once",
+    "watch-css": "npm run build-css && less-watch-compiler"
+  },
+  "devDependencies": {
+    "less-watch-compiler": "^1.11.3",
+    "electron": "^2.0.2"
+  }
+}
