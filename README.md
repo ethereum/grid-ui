@@ -1,7 +1,8 @@
 This project is a "fork" / re-write of ethereum/Mist's user interface
+
 It was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app), is 100% written in React and removes the meteor framework dependency.
 
-Project goals are:
+### Project Goals
 - improved security and easier maintenance
 - rapid development, faster iterations and releases
 - improved testability
@@ -14,7 +15,18 @@ Project goals are:
 - a popular technology to encourage the community to contribute
 - no network connection or full node required to run and develop the UI
 
+### Run
+```
+if not installed:
+npm install -g less
+
+git clone https://github.com/PhilippLgh/mist-ui-react.git
+cd mist-ui-react
+yarn
+
+
 Start in 3 terminals:
-npm run watch-css  -> compile less to css and watch for changes (less + react compat workaround)
-npm run start -> start dev server for react with hot relaoding
-npm run shell:electron -> load the app from the dev server into an electron window
+yarn run watch-css  -> compile less to css and watch for changes (less + react compat workaround)
+yarn run start -> start dev server for react with hot relaoding
+yarn run shell:electron -> load the app from the dev server into an electron window
+```
