@@ -84,7 +84,11 @@ function init(window, lang){
   const _Tabs = new Tabs([{ _id: "browser", url: "https://ethereum.org", redirect: "https://ethereum.org", position: 0 }])
   const _History = new Collection()
 
-  const LocalStore = {}
+  const LocalStore = {
+    get(/*selectedTab*/){
+      return 1
+    }
+  }
 
   // attach fake objects to window and make them immutable
   seal(window, 'i18n', i18n)
