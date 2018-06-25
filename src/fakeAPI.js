@@ -1,3 +1,9 @@
+// must not import like this: 
+// import {Helpers} from './API'
+// otherwise API will be cached before being set
+import Helpers from './API/Helpers.js'
+const isElectron = Helpers.isElectron
+
 // avoid that the mock objects are overwritten
 function seal (target, propName, obj) {
   Object.defineProperty(target, propName, {
@@ -100,4 +106,15 @@ function init(window, lang){
 
 }
 
-module.exports = init
+// browser / tau fallback -> no preload script
+// auto-initialize
+if (!isElectron()) {
+  console.log('auto init', window)
+  init(window, {
+    // ...app,
+    // ...mist
+  })
+  console.log('web3:', JSON.stringify(window.web3))
+} else {
+  module.exports = init
+}

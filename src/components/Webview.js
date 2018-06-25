@@ -1,6 +1,22 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
+import {Helpers} from '../API'
+let useIframe = !Helpers.isElectron()
+
+class IframeWebview extends Component {
+  render() {
+    var iframeStyle = {
+      width:"100%",
+      height:"100%",
+      marginTop: "70px"
+    }
+    return (
+      <iframe src={this.props.src} style={iframeStyle}></iframe>
+    )
+  }
+}
+
 export default class Webview extends Component {
   constructor(props) {
     super()
@@ -8,7 +24,10 @@ export default class Webview extends Component {
   render() {
     return (
       <div className="webview">
-        <webview src={this.checkedUrl()} autosize="true"></webview>
+        {useIframe
+        ?<IframeWebview src={this.checkedUrl()}/>
+        :<webview src={this.checkedUrl()} autosize="true"></webview>
+        }
       </div>
     )
   }

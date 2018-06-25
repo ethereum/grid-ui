@@ -6,7 +6,6 @@ import numeral from 'numeral'
 
 // turn required globals into explicit dependencies
 import {i18n, web3} from '../API'
-
 class NodeInfo extends Component {
   constructor(props) {
     super(props);
@@ -23,8 +22,8 @@ class NodeInfo extends Component {
     // NOTE: this goal of this component is to give status updates at
     // least once per second. The `tick` function ensures that.
     this.interval = setInterval(() => {
-      this.tick();
-    }, 50);
+      this.tick()
+    }, 50)
   }
 
   componentWillUnmount() {
