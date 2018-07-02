@@ -5,23 +5,21 @@ import NodeInfo from './NodeInfo'
 import Provider from './GenericProvider'
 
 class Sidebar extends Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
+    this.handleTabChanged = this.handleTabChanged.bind(this)
+  }
+  handleTabChanged(tab) {
+    this.props.tabChanged(tab)
   }
   render(){
-
-    let tabs = [
-      {id:1, name: 'tab 1'},
-      {id:2, name: 'tab 2'},
-      {id:3, name: 'tab 3'},
-    ]
-
+    let tabs = this.props.tabs
     return (
       <aside className="sidebar">
         <nav>
           <ul className="sidebar-menu">
             {tabs.map(tab => {
-              return <SidebarTab key={tab.id} tab={tab}/>
+              return <SidebarTab key={tab.id} tab={tab} tabChanged={this.handleTabChanged}/>
             })}
           </ul>
         </nav>

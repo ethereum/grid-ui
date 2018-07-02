@@ -3,10 +3,12 @@ import React, { Component } from 'react'
 // turn required globals into explicit dependencies
 import {Helpers, LocalStore} from '../API'
 
+import DappIdenticon from './DappIdenticon'
+
 class Breadcrumb extends Component {
   render() {
     let _url = new URL(this.props.url)
-    console.log(_url)
+    // console.log(_url)
 
     // remove trailing '/'
     let pathname = _url.pathname.replace(/\/$/g, '')
@@ -38,19 +40,19 @@ class UrlBreadcrumbInput extends Component {
     let permissions = {
       admin: false
     }
-    let url = this.state.url
     return (
       <form className="url" action="about:blank" target="dapp-form-helper-iframe" autoComplete="on">
-        {!permissions.admin && <input className="url-input" id="url-input" type="text" value={url} onChange={this.handleChange}/> }
-        <Breadcrumb url={url}/>
+        {!permissions.admin && <input className="url-input" id="url-input" type="text" value={this.props.url} onChange={this.handleChange}/> }
+        <Breadcrumb url={this.props.url}/>
       </form>
     );
   }
 }
 
 export default class Browserbar extends Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
+    this.handleReloadClick = this.handleReloadClick.bind(this)
   }
   /**
    * Go back in the dapps browser history
@@ -67,7 +69,6 @@ export default class Browserbar extends Component {
    */
   handleReloadClick(){
     var webview = Helpers.getCurrentWebview()
-    console.log('refresh webview: ', webview)
     if (webview) {
       webview.reload()
     }
@@ -79,8 +80,6 @@ export default class Browserbar extends Component {
     let dapp = {
       icon: ''
     }
-    let url = 'http://www.google.com'
-
     return (
       <div className="browser-bar">
         <button title="go back" className="back icon icon-arrow-left" onClick={this.handleGoBackClick}></button>
@@ -91,7 +90,13 @@ export default class Browserbar extends Component {
             <span title={nameFull}>{name}</span>
           </label>
 
-          <UrlBreadcrumbInput url={url} />
+          <UrlBreadcrumbInput url={this.props.url} />
+
+          <button className="accounts">
+            <span className="simptip-position-left simptip-movable" data-tooltip="{{name}}">
+              <DappIdenticon identity="address" className="dapp-tiny" />
+            </span>
+          </button>
 
         </div>
       </div>
