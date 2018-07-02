@@ -18,7 +18,7 @@ class Breadcrumb extends Component {
     return (
       <div className="url-breadcrumb" >
         <span>
-          {_url.protocol} // {parts.map(p => p ? <span>{p}  ▸ </span> : '')}
+          {_url.protocol} // {parts.map((p, i) => p ? <span key={i}>{p}  ▸ </span> : '')}
         </span>
       </div>
     )

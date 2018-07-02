@@ -1,7 +1,7 @@
 // must not import like this: 
 // import {Helpers} from './API'
 // otherwise API will be cached before being set
-import Helpers from './API/Helpers.js'
+const Helpers = require('./API/Helpers.js')
 const isElectron = Helpers.isElectron
 
 // avoid that the mock objects are overwritten

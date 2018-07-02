@@ -2,7 +2,7 @@
   "name": "mist-ui",
   "version": "0.1.0",
   "private": true,
-  "main": "tau-shell.js",
+  "main": "shell-electron.js",
   "dependencies": {
     "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
     "moment": "^2.22.2",

@@ -1,4 +1,4 @@
-import LocalStore from './LocalStore'
+// import LocalStore from './LocalStore'
 
 class Helpers {
   /**
@@ -13,8 +13,9 @@ class Helpers {
   }
 
   getCurrentWebview(){
-    var webview = this.getWebview(LocalStore.get('selectedTab'));
-    return webview
+    //var webview = this.getWebview(LocalStore.get('selectedTab'));
+    //return webview
+    return null
   }
 
   isElectron(){
@@ -34,4 +35,5 @@ class Helpers {
   }
 }
 
-export default new Helpers()
+// export default new Helpers()
+module.exports = new Helpers()
