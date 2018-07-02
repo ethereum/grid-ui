@@ -11,16 +11,17 @@ class Sidebar extends Component {
   render(){
 
     let tabs = [
-      {id:1},
-      {id:2},
+      {id:1, name: 'tab 1'},
+      {id:2, name: 'tab 2'},
+      {id:3, name: 'tab 3'},
     ]
 
     return (
       <aside className="sidebar">
         <nav>
           <ul className="sidebar-menu">
-            {tabs.map(element => {
-              return <SidebarTab key={element.id} />
+            {tabs.map(tab => {
+              return <SidebarTab key={tab.id} tab={tab}/>
             })}
           </ul>
         </nav>
