@@ -6,7 +6,7 @@ export default class DappIdenticon extends Component {
   }
   render() {
     return (
-      <span>identicon</span>
+      <span>{this.props.identity}</span>
     )
   }
 }

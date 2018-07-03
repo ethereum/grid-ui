@@ -11,13 +11,34 @@ class SidebarTab extends Component {
     super(props)
     this.handleMouseEnter = this.handleMouseEnter.bind(this)
     this.handleMouseLeave = this.handleMouseLeave.bind(this)
-    this.handleClick = this.handleClick.bind(this)
+    this.handleTabClick = this.handleTabClick.bind(this)
+    this.handleConnectBtnClick = this.handleConnectBtnClick.bind(this)
+
+    // query connected accounts for this dapp
+        /*
+    if (this.permissions) {
+      if (limit) {
+        return EthAccounts.find(
+          { address: { $in: this.permissions.accounts || [] } },
+          { limit: limit }
+        );
+      }
+      return EthAccounts.find({
+        address: { $in: this.permissions.accounts || [] }
+      });
+    }
+    */
+    let dappAccounts = [
+      { address: '0123' },
+      { address: '2345' }
+    ]
 
     this.state = { 
       submenucontainer: {
         'visibility': 'hidden',
         'opacity': 0
-      }
+      },
+      dappAccounts: dappAccounts
     }
     this.badge = 'http://via.placeholder.com/15x15'
   }
@@ -31,7 +52,7 @@ class SidebarTab extends Component {
   }
   handleMouseEnter() {
     console.log('mouse enter on sidebar tab')
-    let el = ReactDOM.findDOMNode(this)
+    let el = ReactDOM.findDOMNode(this)   
     this.setState({
       submenucontainer: {
         'visibility': 'visible',
@@ -47,13 +68,39 @@ class SidebarTab extends Component {
     );
     */
   }
-  handleClick() {
+  handleConnectBtnClick() {
+
+  }
+  handleTabClick() {
     this.props.tabChanged(this.props.tab)
+  }
+  renderIdenticons() {
+    return (
+      <button className="display">
+        <span>{this.state.dappAccounts.length} {i18n.t('mist.sidebar.submenu.account')}</span>
+        <span className="dapp-identicon-container">
+          {this.state.dappAccounts.map(acc => {
+            return(
+              <DappIdenticon key={acc.address} identity={acc.address} className="dapp-tiny"/> 
+            )
+          })}
+        </span>
+      </button>
+    )
+  }
+  renderAccounts(){
+    return (
+      <div className="accounts">
+        {this.state.dappAccounts.length > 0
+          ? this.renderIdenticons()
+          : <button className="connect" onClick={this.handleConnectBtnClick}>{i18n.t('mist.sidebar.submenu.connectAccounts')}</button>
+        }
+      </div>
+    )
   }
   renderSubmenu() {
 
     let subMenu = this.props.tab.subMenu
-    // will only be rendered when truthy value
     let badge = ''
 
     if(!subMenu){
@@ -63,7 +110,7 @@ class SidebarTab extends Component {
     return (
       <ul className="sub-menu">
         {subMenu.map(menu => {
-          return <li key={menu.name}><button className={menu.selected && 'selected'}>{menu.name}</button>{badge && <span className="badge">{badge}</span>}</li>
+          return <li key={menu.name}><button className={this.props.selected ? 'selected' : ''}>{menu.name}</button>{badge && <span className="badge">{badge}</span>}</li>
         })}
       </ul>
     )
@@ -72,13 +119,16 @@ class SidebarTab extends Component {
     let tab = this.props.tab
     let icon = tab.id === 'browser' ? iconPath : tab.icon
 
-    let name = tab.id === 'browser' ? i18n.t('mist.sidebar.buttons.browser') : tab.name
+    let isWallet = tab.id === 'wallet'
+    let isBrowser = tab.id === 'browser'
+
+    let name = isBrowser ? i18n.t('mist.sidebar.buttons.browser') : tab.name
     let nameFull = "foo"
 
     let tabShouldBeRemovable = true
 
     return (
-    <li data-tab-id={tab.id} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleClick}>
+    <li className={isWallet ? 'wallet' : (isBrowser ? 'browser' : '') + ' ' + (this.props.selected && 'selected') } data-tab-id={tab.id} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleTabClick}>
       <header>
         <button className={"main " + (this.badge && 'has-badge')}>
           {icon
@@ -93,13 +143,7 @@ class SidebarTab extends Component {
             <span title={nameFull}>{name}</span>
             {this.badge && <div className="badge">{this.badge}</div>}
             {tabShouldBeRemovable && <button className="remove-tab"> &times; </button>}
-            <div className="accounts">
-              <button className="display">
-                <span className="dapp-identicon-container">
-                  <DappIdenticon /> 
-                </span>
-              </button>
-            </div>
+            {!isWallet && this.renderAccounts()}
             {this.renderSubmenu()}
           </header>
         </section>

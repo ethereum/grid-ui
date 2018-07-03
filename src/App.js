@@ -13,10 +13,25 @@ class App extends Component {
 
     // let tabs = Tabs.find({}, { sort: { position: 1 } }).fetch();
     let tabs = [
-      {id: 'browser', name: 'tab 1', url: 'http://www.ethereum.org'},
+      {
+        id: 'browser',
+        name: 'browser',
+        url: 'http://www.ethereum.org'
+      },
+      {
+        id: 'wallet',
+        name: 'wallet',
+        url: `file://${__dirname}/wallet/index.html`,
+        redirect: `file://${__dirname}/wallet/index.html`,
+        position: 0,
+        permissions: {
+          admin: true
+        }
+      },
       {
         id:2, 
         name: 'tab 2',
+        selected: true,
         url: 'http://www.google.com',
         subMenu: [
           {name: 'action 1', selected: true},
@@ -24,6 +39,7 @@ class App extends Component {
         ]
       },
       {id:3, name: 'tab 3', url: 'http://www.github.com/philipplgh'},
+      {id:4, name: 'tab 4', url: 'http://www.example.com'},
     ]
 
     this.state = {
@@ -42,9 +58,9 @@ class App extends Component {
     return (
       <Fragment>
         {/* layout/main.html */}
-        <Sidebar tabs={this.state.tabs} tabChanged={this.handleTabChanged} />
+        <Sidebar tabs={this.state.tabs} selectedTab={this.state.selectedTab} tabChanged={this.handleTabChanged} />
         <Browserbar url={this.state.selectedTab.url}/>
-        <Webviews />
+        <Webviews tabs={this.state.tabs} selectedTab={this.state.selectedTab}/>
       </Fragment>
     )
   }

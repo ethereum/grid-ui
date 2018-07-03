@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 // turn required globals into explicit dependencies
-import {Helpers, LocalStore} from '../API'
+import {Helpers, i18n, LocalStore} from '../API'
 
 import DappIdenticon from './DappIdenticon'
 
@@ -76,10 +76,12 @@ export default class Browserbar extends Component {
   render(){
 
     let nameFull = 'fullName'
-    let name = 'name'
     let dapp = {
+      name: 'dapp name',
       icon: ''
     }
+    let address = '12345'
+    
     return (
       <div className="browser-bar">
         <button title="go back" className="back icon icon-arrow-left" onClick={this.handleGoBackClick}></button>
@@ -87,14 +89,17 @@ export default class Browserbar extends Component {
         <div className="app-bar">
           <label htmlFor="url-input" className={"dapp-info" + (this.icon && 'has-icon')}>
             {this.icon && <img src={this.icon} className="app-icon" />}
-            <span title={nameFull}>{name}</span>
+            <span title={nameFull}>{dapp.name}</span>
           </label>
 
           <UrlBreadcrumbInput url={this.props.url} />
 
           <button className="accounts">
-            <span className="simptip-position-left simptip-movable" data-tooltip="{{name}}">
-              <DappIdenticon identity="address" className="dapp-tiny" />
+            <span className="simptip-position-left simptip-movable" data-tooltip={dapp.name}>
+              <DappIdenticon identity={address} className="dapp-tiny" />
+              <span className="connect-button">
+                {i18n.t('mist.browserBar.buttons.connect')}
+              </span>
             </span>
           </button>
 

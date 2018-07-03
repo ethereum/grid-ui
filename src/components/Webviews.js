@@ -10,11 +10,6 @@ export default class Webviews extends Component {
   constructor(){
     super()
     this.isLoading = false
-    this.tabs = [
-      {id:'1'},
-      {id:'2'},
-      {id:'3'}
-    ]
   }
   connectionInfo(){
     return i18n.t('mist.nodeInfo.connecting')
@@ -29,8 +24,8 @@ export default class Webviews extends Component {
           <Spinner />
         </div>
         :
-        this.tabs.map(tab => {
-          return <Webview key={tab.id} />
+        this.props.tabs.map(tab => {
+          return <Webview key={tab.id} url={tab.url} visible={this.props.selectedTab.id === tab.id}/>
         })
         }
       </main>

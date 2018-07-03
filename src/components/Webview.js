@@ -22,17 +22,18 @@ export default class Webview extends Component {
     super()
   }
   render() {
+    let checkedUrl = this.checkedUrl(this.props.url)
     return (
-      <div className="webview">
+      <div className={"webview " + (this.props.visible ? "visible" : "hidden")}>
         {useIframe
-        ?<IframeWebview src={this.checkedUrl()}/>
-        :<webview src={this.checkedUrl()} autosize="true"></webview>
+        ?<IframeWebview src={checkedUrl}/>
+        :<webview src={checkedUrl} autosize="true" webpreferences="contextIsolation=yes"></webview>
         }
       </div>
     )
   }
-  checkedUrl(){
-    return 'http://www.ethereum.org'
+  checkedUrl(url) {
+    return url
   }
   componentDidMount() {
     console.log('webview was mounted')

@@ -19,7 +19,7 @@ class Sidebar extends Component {
         <nav>
           <ul className="sidebar-menu">
             {tabs.map(tab => {
-              return <SidebarTab key={tab.id} tab={tab} tabChanged={this.handleTabChanged}/>
+              return <SidebarTab key={tab.id} tab={tab} tabChanged={this.handleTabChanged} selected={this.props.selectedTab.id === tab.id}/>
             })}
           </ul>
         </nav>
