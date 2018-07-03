@@ -11,28 +11,30 @@ class App extends Component {
     super(props)
     this.handleTabChanged = this.handleTabChanged.bind(this)
 
+    let dirname = 'D:/Projects/MistTau/mist-ui-react'
+
     // let tabs = Tabs.find({}, { sort: { position: 1 } }).fetch();
     let tabs = [
       {
-        id: 'browser',
-        name: 'browser',
-        url: 'http://www.ethereum.org'
-      },
-      {
         id: 'wallet',
-        name: 'wallet',
-        url: `file://${__dirname}/wallet/index.html`,
-        redirect: `file://${__dirname}/wallet/index.html`,
+        name: 'Wallet',
+        url: `file:///${dirname}/wallet.asar/index.html`,
+        redirect: `file://${dirname}/wallet/index.html`,
         position: 0,
         permissions: {
           admin: true
         }
       },
       {
+        id: 'browser',
+        name: 'browser',
+        url: 'http://www.ethereum.org'
+      },
+      {
         id:2, 
         name: 'tab 2',
         selected: true,
-        url: 'http://www.google.com',
+        url: 'https://www.stateofthedapps.com',
         subMenu: [
           {name: 'action 1', selected: true},
           {name: 'action 2'}

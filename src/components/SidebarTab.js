@@ -117,7 +117,7 @@ class SidebarTab extends Component {
   }
   render() {
     let tab = this.props.tab
-    let icon = tab.id === 'browser' ? iconPath : tab.icon
+    let icon = tab.id === 'wallet' ? iconPath : tab.icon
 
     let isWallet = tab.id === 'wallet'
     let isBrowser = tab.id === 'browser'
