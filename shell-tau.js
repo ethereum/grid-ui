@@ -13,7 +13,7 @@ function createWindow() {
       slashes: true
   })
   */
-  let fileurl = 'http://localhost:3000'
+  let fileurl = 'http://localhost:3080'
   win = new BrowserWindow(fileurl, "Mist running in Tau", 800, 600)
   // and load the index.html of the app.
   win.loadUrl('index.html')

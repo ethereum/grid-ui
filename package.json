@@ -15,7 +15,7 @@
   "scripts": {
     "shell:electron": "electron .",
     "shell:tau": "tau .",
-    "start": "react-scripts start",
+    "start": "cross-env PORT=3080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -23,6 +23,7 @@
     "watch-css": "npm run build-css && less-watch-compiler"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "electron": "^2.0.2",
     "less-watch-compiler": "^1.11.3",
     "tau-prebuilt": "^0.1.1"

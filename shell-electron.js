@@ -50,7 +50,7 @@ class WindowManager {
     })
 
     let popup = new BrowserWindow(config)
-    popup.loadURL(`http://localhost:3000/index.html?app=popup&name=${name}`)
+    popup.loadURL(`http://localhost:3080/index.html?app=popup&name=${name}`)
 
     popup.webContents.openDevTools({mode: 'detach'})
 
@@ -72,7 +72,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   //win.loadFile('index.html')
-  win.loadURL('http://localhost:3000')
+  win.loadURL('http://localhost:3080')
 
   // Open the DevTools.
   win.webContents.openDevTools()
