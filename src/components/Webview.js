@@ -19,15 +19,19 @@ class IframeWebview extends Component {
 
 export default class Webview extends Component {
   constructor(props) {
-    super()
+    super(props)
+    this.handleIpcMessage = this.handleIpcMessage.bind(this)
+    this.handleDomReady = this.handleDomReady.bind(this)
   }
   render() {
     let checkedUrl = this.checkedUrl(this.props.url)
+    let preloadFile = 'file://' + window.dirname + '/modules/preloader' + '/browser.js'
+    console.log('preload file:', preloadFile)
     return (
       <div className={"webview " + (this.props.visible ? "visible" : "hidden")}>
         {useIframe
         ?<IframeWebview src={checkedUrl}/>
-        :<webview src={checkedUrl} autosize="true" webpreferences="contextIsolation=yes"></webview>
+        :<webview src={checkedUrl} autosize="true" webpreferences="contextIsolation=yes" preload={preloadFile}></webview>
         }
       </div>
     )
@@ -36,15 +40,38 @@ export default class Webview extends Component {
     return url
   }
   componentDidMount() {
-    console.log('webview was mounted')
-    let el = ReactDOM.findDOMNode(this)
-    el.addEventListener('will-navigate', this.handleNavigate)
+    let webview = ReactDOM.findDOMNode(this).childNodes[0]
+    webview.addEventListener('will-navigate', this.handleNavigate)
+    webview.addEventListener('ipc-message', this.handleIpcMessage)
+    webview.addEventListener('dom-ready', this.handleDomReady)
   }
   componentWillUnmount() {
-    let el = ReactDOM.findDOMNode(this)
-    el.removeEventListener('will-navigate', this.handleNavigate)
+    let webview = ReactDOM.findDOMNode(this).childNodes[0]
+    webview.removeEventListener('will-navigate', this.handleNavigate)
+    webview.removeEventListener('ipc-message', this.handleIpcMessage)
+    webview.removeEventListener('dom-ready', this.handleDomReady)
   }
   handleNavigate() {
     console.log('navigate navigate')
+  }
+  // MIST API for installed tabs/dapps
+  // see mistAPIBackend.js
+  handleIpcMessage(event) {
+    var arg = event.args[0]
+    // SET FAVICON
+    if (event.channel === 'favicon') { this.props.onIconAvailable(arg) }
+    // if (event.channel === 'appBar') { this.props.onAppBarAvailable(arg) }
+    // console.log('received webview ipc', event.channel)
+  }
+  handleDomReady(event) {
+    let webview = ReactDOM.findDOMNode(this).childNodes[0]
+    let titleFull = webview.getTitle()
+    let title = titleFull
+
+    if (titleFull && titleFull.length > 40) {
+      title = titleFull.substr(0, 40)
+      title += '…'
+    }
+    this.props.onTitleAvailable(title)
   }
 }

@@ -25,7 +25,13 @@ export default class Webviews extends Component {
         </div>
         :
         this.props.tabs.map(tab => {
-          return <Webview key={tab.id} url={tab.url} visible={this.props.selectedTab.id === tab.id}/>
+          return <Webview 
+            key={tab.id} 
+            url={tab.url} 
+            visible={this.props.selectedTab.id === tab.id}
+            onIconAvailable={(icon) => {this.props.onIconAvailable(tab, icon)}}
+            onTitleAvailable={(title) => {this.props.onTitleAvailable(tab, title)}}
+          />
         })
         }
       </main>

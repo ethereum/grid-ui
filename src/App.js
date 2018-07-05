@@ -10,10 +10,12 @@ class App extends Component {
   constructor(props){
     super(props)
     this.handleTabChanged = this.handleTabChanged.bind(this)
+    this.handleIconAvailable = this.handleIconAvailable.bind(this)
+    this.handleTitleAvailable = this.handleTitleAvailable.bind(this)
 
     let dirname = 'D:/Projects/MistTau/mist-ui-react'
 
-    // let tabs = Tabs.find({}, { sort: { position: 1 } }).fetch();
+    //let _tabs = window.Tabs.find({}, { sort: { position: 1 } }).fetch();
     let tabs = [
       {
         id: 'wallet',
@@ -56,13 +58,47 @@ class App extends Component {
       selectedTab: tab
     })
   }
+  handleIconAvailable(tab, icon) {
+    this.setState(prevState => {
+      let tabs = [...prevState.tabs] // copy tabs state
+      let tabIdx = tabs.findIndex(t => (t.id === tab.id)) // find changed item
+      let tabM = {
+        ...tabs[tabIdx], // create copy of changed item
+        icon: icon // & modify copy
+      } 
+      tabs[tabIdx] = tabM // write changes to new tabs state
+      return {
+        tabs: tabs 
+      }
+    })
+  }  
+  handleTitleAvailable(tab, title) {
+    console.log('handle bar available:', tab, title)
+    this.setState(prevState => {
+      let tabs = [...prevState.tabs] // copy tabs state
+      let tabIdx = tabs.findIndex(t => (t.id === tab.id)) // find changed item
+      let tabM = {
+        ...tabs[tabIdx], // create copy of changed item
+        name: title // & modify copy
+      } 
+      tabs[tabIdx] = tabM // write changes to new tabs state
+      return {
+        tabs: tabs 
+      }
+    })
+  }
   render() {
     return (
       <Fragment>
         {/* layout/main.html */}
         <Sidebar tabs={this.state.tabs} selectedTab={this.state.selectedTab} tabChanged={this.handleTabChanged} />
-        <Browserbar url={this.state.selectedTab.url}/>
-        <Webviews tabs={this.state.tabs} selectedTab={this.state.selectedTab}/>
+        <Browserbar url={this.state.selectedTab.url} selectedTab={this.state.selectedTab}/>
+        <Webviews 
+          tabs={this.state.tabs} 
+          selectedTab={this.state.selectedTab}
+          onIconAvailable={this.handleIconAvailable}
+          onTitleAvailable={this.handleTitleAvailable}
+        />
       </Fragment>
     )
   }
