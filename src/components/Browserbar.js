@@ -76,10 +76,7 @@ export default class Browserbar extends Component {
   render(){
 
     let nameFull = 'fullName'
-    let dapp = {
-      name: 'dapp name',
-      icon: ''
-    }
+    let tab = this.props.selectedTab
     let address = '12345'
     
     return (
@@ -87,15 +84,15 @@ export default class Browserbar extends Component {
         <button title="go back" className="back icon icon-arrow-left" onClick={this.handleGoBackClick}></button>
         <button title="refresh page" className="reload icon icon-refresh" onClick={this.handleReloadClick}></button>
         <div className="app-bar">
-          <label htmlFor="url-input" className={"dapp-info" + (this.icon && 'has-icon')}>
-            {this.icon && <img src={this.icon} className="app-icon" />}
-            <span title={nameFull}>{dapp.name}</span>
+          <label htmlFor="url-input" className={"dapp-info " + (tab.icon && 'has-icon')}>
+            {tab.icon && <img src={tab.icon} className="app-icon" />}
+            <span title={nameFull}>{tab.name}</span>
           </label>
 
           <UrlBreadcrumbInput url={this.props.url} />
 
           <button className="accounts">
-            <span className="simptip-position-left simptip-movable" data-tooltip={dapp.name}>
+            <span className="simptip-position-left simptip-movable" data-tooltip={tab.name}>
               <DappIdenticon identity={address} className="dapp-tiny" />
               <span className="connect-button">
                 {i18n.t('mist.browserBar.buttons.connect')}
