@@ -2,7 +2,10 @@
 // import {Helpers} from './API'
 // otherwise API will be cached before being set
 const Helpers = require('./API/Helpers.js')
-const isElectron = Helpers.isElectron
+const is = {
+  electron: Helpers.isElectron,
+  mist: Helpers.isMist
+}
 
 // avoid that the mock objects are overwritten
 function seal (target, propName, obj) {
@@ -108,13 +111,19 @@ function init(window, lang){
 
 // browser / tau fallback -> no preload script
 // auto-initialize
-if (!isElectron()) {
+if (!is.electron()) {
   console.log('auto init', window)
   init(window, {
     // ...app,
     // ...mist
   })
   console.log('web3:', JSON.stringify(window.web3))
-} else {
+} 
+else if (is.mist()) {
+  module.exports = () => {
+    console.log('hello mist')
+  }
+}
+else {
   module.exports = init
 }
