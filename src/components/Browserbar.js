@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 // turn required globals into explicit dependencies
-import {Helpers, i18n, LocalStore} from '../API'
+import {Helpers, i18n, Mist, LocalStore} from '../API'
 
 import DappIdenticon from './DappIdenticon'
 
@@ -73,6 +73,9 @@ export default class Browserbar extends Component {
       webview.reload()
     }
   }
+  handleAccountClick() {
+    Mist.requestAccount()
+  }
   render(){
 
     let nameFull = 'fullName'
@@ -91,7 +94,7 @@ export default class Browserbar extends Component {
 
           <UrlBreadcrumbInput url={this.props.url} />
 
-          <button className="accounts">
+          <button className="accounts" onClick={this.handleAccountClick}>
             <span className="simptip-position-left simptip-movable" data-tooltip={tab.name}>
               <DappIdenticon identity={address} className="dapp-tiny" />
               <span className="connect-button">
