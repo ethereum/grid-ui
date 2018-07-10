@@ -5,6 +5,7 @@
   "main": "shell-electron.js",
   "dependencies": {
     "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
+    "ethereum-blockies": "^0.1.1",
     "moment": "^2.22.2",
     "numeral": "^2.0.6",
     "react": "^16.4.1",
@@ -13,9 +14,10 @@
     "react-scripts": "1.1.4"
   },
   "scripts": {
-    "shell:electron": "electron .",
+    "shell:electron": "cross-env PORT=3080 electron .",
     "shell:tau": "tau .",
-    "start": "cross-env PORT=3080 react-scripts start",
+    "start-no-conflict": "cross-env PORT=3080 react-scripts start",
+    "start": "cross-env react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

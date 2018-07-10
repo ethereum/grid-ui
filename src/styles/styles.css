@@ -2487,14 +2487,23 @@ table thead {
   border-color: rgba(194, 14, 37, 0.15);
 }
 .dapp-address-input input {
-  border: 0;
-  border-bottom: solid 2px #CCC6C6;
-  background-color: #f5f4f2;
-  color: #4A90E2;
   -webkit-transition: opacity 1s;
   -moz-transition: opacity 1s;
   -o-transition: opacity 1s;
   transition: opacity 1s;
+  display: inline-block;
+  width: 300px;
+  max-width: 100%;
+  margin-top: 18.4px;
+  padding: 6.13333333px 16px;
+  padding-bottom: 4.08888889px;
+  border: 0;
+  border-bottom: solid 2px #CCC6C6;
+  box-sizing: border-box;
+  background-color: #f5f4f2;
+  font-size: 1em;
+  font-weight: 300;
+  color: #4A90E2;
 }
 .dapp-address-input input::-webkit-input-placeholder {
   color: #CCC6C6;
@@ -2528,17 +2537,46 @@ table thead {
   background: rgba(194, 14, 37, 0.1);
   border-color: rgba(194, 14, 37, 0.15);
 }
+.dapp-address-input input::-webkit-input-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:-moz-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input::-moz-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:-ms-input-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:focus {
+  outline: 0;
+}
+.dapp-address-input input.dapp-large {
+  font-size: 1.5em;
+}
+.dapp-address-input input.dapp-error {
+  color: #C20E25;
+  background: rgba(194, 14, 37, 0.1);
+  border-color: rgba(194, 14, 37, 0.15);
+  transition-delay: 1s;
+  transition: background-color ease-in-out 3s, color ease-in-out 1s;
+}
+.dapp-address-input input:disabled {
+  color: #695e5e;
+  border-bottom-color: #5b5151;
+}
 input,
 select,
 textarea {
-  border: 0;
-  border-bottom: solid 2px #CCC6C6;
-  background-color: #f5f4f2;
-  color: #4A90E2;
   -webkit-transition: opacity 1s;
   -moz-transition: opacity 1s;
   -o-transition: opacity 1s;
   transition: opacity 1s;
+  border: 0;
+  border-bottom: solid 2px #CCC6C6;
+  background-color: #f5f4f2;
+  color: #4A90E2;
   display: inline-block;
   width: 300px;
   max-width: 100%;
@@ -2608,6 +2646,51 @@ textarea.dapp-error {
   color: #C20E25;
   background: rgba(194, 14, 37, 0.1);
   border-color: rgba(194, 14, 37, 0.15);
+}
+input::-webkit-input-placeholder,
+select::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #CCC6C6;
+}
+input:-moz-placeholder,
+select:-moz-placeholder,
+textarea:-moz-placeholder {
+  color: #CCC6C6;
+}
+input::-moz-placeholder,
+select::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: #CCC6C6;
+}
+input:-ms-input-placeholder,
+select:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: #CCC6C6;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 0;
+}
+input.dapp-large,
+select.dapp-large,
+textarea.dapp-large {
+  font-size: 1.5em;
+}
+input.dapp-error,
+select.dapp-error,
+textarea.dapp-error {
+  color: #C20E25;
+  background: rgba(194, 14, 37, 0.1);
+  border-color: rgba(194, 14, 37, 0.15);
+  transition-delay: 1s;
+  transition: background-color ease-in-out 3s, color ease-in-out 1s;
+}
+input:disabled,
+select:disabled,
+textarea:disabled {
+  color: #695e5e;
+  border-bottom-color: #5b5151;
 }
 input:focus,
 select:focus,
@@ -3534,6 +3617,630 @@ button {
 /* #### Tablets Portrait #### */
 /* #### Tablets Landscape #### */
 /* #### Desktops #### */
+.dapp-overflow {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.dapp-shadow-none {
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+.dapp-shadow-small {
+  box-shadow: 0 0px 1px rgba(0, 0, 0, 0.3);
+}
+.dapp-shadow-medium {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+.dapp-shadow-large {
+  box-shadow: 0 1px 16px rgba(0, 0, 0, 0.3);
+}
+.dapp-input {
+  display: inline-block;
+  width: 300px;
+  max-width: 100%;
+  margin-top: 18.4px;
+  padding: 6.13333333px 16px;
+  padding-bottom: 4.08888889px;
+  border: 0;
+  border-bottom: solid 2px #CCC6C6;
+  box-sizing: border-box;
+  background-color: #f5f4f2;
+  font-size: 1em;
+  font-weight: 300;
+  color: #4A90E2;
+}
+.dapp-input::-webkit-input-placeholder {
+  color: #CCC6C6;
+}
+.dapp-input:-moz-placeholder {
+  color: #CCC6C6;
+}
+.dapp-input::-moz-placeholder {
+  color: #CCC6C6;
+}
+.dapp-input:-ms-input-placeholder {
+  color: #CCC6C6;
+}
+.dapp-input:focus {
+  outline: 0;
+}
+.dapp-input.dapp-large {
+  font-size: 1.5em;
+}
+.dapp-input.dapp-error {
+  color: #C20E25;
+  background: rgba(194, 14, 37, 0.1);
+  border-color: rgba(194, 14, 37, 0.15);
+  transition-delay: 1s;
+  transition: background-color ease-in-out 3s, color ease-in-out 1s;
+}
+.dapp-input:disabled {
+  color: #695e5e;
+  border-bottom-color: #5b5151;
+}
+textarea {
+  -webkit-transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  transition: opacity 1s;
+  display: inline-block;
+  width: 300px;
+  max-width: 100%;
+  margin-top: 18.4px;
+  padding: 6.13333333px 16px;
+  padding-bottom: 4.08888889px;
+  border: 0;
+  border-bottom: solid 2px #CCC6C6;
+  box-sizing: border-box;
+  background-color: #f5f4f2;
+  font-size: 1em;
+  font-weight: 300;
+  color: #4A90E2;
+}
+textarea::-webkit-input-placeholder {
+  color: #CCC6C6;
+}
+textarea:-moz-placeholder {
+  color: #CCC6C6;
+}
+textarea::-moz-placeholder {
+  color: #CCC6C6;
+}
+textarea:-ms-input-placeholder {
+  color: #CCC6C6;
+}
+textarea:disabled {
+  color: #695e5e;
+  opacity: 0.25;
+}
+textarea.dapp-tiny {
+  font-size: 0.6em;
+  border-bottom-width: 1px;
+}
+textarea.dapp-small {
+  font-size: 0.8em;
+}
+textarea.dapp-large {
+  font-size: 1.5em;
+}
+textarea:invalid,
+textarea.dapp-error {
+  color: #C20E25;
+  background: rgba(194, 14, 37, 0.1);
+  border-color: rgba(194, 14, 37, 0.15);
+}
+textarea::-webkit-input-placeholder {
+  color: #CCC6C6;
+}
+textarea:-moz-placeholder {
+  color: #CCC6C6;
+}
+textarea::-moz-placeholder {
+  color: #CCC6C6;
+}
+textarea:-ms-input-placeholder {
+  color: #CCC6C6;
+}
+textarea:focus {
+  outline: 0;
+}
+textarea.dapp-large {
+  font-size: 1.5em;
+}
+textarea.dapp-error {
+  color: #C20E25;
+  background: rgba(194, 14, 37, 0.1);
+  border-color: rgba(194, 14, 37, 0.15);
+  transition-delay: 1s;
+  transition: background-color ease-in-out 3s, color ease-in-out 1s;
+}
+textarea:disabled {
+  color: #695e5e;
+  border-bottom-color: #5b5151;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;
+  background-color: #CCC6C6;
+  border: none;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background-color: #695e5e;
+  margin-top: -6px;
+}
+input[type="range"]:focus {
+  outline: none;
+}
+input[type="range"]:focus::-webkit-slider-thumb {
+  background-color: #4A90E2;
+}
+input[type="range"]::-moz-range-track {
+  height: 5px;
+  background-color: #CCC6C6;
+  border: none;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background-color: #695e5e;
+  margin-top: -4px;
+}
+input[type="range"]:focus {
+  outline: none;
+}
+input[type="range"]:focus::-moz-range-thumb {
+  background-color: #4A90E2;
+}
+.dapp-identicon {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-size: cover;
+  background-positon: 50% 50%;
+  box-shadow: inset rgba(255, 255, 255, 0.2) 0 2px 2px, inset rgba(0, 0, 0, 0.3) 0 -1px 8px;
+  box-shadow: inset rgba(255, 255, 255, 0.4) 0 4px 8px, inset rgba(0, 0, 0, 0.6) 0 -4px 12px;
+  cursor: help;
+  transition: border-radius 2.5s;
+  transition-delay: 3s;
+}
+.dapp-identicon.dapp-tiny {
+  width: 21px;
+  height: 21px;
+  box-shadow: inset rgba(255, 255, 255, 0.4) 0 1px 1px, inset rgba(0, 0, 0, 0.3) 0 -1px 2px;
+}
+.dapp-identicon.dapp-small {
+  width: 32px;
+  height: 32px;
+  box-shadow: inset rgba(255, 255, 255, 0.4) 0 2px 2px, inset rgba(0, 0, 0, 0.4) 0 -2px 4px;
+}
+.dapp-identicon.dapp-medium {
+  width: 48px;
+  height: 48px;
+  box-shadow: inset rgba(255, 255, 255, 0.4) 0 4px 4px, inset rgba(0, 0, 0, 0.5) 0 -4px 6px;
+}
+.dapp-identicon.dapp-icon-loading {
+  background-image: url('identicon-load.gif');
+}
+.dapp-identicon:hover {
+  border-radius: 12.5%;
+  transition-delay: 1s;
+}
+.dapp-identicon .identicon-pixel {
+  width: 100%;
+  height: 100%;
+  transition: 5s opacity;
+  opacity: 0;
+}
+.dapp-identicon .identicon-pixel:hover {
+  transition: 0.25s opacity;
+  opacity: 1;
+}
+.dapp-modal-buttons {
+  position: relative;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -moz-box-pack: end;
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+.dapp-modal-buttons button,
+.dapp-modal-buttons a,
+.dapp-modal-buttons a:visited {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  margin: 0 auto;
+  max-width: 150px;
+  height: 36.8px;
+  line-height: 36.8px;
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, 'sans-serif';
+  font-size: 0.9em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.dapp-modal-buttons button.dapp-primary-button,
+.dapp-modal-buttons a.dapp-primary-button,
+.dapp-modal-buttons a:visited.dapp-primary-button {
+  font-weight: 600;
+}
+.dapp-modal-buttons.no-margins {
+  margin: 0;
+}
+.dapp-selector,
+.dapp-select-gas-price {
+  display: inline-block;
+  position: relative;
+}
+.dapp-selector span:first-of-type,
+.dapp-select-gas-price span:first-of-type {
+  font-size: 1.3em;
+  font-weight: 400;
+  color: #827a7a;
+}
+.dapp-selector span:first-of-type span,
+.dapp-select-gas-price span:first-of-type span {
+  font-size: 0.6em;
+}
+.dapp-selector input,
+.dapp-select-gas-price input {
+  width: 100%;
+  margin-bottom: 32px;
+}
+.dapp-selector input + span,
+.dapp-select-gas-price input + span,
+.dapp-selector input + span + span,
+.dapp-select-gas-price input + span + span {
+  position: absolute;
+  top: 60px;
+  text-transform: uppercase;
+  font-size: 1em;
+  font-weight: 400;
+}
+.dapp-selector input + span,
+.dapp-select-gas-price input + span {
+  position: absolute;
+  left: 0;
+}
+.dapp-selector input + span + span,
+.dapp-select-gas-price input + span + span {
+  text-align: right;
+  right: 0;
+}
+@keyframes shrinkText {
+  from {
+    font-size: 150%;
+    opacity: 0.5;
+  }
+  to {
+    font-size: 100%;
+    opacity: 1;
+  }
+}
+@keyframes opacityText {
+  from {
+    color: #f5f4f2;
+  }
+  to {
+    color: #695e5e;
+  }
+}
+.dapp-address-input,
+.dapp-select-account {
+  position: relative;
+}
+.dapp-address-input input,
+.dapp-select-account input,
+.dapp-address-input select,
+.dapp-select-account select {
+  -webkit-transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  transition: opacity 1s;
+  display: inline-block;
+  width: 300px;
+  max-width: 100%;
+  margin-top: 18.4px;
+  padding: 6.13333333px 16px;
+  padding-bottom: 4.08888889px;
+  border: 0;
+  border-bottom: solid 2px #CCC6C6;
+  box-sizing: border-box;
+  background-color: #f5f4f2;
+  font-size: 1em;
+  font-weight: 300;
+  color: #4A90E2;
+  width: 440px;
+  z-index: 1;
+  margin-top: 0;
+  height: 36.8px;
+  padding-left: 41.6px;
+  padding-right: 0;
+  transition-delay: 0s;
+  transition: background-color ease-in-out 1s, color ease-in-out 1s;
+}
+.dapp-address-input input::-webkit-input-placeholder,
+.dapp-select-account input::-webkit-input-placeholder,
+.dapp-address-input select::-webkit-input-placeholder,
+.dapp-select-account select::-webkit-input-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:-moz-placeholder,
+.dapp-select-account input:-moz-placeholder,
+.dapp-address-input select:-moz-placeholder,
+.dapp-select-account select:-moz-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input::-moz-placeholder,
+.dapp-select-account input::-moz-placeholder,
+.dapp-address-input select::-moz-placeholder,
+.dapp-select-account select::-moz-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:-ms-input-placeholder,
+.dapp-select-account input:-ms-input-placeholder,
+.dapp-address-input select:-ms-input-placeholder,
+.dapp-select-account select:-ms-input-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:disabled,
+.dapp-select-account input:disabled,
+.dapp-address-input select:disabled,
+.dapp-select-account select:disabled {
+  color: #695e5e;
+  opacity: 0.25;
+}
+.dapp-address-input input.dapp-tiny,
+.dapp-select-account input.dapp-tiny,
+.dapp-address-input select.dapp-tiny,
+.dapp-select-account select.dapp-tiny {
+  font-size: 0.6em;
+  border-bottom-width: 1px;
+}
+.dapp-address-input input.dapp-small,
+.dapp-select-account input.dapp-small,
+.dapp-address-input select.dapp-small,
+.dapp-select-account select.dapp-small {
+  font-size: 0.8em;
+}
+.dapp-address-input input.dapp-large,
+.dapp-select-account input.dapp-large,
+.dapp-address-input select.dapp-large,
+.dapp-select-account select.dapp-large {
+  font-size: 1.5em;
+}
+.dapp-address-input input:invalid,
+.dapp-select-account input:invalid,
+.dapp-address-input select:invalid,
+.dapp-select-account select:invalid,
+.dapp-address-input input.dapp-error,
+.dapp-select-account input.dapp-error,
+.dapp-address-input select.dapp-error,
+.dapp-select-account select.dapp-error {
+  color: #C20E25;
+  background: rgba(194, 14, 37, 0.1);
+  border-color: rgba(194, 14, 37, 0.15);
+}
+.dapp-address-input input::-webkit-input-placeholder,
+.dapp-select-account input::-webkit-input-placeholder,
+.dapp-address-input select::-webkit-input-placeholder,
+.dapp-select-account select::-webkit-input-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:-moz-placeholder,
+.dapp-select-account input:-moz-placeholder,
+.dapp-address-input select:-moz-placeholder,
+.dapp-select-account select:-moz-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input::-moz-placeholder,
+.dapp-select-account input::-moz-placeholder,
+.dapp-address-input select::-moz-placeholder,
+.dapp-select-account select::-moz-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:-ms-input-placeholder,
+.dapp-select-account input:-ms-input-placeholder,
+.dapp-address-input select:-ms-input-placeholder,
+.dapp-select-account select:-ms-input-placeholder {
+  color: #CCC6C6;
+}
+.dapp-address-input input:focus,
+.dapp-select-account input:focus,
+.dapp-address-input select:focus,
+.dapp-select-account select:focus {
+  outline: 0;
+}
+.dapp-address-input input.dapp-large,
+.dapp-select-account input.dapp-large,
+.dapp-address-input select.dapp-large,
+.dapp-select-account select.dapp-large {
+  font-size: 1.5em;
+}
+.dapp-address-input input.dapp-error,
+.dapp-select-account input.dapp-error,
+.dapp-address-input select.dapp-error,
+.dapp-select-account select.dapp-error {
+  color: #C20E25;
+  background: rgba(194, 14, 37, 0.1);
+  border-color: rgba(194, 14, 37, 0.15);
+  transition-delay: 1s;
+  transition: background-color ease-in-out 3s, color ease-in-out 1s;
+}
+.dapp-address-input input:disabled,
+.dapp-select-account input:disabled,
+.dapp-address-input select:disabled,
+.dapp-select-account select:disabled {
+  color: #695e5e;
+  border-bottom-color: #5b5151;
+}
+.dapp-address-input input.dapp-large,
+.dapp-select-account input.dapp-large,
+.dapp-address-input select.dapp-large,
+.dapp-select-account select.dapp-large {
+  font-size: 1.5em;
+  padding-left: 48px;
+  height: auto;
+  line-height: 29px;
+}
+.dapp-address-input input.dapp-large + .dapp-identicon,
+.dapp-select-account input.dapp-large + .dapp-identicon,
+.dapp-address-input select.dapp-large + .dapp-identicon,
+.dapp-select-account select.dapp-large + .dapp-identicon {
+  top: 6px;
+  width: 32px;
+  height: 32px;
+}
+.dapp-address-input input.dapp-large + .icon-shield,
+.dapp-select-account input.dapp-large + .icon-shield,
+.dapp-address-input select.dapp-large + .icon-shield,
+.dapp-select-account select.dapp-large + .icon-shield {
+  top: 11px;
+}
+.dapp-address-input input.dapp-error,
+.dapp-select-account input.dapp-error,
+.dapp-address-input select.dapp-error,
+.dapp-select-account select.dapp-error {
+  border-color: #C20E25;
+}
+.dapp-address-input select,
+.dapp-select-account select {
+  width: auto;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  height: 36px;
+  line-height: 18px;
+}
+.dapp-address-input select + .dapp-identicon,
+.dapp-select-account select + .dapp-identicon {
+  top: 4px;
+}
+.dapp-address-input .dapp-identicon,
+.dapp-select-account .dapp-identicon {
+  z-index: 2;
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  width: 26.66666667px;
+  height: 26.66666667px;
+}
+.dapp-address-input .no-identicon,
+.dapp-select-account .no-identicon {
+  z-index: 2;
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  color: #4A90E2;
+}
+.dapp-address-input .icon-shield,
+.dapp-select-account .icon-shield {
+  position: absolute;
+  top: 6px;
+  left: 13px;
+  font-size: 1.4em;
+  color: #C20E25;
+}
+.dapp-address-input .dapp-non-checksum,
+.dapp-select-account .dapp-non-checksum {
+  background-color: #ffe7a0;
+  cursor: help;
+}
+.dapp-address-input .dapp-address-label,
+.dapp-select-account .dapp-address-label {
+  position: absolute;
+  bottom: -18.4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 70%;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.dapp-address-input.has-name .ens-name,
+.dapp-select-account.has-name .ens-name {
+  position: absolute;
+  left: 40px;
+  top: 0px;
+  color: #4A90E2;
+  animation-name: shrinkText;
+  animation-duration: 0.1s;
+  animation-timing-function: ease-out;
+}
+.dapp-address-input.has-name input:not(:focus),
+.dapp-select-account.has-name input:not(:focus) {
+  font-size: 66%;
+  padding-top: 17px;
+  color: #695e5e;
+  font-weight: 400;
+  padding-bottom: 5px;
+  animation-name: opacityText;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+}
+.dapp-address-input.has-name input:focus + .ens-name,
+.dapp-select-account.has-name input:focus + .ens-name {
+  display: none;
+  color: #695e5e;
+  font-size: 66%;
+}
+.dapp-output {
+  display: flex;
+  flex: 1;
+  max-width: 100%;
+}
+.dapp-output em {
+  opacity: 0.4;
+}
+.dapp-output span.address {
+  font-size: 0.9 em;
+  font-weight: 600;
+  position: relative;
+  padding-left: 24px;
+}
+.dapp-output span.address .dapp-identicon.dapp-tiny {
+  position: absolute;
+  top: -2px;
+  left: 0;
+}
+.ens-loading {
+  position: absolute;
+  top: 18px;
+  left: 24px;
+}
+.ens-loading .spinner-container {
+  transform: scale(0.5);
+}
 .allowSelection {
   -webkit-touch-callout: initial;
   -webkit-user-select: initial;

@@ -7,6 +7,7 @@ const {app, BrowserWindow, Menu, MenuItem} = require('electron')
 let win
 
 const PORT = process.env.PORT || 3000
+console.log('start shell with port: ', PORT)
 
 class WindowManager {
   showPopup(name) {
@@ -74,7 +75,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   //win.loadFile('index.html')
-  win.loadURL('http://localhost:${PORT}')
+  win.loadURL(`http://localhost:${PORT}`)
 
   // Open the DevTools.
   win.webContents.openDevTools()

@@ -76,11 +76,27 @@ export default class Browserbar extends Component {
   handleAccountClick() {
     Mist.requestAccount()
   }
-  render(){
-
-    let nameFull = 'fullName'
+  renderAccounts(){
     let tab = this.props.selectedTab
-    let address = '12345'
+    let dappAccounts = this.props.dappAccounts
+    return dappAccounts.map(acc => 
+      <span key={acc.address} className="simptip-position-left simptip-movable" data-tooltip={tab.name}>
+        <DappIdenticon identity={acc.address} className="dapp-tiny" />
+      </span>
+    )
+  }
+  renderConnectButton(){
+    return (
+      <span>
+        <span className="connect-button">{i18n.t('mist.browserBar.buttons.connect')}</span>
+        <span className="simptip-position-left simptip-movable no-accounts" data-tooltip={i18n.t('mist.browserBar.buttons.noAccounts')}></span>
+      </span>
+    )
+  }
+  render(){
+    let tab = this.props.selectedTab
+    let nameFull = 'fullName'
+    let dappAccounts = this.props.dappAccounts
     
     return (
       <div className="browser-bar">
@@ -95,12 +111,7 @@ export default class Browserbar extends Component {
           <UrlBreadcrumbInput url={this.props.url} />
 
           <button className="accounts" onClick={this.handleAccountClick}>
-            <span className="simptip-position-left simptip-movable" data-tooltip={tab.name}>
-              <DappIdenticon identity={address} className="dapp-tiny" />
-              <span className="connect-button">
-                {i18n.t('mist.browserBar.buttons.connect')}
-              </span>
-            </span>
+            {dappAccounts.length > 0 ? this.renderAccounts() : this.renderConnectButton() }
           </button>
 
         </div>

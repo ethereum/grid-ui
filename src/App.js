@@ -88,11 +88,24 @@ class App extends Component {
     })
   }
   render() {
+
+    let dappAccountsTest = [
+      {
+        address: '0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359'
+      },
+      {
+        address: '0x554f8e6938004575bd89cbef417aea5c18140d92'
+      }
+    ]
+
     return (
       <Fragment>
         {/* layout/main.html */}
         <Sidebar tabs={this.state.tabs} selectedTab={this.state.selectedTab} tabChanged={this.handleTabChanged} />
-        <Browserbar url={this.state.selectedTab.url} selectedTab={this.state.selectedTab}/>
+        <Browserbar 
+          url={this.state.selectedTab.url}
+          dappAccounts = {dappAccountsTest}
+          selectedTab={this.state.selectedTab}/>
         <Webviews 
           tabs={this.state.tabs} 
           selectedTab={this.state.selectedTab}

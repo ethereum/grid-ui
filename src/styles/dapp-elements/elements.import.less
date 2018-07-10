@@ -1,0 +1,425 @@
+@colorYellow: #ffc107;
+
+
+// MIXINS
+.dapp-overflow {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dapp-shadow-none {
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+.dapp-shadow-small {
+    box-shadow: 0 0px 1px rgba(0,0,0,0.3);
+}
+.dapp-shadow-medium {
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.dapp-shadow-large {
+    box-shadow: 0 1px 16px rgba(0,0,0,0.3);
+}
+
+// FORMS
+.dapp-input {
+    display: inline-block;
+    width: 300px;
+    max-width: 100%;
+    margin-top: @gridHeight;
+    padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal/2;
+    padding-bottom: @defaultPaddingVertical/3;
+    border: 0;
+    border-bottom: solid 2px @colorGray;
+    box-sizing: border-box;
+    background-color: @colorGrayLight;
+    font-size: 1em;
+    font-weight: 300;
+    color: @colorLink;
+
+    .placeholder(@colorGray);
+
+    &:focus {
+        outline: 0;
+    }
+
+    &.dapp-large {
+        font-size: 1.5em;
+    }
+
+    &.dapp-error {
+        color: @colorError;
+        background: fadeout(@colorError, 90%);
+        border-color: fadeout(@colorError, 85%);
+        transition-delay: 1s;
+        transition: background-color ease-in-out 3s, color ease-in-out 1s;
+    }
+
+    &:disabled {
+        color: @colorGrayDark;
+        border-bottom-color: darken(@colorGrayDark, 5%);
+    }
+}
+textarea {
+    .dapp-input;
+}
+input[type="range"] {
+    -webkit-appearance: none;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+
+    &::-webkit-slider-runnable-track {
+        height: 5px;
+        background-color: @colorGray;
+        border: none;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+    }
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background-color: @colorGrayDark;
+        margin-top: -6px;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus::-webkit-slider-thumb {
+        background-color: @colorLink;
+    }
+
+    &::-moz-range-track {
+        // width: 300px;
+        height: 5px;
+        background-color: @colorGray;
+        border: none;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+    }
+
+    &::-moz-range-thumb {
+        -webkit-appearance: none;
+        border: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background-color: @colorGrayDark;
+        margin-top: -4px;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus::-moz-range-thumb {
+        background-color: @colorLink;
+    }
+}
+
+
+.dapp-identicon {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    width: @gridWidth * 2;
+    height: @gridWidth * 2;
+    border-radius: 50%;
+    background-size: cover;
+    background-positon: 50% 50%;
+    box-shadow: inset rgba(255,255,255,0.2) 0 2px 2px, inset rgba(0,0,0,0.3) 0 -1px 8px;
+    box-shadow: inset rgba(255, 255, 255, 0.4) 0 4px 8px, inset rgba(0, 0, 0, 0.6) 0 -4px 12px;
+    cursor: help;
+    transition: border-radius 2.5s;
+    transition-delay: 3s;
+
+    &.dapp-tiny {
+        width: floor(@gridWidth / 1.5);
+        height: floor(@gridWidth / 1.5);
+        box-shadow: inset rgba(255, 255, 255, 0.4) 0 1px 1px, inset rgba(0, 0, 0, 0.3) 0 -1px 2px;
+    }
+    &.dapp-small {
+        width: @gridWidth;
+        height: @gridWidth;
+        box-shadow: inset rgba(255, 255, 255, 0.4) 0 2px 2px, inset rgba(0, 0, 0, 0.4) 0 -2px 4px;
+    }
+    &.dapp-medium {
+        width: floor(@gridWidth * 1.5);
+        height: floor(@gridWidth * 1.5);
+        box-shadow: inset rgba(255, 255, 255, 0.4) 0 4px 4px, inset rgba(0, 0, 0, 0.5) 0 -4px 6px;
+    }
+    &.dapp-icon-loading {
+        background-image: url('identicon-load.gif');
+    }
+
+    &:hover {
+      border-radius: 12.5%;
+      transition-delay: 1s;
+    }
+
+    .identicon-pixel {
+      width: 100%;
+      height: 100%;
+      transition: 5s opacity;
+      opacity:0;
+    }
+
+    .identicon-pixel:hover {
+      transition: 0.25s opacity;
+      opacity: 1;
+    }
+}
+
+
+.dapp-modal-buttons {
+    position: relative;
+    .display(flex);
+    .justify-content(flex-end);
+    margin-top: @defaultMargin;
+    // background: @colorWhite;
+
+    button, a, a:visited {
+        .flex(1);
+        margin: 0 auto;
+        max-width: 150px;
+        height: 2*@gridHeight;
+        line-height: 2*@gridHeight;
+        font-family: @fontFamily;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        font-weight: 400;
+
+        &.dapp-primary-button {
+            font-weight: 600;
+        }
+    }
+
+    &.no-margins {
+        margin: 0;
+    }
+}
+
+.dapp-selector,
+.dapp-select-gas-price {
+    display: inline-block;
+    position: relative;
+
+    span:first-of-type {
+        font-size: 1.3em;
+        font-weight: 400;
+        color: @colorTextSecondary;
+
+        span {
+            font-size: 0.6em;
+        }
+    }
+
+    input {
+        width: 100%;
+        margin-bottom: @defaultMargin*2;
+
+        & + span,
+        & + span + span {
+            position: absolute;
+            top: 60px;
+            text-transform: uppercase;
+            font-size: 1em;
+            font-weight: 400;
+        }
+        & + span {
+            position: absolute;
+            left: 0;
+        }
+        & + span + span {
+            text-align: right;
+            right: 0;
+        }
+    }
+
+}
+
+@keyframes shrinkText {
+    from {
+        font-size: 150%;
+        opacity: 0.5;
+    }
+    to {
+        font-size: 100%;
+        opacity: 1;
+    }
+}
+
+@keyframes opacityText {
+    from {
+        color: @colorGrayLight;
+    }
+    to {
+        color: @colorGrayDark;
+    }
+}
+
+.dapp-address-input,
+.dapp-select-account {
+    position: relative;
+
+    input,
+    select {
+        .dapp-input;
+        width: 440px;
+        z-index: 1;
+        margin-top: 0;
+        height: @gridHeight*2;
+        padding-left: @gridWidth*1.3;
+        padding-right: 0;
+        transition-delay: 0s;
+        transition: background-color ease-in-out 1s, color ease-in-out 1s;
+
+        &.dapp-large {
+            font-size: 1.5em;
+            padding-left: @gridWidth*1.5;
+            height: auto;
+            line-height: floor(@gridHeight * 1.6);
+
+            & + .dapp-identicon {
+                top: 6px;
+                width: @gridWidth;
+                height: @gridWidth;
+            }
+            & + .icon-shield {
+                top: 11px;
+            }
+        }
+
+        &.dapp-error {
+            border-color: @colorError;
+        }
+
+    }
+    select {
+        width: auto;
+        -webkit-appearance: none;
+        -ms-appearance: none;
+        -o-appearance: none;
+        appearance: none;
+        border-radius: 0;
+        // padding-top: @gridWidth * 0.2;
+        // padding-bottom: @gridWidth * 0.2;
+        height: floor(@gridHeight * 2);
+        line-height: floor(@gridHeight * 1);
+
+        & + .dapp-identicon {
+            top: 4px;
+        }
+    }
+
+    .dapp-identicon {
+        z-index: 2;
+        position: absolute;
+        top: 4px;
+        left: 8px;
+        width: @gridWidth/1.2;
+        height: @gridWidth/1.2;
+    }
+
+    .no-identicon {
+        z-index: 2;
+        position: absolute;
+        top: 10px;
+        left: 15px;
+        color: @colorLink;
+    }
+
+    .icon-shield {
+        position: absolute;
+        top: 6px;
+        left: 13px;
+        font-size: 1.4em;
+        color: @colorError;
+    }
+
+    .dapp-non-checksum {
+        background-color: lighten(@colorYellow, 30%);
+        cursor: help;
+    }
+
+    .dapp-address-label {
+        position: absolute;
+        bottom: @gridHeight * -1;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 70%;
+        font-weight: 600;
+        text-transform: uppercase;
+        opacity: 0.6;
+    }
+
+
+
+    &.has-name {
+        .ens-name {
+            position: absolute;
+            left: 40px;
+            top: 0px;
+            color: @colorLink;
+            animation-name: shrinkText;
+            animation-duration: 0.1s;
+            animation-timing-function: ease-out;
+        }
+
+        input:not(:focus) {
+            font-size: 66%;
+            padding-top: 17px;
+            color: @colorGrayDark;
+            font-weight: 400;
+            padding-bottom: 5px;
+            animation-name: opacityText;
+            animation-duration: 1s;
+            animation-timing-function: ease-out;
+        }
+
+        input:focus + .ens-name {
+            display: none;
+            color: @colorGrayDark;
+            font-size: 66%;
+        }
+    }
+}
+
+.dapp-output {
+    display: flex;
+    flex: 1;
+    max-width: 100%;
+
+    em {
+        opacity: 0.4;
+    }
+
+    span.address {
+        font-size: 0.9 em;
+        font-weight: 600;
+        position: relative;
+        padding-left: 24px;
+        .dapp-identicon.dapp-tiny {
+            position: absolute;
+            top: -2px;
+            left: 0;
+        }
+    }
+}
+
+.ens-loading {
+  position: absolute;
+  top: 18px;
+  left: 24px;
+
+  .spinner-container {
+    transform: scale(0.5);
+  }
+}
