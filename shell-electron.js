@@ -1,5 +1,6 @@
 const path = require('path')
-const {app, BrowserWindow, Menu, MenuItem} = require('electron')
+const Updater = require('./updater')
+const {app, dialog, BrowserWindow, Menu, MenuItem} = require('electron')
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -63,7 +64,7 @@ class WindowManager {
 }
 const windowManager = new WindowManager()
 
-function createWindow () {
+function createWindow (asarPath) {
   // Create the browser window.
   win = new BrowserWindow({
     width: 1100, 
@@ -74,8 +75,12 @@ function createWindow () {
   })
 
   // and load the index.html of the app.
-  //win.loadFile('index.html')
-  win.loadURL(`http://localhost:${PORT}`)
+  // win.loadFile('index.html')
+  if(asarPath){
+    win.loadFile(path.join(asarPath, 'index.html'))
+  } else {
+    win.loadURL(`http://localhost:${PORT}`)
+  }
 
   // Open the DevTools.
   win.webContents.openDevTools()
@@ -108,9 +113,30 @@ app.on('ready', () => {
   const menu = new Menu()
   menu.append(new MenuItem({label: 'Test', submenu: testPopupSubMenu}))
   Menu.setApplicationMenu(menu)
-  createWindow()
+  
+  // createWindow()
+  start()
+
 })
 
+function start() {
+  Updater.on('app-ready', (asarPath) => {
+    console.log('found asar file', asarPath)
+    createWindow(asarPath)
+  })
+  Updater.start()
+}
+/*
+Updater.on('update-available', () => {})
+Updater.on('update-ready', () => {
+  dialog.showMessageBox({
+    title: 'update available',
+    message: 'will now restart'
+  }, () => {
+    createWindow()
+  })
+})
+*/
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
