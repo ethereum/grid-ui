@@ -15,6 +15,8 @@ fakeAPI(window, {
   ...mist
 })
 
+window.dirname = __dirname
+
 // the idea is to use the fakeAPI only for quick testing and during transition to
 // a Mist namespace:
 window.Mist = {

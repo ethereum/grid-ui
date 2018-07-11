@@ -25,8 +25,9 @@ export default class Webview extends Component {
   }
   render() {
     let checkedUrl = this.checkedUrl(this.props.url)
-    let preloadFile = 'file://' + window.dirname + '/modules/preloader' + '/browser.js'
-    console.log('preload file:', preloadFile)
+    let preloadScriptPath = Helpers.isMist() ? '/modules/preloader/browser.js' : '/preload-webview.js'
+    let preloadFile = `file://${window.dirname}${preloadScriptPath}` 
+    // console.log('preload file:', preloadFile)
     return (
       <div className={"webview " + (this.props.visible ? "visible" : "hidden")}>
         {useIframe
