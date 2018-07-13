@@ -1,6 +1,6 @@
 {
   "name": "mist-ui",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
   "main": "shell-electron.js",
   "homepage": "./",
@@ -12,7 +12,8 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-minimal-pie-chart": "^3.0.1",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "semver": "^5.5.0"
   },
   "scripts": {
     "shell:electron": "cross-env PORT=3080 electron .",

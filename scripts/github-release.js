@@ -131,13 +131,9 @@ async function publishRelease (release) {
     
     console.log('step 1: building the app')
     await runScript('yarn build', [], path.join(__dirname, '..'))
-    console.log('step 2: bundling the app.asar')
-    const asarPath = await packageApp(packageJson)
-    // const asarPath = path.join(basePath, 'build', `react_ui_${packageJson.version}.asar`)
-    console.log('step 3: creating asar checksums')
-    const checksums = await createChecksums(asarPath)
-    console.log('step 4: generating release metadata')
-    const metadata = {
+
+    console.log('step 1b: generating package metadata')
+    let metadata = {
       name: 'Mist React UI',
       version: packageJson.version,
       notes: 'test test',
@@ -146,24 +142,39 @@ async function publishRelease (release) {
         'mist-api': 'v0.0.0',
         'mist-backend': 'v0.0.0'
       },
+      // ...checksums
+    }
+    const metadataPath = path.join(basePath, 'build', 'metadata.json')
+    await fs.writeFile(metadataPath, JSON.stringify(metadata))
+
+    console.log('step 2: bundling the app.asar')
+    const asarPath = await packageApp(packageJson)
+    // const asarPath = path.join(basePath, 'build', `react_ui_${packageJson.version}.asar`)
+    console.log('step 3: creating asar checksums')
+    const checksums = await createChecksums(asarPath)
+    console.log('step 4: generating release metadata')
+    metadata = {
+      ...metadata,
       ...checksums
     }
-    const metastr = JSON.stringify(metadata)
+    // const metastr = JSON.stringify(metadata)
     // sign.update(metastr)
     // const signature = sign.sign(PRIVATEKEY, 'hex')
     // metadata.signature = signature
-    const metadataPath = path.join(basePath, 'metadata.json')
+    // const metadataPath = path.join(basePath, 'build', 'metadata.json')
     await fs.writeFile(metadataPath, JSON.stringify(metadata))
     console.log('step 5: creating draft & uploading assets')
-    return
+    let ts = Math.floor(new Date().getTime() / 1000)
     let response = await github.repos.createRelease({
       ...githubBaseOpts,
-      tag_name: 'test',
+      tag_name: `v${packageJson.version}_${ts}`,
       draft: true
     })
     let draftRelease = response.data
-    console.log('draft', draftRelease)
+    // console.log('draft', draftRelease)
+    console.log('uploading metadata')
     await uploadAsset(metadataPath, 'metadata.json', draftRelease)
+    console.log('uploading asar package')
     await uploadAsset(asarPath, 'react_ui.asar', draftRelease)
     // TODO delete draft if uploads fail
     console.log('step 6: publishing release')
