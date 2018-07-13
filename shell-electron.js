@@ -1,68 +1,11 @@
 const path = require('path')
 const Updater = require('./updater')
-const {app, dialog, BrowserWindow, Menu, MenuItem} = require('electron')
+const {app, BrowserWindow} = require('electron')
 
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let win
-
-const PORT = process.env.PORT || 3000
-console.log('start shell with port: ', PORT)
-
-class WindowManager {
-  showPopup(name) {
-    let options = {
-      width: 800, 
-      height: 400
-    }
-    let windowOptions = {}
-    if (name === 'ClientUpdateAvailable') {
-      windowOptions = {
-        width: 600,
-        height: 340,
-        alwaysOnTop: false,
-        resizable: false,
-        maximizable: false
-      }
-    }
-    if (name === 'ConnectAccount') {
-      windowOptions = {
-        width: 460,
-        height: 520,
-        maximizable: false,
-        minimizable: false,
-        alwaysOnTop: true
-      }
-    }
-    if (name === 'SendTransactionConfirmation') {
-      windowOptions = {
-        width: 580,
-        height: 550,
-        alwaysOnTop: true,
-        enableLargerThanScreen: false,
-        resizable: true
-      }
-    }
-
-    let config = Object.assign(options, windowOptions, {
-      parent: win, // The child window will always show on top of the top window.
-      modal: true,
-      webPreferences: {
-        preload: path.join(__dirname, 'preload.js')
-      }
-    })
-
-    let popup = new BrowserWindow(config)
-    popup.loadURL(`http://localhost:${PORT}/index.html?app=popup&name=${name}`)
-
-    popup.webContents.openDevTools({mode: 'detach'})
-
-
-    popup.setMenu(null)
-  }
-}
-const windowManager = new WindowManager()
+const setupReactUI = require('./mist-integration')
+setupReactUI({
+  mode: 'inject' // || separate
+})
 
 function createWindow (asarPath) {
   // Create the browser window.
@@ -97,28 +40,11 @@ function createWindow (asarPath) {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => {
-
-  let popupMenu = (name) => {return new MenuItem({
-    label: name,
-    click: () => {
-      windowManager.showPopup(name)
-    }
-  })}
-
-  const testPopupSubMenu = new Menu()
-  testPopupSubMenu.append(popupMenu('ClientUpdateAvailable'))
-  testPopupSubMenu.append(popupMenu('ConnectAccount'))
-  testPopupSubMenu.append(popupMenu('SendTransactionConfirmation'))
-  const menu = new Menu()
-  menu.append(new MenuItem({label: 'Test', submenu: testPopupSubMenu}))
-  Menu.setApplicationMenu(menu)
-  
+app.on('ready', () => { 
   // createWindow()
-  start()
-
 })
 
+/*
 function start() {
   Updater.on('app-ready', (asarPath) => {
     console.log('found asar file', asarPath)
@@ -126,7 +52,6 @@ function start() {
   })
   Updater.start()
 }
-/*
 Updater.on('update-available', () => {})
 Updater.on('update-ready', () => {
   dialog.showMessageBox({
