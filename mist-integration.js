@@ -86,14 +86,13 @@ class WindowManager {
 
     popup.webContents.openDevTools({mode: 'detach'})
 
-
     popup.setMenu(null)
   }
 }
 
 const windowManager = new WindowManager()
 
-function createReactMenu(){
+function createReactMenu(version){
   let popupMenu = (name, label) => {return new MenuItem({
     label: label || name,
     click: () => {
@@ -122,9 +121,11 @@ function createReactMenu(){
         Press "OK" to download in background
         `
       }, async () => {
-        let download = await this.downloadUpdate(update)
+        let download = await updater.downloadUpdate(update)
         if (!download.error) {
-          dialog.showMessageBox({title: 'Update downloaded', message: `Press OK to reload for update ${download.version}`})
+          dialog.showMessageBox({title: 'Update downloaded', message: `Press OK to reload for update to version ${download.version}`})
+          let asarPath = download.filePath
+          start(asarPath, download.version)
         } else {
           dialog.showMessageBox({title: 'Download failed', message: `Error ${download.error}`})
         }
@@ -141,30 +142,57 @@ function createReactMenu(){
     submenu: testPopupSubMenu
   }))
   reactSubMenu.append(popupMenu('ReactUiSettings', 'Settings'))
+
   reactSubMenu.append(new MenuItem({
-    label: 'v.0.0.1'
+    label: `v${version}`
   }))
 
   return reactSubMenu
 }
 
-function updateMenuVersion(){
+function updateMenuVersion(version){
 
+  let menu = Menu.getApplicationMenu()
+  if (menu) {
+    let reactSubMenu = createReactMenu(version)
+    let menuNew = new Menu()
+    menu.items.forEach(m => {
+      if(m.label === 'React UI') {
+        return
+      }
+      menuNew.append(m)
+    })
+    menuNew.append(new MenuItem({label: 'React UI', submenu: reactSubMenu}))
+    Menu.setApplicationMenu(menuNew)
+  }
+}
+
+function start(asarPath, version){
+  // update menu to display current version
+
+  updateMenuVersion(version)
+
+  if (win) {
+    // TODO let window manager handle
+    win.loadFile(path.join(asarPath, 'index.html'))
+  } else {
+    windowManager.createWindow(asarPath)
+  }
 }
 
 function run(options) {
-  let reactSubMenu = createReactMenu()
+  let reactSubMenu = createReactMenu('0.0.0')
   // let menu = Menu.getApplicationMenu()
   const menu = new Menu()
   menu.append(new MenuItem({label: 'React UI', submenu: reactSubMenu}))
   Menu.setApplicationMenu(menu)
 
   if (updater.isReady) {
-    windowManager.createWindow(updater.asarPath)
+    start(updater.asarPath)
   } else {
-    updater.once('app-ready', (asarPath) => {
-      console.log('found asar file', asarPath)
-      windowManager.createWindow(asarPath)
+    updater.once('app-ready', (asarPath, version) => {
+      console.log('found asar file', asarPath, version)
+      start(asarPath, version)
     })
   }
 }

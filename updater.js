@@ -212,6 +212,11 @@ let cache = new CacheRepo()
 class Updater extends EventEmitter {
   constructor() {
     super()
+
+    this.settings = {
+      auto_download: false
+    }
+
     if (app.isReady()) {
       this.start()
     } else {
@@ -223,7 +228,7 @@ class Updater extends EventEmitter {
   get isReady() {
     this.currentPath != null
   }
-  get asarPath() {
+  get latest() {
     return this.currentPath
   }
   get userDataPath() {
@@ -234,10 +239,10 @@ class Updater extends EventEmitter {
   }
   async checkUpdate(){
     let latestCached = await cache.getLatest()
-    console.log('cache latest: ', latestCached.version)
     if(latestCached) {
+      console.log('cache latest: ', latestCached.version)
       // notify that ui can be started
-      this.emit('app-ready', latestCached.filePath)
+      this.emit('app-ready', latestCached.filePath, latestCached.version)
     } else {
       latestCached = {
         version: '0.0.0'
@@ -258,7 +263,12 @@ class Updater extends EventEmitter {
     console.log('check integrity of release', release)
     const {filePath, checksums} = release
     // TODO promisify await
-    const data = fso.readFileSync(filePath)
+    let data
+    try {
+      data = fso.readFileSync(filePath)
+    } catch (error) {
+      return false      
+    }
     const checksumsDownload = {
       'sha1': shasum(data, 'sha1'), 
       'sha256': shasum(data, 'sha256'), 
@@ -279,13 +289,19 @@ class Updater extends EventEmitter {
     }
   }
   async start(){
-    await this.checkUpdateAndDownload()
+    if (this.settings.auto_download) {
+      await this.checkUpdateAndDownload()
+    } else {
+      await this.checkUpdate()
+    }
     this.startPollRoutine()
   }
   async downloadUpdate(update){
     const filename = `react_ui_${update.version}.asar`
-    // TODO if not exists create
     const outputdir = this.releaseDataPath
+    if (!fs.existsSync(outputdir)){
+      fs.mkdirSync(outputdir)
+    }
     const dest = path.join(outputdir, filename)
     let pp = 0
     let onProgress = (p) => {
