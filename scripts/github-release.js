@@ -4,6 +4,7 @@ const _fs = require('fs')
 const asar = require('asar')
 const crypto = require('crypto')
 const GitHub = require('@octokit/rest')
+const semver = require('semver')
 require('colors')
 
 require('dotenv').config({
@@ -118,6 +119,14 @@ async function publishRelease (release) {
     })
 }
 
+async function sleep(t){
+  return new Promise((resolve, reject) => {
+    setTimeout(()=>{
+      resolve()
+    }, t)
+  });
+}
+
 (async function release(){
   try {
     // TODO delete previous drafts
@@ -127,15 +136,56 @@ async function publishRelease (release) {
       console.log('release info', releaseInfo.data)
     }
     */
+
+    // check if authenticated and get user info
+    const user = await github.users.get({})
+    const username = user.data.login || ''
+
+    // parse channel info from args or use username as default channel
+    const channel = (process.argv.length > 2 ? process.argv[2] : username).toLowerCase()
+    console.log('publish to channel:', channel)
     const packageJson = require(path.join(basePath, 'package.json'))
+    let version = packageJson.version
     
+    console.log('previous version', version)
+    let writeChanges = false
+    if (semver.valid(version)) {
+      if (channel === 'alpha') {
+        version = semver.inc(version, 'patch')
+      }      
+      else if (channel === 'beta') {
+        version = semver.inc(version, 'minor')
+      }
+      else if (channel === 'release') {
+        version = semver.inc(version, 'major')
+      }
+      else {
+        writeChanges = false
+        version = semver.inc(version, 'prerelease', channel)
+      }
+      console.log('release version', version)
+    }
+
+    console.log('waiting for 5 sec: "ctrl + c" to cancel')
+    await sleep(5000)
+    console.log('continuing release process..')
+
+    if (writeChanges) {
+      console.log('overwriting package.json version')
+      fs.writeFile(path.join(basePath, 'package.json'), JSON.stringify({
+        ...packageJson,
+        version
+      }, null, 2))
+    }
+
     console.log('step 1: building the app')
     await runScript('yarn build', [], path.join(__dirname, '..'))
 
     console.log('step 1b: generating package metadata')
     let metadata = {
       name: 'Mist React UI',
-      version: packageJson.version,
+      version,
+      channel,
       notes: 'test test',
       size: '5MB',
       dependencies: {
@@ -167,7 +217,7 @@ async function publishRelease (release) {
     let ts = Math.floor(new Date().getTime() / 1000)
     let response = await github.repos.createRelease({
       ...githubBaseOpts,
-      tag_name: `v${packageJson.version}_${ts}`,
+      tag_name: `v${packageJson.version}${channel ? '-' : ''}${channel}_${ts}`,
       draft: true
     })
     let draftRelease = response.data
