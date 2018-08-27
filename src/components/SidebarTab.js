@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import iconPath from '../icons/icon2x.png'
+import iconPath from '../icons/browse-icon@2x.png'
 
 import DappIdenticon from './DappIdenticon'
 
@@ -117,7 +117,7 @@ class SidebarTab extends Component {
   }
   render() {
     let tab = this.props.tab
-    let icon = tab.id === 'wallet' ? iconPath : tab.icon
+    let icon = tab.id === 'browser' ? iconPath : tab.icon
 
     let isWallet = tab.id === 'wallet'
     let isBrowser = tab.id === 'browser'
