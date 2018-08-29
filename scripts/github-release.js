@@ -1,4 +1,4 @@
-const { execSync } = require('child_process')
+const execSync = require('child_process').execSync
 const path = require('path')
 const _fs = require('fs')
 const asar = require('asar')
@@ -6,11 +6,11 @@ const crypto = require('crypto')
 const GitHub = require('@octokit/rest')
 const semver = require('semver')
 
-/*
+
 require('dotenv').config({
   path: path.join(__dirname, '..', '.env')
 })
-*/
+
 
 const sign = crypto.createSign('SHA256')
 const fail = '\u2717'.red
