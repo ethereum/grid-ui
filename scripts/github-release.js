@@ -6,11 +6,11 @@ const crypto = require('crypto')
 const GitHub = require('@octokit/rest')
 const semver = require('semver')
 
-
+/*
 require('dotenv').config({
   path: path.join(__dirname, '..', '.env')
 })
-
+*/
 
 const sign = crypto.createSign('SHA256')
 const fail = '\u2717'.red
@@ -27,7 +27,7 @@ const githubBaseOpts = {
 github.authenticate({type: 'token', token: TOKEN})
 
 const fs = {
-  readFile(filePath){
+  readFile: function(filePath){
     return new Promise((resolve, reject) => {
       _fs.readFile(filePath, (err, data) =>{
         if(err) {return reject(err)}
@@ -35,7 +35,7 @@ const fs = {
       })
     })
   },
-  writeFile(filePath, data){
+  writeFile: function(filePath, data){
     return new Promise((resolve, reject) => {
       _fs.writeFile(filePath, data, (err, d) => {
         if(err) {return reject(err)}
