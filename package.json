@@ -4,17 +4,6 @@
   "private": true,
   "main": "shell-electron.js",
   "homepage": "./",
-  "dependencies": {
-    "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
-    "ethereum-blockies": "git+https://github.com/ethereum/blockies.git",
-    "moment": "^2.22.2",
-    "numeral": "^2.0.6",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-minimal-pie-chart": "^3.0.1",
-    "react-scripts": "1.1.4",
-    "semver": "^5.5.0"
-  },
   "scripts": {
     "shell:electron": "cross-env PORT=3080 electron .",
     "shell:tau": "tau .",
@@ -26,6 +15,17 @@
     "build-css": "less-watch-compiler --run-once",
     "watch-css": "npm run build-css && less-watch-compiler"
   },
+  "dependencies": {
+    "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
+    "ethereum-blockies": "git+https://github.com/ethereum/blockies.git",
+    "moment": "^2.22.2",
+    "numeral": "^2.0.6",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-minimal-pie-chart": "^3.0.1",
+    "react-scripts": "1.1.4",
+    "semver": "^5.5.0"
+  },
   "devDependencies": {
     "@octokit/rest": "^15.9.4",
     "asar": "^0.14.3",
@@ -34,6 +34,5 @@
     "dotenv": "^6.0.0",
     "electron": "^2.0.2",
     "less-watch-compiler": "^1.11.3",
-    "tau-prebuilt": "^0.1.1"
   }
 }
