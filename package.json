@@ -33,6 +33,6 @@
     "cross-env": "^5.2.0",
     "dotenv": "^6.0.0",
     "electron": "^2.0.2",
-    "less-watch-compiler": "^1.11.3",
+    "less-watch-compiler": "^1.11.3"
   }
 }
