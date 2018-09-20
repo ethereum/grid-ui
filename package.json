@@ -7,8 +7,8 @@
   "scripts": {
     "shell:electron": "cross-env PORT=3080 electron .",
     "shell:tau": "tau .",
-    "start-no-conflict": "cross-env PORT=3080 react-scripts start",
-    "start": "cross-env react-scripts start",
+    "start-conflict": "cross-env react-scripts start",
+    "start": "cross-env PORT=3080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
