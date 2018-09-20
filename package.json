@@ -16,6 +16,7 @@
     "watch-css": "npm run build-css && less-watch-compiler"
   },
   "dependencies": {
+    "babel-register": "^6.26.0",
     "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
     "ethereum-blockies": "git+https://github.com/ethereum/blockies.git",
     "moment": "^2.22.2",

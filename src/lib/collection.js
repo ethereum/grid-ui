@@ -14,14 +14,20 @@ export default class CollectionLight {
     }
     return arr
   }
+  onceSynced(){
+    return Promise.resolve()
+  }
   remove(){
     this.items = {}
   }
   insert(value){
-
+    this.items[value._id] = value
   }
   upsert(key, value){
     this.items[key] = value
+  }
+  findOne(){
+    return null
   }
   synchronize(){
     let ipc = window.ipc

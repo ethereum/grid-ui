@@ -1,13 +1,18 @@
 const path = require('path')
-const Updater = require('./updater')
 const {app, BrowserWindow} = require('electron')
 
+/*
+//const Updater = require('./updater')
 const setupReactUI = require('./mist-integration')
 setupReactUI({
   mode: 'inject' // || separate
 })
+*/
 
 function createWindow (asarPath) {
+
+  const PORT = 3000
+
   // Create the browser window.
   win = new BrowserWindow({
     width: 1100, 
@@ -41,7 +46,7 @@ function createWindow (asarPath) {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => { 
-  // createWindow()
+  createWindow()
 })
 
 /*

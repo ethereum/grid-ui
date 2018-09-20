@@ -51,7 +51,6 @@ class SidebarTab extends Component {
     })
   }
   handleMouseEnter() {
-    console.log('mouse enter on sidebar tab')
     let el = ReactDOM.findDOMNode(this)   
     this.setState({
       submenucontainer: {

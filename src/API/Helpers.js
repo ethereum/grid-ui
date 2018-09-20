@@ -1,6 +1,5 @@
 // import LocalStore from './LocalStore'
-
-class Helpers {
+export class Helpers {
   /**
   Get the webview from either and ID, or the string "browser"
   @method getWebview
@@ -18,11 +17,11 @@ class Helpers {
     return null
   }
 
-  isMist() {
+  static isMist() {
     return window.mistMode === 'mist'
   }
 
-  isElectron(){
+  static isElectron(){
     // Renderer process
     if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
       return true
@@ -39,5 +38,8 @@ class Helpers {
   }
 }
 
-// export default new Helpers()
-module.exports = new Helpers()
+export const is = {
+  electron: Helpers.isElectron,
+  mist: Helpers.isMist
+}
+

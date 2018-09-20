@@ -1,7 +1,10 @@
 import React, { Component, Fragment } from 'react'
 // import './App.css';
 import './styles/styles.css'
+
+// fakeAPI needs to be initialized before any other component is loaded
 import './fakeAPI.js'
+
 import Webviews from './components/Webviews'
 import Sidebar from './components/Sidebar'
 import Browserbar from './components/Browserbar'
@@ -15,8 +18,6 @@ class App extends Component {
     this.handleIconAvailable = this.handleIconAvailable.bind(this)
     this.handleTitleAvailable = this.handleTitleAvailable.bind(this)
 
-    let dirname = 'D:/Projects/MistTau/mist-ui-react'
-
     /*only needed when dbSync.js is used to simulate meteor env
     const Tracker = {
       afterFlush(callback){callback()}
@@ -27,11 +28,12 @@ class App extends Component {
 
     let {Tabs} = Collections
     let tabs = Tabs.array.sort(el => el.position)
+    let selectedTab = tabs[0] || {
+      url: 'http://www.github.com'
+    }
 
     this.state = {
-      selectedTab: {
-        url: 'http://www.ethereum.org'
-      },
+      selectedTab,
       tabs: tabs
     }
   }
@@ -72,6 +74,16 @@ class App extends Component {
   }
   render() {
 
+    /*
+    
+      dappAccounts: function() {
+    if (this.permissions) {
+      return EthAccounts.find({
+        address: { $in: this.permissions.accounts || [] }
+      });
+    }
+  },
+    */
     let dappAccountsTest = [
       {
         address: '0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359'

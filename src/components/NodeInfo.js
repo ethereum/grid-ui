@@ -23,7 +23,7 @@ class NodeInfo extends Component {
     // least once per second. The `tick` function ensures that.
     this.interval = setInterval(() => {
       this.tick()
-    }, 50)
+    }, 500)
   }
 
   componentWillUnmount() {
