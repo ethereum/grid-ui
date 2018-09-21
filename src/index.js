@@ -1,9 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
+import { Provider } from "react-redux";
 
 import App from './App'
 import Popup from './Popup'
+
+import store from "./API/ReduxStore";
 
 // see https://github.com/facebook/create-react-app/issues/1084#issuecomment-273272872
 // Copied from http:jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
@@ -18,18 +21,18 @@ function getUrlVars() {
   return vars;
 }
 
-var urlParams = getUrlVars()
+const root = document.getElementById('root')
 
-function renderPopup(name) {
-  ReactDOM.render(<Popup name={name}/>, document.getElementById('root'))
-}
+// retrieve popup name
+var urlParams = getUrlVars()
+let popupName = urlParams["name"]
 
 switch (urlParams["app"]) {
   case "popup":
-    renderPopup(urlParams["name"])
+    ReactDOM.render(<Provider store={store}><Popup name={popupName} /></Provider>, root)
     break;
   case undefined:
   default:
-    ReactDOM.render(<App />, document.getElementById('root'))
+    ReactDOM.render(<Provider store={store}><App /></Provider>,root)
     break;
 }
