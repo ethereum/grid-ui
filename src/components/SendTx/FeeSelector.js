@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import MDSpinner from 'react-md-spinner';
-
+// start: make compatible with react-ui
+import {web3, i18n, BigNumber} from '../../API'
+// end
 class FeeSelector extends Component {
   constructor(props) {
     super(props);

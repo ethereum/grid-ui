@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import DappIdenticon from '../DappIdenticon';
-
+// start: make compatible with react-ui
+import {web3, i18n, EthTools} from '../../API'
+// end
 class TxParties extends Component {
   totalAmount = () => {
     var amount = EthTools.formatBalance(

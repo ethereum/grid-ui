@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-
+// start: make compatible with react-ui
+import {i18n} from '../../API'
+// end
 class Footer extends Component {
   constructor(props) {
     super(props);

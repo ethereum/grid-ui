@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import DappIdenticon from '../DappIdenticon';
 import ContextDescription from './ContextDescription';
 
+// start: make compatible with react-ui
+import {web3, i18n, EthTools} from '../../API'
+// end
+
 class ExecutionContext extends Component {
   constructor(props) {
     super(props);

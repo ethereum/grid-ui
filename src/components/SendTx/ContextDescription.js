@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+// start: make compatible with react-ui
+import {web3, i18n, EthTools, BigNumber} from '../../API'
+// end
 
 class ContextDescription extends Component {
   formattedBalance() {
