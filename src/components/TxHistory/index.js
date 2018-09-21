@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import DappIdenticon from '../DappIdenticon';
 import { updateTx, getPriceConversion } from '../../actions';
 import TxRow from './TxRow';
+import {web3, i18n} from '../../API'
+import _ from 'lodash'
 
 class TxHistory extends Component {
   constructor(props) {

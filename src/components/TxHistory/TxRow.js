@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import DappIdenticon from '../DappIdenticon';
+import {web3, i18n, BigNumber} from '../../API'
+import _ from 'lodash'
 
 class TxRow extends Component {
   constructor(props) {
@@ -10,6 +12,8 @@ class TxRow extends Component {
   }
 
   valueToEtherAmount = value => {
+    const { tx } = this.props;
+
     const theValue = web3.utils.isHex(value)
       ? new BigNumber(web3.utils.hexToNumberString(value))
       : new BigNumber(tx.value);

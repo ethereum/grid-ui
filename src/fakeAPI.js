@@ -101,7 +101,8 @@ function init(window, lang){
     remote: {
       timestamp: Date.now()
     },
-    newTx: tx,
+    newTx: tx, //required by SendTx popup
+    txs: [tx], //required by TxHistory popup
     nodes: {
       network: 'Main'
     },

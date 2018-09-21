@@ -7,7 +7,7 @@ import UpdateAvailable from './popups/ClientUpdateAvailable'
 import ConnectAccount from './popups/ConnectAccount'
 import SendTransactionConfirmation from './popups/SendTransactionConfirmation'
 import SendTx from './components/SendTx'
-// import SendTx from './components/SendTx'
+import TxHistory from './components/TxHistory'
 
 function PopupBase({ name }) {
   console.log('load content for popup: ', name)
@@ -22,7 +22,7 @@ function PopupBase({ name }) {
     case 'SendTx':
       return <SendTx />
     case 'TxHistory':
-      return <SendTx />
+      return <TxHistory />
     default:
       return <UpdateAvailable />
   }     
