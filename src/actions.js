@@ -1,3 +1,6 @@
+import {web3, i18n, ipc, Mist} from '../../API'
+import _ from 'lodash'
+
 export function setWindowSize(height) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:SET_WINDOW_SIZE:START', payload: { height } });
@@ -104,7 +107,7 @@ export function getPriceConversion() {
     dispatch({ type: '[CLIENT]:GET_PRICE_CONVERSION:START' });
 
     const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${
-      mist.version
+      Mist.version
     }`;
 
     fetch(url).then(async (response, error) => {
@@ -249,7 +252,7 @@ export function confirmTx(data) {
         } else if (error.message.includes('multiple keys match address')) {
           displayNotification('multipleKeysMatchAddress', 10);
         } else {
-          GlobalNotification.warning({
+          Mist.notifications.warn({
             content: error.message || error,
             duration: 5
           });
@@ -277,7 +280,7 @@ export function confirmTx(data) {
         ) {
           displayNotification('insufficientFundsForGas', 5);
         } else {
-          GlobalNotification.warning({
+          Mist.notifications.warn({
             content: error.message || error,
             duration: 5
           });
@@ -335,8 +338,8 @@ export function updateTx(tx) {
 }
 
 function displayNotification(errorType, duration) {
-  GlobalNotification.warning({
-    content: TAPi18n.__(`mist.sendTx.errors.${errorType}`),
+  Mist.notifications.warn({
+    content: i18n.__(`mist.sendTx.errors.${errorType}`),
     duration
   });
 }
