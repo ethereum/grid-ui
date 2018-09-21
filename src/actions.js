@@ -1,4 +1,4 @@
-import {web3, i18n, ipc, Mist} from '../../API'
+import {web3, i18n, ipc, Mist} from './API'
 import _ from 'lodash'
 
 export function setWindowSize(height) {
