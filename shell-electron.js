@@ -1,13 +1,11 @@
 const path = require('path')
 const {app, BrowserWindow} = require('electron')
 
-/*
 //const Updater = require('./updater')
 const setupReactUI = require('./mist-integration')
 setupReactUI({
   mode: 'inject' // || separate
 })
-*/
 
 function createWindow (asarPath) {
 
