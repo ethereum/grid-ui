@@ -12,7 +12,7 @@ class Provider extends Component {
     // set props on children: https://stackoverflow.com/a/32371612
     const { children } = this.props
     const childrenWithProps = React.Children.map(children, child => React.cloneElement(child, { 
-      ...store
+      ...store.getState()
     }))
     return (
       <div>
