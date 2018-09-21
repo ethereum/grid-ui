@@ -4,7 +4,8 @@ import _ from 'lodash'
 export function setWindowSize(height) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:SET_WINDOW_SIZE:START', payload: { height } });
-    ipc.send('backendAction_setWindowSize', 580, height + 20);
+    // TODO would it make sense to listen for state changes on the main process' store instead of issuing separate ipc?
+    Mist.setWindowSize(580, height + 20)
   };
 }
 
@@ -106,9 +107,7 @@ export function getPriceConversion() {
   return dispatch => {
     dispatch({ type: '[CLIENT]:GET_PRICE_CONVERSION:START' });
 
-    const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${
-      Mist.version
-    }`;
+    const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${Mist.version}`;
 
     fetch(url).then(async (response, error) => {
       if (error) {
