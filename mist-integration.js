@@ -72,6 +72,25 @@ class WindowManager {
         resizable: true
       }
     }
+    if (name === 'SendTx') {
+      windowOptions = {
+        width: 580,
+        height: 550,
+        alwaysOnTop: true,
+        enableLargerThanScreen: false,
+        resizable: true
+      }
+    }
+    if (name === 'TxHistory') {
+      windowOptions = {
+        width: 580,
+        height: 465,
+        alwaysOnTop: true,
+        enableLargerThanScreen: false,
+        resizable: true
+      }
+    }
+    
 
     let config = Object.assign(options, windowOptions, {
       parent: win, // The child window will always show on top of the top window.
@@ -104,6 +123,8 @@ function createReactMenu(version){
   testPopupSubMenu.append(popupMenu('ClientUpdateAvailable'))
   testPopupSubMenu.append(popupMenu('ConnectAccount'))
   testPopupSubMenu.append(popupMenu('SendTransactionConfirmation'))
+  testPopupSubMenu.append(popupMenu('SendTx'))
+  testPopupSubMenu.append(popupMenu('TxHistory'))
 
   let reactSubMenu = new Menu()
   reactSubMenu.append(new MenuItem({
@@ -187,6 +208,7 @@ function run(options) {
   menu.append(new MenuItem({label: 'React UI', submenu: reactSubMenu}))
   Menu.setApplicationMenu(menu)
 
+  /*
   if (updater.isReady) {
     start(updater.asarPath)
   } else {
@@ -195,6 +217,7 @@ function run(options) {
       start(asarPath, version)
     })
   }
+  */
 }
 
 module.exports = run
