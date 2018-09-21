@@ -74,13 +74,17 @@ function init(window, lang){
   let dirname = 'D:/Projects/MistTau/mist-ui-react'
 
   /* mock data (not the correct data model representation)*/
-  _Tabs.insert({ _id: 'browser',  url: 'https://www.stateofthedapps.com', redirect: 'https://www.stateofthedapps.com', position: 0 });
-  _Tabs.insert({ _id: 'wallet',  url: `file:///${dirname}/wallet.asar/index.html`, redirect: `file:///${dirname}/wallet.asar/index.html`, position: 1, permissions: {
-    admin: true
-  }});
-  _Tabs.insert({ _id: '2',  url: 'http://www.ethereum.org', redirect: 'http://www.ethereum.org', position: 2 });
-  _Tabs.insert({ _id: '3',  url: 'http://www.github.com/philipplgh/mist-react-ui', redirect: 'http://www.github.com/philipplgh/mist-react-ui', position: 3 });
-  _Tabs.insert({ _id: '4',  url: 'http://www.example.com', redirect: 'http://www.example.com', position: 4 });
+  let mockTabs = [
+    { _id: 'browser',  url: 'https://www.stateofthedapps.com', redirect: 'https://www.stateofthedapps.com', position: 0 },
+    { _id: 'wallet',  url: `file:///${dirname}/wallet.asar/index.html`, redirect: `file:///${dirname}/wallet.asar/index.html`, position: 1, permissions: {
+      admin: true
+    }},
+    { _id: '2',  url: 'http://www.ethereum.org', redirect: 'http://www.ethereum.org', position: 2 },
+    { _id: '3',  url: 'https://github.com/ethereum/mist-ui-react', redirect: 'http://www.github.com/philipplgh/mist-react-ui', position: 3 },
+    { _id: '4',  url: 'http://www.example.com', redirect: 'http://www.example.com', position: 4 }
+  ].map(tab => {tab.id = tab._id; return tab})
+ 
+  mockTabs.forEach(tab => _Tabs.insert(tab))
   
   const _History = new CollectionLight('history')
 

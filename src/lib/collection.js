@@ -1,3 +1,5 @@
+import ipc from '../API/Ipc'
+
 // replicate subset of Mongo.Collection functionality to get rid of mongo dependency
 // let Tabs = new Mongo.Collection('tabs', { connection: null });
 // see dbSync.js
@@ -30,7 +32,6 @@ export default class CollectionLight {
     return null
   }
   synchronize(){
-    let ipc = window.ipc
     if (typeof window.dbSync !== 'undefined') {
       this.remove({})
       //FIXME sync IPC
