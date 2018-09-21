@@ -18,8 +18,16 @@ function init(window, lang){
   // load real i18n translations into the fake for a more
   // authentic UI
   // FIXME use when started in electron-shell
-  // let app = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'app.en.i18n.json')))
-  // let mist = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'mist.en.i18n.json')))
+  let fs = window.__fs
+  let path = window.__path
+  let __dirname = window.__dirname
+  let app = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'app.en.i18n.json')))
+  let _mist = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'mist.en.i18n.json')))
+  console.log('mist', _mist)
+  lang = {
+    ...app,
+    ..._mist
+  }
 
   const i18n = {
     t: (str) => {
@@ -33,9 +41,42 @@ function init(window, lang){
       return cur
     }
   }
-  
-  let web3 = window.web3
+  var Web3 = require('web3');
+  var web3 = new Web3(new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545"));
+  window.web3 = web3
+
+  //let accounts = await web3.eth.accounts()
+  let accounts = [
+    '0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D',
+    '0xdf4B9dA0aef26bEE9d55Db34480C722906DB4b02'
+  ]
+  console.log('web3 accounts: ', accounts)
+
+  let txCount = 0//await web3.eth.getTransactionCount(accounts[0])
+  let tx = {
+    "nonce": txCount,
+    "from": accounts[0],
+    "to": accounts[1],
+    "gas": "0x76c0", // 30400
+    "data": '',
+    //"gasPrice": "0x9184e72a000", // 10000000000000
+    "value": '0x'+web3.utils.toWei('1.0', 'ether')
+  }
+
+  //let web3 = window.web3
+  /*
   const _web3 = {
+    utils: {
+      toBN: () => {
+        return 100
+      },
+      isHex: () => {
+        return true
+      },
+      hexToNumberString: (hex) => {
+        return ''+hex
+      }
+    },
     eth: {
       net: {
         getPeerCount: () => {
@@ -52,12 +93,20 @@ function init(window, lang){
       }
     }
   }
+  */
 
   const store = {
     active: '', 
     network: '',
     remote: {
       timestamp: Date.now()
+    },
+    newTx: tx,
+    nodes: {
+      network: 'Main'
+    },
+    settings: {
+      etherPriceUSD: '16'
     },
     local: {
       sync: {
@@ -97,7 +146,7 @@ function init(window, lang){
 
   // attach fake objects to window and make them immutable
   seal(window, 'i18n', i18n)
-  seal(window, 'web3', _web3)
+  // seal(window, 'web3', _web3)
   seal(window, 'store', store)
   seal(window, 'Tabs', _Tabs)
   seal(window, 'History', _History)
