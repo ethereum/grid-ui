@@ -1,5 +1,8 @@
+// https://github.com/ethereum/meteor-package-tools/blob/master/ethtools.js
 export class EthTools {
-
+  static formatBalance(){
+    return '17.4'
+  }
 }
 export class BigNumber {
   
