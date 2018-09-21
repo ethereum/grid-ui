@@ -11,6 +11,20 @@ export class Helpers {
     // return $('webview[data-id="' + id + '"]')[0]
   }
 
+/*
+see actions.js
+async function fetchJson(FETCH_ACTION, url){
+  dispatch({ type: `${FETCH_ACTION}:START` });
+  try {
+    let response = await fetch(url)
+    let json = await response.json();
+    return json
+  } catch (error) {
+    dispatch({ type: `${FETCH_ACTION}:FAILURE`, error });
+  }
+}
+*/
+
   getCurrentWebview(){
     //var webview = this.getWebview(LocalStore.get('selectedTab'));
     //return webview

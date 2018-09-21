@@ -16,10 +16,8 @@ export default class EthAccountsCollection extends CollectionLight {
     this._addAccounts()
   }
   async _addAccounts(){
-    var _accounts = web3.eth.accounts;
-    console.log('init accounts', _accounts)
     // UPDATE normal accounts on start
-    //let accounts = await web3.eth.getAccounts()
-    //console.log('accounts:', accounts)
+    let accounts = await web3.eth.getAccounts()
+    console.log('accounts:', accounts)
   }
 }

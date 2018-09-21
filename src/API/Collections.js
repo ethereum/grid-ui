@@ -53,5 +53,6 @@ initTabs()
 export default {
   Tabs: window.Tabs || _Tabs,
   LastVisitedPages,
-  History: window.History || _History
+  History: window.History || _History,
+  EthAccounts
 }

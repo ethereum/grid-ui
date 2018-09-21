@@ -1,11 +1,9 @@
+export {default as BigNumber} from 'bignumber.js'
 // https://github.com/ethereum/meteor-package-tools/blob/master/ethtools.js
 export class EthTools {
-  static formatBalance(){
-    return '17.4'
+  static formatBalance(input){
+    return '1' //+input
   }
-}
-export class BigNumber {
-  
 }
 export {default as ipc} from './Ipc'
 export {Helpers} from './Helpers'
