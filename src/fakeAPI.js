@@ -1,5 +1,6 @@
 import {is} from './API/Helpers'
 import CollectionLight from './lib/collection'
+import store from './API/ReduxStore'
 
 // avoid that the mock objects are overwritten
 function seal (target, propName, obj) {
@@ -14,21 +15,6 @@ function seal (target, propName, obj) {
 
 function init(window, lang){
 
-
-  // load real i18n translations into the fake for a more
-  // authentic UI
-  // FIXME use when started in electron-shell
-  let fs = window.__fs
-  let path = window.__path
-  let __dirname = window.__dirname
-  let app = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'app.en.i18n.json')))
-  let _mist = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'mist.en.i18n.json')))
-  console.log('mist', _mist)
-  lang = {
-    ...app,
-    ..._mist
-  }
-
   const i18n = {
     t: (str) => {
       if (!lang) { return str}
@@ -41,9 +27,18 @@ function init(window, lang){
       return cur
     }
   }
+
+
   var Web3 = require('web3');
-  var web3 = new Web3(new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545"));
-  window.web3 = web3
+  let Ganache = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545")
+  var web3Local = new Web3(Ganache);
+  const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws/mist'))
+
+  window.web3 = web3Local
+
+  web3Local.eth.getAccounts().then(accounts => {
+    console.log('received accounts from ganache', accounts)
+  })
 
   //let accounts = await web3.eth.accounts()
   let accounts = [
@@ -60,7 +55,7 @@ function init(window, lang){
     "gas": "0x76c0", // 30400
     "data": '',
     //"gasPrice": "0x9184e72a000", // 10000000000000
-    "value": '0x'+web3.utils.toWei('1.0', 'ether')
+    "value": web3Local.utils.toWei('1.0', 'ether')
   }
 
   //let web3 = window.web3
@@ -95,28 +90,32 @@ function init(window, lang){
   }
   */
 
-  const store = {
-    active: '', 
-    network: '',
-    remote: {
-      timestamp: Date.now()
-    },
-    newTx: tx, //required by SendTx popup
-    txs: [tx], //required by TxHistory popup
-    nodes: {
-      network: 'Main'
-    },
-    settings: {
-      etherPriceUSD: '16'
-    },
-    local: {
-      sync: {
-        highestBlock: 1000, 
-        currentBlock: 900,
-        startingBlock: 0
-      }
+  const subscription = web3Remote.eth.subscribe('newBlockHeaders', (error, blockHeader) => {
+    if (error) return console.error(error);
+    //console.log('received blockheader from remote: ', blockHeader);
+    store.dispatch({
+      type: 'SET_REMOTE_BLOCK',
+      payload: blockHeader
+    })
+  }).on('data', (blockHeader) => {
+    // console.log('data: ', blockHeader);
+  });
+
+  /*http provider doesn't support subscriptions so we poll for updates here*/
+  setInterval(async () => {
+    try {
+      // ganache will return 0 as peerCount
+      let peerCount = await web3Local.eth.net.getPeerCount()
+      //reduxStore.dispatch(setLocalPeerCount(peerCount));
+      store.dispatch({
+        type: 'SET_LOCAL_PEERCOUNT',
+        payload: peerCount
+      })
+    } catch (error) {
+      // TODO handle error
     }
-  }
+  }, 3000)
+
 
   // see collections.js in Mist
   // const _Tabs = new Tabs([{ _id: "browser", url: "https://ethereum.org", redirect: "https://ethereum.org", position: 0 }])
@@ -148,7 +147,7 @@ function init(window, lang){
   // attach fake objects to window and make them immutable
   seal(window, 'i18n', i18n)
   // seal(window, 'web3', _web3)
-  seal(window, 'store', store)
+  // seal(window, 'store', store)
   seal(window, 'Tabs', _Tabs)
   seal(window, 'History', _History)
   seal(window, 'LocalStore', LocalStore)
@@ -157,9 +156,17 @@ function init(window, lang){
 
 function simulatePreload(){
   console.log('mock api is initialized')
+  // load real i18n translations into the fake for a more
+  // authentic UI
+  // FIXME use when started in electron-shell
+  let fs = window.__fs
+  let path = window.__path
+  let __dirname = window.__dirname
+  let app = fs === undefined ? {} : JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'app.en.i18n.json')))
+  let mist = fs === undefined ? {} : JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'mist.en.i18n.json')))
   init(window, {
-    // ...app,
-    // ...mist
+    ...app,
+    ...mist
   })
 }
 

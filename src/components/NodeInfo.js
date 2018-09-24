@@ -1,33 +1,18 @@
 import React, { Component } from 'react'
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import moment from 'moment'
 import PieChart from 'react-minimal-pie-chart'
 import numeral from 'numeral'
+import {i18n} from '../API'
 
-// turn required globals into explicit dependencies
-import {i18n, web3} from '../API'
 class NodeInfo extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       showSubmenu: false,
-      peerCount: 0,
-      ticks: 0,
       lightClasses: ''
     };
-  }
-
-  componentDidMount() {
-    // NOTE: this goal of this component is to give status updates at
-    // least once per second. The `tick` function ensures that.
-    this.interval = setInterval(() => {
-      this.tick()
-    }, 500)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -53,15 +38,7 @@ class NodeInfo extends Component {
     }
   }
 
-  tick() {
-    if (this.state.ticks % 20 == 0) {
-      // only do it every second
-      web3.eth.net.getPeerCount().then(peerCount => {
-        this.setState({ peerCount });
-      });
-    }
-    this.setState({ ticks: this.state.ticks + 1 });
-  }
+  componentWillUnmount() { }
 
   renderRemoteStats() {
     // Hide remote stats if local node is synced
@@ -69,7 +46,7 @@ class NodeInfo extends Component {
       return null;
     }
 
-    const formattedBlockNumber = numeral(this.props.remote.blockNumber).format('0,0')
+    const formattedBlockNumber = numeral(this.props.remote.blockNumber).format('0,0');
     const remoteTimestamp = moment.unix(this.props.remote.timestamp);
     const diff = moment().diff(remoteTimestamp, 'seconds');
 
@@ -130,11 +107,13 @@ class NodeInfo extends Component {
   }
 
   localStatsStartSync() {
+    const { connectedPeers } = this.props.local.sync;
+
     return (
       <div>
         <div className="peer-count row-icon">
           <i className="icon icon-users" />
-          {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
+          {` ${connectedPeers} ${i18n.t('mist.nodeInfo.peers')}`}
         </div>
         <div className="sync-starting row-icon">
           <i className="icon icon-energy" />
@@ -145,17 +124,15 @@ class NodeInfo extends Component {
   }
 
   localStatsSyncProgress() {
-    const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
+    const { highestBlock, currentBlock, startingBlock, connectedPeers } = this.props.local.sync;
 
-    let displayBlock =
-      this.props.local.sync.displayBlock || this.props.local.sync.startingBlock;
+    let displayBlock = this.props.local.sync.displayBlock || this.props.local.sync.startingBlock;
     displayBlock += (currentBlock - displayBlock) / 20;
     let formattedDisplayBlock = numeral(displayBlock).format('0,0');
 
     this.props.local.sync.displayBlock = displayBlock;
 
-    const progress =
-      ((displayBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
+    const progress = ((displayBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
 
     return (
       <div>
@@ -165,7 +142,7 @@ class NodeInfo extends Component {
         </div>
         <div className="peer-count row-icon">
           <i className="icon icon-users" />
-          {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
+          {` ${connectedPeers} ${i18n.t('mist.nodeInfo.peers')}`}
         </div>
         <div className="sync-progress row-icon">
           <i className="icon icon-cloud-download" />
@@ -177,6 +154,8 @@ class NodeInfo extends Component {
 
   localStatsSynced() {
     const { blockNumber, timestamp, syncMode } = this.props.local;
+    const { connectedPeers } = this.props.local.sync;
+    
     const formattedBlockNumber = numeral(blockNumber).format('0,0');
 
     const timeSince = moment(timestamp, 'X');
@@ -193,7 +172,7 @@ class NodeInfo extends Component {
         {this.props.network !== 'private' && (
           <div className="peer-count row-icon">
             <i className="icon icon-users" />
-            {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
+            {` ${connectedPeers} ${i18n.t('mist.nodeInfo.peers')}`}
           </div>
         )}
         <div
@@ -208,7 +187,7 @@ class NodeInfo extends Component {
 
   renderLocalStats() {
     const { syncMode } = this.props.local;
-    const { currentBlock } = this.props.local.sync;
+    const { currentBlock, connectedPeers } = this.props.local.sync;
 
     let syncText;
     if (syncMode) {
@@ -231,7 +210,7 @@ class NodeInfo extends Component {
       // Case: not yet synced up
       if (currentBlock === 0) {
         // Case: no results from syncing
-        if (this.state.peerCount === 0) {
+        if (connectedPeers === 0) {
           // Case: no peers yet
           localStats = this.localStatsFindingPeers();
         } else {
@@ -343,9 +322,11 @@ function mapStateToProps(state) {
     active: state.nodes.active,
     network: state.nodes.network,
     remote: state.nodes.remote,
-    local: state.nodes.local
+    local: state.nodes.local,
+    // re-render when connectedPeers or remoteBlockNumber changes
+    connectedPeers: state.nodes.local.sync.connectedPeers, 
+    remoteBlockNumber: state.nodes.remote.blockNumber
   };
 }
 
-//export default connect(mapStateToProps)(NodeInfo);
-export default NodeInfo
+export default connect(mapStateToProps)(NodeInfo);
