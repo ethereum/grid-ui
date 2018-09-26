@@ -41,22 +41,7 @@ function init(window, lang){
   })
 
   //let accounts = await web3.eth.accounts()
-  let accounts = [
-    '0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D',
-    '0xdf4B9dA0aef26bEE9d55Db34480C722906DB4b02'
-  ]
-  console.log('web3 accounts: ', accounts)
 
-  let txCount = 0//await web3.eth.getTransactionCount(accounts[0])
-  let tx = {
-    "nonce": txCount,
-    "from": accounts[0],
-    "to": accounts[1],
-    "gas": "0x76c0", // 30400
-    "data": '',
-    //"gasPrice": "0x9184e72a000", // 10000000000000
-    "value": web3Local.utils.toWei('1.0', 'ether')
-  }
 
   //let web3 = window.web3
   /*

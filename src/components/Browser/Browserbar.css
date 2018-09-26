@@ -1,0 +1,35 @@
+.browser-bar {
+  top: 0px;
+  left: 54px;
+  height:40px;
+  box-shadow: 0 0.125rem 0.5rem rgba(34,34,34,.125)
+}
+
+webview {
+  margin-top: 0px;
+  top: 40px;
+}
+
+.browser-bar .app-bar > form .url-input {
+  background: rgba(240, 240, 240, 0.5);
+}
+
+.browser-bar .app-bar > form .url-input-2 input {
+  margin-top: -5px;
+  border-radius: 15px;
+  background-color: #ececec;
+  border-bottom: none;
+  color: black;
+  display: inline-block;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-clip: padding-box;
+  border-bottom: none;
+  font-size: .8em;
+  font-weight: 100;
+}
+
+.browser-bar .app-bar > form {
+  padding-right: 10px;
+}

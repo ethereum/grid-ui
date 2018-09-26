@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import Webview from './Webview'
-import Spinner from './Spinner'
+import Spinner from '../Spinner'
 
 // globals
 const i18n = window.i18n

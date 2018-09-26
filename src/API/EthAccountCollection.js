@@ -18,6 +18,11 @@ export default class EthAccountsCollection extends CollectionLight {
   async _addAccounts(){
     // UPDATE normal accounts on start
     let accounts = await web3.eth.getAccounts()
+    this.upsert('0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D', '0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D')
+    this.upsert('0xdf4B9dA0aef26bEE9d55Db34480C722906DB4b02', '0xdf4B9dA0aef26bEE9d55Db34480C722906DB4b02')
+    this.upsert('0x0093771A9b21fd15B411D2dA3119387BDe3EbAb8', '0x0093771A9b21fd15B411D2dA3119387BDe3EbAb8')
+
+    
     console.log('accounts:', accounts)
   }
 }

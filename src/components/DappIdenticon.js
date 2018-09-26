@@ -59,12 +59,12 @@ export default class DappIdenticon extends Component {
     if(this.props.link){
       return this.renderLink()
     }
-    let classN = 'dapp-tiny'
+    let classN = this.props.class || 'dapp-identicon dapp-tiny'
     let style = {
       'backgroundImage': `url('${this.state.imageData}')` 
     }
     return (
-    <span className={'dapp-identicon' + ' ' + classN} title={i18n.t('elements.identiconHelper')} style={style}>
+    <span className={classN} title={i18n.t('elements.identiconHelper')} style={style}>
       <img src={this.state.imageData} className='identicon-pixel' />
     </span>
     )

@@ -1,9 +1,9 @@
 const path = require('path')
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
 
 //const Updater = require('./updater')
-const setupReactUI = require('./mist-integration')
-setupReactUI({
+const {setup, showPopup} = require('./mist-integration')
+setup({
   mode: 'inject' // || separate
 })
 
@@ -45,6 +45,12 @@ function createWindow (asarPath) {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => { 
   createWindow()
+
+  ipcMain.on('backendAction_sendTx', () => {
+    showPopup()
+  })
+
+
 })
 
 /*

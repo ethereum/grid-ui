@@ -1,0 +1,25 @@
+.card {
+  display: grid;
+}
+.card-title {
+  font-size: 2rem;
+  padding: .5rem;
+}
+.card-description {
+  padding: .5rem;
+  line-height: 1.6em;
+}
+.button {
+  display: block;
+  background-color: tomato;
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  transition: .3s ease-out;
+}
+
+.dapps .card img {
+  max-width: 100%;
+  margin: auto;
+}

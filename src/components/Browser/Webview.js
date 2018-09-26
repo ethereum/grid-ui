@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
-import {Helpers} from '../API'
+import {Helpers} from '../../API'
 let useIframe = !Helpers.isElectron()
 
 class IframeWebview extends Component {

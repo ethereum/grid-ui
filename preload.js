@@ -5,6 +5,8 @@ babelRegister({
   presets: ['env', 'react-app'],
 });
 
+const {ipcRenderer} = require('electron')
+
 const fs = require('fs')
 const path = require('path')
 
@@ -20,3 +22,9 @@ window.__path = path
 
 window.dirname = __dirname
 window.__dirname = __dirname
+
+window.__require = function(name){
+  if(name === 'ipc') {
+    return ipcRenderer
+  }
+}

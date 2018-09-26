@@ -7,7 +7,7 @@ let _Tabs = new CollectionLight('tabs')
 let LastVisitedPages = new CollectionLight('last-visted-pages')
 let _History = new CollectionLight('history')
 
-let EthAccounts = new EthAccountsCollection()
+let Accounts = new EthAccountsCollection()
 
 // let tabs = _Tabs.find({}, { sort: { position: 1 } }).fetch();
 let dirname = 'D:/Projects/MistTau/mist-ui-react'
@@ -54,5 +54,5 @@ export default {
   Tabs: window.Tabs || _Tabs,
   LastVisitedPages,
   History: window.History || _History,
-  EthAccounts
+  Accounts
 }

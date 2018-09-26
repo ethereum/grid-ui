@@ -4,17 +4,16 @@ import iconPath from '../icons/browse-icon@2x.png'
 
 import DappIdenticon from './DappIdenticon'
 
-import {i18n} from '../API'
+import {i18n, Collections} from '../API'
 
 class SidebarTab extends Component {
   constructor(props) {
     super(props)
-    this.handleMouseEnter = this.handleMouseEnter.bind(this)
-    this.handleMouseLeave = this.handleMouseLeave.bind(this)
-    this.handleTabClick = this.handleTabClick.bind(this)
     this.handleConnectBtnClick = this.handleConnectBtnClick.bind(this)
 
     // query connected accounts for this dapp
+    let {Accounts} = Collections
+    let dappAccounts = []
         /*
     if (this.permissions) {
       if (limit) {
@@ -28,11 +27,6 @@ class SidebarTab extends Component {
       });
     }
     */
-    let dappAccounts = [
-      { address: '0123' },
-      { address: '2345' }
-    ]
-
     this.state = { 
       submenucontainer: {
         'visibility': 'hidden',
@@ -40,9 +34,9 @@ class SidebarTab extends Component {
       },
       dappAccounts: dappAccounts
     }
-    this.badge = 'http://via.placeholder.com/15x15'
+    this.badge = ''
   }
-  handleMouseLeave() {
+  handleMouseLeave = () => {
     this.setState({
       submenucontainer: {
         'visibility': 'hidden',
@@ -50,7 +44,7 @@ class SidebarTab extends Component {
       }
     })
   }
-  handleMouseEnter() {
+  handleMouseEnter = () => {
     let el = ReactDOM.findDOMNode(this)   
     this.setState({
       submenucontainer: {
@@ -70,7 +64,7 @@ class SidebarTab extends Component {
   handleConnectBtnClick() {
 
   }
-  handleTabClick() {
+  handleTabClick = () => {
     this.props.tabChanged(this.props.tab)
   }
   renderIdenticons() {

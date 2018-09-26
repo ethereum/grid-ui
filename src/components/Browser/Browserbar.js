@@ -1,51 +1,31 @@
 import React, { Component } from 'react'
 
-// turn required globals into explicit dependencies
-import {Helpers, i18n, Mist, LocalStore} from '../API'
+import {Helpers, i18n, Mist, LocalStore} from '../../API'
+import DappIdenticon from '../DappIdenticon'
+import './Browserbar.css'
+import UrlInputBreadcrumb from './BreadcrumbNav'
 
-import DappIdenticon from './DappIdenticon'
+class UrlInput extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: this.props.url
+    };
 
-class Breadcrumb extends Component {
-  render() {
-    let _url = new URL(this.props.url)
-    // console.log(_url)
-
-    // remove trailing '/'
-    let pathname = _url.pathname.replace(/\/$/g, '')
-    let pathParts = pathname.split('/')
-    // remove all '?'
-    let search = _url.search.replace(/\?/g, '')
-
-    let parts = [_url.host, ...pathParts, search, _url.hash]
-    return (
-      <div className="url-breadcrumb" >
-        <span>
-          {_url.protocol} // {parts.map((p, i) => p ? <span key={i}>{p}  ▸ </span> : '')}
-        </span>
-      </div>
-    )
   }
-}
-
-class UrlBreadcrumbInput extends Component {
-  constructor(props){
-    super(props)
-    this.handleChange = this.handleChange.bind(this)
-    this.state = {url: props.url}
+  handleChange = (event) => {
+    this.setState({value: event.target.value});
   }
-  handleChange(e){
-    this.setState({url: e.target.value})
+  handleKeyDown = (event) => {
   }
   render() {
-    let permissions = {
-      admin: false
-    }
     return (
-      <form className="url" action="about:blank" target="dapp-form-helper-iframe" autoComplete="on">
-        {!permissions.admin && <input className="url-input" id="url-input" type="text" value={this.props.url} onChange={this.handleChange}/> }
-        <Breadcrumb url={this.props.url}/>
+      <form className="" action="about:blank" target="dapp-form-helper-iframe" autoComplete="on">
+        <div className="url-input-2" >
+          <input type="text" value={this.props.url} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>
+        </div>
       </form>
-    );
+    )
   }
 }
 
@@ -107,13 +87,13 @@ export default class Browserbar extends Component {
             {tab.icon && <img src={tab.icon} className="app-icon" />}
             <span title={nameFull}>{tab.name}</span>
           </label>
-
-          <UrlBreadcrumbInput url={this.props.url} />
-
+          {false
+          ? <UrlInputBreadcrumb url={this.props.url} />
+          : <UrlInput url={this.props.url}/>
+          }
           <button className="accounts" onClick={this.handleAccountClick}>
             {dappAccounts.length > 0 ? this.renderAccounts() : this.renderConnectButton() }
           </button>
-
         </div>
       </div>
     )

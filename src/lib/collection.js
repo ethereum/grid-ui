@@ -23,6 +23,9 @@ export default class CollectionLight {
     this.items = {}
   }
   insert(value){
+    if(value._id === undefined) {
+      throw new Error('value has no key property: _id')
+    }
     this.items[value._id] = value
   }
   upsert(key, value){

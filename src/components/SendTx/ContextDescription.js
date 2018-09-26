@@ -25,7 +25,8 @@ class ContextDescription extends Component {
     const fee = bigValue
       .times(etherPriceUSD)
       .dividedBy(new BigNumber('1000000000000000000'));
-    return this.formatter.format(fee);
+    //FIXME return this.formatter.format(fee);
+    return '250'
   }
 
   determineTxType() {

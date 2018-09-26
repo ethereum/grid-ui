@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import { Provider } from "react-redux";
 
+import { BrowserRouter as Router } from "react-router-dom";
 import App from './App'
 import Popup from './Popup'
 
@@ -33,6 +34,12 @@ switch (urlParams["app"]) {
     break;
   case undefined:
   default:
-    ReactDOM.render(<Provider store={store}><App /></Provider>,root)
+    ReactDOM.render(
+      <Router>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </Router>
+    ,root)
     break;
 }

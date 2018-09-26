@@ -220,4 +220,9 @@ function run(options) {
   */
 }
 
-module.exports = run
+module.exports = {
+  setup: run,
+  showPopup: () => {
+    windowManager.showPopup('SendTx')
+  }
+}
