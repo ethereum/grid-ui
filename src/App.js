@@ -9,8 +9,6 @@ import Routes from "./Routes"
 import Sidebar from './components/Sidebar'
 import Sidenav from './components/SideNav'
 
-import Wallet from "./containers/Wallet"
-
 import {Collections} from './API'
 
 export default class App extends Component {
@@ -24,32 +22,12 @@ export default class App extends Component {
     window.Tracker = Tracker
     window._ = _
     */  
-
-    let {Tabs, Accounts} = Collections
-    let tabs = Tabs.array.sort(el => el.position)
-    let selectedTab = tabs[0] || { url: 'https://www.github.com/ethereum/mist-ui-react' }
-
-    this.state = {
-      selectedTab,
-      tabs: tabs,
-      accounts: Accounts
-    }
-  }
-  handleTabChanged = (tab) =>  {
-    this.setState({
-      selectedTab: tab
-    })
   }
   render() {
     let mode = 2
     return (
       <Fragment>
-        {/* layout/main.html */}
-        {
-          mode === 1 
-          ? <Sidebar tabs={this.state.tabs} selectedTab={this.state.selectedTab} tabChanged={this.handleTabChanged} />
-          : <Sidenav tabs={this.state.tabs} />
-        }
+        <Sidenav/>
         <Routes/>
       </Fragment>
     )
