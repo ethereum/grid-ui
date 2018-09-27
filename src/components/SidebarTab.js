@@ -30,7 +30,8 @@ class SidebarTab extends Component {
     this.state = { 
       submenucontainer: {
         'visibility': 'hidden',
-        'opacity': 0
+        'opacity': 0,
+        'top': '300px'
       },
       dappAccounts: dappAccounts
     }
@@ -46,11 +47,12 @@ class SidebarTab extends Component {
   }
   handleMouseEnter = () => {
     let el = ReactDOM.findDOMNode(this)   
+    console.log('handle mouse enter')
     this.setState({
       submenucontainer: {
         'visibility': 'visible',
         'opacity': 1,
-        'top': (el.offsetTop + 30) + 'px'
+        'top': '400px' //(el.offsetTop - 200)+ 'px'
       }
     })
     /*
@@ -121,7 +123,13 @@ class SidebarTab extends Component {
     let tabShouldBeRemovable = true
 
     return (
-    <li className={isWallet ? 'wallet' : (isBrowser ? 'browser' : '') + ' ' + (this.props.selected && 'selected') } data-tab-id={tab.id} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleTabClick}>
+    <li 
+      className={isWallet ? 'wallet' : (isBrowser ? 'browser' : '') + ' ' + (this.props.selected && 'selected') } 
+      data-tab-id={tab.id} 
+      onMouseEnter={this.handleMouseEnter} 
+      onMouseLeave={this.handleMouseLeave} 
+      onClick={this.handleTabClick}
+    >
       <header>
         <button className={"main " + (this.badge && 'has-badge')}>
           {icon

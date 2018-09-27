@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Identicon from '../../components/DappIdenticon'
-import {Mist} from '../../API'
+import {Mist, EthTools} from '../../API'
 import './AccountItem.css'
 
 export default class AccountItem extends Component {
@@ -12,13 +12,18 @@ export default class AccountItem extends Component {
     e.preventDefault()
     Mist.sendTransaction()
   }
+  formatBalance(balanceWei){
+    return EthTools.formatBalance(balanceWei)
+  }
   render() {
-    let address = this.props.address
+    let account = this.props.account
+    let address = account.address
+
     let name = 'Account ' + (this.props.idx || 0)
     if(this.props.idx === 0){
       name += " (main)"
     }
-    let balance = 0.00
+    let balance = this.formatBalance(account.balance)
     return (
       <Link to={`/account/${address}`} className="wallet-box">
         <div className="account card">
@@ -37,11 +42,11 @@ export default class AccountItem extends Component {
                 {address}
               </div>
               <div className="account-balance">
-                {balance}<span>ether</span>
+                {balance}<span style={{'margin-left':'5px'}}>Ether</span>
               </div>
               <div className="account-actions">
                 <button className="account-action" onClick={this.handleSendTxClick}>send</button>
-                <button className="account-action">tx log</button>
+                <button className="account-action">history</button>
                 <button className="account-action">qr</button>
                 <Link to={`/browser/${encodeURIComponent(`https://etherscan.io/address/${address}`)}`}><button className="account-action">etherscan</button></Link>
               </div>

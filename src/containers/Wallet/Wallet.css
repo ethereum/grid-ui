@@ -4,3 +4,8 @@
   margin-right: .25rem;
   border: 1px solid #02a8f3;
 }
+
+.wallet-box-list{
+  overflow: scroll;
+  height: 75%;
+}

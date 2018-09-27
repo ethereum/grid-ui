@@ -8,5 +8,13 @@ aside.sidebar nav > ul > li button.main img, aside.sidebar nav > ul > li button.
 }
 
 aside.sidebar nav > ul > li a.active button.main, aside.sidebar nav > ul > li a.active button.main:focus {
-  border-left: 3px solid #4A90E2;
+  /*border-left: 3px solid #4A90E2;*/
+  opacity: 1;
+}
+
+aside.sidebar nav .submenu-container {
+  left: 60px;
+}
+aside.sidebar nav .submenu-container section header{
+  padding-bottom: 30px;
 }

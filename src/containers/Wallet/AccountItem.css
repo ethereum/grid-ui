@@ -19,6 +19,7 @@
   width: 2.3rem;
   height: 2.3rem;
   margin: auto;
+  padding: 30px;
   text-align:center;
   display: -ms-flexbox;
   display: flex;
@@ -41,10 +42,16 @@
   flex-grow: 1;
 }
 
-.account .account-information .account-details {
+.account .account-information .account-address {
   font-size: .8em;
   line-height: 1.4em;
   color: hsla(0,3%,49%,.6);
+}
+
+.account .account-information .account-balance {
+  font-size: 1rem;
+  line-height: 1.4em;
+  color: #2f2f2f
 }
 
 .account .identicon-medium {
@@ -59,7 +66,5 @@
 
 .account .account-action {
   background: white;
-  padding: .25rem;
-  margin-right: .25rem;
-  border: 1px solid #02a8f3;
+  margin-right: .5rem;
 }
