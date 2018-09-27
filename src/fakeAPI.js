@@ -36,13 +36,6 @@ function init(window, lang){
 
   window.web3 = web3Local
 
-  web3Local.eth.getAccounts().then(accounts => {
-    console.log('received accounts from ganache', accounts)
-  })
-
-  //let accounts = await web3.eth.accounts()
-
-
   //let web3 = window.web3
   /*
   const _web3 = {
