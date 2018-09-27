@@ -10,6 +10,7 @@ import Dapps from './containers/Dapps'
 
 export default () =>
 <Switch>
+  <Route path="/" exact component={Wallet} />
   <Route path="/wallet" exact component={Wallet} />
   <Route path="/dapps" exact component={Dapps} />
   <Route path="/browser/:url" exact component={Browser} />
