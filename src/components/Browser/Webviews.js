@@ -15,6 +15,7 @@ export default class Webviews extends Component {
     return i18n.t('mist.nodeInfo.connecting')
   }
   render(){
+    let tabs = this.props.tabs || []
     return (
       <main>
         {this.isLoading
@@ -24,7 +25,7 @@ export default class Webviews extends Component {
           <Spinner />
         </div>
         :
-        this.props.tabs.map(tab => {
+        tabs.map(tab => {
           let tabId = tab._id
           return <Webview 
             key={tabId} 

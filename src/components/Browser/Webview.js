@@ -38,6 +38,9 @@ export default class Webview extends Component {
     )
   }
   checkedUrl(url) {
+    if(!url.startsWith('http')){
+      url = 'http://'+url
+    }
     return url
   }
   componentDidMount() {

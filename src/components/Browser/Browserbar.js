@@ -17,12 +17,15 @@ class UrlInput extends Component {
     this.setState({value: event.target.value});
   }
   handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      this.props.onUrlChanged(this.state.value)
+    }
   }
   render() {
     return (
       <form className="" action="about:blank" target="dapp-form-helper-iframe" autoComplete="on">
         <div className="url-input-2" >
-          <input type="text" value={this.props.url} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>
+          <input type="text" value={this.state.value} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>
         </div>
       </form>
     )
@@ -75,7 +78,9 @@ export default class Browserbar extends Component {
   }
   render(){
     let tab = this.props.selectedTab
+    let icon = tab && tab.icon
     let nameFull = 'fullName'
+    let name = tab && tab.name
     let dappAccounts = this.props.dappAccounts
     
     return (
@@ -83,13 +88,13 @@ export default class Browserbar extends Component {
         <button title="go back" className="back icon icon-arrow-left" onClick={this.handleGoBackClick}></button>
         <button title="refresh page" className="reload icon icon-refresh" onClick={this.handleReloadClick}></button>
         <div className="app-bar">
-          <label htmlFor="url-input" className={"dapp-info " + (tab.icon && 'has-icon')}>
-            {tab.icon && <img src={tab.icon} className="app-icon" />}
-            <span title={nameFull}>{tab.name}</span>
+          <label htmlFor="url-input" className={"dapp-info " + (icon && 'has-icon')}>
+            {icon && <img src={icon} className="app-icon" />}
+            <span title={nameFull}>{name}</span>
           </label>
           {false
           ? <UrlInputBreadcrumb url={this.props.url} />
-          : <UrlInput url={this.props.url}/>
+          : <UrlInput url={this.props.url} onUrlChanged={this.props.onUrlChanged}/>
           }
           <button className="accounts" onClick={this.handleAccountClick}>
             {dappAccounts.length > 0 ? this.renderAccounts() : this.renderConnectButton() }

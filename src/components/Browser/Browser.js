@@ -9,7 +9,8 @@ class Browser extends Component {
   constructor(props){
     super(props)
     this.state = {
-      tabs:[]
+      tabs:[],
+      url: ''
     }
   }
   handleIconAvailable = (tab, icon) => {
@@ -41,31 +42,37 @@ class Browser extends Component {
       }
     })
   }
+  handleNavigate = (url) => {
+    this.setState({
+      url
+    })
+  }
   render(){
-    let tabs = this.props.tabs || [{
-      url: 'https://www.github.com/ethereum/mist-ui-react'
-    }]
+    let tabs = this.props.tabs
     let accounts = []
-    let selectedTab = tabs[0]
-    let url = selectedTab.url
-
+    let selectedTab = (tabs && tabs.length > 0) ? tabs[0] : undefined
+    let tabUrl = selectedTab && selectedTab.url
     let urlParam = this.props.match.params.url ? decodeURIComponent(this.props.match.params.url) : ''
-
+    let url = this.state.url || urlParam || tabUrl || 'https://github.com/ethereum/mist-ui-react'
     return (
       <Fragment>
         <Browserbar 
-          url={urlParam}
+          url={url}
           dappAccounts = {accounts}
-          selectedTab={selectedTab}/>
-        {urlParam
+          selectedTab={selectedTab}
+          onUrlChanged={this.handleNavigate}
+        />
+        {url
         ?
-        <main><Webview 
-          key={'_browser_'} 
-          url={urlParam} 
-          visible={true}
-          onIconAvailable={(icon) => {}}
-          onTitleAvailable={(title) => {}}
-        /></main>
+        <main>
+          <Webview 
+            key={'_browser_'} 
+            url={url} 
+            visible={true}
+            onIconAvailable={(icon) => {}}
+            onTitleAvailable={(title) => {}}
+          />
+        </main>
        :
         <Webviews 
           tabs={tabs} 
