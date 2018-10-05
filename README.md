@@ -1,6 +1,6 @@
 This project is a "fork" / re-write of ethereum/Mist's user interface
 
-It was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app), is 100% written in React and removes the meteor framework dependency.
+It is bootstrapped with [Create React App v2](https://github.com/facebookincubator/create-react-app), is 100% written in React and removes the meteor framework dependency.
 
 ### Project Goals
 - improved security and easier maintenance

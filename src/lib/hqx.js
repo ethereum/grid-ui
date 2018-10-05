@@ -1,3 +1,4 @@
+/* eslint-disable */
 // ==ClosureCompiler==
 // @compilation_level SIMPLE_OPTIMIZATIONS
 // ==/ClosureCompiler==

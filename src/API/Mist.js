@@ -11,7 +11,7 @@ const MistApi = {
     ipc.send('backendAction_sendTx', {});
   },
   // replaces GlobalNotification
-  notification(){
+  notification: {
     warn:()=>{
       /*
           GlobalNotification.warning({

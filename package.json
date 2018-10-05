@@ -8,7 +8,7 @@
     "shell:electron": "cross-env PORT=3080 electron .",
     "shell:tau": "tau .",
     "start-conflict": "cross-env react-scripts start",
-    "start": "cross-env PORT=3080 react-scripts start",
+    "start": "cross-env PORT=3080 CI='false' react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -27,7 +27,7 @@
     "react-minimal-pie-chart": "^3.0.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.5",
+    "react-scripts": "2.0.3",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
     "semver": "^5.5.0",
@@ -42,5 +42,11 @@
     "dotenv": "^6.0.0",
     "electron": "^2.0.8",
     "less-watch-compiler": "^1.11.3"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
