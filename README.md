@@ -20,7 +20,7 @@ It is bootstrapped with [Create React App v2](https://github.com/facebookincubat
 if not installed:
 npm install -g less
 
-git clone https://github.com/PhilippLgh/mist-ui-react.git
+git clone https://github.com/ethereum/mist-ui-react.git
 cd mist-ui-react
 yarn
 
