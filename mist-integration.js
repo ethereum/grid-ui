@@ -39,7 +39,7 @@ class WindowManager {
       win = null
     })
   }
-  showPopup(name) {
+  showPopup(name, args) {
     let options = {
       width: 800, 
       height: 400
@@ -101,6 +101,8 @@ class WindowManager {
     })
 
     let popup = new BrowserWindow(config)
+    popup.args = args
+    
     popup.loadURL(`http://localhost:${PORT}/index.html?app=popup&name=${name}`)
 
     popup.webContents.openDevTools({mode: 'detach'})
@@ -222,7 +224,5 @@ function run(options) {
 
 module.exports = {
   setup: run,
-  showPopup: () => {
-    windowManager.showPopup('SendTx')
-  }
+  showPopup: windowManager.showPopup
 }

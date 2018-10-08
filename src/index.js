@@ -7,6 +7,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from './App'
 import Popup from './Popup'
 
+import {Mist} from './API'
+
 import store from "./API/ReduxStore";
 
 // see https://github.com/facebook/create-react-app/issues/1084#issuecomment-273272872
@@ -30,6 +32,10 @@ let popupName = urlParams["name"]
 
 switch (urlParams["app"]) {
   case "popup":
+    store.dispatch({
+      type: 'SET_TX',
+      payload: Mist.getWindowArgs()
+    })
     ReactDOM.render(<Provider store={store}><Popup name={popupName} /></Provider>, root)
     break;
   case undefined:

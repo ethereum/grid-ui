@@ -45,12 +45,9 @@ function createWindow (asarPath) {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => { 
   createWindow()
-
-  ipcMain.on('backendAction_sendTx', () => {
-    showPopup()
+  ipcMain.on('backendAction_showPopup', (event, args) => {
+    showPopup(args.name, args.args)
   })
-
-
 })
 
 /*

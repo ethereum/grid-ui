@@ -5,7 +5,7 @@ babelRegister({
   presets: ['env', 'react-app'],
 });
 
-const {ipcRenderer} = require('electron')
+const {ipcRenderer, remote} = require('electron')
 
 const fs = require('fs')
 const path = require('path')
@@ -13,6 +13,11 @@ const path = require('path')
 // TODO WARNING not browser compatible -> needs to be mocked
 window.__fs = fs
 window.__path = path
+
+var currentWindow = remote.getCurrentWindow()
+window.getArgs = () => {
+  return currentWindow.args
+}
 
 // fakeAPI simulates an environment with all required globals such as i18n or web3 so that the code
 // is not breaking, however the functionality will obviously not work 

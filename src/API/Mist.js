@@ -7,8 +7,19 @@ const MistApi = {
   setWindowSize(w, h){
     ipc.send('backendAction_setWindowSize', w, h);
   },
-  sendTransaction(){
-    ipc.send('backendAction_sendTx', {});
+  sendTransaction(args){
+    ipc.send('backendAction_showPopup', {
+      name: 'SendTx',
+      args
+    });
+  },
+  showHistory(){
+    ipc.send('backendAction_showPopup', {
+      name: 'TxHistory'
+    });
+  },
+  getWindowArgs(){
+    return window.getArgs && window.getArgs()
   },
   // replaces GlobalNotification
   notification: {

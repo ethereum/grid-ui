@@ -33,7 +33,8 @@ const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.
 (async function fetchAccounts(){
   let _accounts = await web3.eth.getAccounts()
   _accounts.forEach(async (acc) => {
-    let balance = await web3Remote.eth.getBalance(acc)
+    //let balance = await web3Remote.eth.getBalance(acc)
+    let balance = await web3.eth.getBalance(acc)
     store.dispatch({
       type: 'ADD_ACCOUNT',
       payload: {
@@ -49,13 +50,13 @@ const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.
 
 let txCount = 0//await web3.eth.getTransactionCount(accounts[0])
 let tx = {
-  "nonce": txCount,
-  "from": '0xf17f52151EbEF6C7334FAD080c5704D77216b732',
-  "to": '0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef',
-  "gas": "0x76c0", // 30400
-  "data": '',
+  //"nonce": txCount,
+  //"from": '0xf17f52151EbEF6C7334FAD080c5704D77216b732',
+  //"to": '0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef',
+  // "gas": "0x76c0", // 30400
+  //"data": '',
   //"gasPrice": "0x9184e72a000", // 10000000000000
-  "value": "1000000000000000000" //web3Local.utils.toWei('1.0', 'ether')
+  //"value": "1000000000000000000" //web3Local.utils.toWei('1.0', 'ether')
 }
 
 let mockTabs = [
@@ -76,7 +77,7 @@ let suggestedDapps = [{
 
 const initialState = {
 
-  newTx: tx, //required by SendTx popup
+  newTx: null, //tx //required by SendTx popup
   txs: [tx], //required by TxHistory popup
   
   tabs: mockTabs,
@@ -143,6 +144,12 @@ function mistApp(state = initialState, action) {
       let acc = action.payload
       let accounts = [...state.accounts, acc]
       newState.accounts = accounts
+      return newState
+    }
+    case 'SET_TX':{
+      let newState = Object.assign({}, state)
+      let tx = action.payload
+      newState.newTx = tx
       return newState
     }
     case 'EDIT_TAB': {

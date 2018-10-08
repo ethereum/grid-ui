@@ -8,9 +8,16 @@ export default class AccountItem extends Component {
   constructor(props) {
     super(props)
   }
-  handleSendTxClick = (e) => {
+  handleSendTxClicked = (e) => {
+    let account = this.props.account
     e.preventDefault()
-    Mist.sendTransaction()
+    Mist.sendTransaction({
+      from: account.address
+    })
+  }
+  handleShowHistoryClicked = (e) => {
+    e.preventDefault()
+    Mist.showHistory()
   }
   formatBalance(balanceWei){
     return EthTools.formatBalance(balanceWei)
@@ -45,8 +52,8 @@ export default class AccountItem extends Component {
                 {balance}<span style={{'margin-left':'5px'}}>Ether</span>
               </div>
               <div className="account-actions">
-                <button className="account-action" onClick={this.handleSendTxClick}>send</button>
-                <button className="account-action">history</button>
+                <button className="account-action" onClick={this.handleSendTxClicked}>send</button>
+                <button className="account-action" onClick={this.handleShowHistoryClicked}>history</button>
                 <button className="account-action">qr</button>
                 <Link to={`/browser/${encodeURIComponent(`https://etherscan.io/address/${address}`)}`}><button className="account-action">etherscan</button></Link>
               </div>
