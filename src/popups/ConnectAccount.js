@@ -1,25 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import DappIdenticon from '../components/DappIdenticon'
 
 import {i18n} from '../API'
 
-class DappIdenticon extends Component {
-  render(){
-    return (
-      <div>identicon</div>
-    )
-  }
-}
 
 let selectedAccounts = []
-/*
-[{
-  address: '1',
-  name: 'acc 1'
-}, {
-  address: '2',
-  name: 'acc 2'
-}]
-*/
 
 class ConnectAccount extends Component {
   renderAccounts(){
@@ -31,30 +17,14 @@ class ConnectAccount extends Component {
       )
     })
   }
-  handlePinAppCheckboxChanged(){
-
-  }
   render() {
 
     let dapp = {
       name: '<dapp name>',
       icon: ''
     }
-
-    let dappFriendlyURL = "friendly url"
-
-    let accounts = [
-      {
-        name: '1',
-        address: '123',
-        selected: 'selected'
-      },
-      {
-        name: '2',
-        address: '345'
-      }
-    ]
-
+    let dappFriendlyURL = this.props.popup.args.url
+    let accounts = this.props.accounts
     let accountNumber = '1234'
  
     return (
@@ -101,7 +71,7 @@ class ConnectAccount extends Component {
               return(
               <li key={acc.address}>
                 <button className={acc.selected}>
-                  <DappIdenticon identity={acc} className="dapp-small" />
+                  <DappIdenticon identity={acc.address} className="dapp-small" />
                   <h3>{acc.name}</h3>
                   <span>{acc.address}</span>
                 </button>
@@ -110,10 +80,12 @@ class ConnectAccount extends Component {
             })}
 			    </ul>
 
+          {/*
           <div className="checkbox-container">
             <input type="checkbox" id="pin-to-sidebar" checked="true" onChange={this.handlePinAppCheckboxChanged} />
             <label htmlFor="pin-to-sidebar">{i18n.t("mist.popupWindows.connectAccount.pinToSidebar")}</label>
           </div>
+          */}
 
           <div className="dapp-modal-buttons">
             <button className="cancel" type="button">{i18n.t("buttons.cancel")}</button>
@@ -129,4 +101,10 @@ class ConnectAccount extends Component {
   }
 }
 
-export default ConnectAccount
+function mapStateToProps(state) {
+  return {
+    accounts: state.accounts
+  };
+}
+
+export default connect(mapStateToProps)(ConnectAccount)

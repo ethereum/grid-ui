@@ -32,11 +32,12 @@ let popupName = urlParams["name"]
 
 switch (urlParams["app"]) {
   case "popup":
+    let args = Mist.getWindowArgs()
     store.dispatch({
       type: 'SET_TX',
-      payload: Mist.getWindowArgs()
+      payload: args
     })
-    ReactDOM.render(<Provider store={store}><Popup name={popupName} /></Provider>, root)
+    ReactDOM.render(<Provider store={store}><Popup name={popupName} popup={{args}} /></Provider>, root)
     break;
   case undefined:
   default:

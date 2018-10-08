@@ -10,12 +10,12 @@ import SendTx from './components/SendTx'
 import TxHistory from './components/TxHistory'
 import RequestAccount from './components/RequestAccount'
 
-function PopupBase({ name }) {
+function PopupBase({ name, popup }) {
   console.log('load content for popup: ', name)
   switch(name){
     case 'ConnectAccount':
     case 'connectAccount':
-      return <ConnectAccount />
+      return <ConnectAccount popup={popup}/>
     case 'RequestAccount':
     case 'CreateAccount':
       return <RequestAccount />

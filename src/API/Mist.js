@@ -15,22 +15,23 @@ const MistApi = {
     ipc.send('backendAction_setWindowSize', w, h);
   },
   getWindowArgs(){
-    return window.getArgs && window.getArgs()
+    let args = window.getArgs && window.getArgs()
+    return args || {}
   },
   closeThisWindow(){
     console.log('close this window not implemented yet')
   },
-  createAccount(){
-    showPopup('CreateAccount')
+  createAccount(args){
+    showPopup('CreateAccount', args)
   },
-  connectAccount(){
-    showPopup('ConnectAccount')
+  connectAccount(args){
+    showPopup('ConnectAccount', args)
   },
   sendTransaction(args){
     showPopup('SendTx', args)
   },
-  showHistory(){
-    showPopup('TxHistory')
+  showHistory(args){
+    showPopup('TxHistory', args)
   },
   // replaces GlobalNotification
   notification: {

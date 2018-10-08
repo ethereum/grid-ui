@@ -56,8 +56,11 @@ export default class Browserbar extends Component {
       webview.reload()
     }
   }
-  handleAccountClick() {
-    Mist.connectAccount()
+  handleAccountClick = () => {
+    let url = this.props.url
+    Mist.connectAccount({
+      url: url
+    })
   }
   renderAccounts(){
     let tab = this.props.selectedTab
