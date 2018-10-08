@@ -30,7 +30,7 @@ class NavItem extends Component {
       submenucontainer: {
         'visibility': 'visible',
         'opacity': 1,
-        'top': (el.offsetTop + 30) + 'px'
+        'top': (el.offsetTop) + 'px'
       }
     })
   }
@@ -52,7 +52,7 @@ class NavItem extends Component {
     let badge = ''
     let icon = this.props.item.icon || ''
     let name = this.props.item.name
-    let nameFull = 'bla bla'
+    let nameFull = ''
     let link = this.props.item.route || (name === 'wallet' ? 'wallet' : 'browser')
     return (
       <li className={'browser'} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>

@@ -2,8 +2,9 @@
   display: grid;
 }
 .card-title {
-  font-size: 2rem;
+  font-size: 1.2rem;
   padding: .5rem;
+  word-break: break-word;
 }
 .card-description {
   padding: .5rem;
@@ -17,6 +18,7 @@
   text-decoration: none;
   text-align: center;
   transition: .3s ease-out;
+  height: 2.5rem;
 }
 
 .dapps .card img {
