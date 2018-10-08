@@ -3,10 +3,14 @@ import { connect } from 'react-redux';
 import "../normalize.css"
 import "./Wallet.css"
 import Account from './AccountItem'
+import {Mist} from '../../API'
 
 class Wallet extends Component {
   constructor(props) {
     super(props)
+  }
+  handleCreateAccountClicked = () => {
+    Mist.createAccount()
   }
   render(){
     let accounts = this.props.accounts
@@ -15,7 +19,7 @@ class Wallet extends Component {
       <h1><strong>Accounts</strong> Overview</h1>
     
       <div className="wallet-actions">
-        <button className="wallet-action">create</button>
+        <button className="wallet-action" onClick={this.handleCreateAccountClicked}>create</button>
         <button className="wallet-action">import</button>
       </div>
     

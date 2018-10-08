@@ -1,5 +1,12 @@
 import ipc from './Ipc'
 
+function showPopup(name, args){
+  ipc.send('backendAction_showPopup', {
+    name,
+    args
+  })
+}
+
 const MistApi = {
   requestAccount: () => {
     // window.mist.requestAccount
@@ -7,19 +14,23 @@ const MistApi = {
   setWindowSize(w, h){
     ipc.send('backendAction_setWindowSize', w, h);
   },
-  sendTransaction(args){
-    ipc.send('backendAction_showPopup', {
-      name: 'SendTx',
-      args
-    });
-  },
-  showHistory(){
-    ipc.send('backendAction_showPopup', {
-      name: 'TxHistory'
-    });
-  },
   getWindowArgs(){
     return window.getArgs && window.getArgs()
+  },
+  closeThisWindow(){
+    console.log('close this window not implemented yet')
+  },
+  createAccount(){
+    showPopup('CreateAccount')
+  },
+  connectAccount(){
+    showPopup('ConnectAccount')
+  },
+  sendTransaction(args){
+    showPopup('SendTx', args)
+  },
+  showHistory(){
+    showPopup('TxHistory')
   },
   // replaces GlobalNotification
   notification: {

@@ -1,5 +1,14 @@
 import React from 'react';
-
+import {Mist, i18n} from '../API'
+let web3 = {
+  eth: {
+    personal: {
+      newAccount: () => {
+        console.log('bla')
+      }
+    }
+  }
+}
 class RequestAccount extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +34,7 @@ class RequestAccount extends React.Component {
 
   handleCancel(e) {
     e.preventDefault();
-    ipc.send('backendAction_closePopupWindow');
+    Mist.closeThisWindow()
   }
 
   handleSubmit(e) {
@@ -42,16 +51,16 @@ class RequestAccount extends React.Component {
 
     // check passwords
     if (pw !== pwRepeat) {
-      GlobalNotification.warning({
-        content: TAPi18n.__(
+      Mist.notification.warn({
+        content: i18n.t(
           'mist.popupWindows.requestAccount.errors.passwordMismatch'
         ),
         duration: 3
       });
       this.resetForm();
     } else if (pw && pw.length < 8) {
-      GlobalNotification.warning({
-        content: TAPi18n.__(
+      Mist.notification.warn({
+        content: i18n.t(
           'mist.popupWindows.requestAccount.errors.passwordTooShort'
         ),
         duration: 3
@@ -64,14 +73,14 @@ class RequestAccount extends React.Component {
 
   createAccount(pw) {
     web3.eth.personal.newAccount(pw).then(address => {
-      ipc.send('backendAction_windowMessageToOwner', null, address);
+      //FIXME ipc.send('backendAction_windowMessageToOwner', null, address);
 
       // notify about backing up!
-      alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
+      alert(i18n.t('mist.popupWindows.requestAccount.backupHint'));
 
       this.resetForm();
 
-      ipc.send('backendAction_closePopupWindow');
+      Mist.closeThisWindow()
     });
   }
 

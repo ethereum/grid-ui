@@ -54,6 +54,13 @@ class WindowManager {
         maximizable: false
       }
     }
+    if (name === 'RequestAccount' || name === 'CreateAccount') {
+      windowOptions = {
+        width: 450,
+        height: 250,
+        alwaysOnTop: true
+      }
+    }
     if (name === 'ConnectAccount') {
       windowOptions = {
         width: 460,

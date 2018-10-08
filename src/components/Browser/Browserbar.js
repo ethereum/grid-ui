@@ -57,7 +57,7 @@ export default class Browserbar extends Component {
     }
   }
   handleAccountClick() {
-    Mist.requestAccount()
+    Mist.connectAccount()
   }
   renderAccounts(){
     let tab = this.props.selectedTab

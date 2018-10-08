@@ -251,7 +251,7 @@ export function confirmTx(data) {
         } else if (error.message.includes('multiple keys match address')) {
           displayNotification('multipleKeysMatchAddress', 10);
         } else {
-          Mist.notifications.warn({
+          Mist.notification.warn({
             content: error.message || error,
             duration: 5
           });
@@ -279,7 +279,7 @@ export function confirmTx(data) {
         ) {
           displayNotification('insufficientFundsForGas', 5);
         } else {
-          Mist.notifications.warn({
+          Mist.notification.warn({
             content: error.message || error,
             duration: 5
           });
@@ -337,7 +337,7 @@ export function updateTx(tx) {
 }
 
 function displayNotification(errorType, duration) {
-  Mist.notifications.warn({
+  Mist.notification.warn({
     content: i18n.__(`mist.sendTx.errors.${errorType}`),
     duration
   });
