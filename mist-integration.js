@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000
 console.log('start react ui with devserver on port: ', PORT)
 
 class WindowManager {
+
   createWindow (asarPath) {
     // Create the browser window.
     win = new BrowserWindow({
@@ -134,6 +135,7 @@ function createReactMenu(version){
   testPopupSubMenu.append(popupMenu('SendTransactionConfirmation'))
   testPopupSubMenu.append(popupMenu('SendTx'))
   testPopupSubMenu.append(popupMenu('TxHistory'))
+  testPopupSubMenu.append(popupMenu('Settings'))
 
   let reactSubMenu = new Menu()
   reactSubMenu.append(new MenuItem({
@@ -171,7 +173,7 @@ function createReactMenu(version){
     label: 'Popups',
     submenu: testPopupSubMenu
   }))
-  reactSubMenu.append(popupMenu('ReactUiSettings', 'Settings'))
+  reactSubMenu.append(popupMenu('Settings'))
 
   reactSubMenu.append(new MenuItem({
     label: `v${version}`
@@ -231,5 +233,6 @@ function run(options) {
 
 module.exports = {
   setup: run,
-  showPopup: windowManager.showPopup
+  showPopup: windowManager.showPopup,
+  createWindow: windowManager.createWindow
 }
