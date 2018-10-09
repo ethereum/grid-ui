@@ -4,10 +4,9 @@ import './styles/styles.css'
 // fakeAPI needs to be initialized before any other component is loaded
 import './fakeAPI.js'
 import './App.css'
-import { BrowserRouter, Link } from "react-router-dom";
 import Routes from "./Routes"
 import Sidebar from './components/Sidebar'
-import Sidenav from './components/SideNav'
+import Sidenav from './components/SidebarNav/SideNav'
 
 import {Collections} from './API'
 

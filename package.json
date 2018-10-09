@@ -41,7 +41,8 @@
     "cross-env": "^5.2.0",
     "dotenv": "^6.0.0",
     "electron": "^2.0.8",
-    "less-watch-compiler": "^1.11.3"
+    "less-watch-compiler": "^1.11.3",
+    "react-test-renderer": "^16.5.2"
   },
   "browserslist": [
     ">0.2%",
