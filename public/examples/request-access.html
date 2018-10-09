@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h2>hello webview</h2>
+  <script>
+    document.addEventListener('ethereum-api-access-granted', function(){
+      // api becomes available as global
+      window.ethereum.enable()
+    })
+    document.dispatchEvent(new Event('request-ethereum-api-access'))
+  </script>
+</body>
+</html>
