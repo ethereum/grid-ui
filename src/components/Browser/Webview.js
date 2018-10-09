@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
+import whitelist from './Whitelist.json'
+
 import {Helpers} from '../../API'
 let useIframe = !Helpers.isElectron()
 
@@ -17,6 +19,8 @@ class IframeWebview extends Component {
   }
 }
 
+let __dirname = window.__dirname
+
 export default class Webview extends Component {
   constructor(props) {
     super(props)
@@ -25,9 +29,10 @@ export default class Webview extends Component {
   }
   render() {
     let checkedUrl = this.checkedUrl(this.props.url)
-    let preloadScriptPath = Helpers.isMist() ? '/modules/preloader/browser.js' : '/preload-webview.js'
-    let preloadFile = `file://${window.dirname}${preloadScriptPath}` 
-    // console.log('preload file:', preloadFile)
+    //let preloadScriptPath = Helpers.isMist() ? '/modules/preloader/browser.js' : './preload.js' //'/preload-webview.js'
+    let preloadScriptPath = 'src/components/Browser/preload.js'
+    let preloadFile = `file://${__dirname}/${preloadScriptPath}` 
+    //console.log('preload file:', preloadFile)
     return (
       <div className={"webview " + (this.props.visible ? "visible" : "hidden")}>
         {useIframe
@@ -38,8 +43,17 @@ export default class Webview extends Component {
     )
   }
   checkedUrl(url) {
+    let userSettings = this.props.userSettings
+
+    if(url.startsWith('examples:')){
+      if(url === 'examples:') return `file://${__dirname}/public/examples/index.html`      
+      if(url === 'examples:request.access') return `file://${__dirname}/public/examples/request-access.html`
+    }
     if(!url.startsWith('http')){
       url = 'http://'+url
+    }
+    if(userSettings.useWhitelist && !whitelist.includes(url)){
+      return `file://${__dirname}/public/errors/400.html`
     }
     return url
   }
@@ -55,8 +69,8 @@ export default class Webview extends Component {
     webview.removeEventListener('ipc-message', this.handleIpcMessage)
     webview.removeEventListener('dom-ready', this.handleDomReady)
   }
-  handleNavigate() {
-    console.log('navigate navigate')
+  handleNavigate = (args) => {
+    this.props.onNavigate(args.url)
   }
   // MIST API for installed tabs/dapps
   // see mistAPIBackend.js
@@ -65,7 +79,7 @@ export default class Webview extends Component {
     // SET FAVICON
     if (event.channel === 'favicon') { this.props.onIconAvailable(arg) }
     // if (event.channel === 'appBar') { this.props.onAppBarAvailable(arg) }
-    // console.log('received webview ipc', event.channel)
+    console.log('received webview ipc', event.channel)
   }
   handleDomReady(event) {
     let webview = ReactDOM.findDOMNode(this).childNodes[0]
@@ -77,5 +91,7 @@ export default class Webview extends Component {
       title += '…'
     }
     this.props.onTitleAvailable(title)
+
+    webview.openDevTools()
   }
 }
