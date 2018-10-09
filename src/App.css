@@ -1,3 +1,4 @@
 main {
   left: 54px;
+  overflow-y: auto;
 }

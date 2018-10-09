@@ -6,6 +6,6 @@
 }
 
 .wallet-box-list{
-  overflow: scroll;
-  height: 75%;
+  overflow-y: scroll;
+  height: 70%;
 }
