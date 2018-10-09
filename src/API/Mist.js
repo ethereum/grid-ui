@@ -7,6 +7,8 @@ function showPopup(name, args){
   })
 }
 
+let _mist = window._mist
+
 const MistApi = {
   requestAccount: () => {
     // window.mist.requestAccount
@@ -15,11 +17,14 @@ const MistApi = {
     ipc.send('backendAction_setWindowSize', w, h);
   },
   getWindowArgs(){
-    let args = window.getArgs && window.getArgs()
-    return args || {}
+    let args = {}
+    if(_mist){
+      args = _mist.window.getArgs()
+    }
+    return args
   },
   closeThisWindow(){
-    console.log('close this window not implemented yet')
+    if(_mist){ _mist.window.close() }
   },
   createAccount(args){
     showPopup('CreateAccount', args)
@@ -33,9 +38,14 @@ const MistApi = {
   showHistory(args){
     showPopup('TxHistory', args)
   },
+  createAccountWeb3(){
+
+  },
   // replaces GlobalNotification
   notification: {
-    warn:()=>{
+    warn:(msg) => {
+      console.log('warn warn', msg)
+      if(_mist){ _mist.notification.warn(msg.content)}
       /*
           GlobalNotification.warning({
             content: error.message || error,
