@@ -51,10 +51,7 @@ export default class Browserbar extends Component {
    * @event click button.reload 
    */
   handleReloadClick(){
-    var webview = Helpers.getCurrentWebview()
-    if (webview) {
-      webview.reload()
-    }
+    this.props.onReload()
   }
   handleAccountClick = () => {
     let url = this.props.url
