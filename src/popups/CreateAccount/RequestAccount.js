@@ -1,5 +1,5 @@
 import React from 'react';
-import {Mist, i18n} from '../API'
+import {Mist, i18n} from '../../API'
 let web3 = {
   eth: {
     personal: {
