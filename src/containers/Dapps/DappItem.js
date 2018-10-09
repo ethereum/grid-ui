@@ -8,10 +8,17 @@ export default class DappItem extends Component {
   }
   render() {
     let dapp = this.props.dapp
+    let name = dapp.name || ''
+    if (name === '' || name === undefined) {
+      name = dapp.url
+                .replace('https://', '')
+                .replace('http://', '')
+                .replace('www.', '')
+    }
     return (
     <article className="card">
       <header className="card-title">
-        <h3>{dapp.name}</h3>
+        <h3>{name}</h3>
       </header>
       <figure className="card-thumbnail">
         <img src={dapp.banner} />

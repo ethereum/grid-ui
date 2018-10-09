@@ -18,10 +18,9 @@ class DappOverview extends Component {
         <h2>Connected</h2>
         <section className="card-container dapps">
         {
-          connectedDapps.map(dapp => {
-            dapp.name = dapp.name || dapp.url
+          connectedDapps.map((dapp, idx) => {
             dapp.banner = dapp.banner || 'https://www.sols.org/components/com_easyblog/themes/wireframe/images/placeholder-image.png'
-            return <DappItem dapp={dapp}></DappItem>
+            return <DappItem dapp={dapp} key={idx}></DappItem>
           })
         }
         </section>
