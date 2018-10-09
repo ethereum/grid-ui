@@ -1,13 +1,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import DappIdenticon from '../components/DappIdenticon'
-
-import {i18n} from '../API'
+import DappIdenticon from '../../components/DappIdenticon'
+import './ConnectAccount.css'
+import {Mist, i18n} from '../../API'
 
 
 let selectedAccounts = []
 
 class ConnectAccount extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      selectedAccount: null
+    }
+  }
   renderAccounts(){
     return selectedAccounts.map(acc => {
       return (
@@ -17,6 +23,11 @@ class ConnectAccount extends Component {
       )
     })
   }
+  handleAccountSelected = acc => {
+    this.setState({
+      selectedAccount: acc
+    })
+  }
   render() {
 
     let dapp = {
@@ -24,8 +35,10 @@ class ConnectAccount extends Component {
       icon: ''
     }
     let dappFriendlyURL = this.props.popup.args.url
+                              .replace(/^https?:\/\/(www\.)?/, '')
+                              .replace(/\/$/, '');
     let accounts = this.props.accounts
-    let accountNumber = '1234'
+    let selectedAccount = this.state.selectedAccount
  
     return (
       <div className="popup-windows connect-account">
@@ -70,7 +83,7 @@ class ConnectAccount extends Component {
             {accounts.map(acc => {
               return(
               <li key={acc.address}>
-                <button className={acc.selected}>
+                <button className={acc.selected} onClick={(e) => {e.preventDefault(); this.handleAccountSelected(acc)} }>
                   <DappIdenticon identity={acc.address} className="dapp-small" />
                   <h3>{acc.name}</h3>
                   <span>{acc.address}</span>
@@ -88,10 +101,10 @@ class ConnectAccount extends Component {
           */}
 
           <div className="dapp-modal-buttons">
-            <button className="cancel" type="button">{i18n.t("buttons.cancel")}</button>
-            {accountNumber
+            <button className="cancel" type="button" onClick={(e) => {e.preventDefault(); Mist.closeThisWindow() }}>{i18n.t("buttons.cancel")}</button>
+            {selectedAccount
             ? <button className="ok dapp-primary-button" type="submit">{i18n.t("buttons.authorize")}</button>
-            : <button className="stay-anonymous dapp-primary-button" type="button">{i18n.t("buttons.stayAnonymous")}</button>
+            : <button className="stay-anonymous dapp-primary-button" type="button" onClick={(e) => {e.preventDefault(); Mist.closeThisWindow() }}>{i18n.t("buttons.stayAnonymous")}</button>
             }
           </div>
 

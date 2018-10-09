@@ -1,0 +1,30 @@
+.popup-windows.connect-account .dapp-account-list::after {
+  position: fixed;
+  content: '';
+  display: block;
+  bottom: 75px;
+  width: 100%;
+  height: 27.6px;
+  pointer-events: none;
+  background: -webkit-linear-gradient(top, rgba(241, 241, 241, 0), #f1f1f1);
+}
+
+.popup-windows.connect-account span.account-address, .popup-windows.connect-account span.dapp-url {
+  -webkit-animation: 0.9s cubic-bezier(0.74, 0, 1, 0.29) fadeIn;
+  animation: 0.9s cubic-bezier(0.74, 0, 1, 0.29) fadeIn;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  /* width: 210px; */
+  font-size: 14px;
+  color: #aeaeae;
+}
+
+.popup-windows.connect-account .account-dapp-user .app-icon {
+  left: 0px
+}
+
+.popup-windows.connect-account .account-dapp-user{
+  width: 75px;
+}
