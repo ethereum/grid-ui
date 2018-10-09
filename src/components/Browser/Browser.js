@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux';
 
 import Browserbar from './Browserbar'
 import Webviews from './Webviews'
 import Webview from './Webview'
-
 
 class Browser extends Component {
   constructor(props){
@@ -47,6 +47,9 @@ class Browser extends Component {
       url
     })
   }
+  handleReload = () => {
+
+  }
   render(){
     let tabs = this.props.tabs
     let accounts = []
@@ -54,6 +57,9 @@ class Browser extends Component {
     let tabUrl = selectedTab && selectedTab.url
     let urlParam = this.props.match.params.url ? decodeURIComponent(this.props.match.params.url) : ''
     let url = this.state.url || urlParam || tabUrl || 'https://github.com/ethereum/mist-ui-react'
+
+    let settings =  this.props.settings
+
     return (
       <Fragment>
         <Browserbar 
@@ -61,6 +67,7 @@ class Browser extends Component {
           dappAccounts = {accounts}
           selectedTab={selectedTab}
           onUrlChanged={this.handleNavigate}
+          onReload={this.handleReload}
         />
         {url
         ?
@@ -71,6 +78,8 @@ class Browser extends Component {
             visible={true}
             onIconAvailable={(icon) => {}}
             onTitleAvailable={(title) => {}}
+            onNavigate={this.handleNavigate}
+            userSettings={settings}
           />
         </main>
        :
@@ -87,4 +96,11 @@ class Browser extends Component {
   }
 }
 
-export default Browser
+function mapStateToProps(state) {
+  return {
+    accounts: state.accounts,
+    settings: state.settings.browser
+  };
+}
+
+export default connect(mapStateToProps)(Browser)
