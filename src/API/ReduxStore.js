@@ -111,7 +111,10 @@ const initialState = {
   },
 
   settings: {
-    etherPriceUSD: '16'
+    etherPriceUSD: '16',
+    browser: {
+      whitelist: 'enabled'
+    }
   }
 
 }
@@ -174,6 +177,7 @@ function mistApp(state = initialState, action) {
 }
 const store = createStore(mistApp, applyMiddleware(ReduxThunk))
 
+/*
 setTimeout(() => {
   console.log('add tab')
   store.dispatch({
@@ -188,5 +192,6 @@ setTimeout(() => {
     
   })
 }, 10*1000);
+*/
 
 export default store
