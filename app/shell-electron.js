@@ -1,20 +1,43 @@
-const {app, ipcMain} = require('electron')
+const { app, ipcMain } = require('electron')
+const path = require('path')
+const url = require('url')
+const is = require('./utils/is')
 
-//const Updater = require('./updater')
-const {setup, showPopup, createWindow} = require('./mist-integration')
-setup({
-  mode: 'inject' // || separate
-})
+const windowManager = require('./WindowManager')
+
+const updater = global.updater || {
+  on: () => {}
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => { 
-  createWindow()
-  ipcMain.on('backendAction_showPopup', (event, args) => {
-    showPopup(args.name, args.args)
-  })
+app.on('ready', () => {
+  let win = windowManager.createWindow()
+
+  if (is.dev()) {
+    const PORT = process.env.PORT
+    if(PORT){
+      win.loadURL(`http://localhost:${PORT}`)
+    } // else TODO show error message
+  } else {
+    //win.loadFile(path.join(__dirname, 'index.html'))
+    win.loadURL(url.format({
+      slashes: true,
+      protocol: 'file:',
+      pathname: path.resolve(__dirname, 'index.html/')
+    }))
+  }
+  setupIpc()
 })
+
+
+function setupIpc(){
+  ipcMain.on('backendAction_showPopup', (event, args) => {
+    windowManager.showPopup(args.name, args.args)
+  })
+}
+
 
 /*
 function start() {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import { withRouter } from "react-router";
 import "../normalize.css"
 import "./Wallet.css"
 import Account from './AccountItem'
@@ -43,4 +44,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Wallet)
+export default withRouter(connect(mapStateToProps)(Wallet))

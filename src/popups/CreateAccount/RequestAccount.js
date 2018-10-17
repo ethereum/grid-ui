@@ -1,14 +1,5 @@
 import React from 'react';
 import {Mist, i18n} from '../../API'
-let web3 = {
-  eth: {
-    personal: {
-      newAccount: () => {
-        console.log('bla')
-      }
-    }
-  }
-}
 class RequestAccount extends React.Component {
   constructor(props) {
     super(props);
@@ -71,17 +62,16 @@ class RequestAccount extends React.Component {
     }
   }
 
-  createAccount(pw) {
-    web3.eth.personal.newAccount(pw).then(address => {
-      //FIXME ipc.send('backendAction_windowMessageToOwner', null, address);
-
-      // notify about backing up!
-      alert(i18n.t('mist.popupWindows.requestAccount.backupHint'));
-
-      this.resetForm();
-
-      Mist.closeThisWindow()
-    });
+  async createAccount(pw) {
+    try {
+      await Mist.createAccountWeb3()
+    } catch (error) {
+      
+    }
+    this.resetForm();
+    // notify about backing up!
+    alert(i18n.t('mist.popupWindows.requestAccount.backupHint'));
+    Mist.closeThisWindow()
   }
 
   renderFormBody() {

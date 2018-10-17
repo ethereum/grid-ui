@@ -14,12 +14,14 @@ class IframeWebview extends Component {
       marginTop: "70px"
     }
     return (
-      <iframe src={this.props.src} style={iframeStyle}></iframe>
+      <iframe src={this.props.src} style={iframeStyle} title="webview"></iframe>
     )
   }
 }
 
-let __dirname = window.__dirname
+let __basedir = window.__basedir
+
+console.log('dirname: ', __basedir)
 
 export default class Webview extends Component {
   constructor(props) {
@@ -30,8 +32,8 @@ export default class Webview extends Component {
   render() {
     let checkedUrl = this.checkedUrl(this.props.url)
     //let preloadScriptPath = Helpers.isMist() ? '/modules/preloader/browser.js' : './preload.js' //'/preload-webview.js'
-    let preloadScriptPath = 'src/components/Browser/preload.js'
-    let preloadFile = `file://${__dirname}/${preloadScriptPath}` 
+    let preloadScriptPath = 'preload/preload-webview.js'
+    let preloadFile = `file://${__basedir}/${preloadScriptPath}` 
     //console.log('preload file:', preloadFile)
     return (
       <div className={"webview " + (this.props.visible ? "visible" : "hidden")}>
@@ -46,14 +48,14 @@ export default class Webview extends Component {
     let userSettings = this.props.userSettings
 
     if(url.startsWith('examples:')){
-      if(url === 'examples:') return `file://${__dirname}/public/examples/index.html`      
-      if(url === 'examples:request.access') return `file://${__dirname}/public/examples/request-access.html`
+      if(url === 'examples:') return `file://${__basedir}/public/examples/index.html`      
+      if(url === 'examples:request.access') return `file://${__basedir}/public/examples/request-access.html`
     }
     if(!url.startsWith('http')){
       url = 'http://'+url
     }
     if(userSettings.useWhitelist && !whitelist.includes(url)){
-      return `file://${__dirname}/public/errors/400.html`
+      return `file://${__basedir}/public/errors/400.html`
     }
     return url
   }

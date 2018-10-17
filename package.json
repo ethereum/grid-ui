@@ -1,20 +1,26 @@
 {
-  "name": "mist-ui",
+  "name": "mist-ui-react",
   "version": "0.1.9",
   "private": true,
-  "main": "shell-electron.js",
+  "main": "./app/shell-electron.js",
   "homepage": "./",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/ethereum/mist-ui-react.git"
+    "type": "git",
+    "url": "https://github.com/ethereum/mist-ui-react.git"
   },
   "scripts": {
-    "shell:electron": "cross-env PORT=3080 electron .",
-    "shell:tau": "tau .",
+    "electron:dev": "cross-env PORT=3080 electron .",
+    "electron:prod": "yarn run build:app && cross-env PORT=3080 electron ./build/main.js",
+    "electron:prod:app": "yarn run build:app && electron ./build/main.js",
+    "electron:prod:full": "yarn run build:all && electron ./build/main.js",
+    "tau:dev": "tau .",
     "start-conflict": "cross-env react-scripts start",
     "start": "cross-env PORT=3080 CI='false' react-scripts start",
     "build": "react-scripts build",
-    "release": "react-scripts-release electron github",
+    "build:client": "react-scripts build",
+    "build:app": "react-scripts-ext build app",
+    "build:all": "yarn run build:client && yarn run build:app",
+    "deploy": "react-scripts-ext deploy",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "build-css": "less-watch-compiler --run-once",
@@ -24,6 +30,7 @@
     "bignumber.js": "^7.2.1",
     "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
     "ethereum-blockies": "git+https://github.com/ethereum/blockies.git",
+    "loki": "^0.13.0",
     "moment": "^2.22.2",
     "numeral": "^2.0.6",
     "react": "^16.4.1",
@@ -38,8 +45,10 @@
     "semver": "^5.5.0",
     "web3": "^1.0.0-beta.36"
   },
+  "ignore": {
+    "create-react-app-extensions": "git+https://github.com/PhilippLgh/create-react-app-extensions.git"
+  },
   "devDependencies": {
-    "create-react-app-release": "git+https://github.com/PhilippLgh/create-react-app-release.git",
     "babel-register": "^6.26.0",
     "colors": "^1.3.0",
     "cross-env": "^5.2.0",

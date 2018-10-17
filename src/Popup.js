@@ -1,5 +1,4 @@
 import React from 'react'
-import Provider from './components/GenericProvider'
 // import './App.css';
 import './styles/styles.css';
 
@@ -8,7 +7,7 @@ import ConnectAccount from './popups/ConnectAccount'
 import SendTransactionConfirmation from './popups/SendTransactionConfirmation'
 import SendTx from './components/SendTx'
 import TxHistory from './components/TxHistory'
-import RequestAccount from './popups/CreateAccount/RequestAccount'
+import CreateAccount from './popups/CreateAccount/RequestAccount'
 import Settings from './popups/Settings'
 
 function PopupBase({ name, popup }) {
@@ -18,7 +17,7 @@ function PopupBase({ name, popup }) {
       return <ConnectAccount popup={popup}/>
     case 'RequestAccount':
     case 'CreateAccount':
-      return <RequestAccount />
+      return <CreateAccount />
     case 'SendTransactionConfirmation':
       return <SendTransactionConfirmation />
     case 'Settings':

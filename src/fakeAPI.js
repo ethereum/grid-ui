@@ -98,7 +98,7 @@ function init(window, lang){
   // see collections.js in Mist
   // const _Tabs = new Tabs([{ _id: "browser", url: "https://ethereum.org", redirect: "https://ethereum.org", position: 0 }])
   let _Tabs = new CollectionLight('tabs')
-  let dirname = 'D:/Projects/MistTau/mist-ui-react'
+  let dirname = window.__basedir
 
   /* mock data (not the correct data model representation)*/
   let mockTabs = [
@@ -139,9 +139,11 @@ function simulatePreload(){
   // FIXME use when started in electron-shell
   let fs = window.__fs
   let path = window.__path
-  let __dirname = window.__dirname
-  let app = fs === undefined ? {} : JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'app.en.i18n.json')))
-  let mist = fs === undefined ? {} : JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n', 'mist.en.i18n.json')))
+  let __basedir = window.__basedir
+  // let app = fs === undefined ? {} : JSON.parse(fs.readFileSync(path.join(__basedir, 'i18n', 'app.en.i18n.json')))
+  // let mist = fs === undefined ? {} : JSON.parse(fs.readFileSync(path.join(__basedir, 'i18n', 'mist.en.i18n.json')))
+  let app = {}
+  let mist = {}
   init(window, {
     ...app,
     ...mist

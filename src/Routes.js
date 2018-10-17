@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch } from "react-router-dom"
+import { Route, Redirect, Switch } from "react-router-dom"
 import Wallet from "./containers/Wallet"
 import AccountDetails from "./containers/Wallet/AccountDetails"
 import Browser from './components/Browser'
@@ -10,6 +10,8 @@ import Dapps from './containers/Dapps'
 
 export default () =>
 <Switch>
+  {window.location.href.endsWith('index.html') && <Redirect to="/" />}
+
   <Route path="/" exact component={Wallet} />
   <Route path="/wallet" exact component={Wallet} />
   <Route path="/dapps" exact component={Dapps} />

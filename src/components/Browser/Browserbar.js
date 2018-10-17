@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import {Helpers, i18n, Mist, LocalStore} from '../../API'
+import {Helpers, i18n, Mist} from '../../API'
 import DappIdenticon from '../DappIdenticon'
 import './Browserbar.css'
 import UrlInputBreadcrumb from './BreadcrumbNav'

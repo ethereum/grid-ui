@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import { withRouter } from "react-router";
 import "../normalize.css"
 
 import DappItem from './DappItem'
@@ -29,7 +30,7 @@ class DappOverview extends Component {
         <section className="card-container dapps">
         {
           suggested.map(dapp => {
-            return <DappItem dapp={dapp}></DappItem>
+            return <DappItem dapp={dapp} key={dapp.name}></DappItem>
           })
         }
         </section>
@@ -45,4 +46,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(DappOverview)
+export default withRouter(connect(mapStateToProps)(DappOverview))

@@ -12,7 +12,6 @@ class SidebarTab extends Component {
     this.handleConnectBtnClick = this.handleConnectBtnClick.bind(this)
 
     // query connected accounts for this dapp
-    let {Accounts} = Collections
     let dappAccounts = []
         /*
     if (this.permissions) {

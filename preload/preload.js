@@ -1,4 +1,5 @@
 const babelRegister = require('babel-register');
+const history = require('history')
 process.env.NODE_ENV = 'development'
 babelRegister({
   ignore: /\/(build|node_modules)\//,
@@ -39,8 +40,7 @@ window._mist = {
 //let fakeAPI = require('./src/fakeAPI')
 //moved to App.js so that it works in the browser too
 
-window.dirname = __dirname
-window.__dirname = __dirname
+window.__basedir = path.join(__dirname, '..')
 
 window.__require = function(name){
   if(name === 'ipc') {

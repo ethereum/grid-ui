@@ -1,12 +1,15 @@
-import {Helpers} from './Helpers'
 // export default Helpers.isMist() ? window.store.getState().nodes : window.store
-import { createStore, applyMiddleware } from 'redux';
-import ReduxThunk from 'redux-thunk'
+const{ createStore, applyMiddleware } = require('redux');
+const ReduxThunk = require('redux-thunk')
 
-import Web3 from 'web3'
+const initialState = require('./InitialState')
+
+/*
+const  Web3 = require('web3')
 let Ganache = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545")
 var web3 = new Web3(Ganache);
 //const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws/mist'));
+*/
 /*
   ethereum: {
     http: {
@@ -27,9 +30,9 @@ var web3 = new Web3(Ganache);
     rpc: 'https://ipfs.infura.io:5001'
   }
 */
-const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/mist'));
+// const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/mist'));
 
-
+/*
 (async function fetchAccounts(){
   let _accounts = await web3.eth.getAccounts()
   _accounts.forEach(async (acc) => {
@@ -45,79 +48,8 @@ const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.
   })
   console.log('received accounts', _accounts)
 })()
+*/
 
-
-
-let txCount = 0//await web3.eth.getTransactionCount(accounts[0])
-let tx = {
-  //"nonce": txCount,
-  //"from": '0xf17f52151EbEF6C7334FAD080c5704D77216b732',
-  //"to": '0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef',
-  // "gas": "0x76c0", // 30400
-  //"data": '',
-  //"gasPrice": "0x9184e72a000", // 10000000000000
-  //"value": "1000000000000000000" //web3Local.utils.toWei('1.0', 'ether')
-}
-
-let mockTabs = [
-  { _id: 'browser',  url: 'https://www.stateofthedapps.com', redirect: 'https://www.stateofthedapps.com', position: 0 },
-  { _id: '2',  url: 'http://www.ethereum.org', redirect: 'http://www.ethereum.org', position: 2 },
-  { _id: '3',  url: 'https://github.com/ethereum/mist-ui-react', redirect: 'http://www.github.com/philipplgh/mist-react-ui', position: 3 },
-  { _id: '4',  url: 'http://www.example.com', redirect: 'http://www.example.com', position: 4 }
-].map(tab => {tab.id = tab._id; return tab})
-//let tabs = Tabs.array.sort(el => el.position)
-
-
-let suggestedDapps = [{
-  name: 'Crypto Kitties',
-  banner: 'https://www.cryptokitties.co/images/kitty-eth.svg',
-  description: 'Lorem Ipsum dolor amet sun Lorem Ipsum dolor amet sun Lorem Ipsum dolor amet sun',
-  url: 'https://www.cryptokitties.co/'
-}]
-
-const initialState = {
-
-  newTx: null, //tx //required by SendTx popup
-  txs: [tx], //required by TxHistory popup
-  
-  tabs: mockTabs,
-  suggestedDapps,
-
-  accounts: [],
-
-  nodes: {
-    active: 'remote',
-    network: 'main',
-    changingNetwork: false,
-    remote: {
-      client: 'infura',
-      blockNumber: 100, // if < 1000 NodeInfo will display "connecting.."
-      timestamp: 0
-    },
-    local: {
-      client: 'geth',
-      blockNumber: 1,
-      timestamp: 0,
-      syncMode: 'fast',
-      sync: {
-        connectedPeers: 0,
-        currentBlock: 0,
-        highestBlock: 0,
-        knownStates: 0,
-        pulledStates: 0,
-        startingBlock: 0
-      }
-    }
-  },
-
-  settings: {
-    etherPriceUSD: '16',
-    browser: {
-      whitelist: 'enabled'
-    }
-  }
-
-}
 
 
 function mistApp(state = initialState, action) {
@@ -143,6 +75,7 @@ function mistApp(state = initialState, action) {
       return newState
     }
     case 'ADD_ACCOUNT':{
+      console.log('reducer called: add account')
       let newState = Object.assign({}, state)
       let acc = action.payload
       let accounts = [...state.accounts, acc]
@@ -175,6 +108,33 @@ function mistApp(state = initialState, action) {
       return state
   }
 }
-const store = createStore(mistApp, applyMiddleware(ReduxThunk))
+const store = createStore(mistApp/*, applyMiddleware(ReduxThunk)*/)
 
-export default store
+let _accounts = [ 
+  '0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D',
+  '0xdf4B9dA0aef26bEE9d55Db34480C722906DB4b02',
+  '0x944C8763B920fA7a94780B58e78A76Abc87f7cA8',
+  '0x6564Bcf22912e98960Aa5af5078f4D6f0c01306B',
+  '0x72317406A02435D967111B190DedB7aecD5c24E1',
+  '0x4a296FBaB50050BDace36500a96251F3630d3EC6',
+  '0xb9120Dd975bF62152CF96C474470E96FaF09D094',
+  '0xe32e6b95957cbDfe668355F11b3EafAA1b537de7',
+  '0x7b14F76f22B4eC6c3D44a8AB962C31ed5d900aBd',
+  '0x19BAe22A399E1bFEE0B10419D006E8d112C51e5b',
+  '0x969912D664477bf4Db7B1Aae743D7BbC3Aa59594',
+  '0x5793b3709ecdFBBa3019F4a16DC0346aaa20eFE7',
+  '0x73159c2F51Cc5fa273886Ea047E96C81CC2dBBCE' 
+]
+_accounts.forEach((acc) => {
+    //let balance = await web3Remote.eth.getBalance(acc)
+    let balance = 0
+    store.dispatch({
+      type: 'ADD_ACCOUNT',
+      payload: {
+        address: acc,
+        balance: ('' +balance)
+      }
+    })
+  })
+
+module.exports = store

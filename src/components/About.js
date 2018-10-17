@@ -2,7 +2,7 @@ import React from 'react';
 
 class About extends React.Component {
   render() {
-    const appIconPath = `file://${window.dirname}/icons/${
+    const appIconPath = `file://${window.__basedir}/icons/${
       window.mistMode
     }/icon2x.png`;
     const appName = window.mistMode === 'mist' ? 'Mist' : 'Ethereum Wallet';

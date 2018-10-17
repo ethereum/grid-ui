@@ -153,7 +153,7 @@ class NodeInfo extends Component {
   }
 
   localStatsSynced() {
-    const { blockNumber, timestamp, syncMode } = this.props.local;
+    const { blockNumber, timestamp } = this.props.local;
     const { connectedPeers } = this.props.local.sync;
     
     const formattedBlockNumber = numeral(blockNumber).format('0,0');
@@ -242,11 +242,10 @@ class NodeInfo extends Component {
     const timeSince = moment(remote.timestamp, 'X');
     const diff = moment().diff(timeSince, 'seconds');
 
-    let dotColor = network == 'main' ? '#7ed321' : '#00aafa';
+    let dotColor = network === 'main' ? '#7ed321' : '#00aafa';
 
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
-    const progress =
-      ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
+    const progress = ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
 
     return (
       <div className="pie-container">
@@ -282,7 +281,7 @@ class NodeInfo extends Component {
   render() {
     const { network } = this.props;
 
-    let mainClass = network == 'main' ? 'node-mainnet' : 'node-testnet';
+    let mainClass = network === 'main' ? 'node-mainnet' : 'node-testnet';
     if (this.state.sticky) mainClass += ' sticky';
 
     return (

@@ -49,7 +49,7 @@ export default class AccountItem extends Component {
                 {address}
               </div>
               <div className="account-balance">
-                {balance}<span style={{'margin-left':'5px'}}>Ether</span>
+                {balance}<span style={{marginLeft:'5px'}}>Ether</span>
               </div>
               <div className="account-actions">
                 <button className="account-action" onClick={this.handleSendTxClicked}>send</button>
