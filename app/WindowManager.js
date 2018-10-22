@@ -56,8 +56,8 @@ export default class WindowManager {
 
 const PORT = process.env.PORT || 3000
 
-
-let preloadPath = path.join(__dirname, '..', 'preload', 'preload.js')
+let isDev = false // FIXME investigate is.dev()
+let preloadPath = isDev ? path.join(__dirname, 'preload', 'preload.js') : path.join(__dirname, 'preload.js')
 // TODO if path does not exist process.exit()
 
 class WindowManager {

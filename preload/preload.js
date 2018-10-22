@@ -1,10 +1,4 @@
-const babelRegister = require('babel-register');
-const history = require('history')
 process.env.NODE_ENV = 'development'
-babelRegister({
-  ignore: /\/(build|node_modules)\//,
-  presets: ['env', 'react-app'],
-});
 
 const {ipcRenderer, remote} = require('electron')
 const {dialog} = remote
@@ -13,8 +7,13 @@ const fs = require('fs')
 const path = require('path')
 
 // TODO WARNING not browser compatible -> needs to be mocked
-window.__fs = fs
-window.__path = path
+let i18nPath = path.join(__dirname, 'i18n')
+let app = JSON.parse(fs.readFileSync(path.join(i18nPath, 'app.en.i18n.json')))
+let mist = JSON.parse(fs.readFileSync(path.join(i18nPath, 'mist.en.i18n.json')))
+window.__i18n = {
+  ...app,
+  ...mist
+}
 
 var currentWindow = remote.getCurrentWindow()
 
@@ -40,7 +39,7 @@ window._mist = {
 //let fakeAPI = require('./src/fakeAPI')
 //moved to App.js so that it works in the browser too
 
-window.__basedir = path.join(__dirname, '..')
+window.__basedir = __dirname //path.join(__dirname, '..')
 
 window.__require = function(name){
   if(name === 'ipc') {

@@ -137,17 +137,11 @@ function simulatePreload(){
   // load real i18n translations into the fake for a more
   // authentic UI
   // FIXME use when started in electron-shell
-  let fs = window.__fs
-  let path = window.__path
+
   let __basedir = window.__basedir
-  // let app = fs === undefined ? {} : JSON.parse(fs.readFileSync(path.join(__basedir, 'i18n', 'app.en.i18n.json')))
-  // let mist = fs === undefined ? {} : JSON.parse(fs.readFileSync(path.join(__basedir, 'i18n', 'mist.en.i18n.json')))
-  let app = {}
-  let mist = {}
-  init(window, {
-    ...app,
-    ...mist
-  })
+
+
+  init(window, (window.__i18n || {app:{}, mist:{}} ))
 }
 
 // init API
