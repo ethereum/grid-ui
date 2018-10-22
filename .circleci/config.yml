@@ -1,0 +1,24 @@
+# Javascript Node CircleCI 2.0 configuration file
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10.5
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn build:all
+      #- run: asar pack mist-ui.asar build/
+      - run: tar -cvf mist-ui.tar /build
+      - store_artifacts:
+        path: mist-ui.tar
+
+
+
