@@ -2811,10 +2811,10 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-app-extensions@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/create-react-app-extensions/-/create-react-app-extensions-1.0.0.tgz#d9b98eb880773bb59f1ea14b1fa11b03d0ce6fa1"
-  integrity sha512-ZPz9n/bahDyk+RqCm+lW48nZM0pv1fDmSsmBxOpwe8N0iZSky6d4KNmg3yihbF6SvCdHC/l6lRuDtG8viymZcQ==
+create-react-app-extensions@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/create-react-app-extensions/-/create-react-app-extensions-1.0.1.tgz#94aac5b2172f33413e763fc5955e6d176bd1127d"
+  integrity sha512-smyGp7hBaemjGxKxEbifFmwQ/y4pXCnz743eePaZxFj9N/caO6qSZm0JMmTINXqfqRs3dS7dRm07rKji58FdEg==
   dependencies:
     "@octokit/rest" "^15.13.1"
     asar "^0.14.5"
