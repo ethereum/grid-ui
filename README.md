@@ -24,7 +24,6 @@ git clone https://github.com/ethereum/mist-ui-react.git
 cd mist-ui-react
 yarn
 
-
 Start in 3 terminals:
 yarn run watch-css  -> compile less to css and watch for changes (less + react compat workaround)
 yarn run start -> start dev server for react with hot relaoding
