@@ -16,8 +16,11 @@ jobs:
       - run: yarn
       - run: CI=false && yarn deploy
       - store_artifacts:
-        - path: `find build/mist*.asar`
-        - path: build/manifest.json
+          path: build/mist*.asar
+      - store_artifacts:
+          path: build/manifest.json
+
+
 
 
 
