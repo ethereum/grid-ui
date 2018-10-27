@@ -14,11 +14,10 @@ jobs:
     steps:
       - checkout
       - run: yarn
-      - run: CI=false && yarn build:all
-      #- run: asar pack mist-ui.asar build/
-      - run: tar -cvf mist-ui.tar build
+      - run: CI=false && yarn deploy
       - store_artifacts:
-          path: mist-ui.tar
+        - path: `find build/mist*.asar`
+        - path: build/manifest.json
 
 
 
