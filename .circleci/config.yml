@@ -14,9 +14,9 @@ jobs:
     steps:
       - checkout
       - run: yarn
-      - run: yarn build:all
+      - run: CI=false && yarn build:all
       #- run: asar pack mist-ui.asar build/
-      - run: tar -cvf mist-ui.tar /build
+      - run: tar -cvf mist-ui.tar build
       - store_artifacts:
           path: mist-ui.tar
 
