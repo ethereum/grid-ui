@@ -18,7 +18,7 @@ jobs:
       #- run: asar pack mist-ui.asar build/
       - run: tar -cvf mist-ui.tar /build
       - store_artifacts:
-        path: mist-ui.tar
+          path: mist-ui.tar
 
 
 
