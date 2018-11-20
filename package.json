@@ -30,7 +30,6 @@
     "bignumber.js": "^7.2.1",
     "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
     "ethereum-blockies": "git+https://github.com/ethereum/blockies.git",
-    "loki": "^0.13.0",
     "moment": "^2.22.2",
     "numeral": "^2.0.6",
     "react": "^16.4.1",
