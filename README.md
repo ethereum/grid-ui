@@ -27,5 +27,5 @@ yarn
 Start in 3 terminals:
 yarn run watch-css  -> compile less to css and watch for changes (less + react compat workaround)
 yarn run start -> start dev server for react with hot relaoding
-yarn run shell:electron -> load the app from the dev server into an electron window
+yarn run electron:dev -> load the app from the dev server into an electron window
 ```
