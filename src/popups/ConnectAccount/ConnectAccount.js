@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import DappIdenticon from '../../components/DappIdenticon'
+import { Identicon } from 'ethereum-react-components'
 import './ConnectAccount.css'
 import {Mist, i18n} from '../../API'
 
@@ -18,7 +18,7 @@ class ConnectAccount extends Component {
     return selectedAccounts.map(acc => {
       return (
         <span key={acc.address} className="simptip-position-left simptip-movable" data-tooltip={acc.name}>
-          <DappIdenticon identity={acc} className="dapp-large" />
+          <Identicon seed={acc} className="dapp-large" />
         </span>
       )
     })
@@ -84,7 +84,7 @@ class ConnectAccount extends Component {
               return(
               <li key={acc.address}>
                 <button className={acc.selected} onClick={(e) => {e.preventDefault(); this.handleAccountSelected(acc)} }>
-                  <DappIdenticon identity={acc.address} className="dapp-small" />
+                  <Identicon seed={acc.address} className="dapp-small" />
                   <h3>{acc.name}</h3>
                   <span>{acc.address}</span>
                 </button>

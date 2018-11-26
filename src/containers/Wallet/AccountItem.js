@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import Identicon from '../../components/DappIdenticon'
+import { Identicon } from 'ethereum-react-components'
 import {Mist, EthTools} from '../../API'
 import './AccountItem.css'
 
@@ -20,7 +20,7 @@ export default class AccountItem extends Component {
     Mist.showHistory()
   }
   formatBalance(balanceWei){
-    return EthTools.formatBalance(balanceWei)
+    return "1000" //EthTools.formatBalance(balanceWei)
   }
   render() {
     let account = this.props.account
@@ -35,7 +35,7 @@ export default class AccountItem extends Component {
       <Link to={`/account/${address}`} className="wallet-box">
         <div className="account card">
           <div className="account-identicon">
-            <Identicon identity={address} class="identicon-medium" />
+            <Identicon seed={address} className="identicon-medium" />
           </div>
           <div className="account-information">
             <div className="account-name">
