@@ -6,7 +6,7 @@ import UpdateAvailable from './popups/ClientUpdateAvailable'
 import ConnectAccount from './popups/ConnectAccount'
 import SendTransactionConfirmation from './popups/SendTransactionConfirmation'
 import SendTx from './components/SendTx'
-import TxHistory from './components/TxHistory'
+import { TxHistory } from 'ethereum-react-components'
 import CreateAccount from './popups/CreateAccount/RequestAccount'
 import Settings from './popups/Settings'
 
