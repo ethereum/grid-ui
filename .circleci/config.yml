@@ -27,7 +27,7 @@ jobs:
       - run: |
           curl -X POST --header "Content-Type: application/json" \
           -d '{"branch":"master"}' \
-          https://circleci.com/api/v1.1/project/github/ethereum/mist-shell/build?circle-token=${CIRCLE_API_USER_TOKEN}
+          https://circleci.com/api/v1.1/project/github/ethereum/mist-shell/build?circle-token=$CIRCLE_TOKEN_MIST_BOT
 
 
 workflows:
