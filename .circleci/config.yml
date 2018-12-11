@@ -21,6 +21,8 @@ jobs:
           path: build/manifest.json
 
   tag-release:
+    docker: 
+      - image: circleci/node:10.5
     steps: 
       - run: |
           curl -X POST --header "Content-Type: application/json" \
