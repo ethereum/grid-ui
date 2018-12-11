@@ -1,7 +1,7 @@
 # Javascript Node CircleCI 2.0 configuration file
 version: 2
 jobs:
-  build:
+  build: 
     docker:
       # specify the version you desire here
       - image: circleci/node:10.5
@@ -20,6 +20,24 @@ jobs:
       - store_artifacts:
           path: build/manifest.json
 
+  tag-release:
+    steps: 
+      - run: |
+          curl -X POST --header "Content-Type: application/json" \
+          -d '{"branch":"master"}' \
+          https://circleci.com/api/v1.1/project/github/ethereum/mist-shell/build?circle-token=${CIRCLE_API_USER_TOKEN}
+
+
+workflows:
+  version: 2
+  
+  untagged-build:
+    jobs:
+      - build
+
+  tagged-build:
+    jobs:
+      - tag-release
 
 
 
