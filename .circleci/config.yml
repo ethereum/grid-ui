@@ -3,14 +3,8 @@ version: 2
 jobs:
   build: 
     docker:
-      # specify the version you desire here
       - image: circleci/node:10.5
       
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
     steps:
       - checkout
       - run: yarn
@@ -24,13 +18,6 @@ jobs:
     docker: 
       - image: circleci/node:10.5
     steps: 
-    #- run:
-    #      name: "Start mist-shell build on CircleCI"
-    #      command: |
-    #      curl -X POST --header "Content-Type: application/json" \
-    #      -d '{"branch":"master"}' \
-    #      https://circleci.com/api/v1.1/project/github/ethereum/mist-shell/build?circle-token=$CIRCLE_TOKEN_MIST_BOT
-
       - run:
           name: "Start mist-shell build on Travis"
           command: |
@@ -42,6 +29,12 @@ jobs:
                -H "Authorization: token $TRAVIS_TOKEN" \
                -d "$body" \
                https://api.travis-ci.com/repo/ethereum%2Fmist-shell/requests
+    #- run:
+    #      name: "Start mist-shell build on CircleCI"
+    #      command: |
+    #      curl -X POST --header "Content-Type: application/json" \
+    #      -d '{"branch":"master"}' \
+    #      https://circleci.com/api/v1.1/project/github/ethereum/mist-shell/build?circle-token=$CIRCLE_TOKEN_MIST_BOT
 
 
 workflows:
