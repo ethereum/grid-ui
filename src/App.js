@@ -45,6 +45,9 @@ export default class App extends Component {
       {id: 3, name: 'Network', route: 'network', subitems: [
         {id: '3a', name: 'Config', route: 'network/config'},
       ]},
+      {id: 4, name: 'Browser', route: 'browser', subitems: [
+        {id: '4a', name: 'Browser', route: 'browser'},
+      ]},
 
       // {id: 0, name: 'wallet', icon: 'https://cdn4.iconfinder.com/data/icons/money-13/24/Wallet-2-512.png'},
       // {id: 1, name: 'dapps', icon: 'https://cdn4.iconfinder.com/data/icons/web-mobile-round1/210/Untitled-35-512.png', route: `dapps`},

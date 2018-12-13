@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 
 import './SideNav.css'
 
-import NodeInfo from '../NodeInfo'
+import NodeInfo from 'ethereum-react-components'
 
 class NavItem extends Component {
   constructor(props){
@@ -49,20 +49,22 @@ class NavItem extends Component {
     )
   }
   render(){
+    const { item } = this.props
     let badge = ''
-    let icon = this.props.item.icon || ''
-    let name = this.props.item.name
+    let icon = item.icon || ''
+    let name = item.name
     let nameFull = ''
-    let link = this.props.item.route || (name === 'wallet' ? 'wallet' : 'browser')
+    let link = item.route || (name === 'wallet' ? 'wallet' : 'browser')
     return (
       <li className={'browser'} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
       <header>
         <NavLink to={'/'+link}>
           <button className={"main " + (badge && 'has-badge')}>
-            {icon
+            {name}
+            {/*icon
               ? <img src={icon} draggable="false" />
               : <i className="icon-globe"></i>
-            }
+            */}
           </button>
         </NavLink>
       </header>
@@ -84,17 +86,7 @@ class Sidebar extends Component {
     super(props)
   }
   render(){
-    let tabs = [
-      {id: 0, name: 'wallet', icon: 'https://cdn4.iconfinder.com/data/icons/money-13/24/Wallet-2-512.png'},
-      {id: 1, name: 'dapps', icon: 'https://cdn4.iconfinder.com/data/icons/web-mobile-round1/210/Untitled-35-512.png', route: `dapps`},
-      //{id: 2, name: 'contracts', icon: 'https://cdn2.iconfinder.com/data/icons/business-finance-line-1/24/Contract-512.png'},
-      {id: 4, name: 'browser', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKnps1AIerbVNbkDAn77mxjUIDQPeWdlNDiFwJlOlVfMECvLEP_g'},
-      {id: 3, name: 'remix', icon: 'https://raw.githubusercontent.com/horizon-games/remix-app/master/resources/icon.png', route: `browser/${encodeURIComponent('https://remix.ethereum.org/')}`},
-      //{id: 4, name: 'swarm', icon: 'https://swarm-guide.readthedocs.io/en/latest/_images/swarm.png'},
-      //{id: 5, name: 'tools', icon: 'https://d1nhio0ox7pgb.cloudfront.net/_img/i_collection_png/256x256/plain/tools.png'},
-      //{id: 6, name: 'network', icon: 'http://downloadicons.net/sites/default/files/network-icon-76424.png'},
-      //{id: 7, name: 'learn', icon: ''},
-    ]
+    let tabs = this.props.tabs
     return (
       <aside className="sidebar">
         <nav>

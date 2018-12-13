@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Redirect, Switch } from "react-router-dom"
 import Wallet from "./containers/Wallet"
 import AccountDetails from "./containers/Wallet/AccountDetails"
-import Browser from './components/Browser'
+import Browser from './containers/Browser'
 import Dapps from './containers/Dapps'
 import Tools from './containers/Tools'
 

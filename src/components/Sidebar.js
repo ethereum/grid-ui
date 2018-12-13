@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import SidebarTab from './SidebarTab'
-import NodeInfo from './NodeInfo'
+import NodeInfo from 'ethereum-react-components'
 
 class Sidebar extends Component {
   constructor(props){

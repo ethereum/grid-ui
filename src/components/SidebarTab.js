@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import iconPath from '../icons/browse-icon@2x.png'
-
-import DappIdenticon from './DappIdenticon'
-
+import { Identicon } from 'ethereum-react-components';
 import {i18n, Collections} from '../API'
 
 class SidebarTab extends Component {
@@ -75,7 +73,7 @@ class SidebarTab extends Component {
         <span className="dapp-identicon-container">
           {this.state.dappAccounts.map(acc => {
             return(
-              <DappIdenticon key={acc.address} identity={acc.address} className="dapp-tiny"/> 
+              <Identicon key={acc.address} seed={acc.address} className="dapp-tiny"/> 
             )
           })}
         </span>

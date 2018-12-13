@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import {Helpers, i18n, Mist} from '../../API'
-import DappIdenticon from '../DappIdenticon'
+import { Identicon } from 'ethereum-react-components'
 import './Browserbar.css'
 import UrlInputBreadcrumb from './BreadcrumbNav'
 
@@ -64,7 +64,7 @@ export default class Browserbar extends Component {
     let dappAccounts = this.props.dappAccounts
     return dappAccounts.map(acc => 
       <span key={acc.address} className="simptip-position-left simptip-movable" data-tooltip={tab.name}>
-        <DappIdenticon identity={acc.address} className="dapp-tiny" />
+        <Identicon seed={acc.address} className="dapp-tiny" />
       </span>
     )
   }
