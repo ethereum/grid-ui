@@ -1,16 +1,10 @@
 # Javascript Node CircleCI 2.0 configuration file
 version: 2
 jobs:
-  build:
+  build: 
     docker:
-      # specify the version you desire here
       - image: circleci/node:10.5
       
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
     steps:
       - checkout
       - run: yarn
@@ -20,7 +14,30 @@ jobs:
       - store_artifacts:
           path: build/manifest.json
 
+  tag-release:
+    docker: 
+      - image: circleci/node:10.5
+    steps: 
+      - run:
+          name: "Start mist-shell build on CircleCI"
+          command: |
+            curl -X POST --header "Content-Type: application/json" \
+            -d '{"branch":"master"}' \
+            https://circleci.com/api/v1.1/project/github/ethereum/mist-shell/build?circle-token=$CIRCLE_TOKEN_MIST_BOT
 
+workflows:
+  version: 2
+    
+  untagged-build:
+    jobs:
+      - build
 
-
+  tagged-build:
+    jobs:
+      - tag-release:
+          filters:
+            tags:
+              only: /^v.+/
+            branches:
+              ignore: /.+/
 
