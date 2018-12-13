@@ -1,6 +1,6 @@
 {
   "name": "mist-ui-react",
-  "version": "0.1.10",
+  "version": "0.1.19",
   "private": true,
   "main": "./app/shell-electron.js",
   "homepage": "./",
@@ -12,6 +12,7 @@
     "electron:dev": "cross-env PORT=3080 electron .",
     "tau:dev": "tau .",
     "start-conflict": "cross-env react-scripts start",
+    "analyze": "source-map-explorer build/static/js/main.*",
     "start": "cross-env PORT=3080 CI='false' react-scripts start",
     "_build": "react-scripts build",
     "build": "react-scripts-ext build app",
@@ -48,6 +49,7 @@
     "electron": "^2.0.8",
     "less-watch-compiler": "^1.11.3",
     "react-test-renderer": "^16.5.2",
+    "source-map-explorer": "^1.6.0",
     "webpack-bundle-analyzer": "^3.0.3"
   },
   "browserslist": [
