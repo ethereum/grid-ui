@@ -19,23 +19,11 @@ jobs:
       - image: circleci/node:10.5
     steps: 
       - run:
-          name: "Start mist-shell build on Travis"
-          command: |
-            body='{"request": {"branch":"master"}}' && \
-            curl -s -X POST \
-               -H "Content-Type: application/json" \
-               -H "Accept: application/json" \
-               -H "Travis-API-Version: 3" \
-               -H "Authorization: token $TRAVIS_TOKEN" \
-               -d "$body" \
-               https://api.travis-ci.com/repo/ethereum%2Fmist-shell/requests
-    #- run:
-    #      name: "Start mist-shell build on CircleCI"
-    #      command: |
-    #      curl -X POST --header "Content-Type: application/json" \
-    #      -d '{"branch":"master"}' \
-    #      https://circleci.com/api/v1.1/project/github/ethereum/mist-shell/build?circle-token=$CIRCLE_TOKEN_MIST_BOT
-
+            name: "Start mist-shell build on CircleCI"
+            command: |
+            curl -X POST --header "Content-Type: application/json" \
+            -d '{"branch":"master"}' \
+            https://circleci.com/api/v1.1/project/github/ethereum/mist-shell/build?circle-token=$CIRCLE_TOKEN_MIST_BOT
 
 workflows:
   version: 2
@@ -52,7 +40,4 @@ workflows:
               only: /^v.+/
             branches:
               ignore: /.+/
-
-
-
 
