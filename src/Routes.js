@@ -16,6 +16,7 @@ import Conversion from './containers/Tools/Conversion'
 import Rpc from './containers/Tools/Rpc'
 
 import NetworkConfig from './containers/Network/Config'
+import NodeConfig from './containers/Network/NodeConfig'
 
 
 //<Browser tabs={this.state.tabs}/>
@@ -37,6 +38,7 @@ export default () =>
   <Route path="/tools/rpc" exact component={Rpc} />
   <Route path="/network" exact component={Wallet} />
   <Route path="/network/config" exact component={NetworkConfig} />
+  <Route path="/network/nodeconfig" exact component={NodeConfig} />
 
   <Route path="/dapps" exact component={Dapps} />
   <Route path="/browser/:url" exact component={Browser} />
