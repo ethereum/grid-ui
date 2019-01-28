@@ -5,9 +5,6 @@ import {i18n} from '../API'
 import iconPath from '../icons/icon.png'
 
 class UpdateAvailable extends Component {
-  constructor(){
-    super()
-  }
   render() {
     let appIconPath = iconPath
     let mode = 'mist'
@@ -23,7 +20,7 @@ class UpdateAvailable extends Component {
     return (
       <div className="popup-windows update-available row">
         <div className="col col-3">
-          <img className={"left-overlay" + mode} src={appIconPath} />
+          <img alt="app icon" className={"left-overlay" + mode} src={appIconPath} />
         </div>
         <div className="col col-8 text">
           <h1>

@@ -7,9 +7,6 @@ import Account from './AccountItem'
 import {Mist} from '../../API'
 
 class Wallet extends Component {
-  constructor(props) {
-    super(props)
-  }
   handleCreateAccountClicked = () => {
     Mist.createAccount()
   }

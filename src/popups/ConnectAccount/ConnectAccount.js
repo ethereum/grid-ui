@@ -4,7 +4,6 @@ import { Identicon } from 'ethereum-react-components'
 import './ConnectAccount.css'
 import {Mist, i18n} from '../../API'
 
-
 let selectedAccounts = []
 
 class ConnectAccount extends Component {
@@ -58,7 +57,7 @@ class ConnectAccount extends Component {
               }
 
               {dapp.icon
-              ? <img src={dapp.icon} className="app-icon"/>
+              ? <img alt="" src={dapp.icon} className="app-icon"/>
               : <span className="app-icon is-empty">
                   <i className="icon-globe"></i>
                 </span>

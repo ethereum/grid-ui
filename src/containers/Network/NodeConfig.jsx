@@ -3,34 +3,58 @@ import { Button, Input, FileChooser, Select, NodeInfoBox } from 'ethereum-react-
 import './NodeConfig.css'
 import NodeSettingsForm from './NodeSettingsForm'
 
+import { Mist } from './../../API'
+const { geth } = Mist
+
 class NodeConfig extends Component {
 
   constructor(props){
     super(props)
     this.state = {
-      status: {},
-      config: {},
+      status: {
+        node: 'geth',
+        binPath: 'binPath',
+        version: '1.8.20-stable',
+        commit: '24d727b6d6e2c0cde222fa12155c4a6db5caaf2e',
+        architecture: 'amd64',
+        go: 'go1.11.2',
+        isRunning: false
+      },
+      config: {
+        name: 'default',
+        dataDir: 'F:/Ethereum',
+        host: 'localhost',
+        port: 8545,
+        network: 'main'
+      },
+      releases: [
+        'latest',
+        '1234',
+        '4567'
+      ]
     }
   }
   
   componentDidMount = async () => {
-    let config = await window.Mist.geth.getConfig()
-    let status = await window.Mist.geth.getStatus()
+    // let config = await geth.getConfig()
+    // let status = await geth.getStatus()
+    let config = {}
+    let status = {}
     console.log('geth: ', config, status)
+    /*
     this.setState({
       config,
       status
     })
+    */
   }
 
   handleSaveTemplate = async () => {
-    const { geth } = window.Mist
     let version = await geth.version()
     console.log('geth version: ', version)
   }
 
   handleChangeConfig = async () => {
-    const { geth } = window.Mist
     try {
       let result = await geth.setConfig({
         port: '8434'
@@ -42,7 +66,6 @@ class NodeConfig extends Component {
   }
 
   handleStartStop = async () => {
-    const { geth } = window.Mist
     const { status } = this.state
     const { isRunning } = status
     let newStatus = {}
@@ -52,7 +75,7 @@ class NodeConfig extends Component {
       newStatus = await geth.start()
     }
     this.setState({
-      status: newStatus
+      // FIXME status: newStatus
     })
   }
 
@@ -60,8 +83,6 @@ class NodeConfig extends Component {
     const { status, config } = this.state
     const { binPath, node } = status
     const nodeName = node
-
-    const { geth } = window.Mist
 
     let templates = [
       {label: 'default config', value: 'default'}
@@ -99,6 +120,7 @@ class NodeConfig extends Component {
         <h3>Node: {nodeName}</h3>
         <h3>Path: {binPath}</h3>
 
+        {/*
         <div style={{width: '75%'}}>
           <div className="setting">
             Template: <br /> 
@@ -118,7 +140,7 @@ class NodeConfig extends Component {
             onStartStop={this.handleStartStop}
           />
         </div>
-
+        */}
 
         <div style={{width: '24%'}}>
         {/**

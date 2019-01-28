@@ -1,11 +1,11 @@
-import {Helpers} from './Helpers'
+// import {Helpers} from './Helpers'
 // export default Helpers.isMist() ? window.store.getState().nodes : window.store
 import { createStore, applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk'
 
-import Web3 from 'web3'
-let Ganache = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545")
-var web3 = new Web3(Ganache);
+// import Web3 from 'web3'
+// let Ganache = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545")
+// var web3 = new Web3(Ganache);
 //const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws/mist'));
 /*
   ethereum: {
@@ -26,9 +26,7 @@ var web3 = new Web3(Ganache);
     gateway: 'https://ipfs.infura.io',
     rpc: 'https://ipfs.infura.io:5001'
   }
-*/
-const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/mist'));
-
+  const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/mist'));
 
 (async function fetchAccounts(){
   let _accounts = await web3.eth.getAccounts()
@@ -45,10 +43,10 @@ const web3Remote = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.
   })
   console.log('received accounts', _accounts)
 })()
+*/
 
 
-
-let txCount = 0//await web3.eth.getTransactionCount(accounts[0])
+// let txCount = 0//await web3.eth.getTransactionCount(accounts[0])
 let tx = {
   //"nonce": txCount,
   //"from": '0xf17f52151EbEF6C7334FAD080c5704D77216b732',
@@ -170,6 +168,7 @@ function mistApp(state = initialState, action) {
         tabs: tabs 
       }
       */
+     break;
     }
     default:
       return state

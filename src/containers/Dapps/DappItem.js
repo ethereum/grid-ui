@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom'
 import './DappItem.css'
 
 export default class DappItem extends Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
     let dapp = this.props.dapp
     let name = dapp.name || ''
@@ -21,7 +18,7 @@ export default class DappItem extends Component {
         <h3>{name}</h3>
       </header>
       <figure className="card-thumbnail">
-        <img src={dapp.banner} />
+        <img alt="dapp banner" src={dapp.banner} />
       </figure>
       <div className="card-description">
         {dapp.description}

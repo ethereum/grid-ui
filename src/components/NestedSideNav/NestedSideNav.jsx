@@ -36,13 +36,8 @@ class DropdownMenuItem extends Component {
 }
 
 class NestedSideNav extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
-    let items = this.props.items
-
+    const { items } = this.props
     return (
       <div className="sidenav">
         {items.map(item => <DropdownMenuItem key={item.id} item={item} /> )}

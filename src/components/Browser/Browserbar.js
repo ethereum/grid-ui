@@ -89,7 +89,7 @@ export default class Browserbar extends Component {
         <button title="refresh page" className="reload icon icon-refresh" onClick={this.handleReloadClick}></button>
         <div className="app-bar">
           <label htmlFor="url-input" className={"dapp-info " + (icon && 'has-icon')}>
-            {icon && <img src={icon} className="app-icon" />}
+            {icon && <img alt="app icon" src={icon} className="app-icon" />}
             <span title={nameFull}>{name}</span>
           </label>
           {false

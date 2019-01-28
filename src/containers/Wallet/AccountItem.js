@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Identicon } from 'ethereum-react-components'
-import {Mist, EthTools} from '../../API'
+import { Mist } from '../../API'
 import './AccountItem.css'
 
 export default class AccountItem extends Component {
-  constructor(props) {
-    super(props)
-  }
   handleSendTxClicked = (e) => {
     let account = this.props.account
     e.preventDefault()

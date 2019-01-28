@@ -6,9 +6,6 @@ import "../normalize.css"
 import DappItem from './DappItem'
 
 class DappOverview extends Component {
-  constructor(props) {
-    super(props)
-  }
   render(){
     let suggested = this.props.suggestedDapps
     let connectedDapps = this.props.tabs

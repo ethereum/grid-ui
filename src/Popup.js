@@ -4,7 +4,7 @@ import './styles/styles.css';
 
 import UpdateAvailable from './popups/ClientUpdateAvailable'
 import ConnectAccount from './popups/ConnectAccount'
-import SendTransactionConfirmation from './popups/SendTransactionConfirmation'
+// import SendTransactionConfirmation from './popups/SendTransactionConfirmation'
 import { FormSendTx, FormCreateAccount, TxHistory } from 'ethereum-react-components'
 import Settings from './popups/Settings'
 
@@ -17,7 +17,7 @@ function PopupBase({ name, popup }) {
     case 'CreateAccount':
       return <FormCreateAccount />
     case 'SendTransactionConfirmation':
-      return <SendTransactionConfirmation />
+      return <span>TODO send tx confirmation</span>
     case 'Settings':
       return <Settings />    
     case 'SendTx':
