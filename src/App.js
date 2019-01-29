@@ -25,7 +25,8 @@ export default class App extends Component {
       ]},
       {id: 3, name: 'Network', route: 'network', subitems: [
         {id: '3a', name: 'Config', route: 'network/config'},
-        {id: '3b', name: 'Geth Config', route: 'network/nodeconfig'},
+        {id: '3b', name: 'Geth Setup', route: 'network/nodesetup'},
+        {id: '3c', name: 'Geth Config', route: 'network/nodeconfig'},
       ]},
       {id: 4, name: 'Browser', route: 'browser', subitems: [
         {id: '4a', name: 'Browser', route: 'browser'},

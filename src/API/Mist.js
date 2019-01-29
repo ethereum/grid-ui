@@ -78,4 +78,5 @@ const MistApi = {
   }
 }
 
-export default MistApi
+// export default MistApi
+export default window.Mist

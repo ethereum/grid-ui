@@ -16,6 +16,7 @@ import Conversion from './containers/Tools/Conversion'
 import Rpc from './containers/Tools/Rpc'
 
 import NetworkConfig from './containers/Network/Config'
+import NodeSetup from './containers/Network/NodeSetup'
 import NodeConfig from './containers/Network/NodeConfig'
 
 
@@ -37,6 +38,7 @@ export default () =>
   <Route path="/tools/conversion" exact component={Conversion} />
   <Route path="/tools/rpc" exact component={Rpc} />
   <Route path="/network" exact component={Wallet} />
+  <Route path="/network/nodesetup" exact component={NodeSetup} />
   <Route path="/network/config" exact component={NetworkConfig} />
   <Route path="/network/nodeconfig" exact component={NodeConfig} />
 
