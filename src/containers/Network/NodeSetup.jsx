@@ -85,7 +85,7 @@ export default class NodeSetup extends Component {
           ? <Spinner />
           : <Select isDisabled={downloading} value={selectedClient} options={releaseOptions} onChange={this.handleClientSelected} />
         }
-        {downloading && <span>progress bar here: {downloadProgress} %</span>}
+        {downloading && <progress style={{width: '100%'}} value={downloadProgress} max="100"></progress>}
         <Button style={{marginTop: 20}} loading={downloading} disabled={selectedClient ? false : true} onClick={this.handleDownloadClicked}>download</Button>
       </main>
     )
