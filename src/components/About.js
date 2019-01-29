@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
 class About extends React.Component {
   render() {
     const appIconPath = `file://${window.__basedir}/icons/${
       window.mistMode
-    }/icon2x.png`;
-    const appName = window.mistMode === 'mist' ? 'Mist' : 'Ethereum Wallet';
+    }/icon2x.png`
+    const appName = window.mistMode === 'mist' ? 'Mist' : 'Ethereum Wallet'
 
     return (
       <div className="row popup-windows about">
@@ -19,6 +19,7 @@ class About extends React.Component {
               left: '-132%',
               width: '255%'
             }}
+            alt="app-icon"
           />
         </div>
         <div className="col col-8 ">
@@ -29,15 +30,18 @@ class About extends React.Component {
             License {window.mist.license}
             <br />
             GitHub{' '}
-            <a href="https://github.com/ethereum/mist" target="_blank">
+            <a
+              href="https://github.com/ethereum/mist"
+              target="_blank"
+              rel="noopener noreferrer">
               github.com/ethereum/mist
             </a>
           </p>
           <small>Copyright 2018 Ethereum Foundation</small>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default About;
+export default About

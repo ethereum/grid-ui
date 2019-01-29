@@ -1,29 +1,42 @@
 import React, { Component } from 'react'
-
-import SidebarTab from './SidebarTab'
+import PropTypes from 'prop-types'
 import NodeInfo from 'ethereum-react-components'
+import SidebarTab from './SidebarTab'
 
 class Sidebar extends Component {
-  constructor(props){
-    super(props)
-    this.handleTabChanged = this.handleTabChanged.bind(this)
+  static propTypes = {
+    selectedTab: PropTypes.any,
+    tabChanged: PropTypes.func,
+    tabs: PropTypes.any
   }
-  handleTabChanged(tab) {
-    this.props.tabChanged(tab)
+
+  handleTabChanged = tab => {
+    const { tabChanged } = this.props
+
+    tabChanged(tab)
   }
-  render(){
-    let tabs = this.props.tabs
+
+  render() {
+    const { tabs, selectedTab } = this.props
+
     return (
       <aside className="sidebar">
         <nav>
           <ul className="sidebar-menu">
             {tabs.map(tab => {
-              return <SidebarTab key={tab.id || tab._id} tab={tab} tabChanged={this.handleTabChanged} selected={this.props.selectedTab.id === tab.id}/>
+              return (
+                <SidebarTab
+                  key={tab.id || tab._id}
+                  tab={tab}
+                  tabChanged={this.handleTabChanged}
+                  selected={selectedTab.id === tab.id}
+                />
+              )
             })}
           </ul>
         </nav>
         <div id="react__node-info">
-          <NodeInfo/>
+          <NodeInfo />
         </div>
       </aside>
     )
