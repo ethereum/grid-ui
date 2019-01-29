@@ -1,22 +1,34 @@
 import React, { Component } from 'react'
 import { Select, Button, Spinner } from 'ethereum-react-components'
 import { Mist } from './../../API'
-import { get } from 'http';
 const { geth } = Mist
 
 export default class NodeSetup extends Component {
   state = {
     releases: [],
+    cachedVersions: {},
     selectedClient: null,
     downloading: false,
+    downloadProgress: 0,
     error: ''
   }
   componentDidMount = async () => {
+    this.loadCachedVersion()
     const releases = await geth.getReleases()
     this.setState({
       releases: [
         ...releases
       ]
+    })
+  }
+  loadCachedVersion = async () => {
+    const installed = await geth.getLocalBinaries()
+    const cachedVersions = {}
+    installed.forEach(release => {
+      cachedVersions[release.fileName] = true
+    })
+    this.setState({
+      cachedVersions
     })
   }
   handleClientSelected = (selectedClient) => {
@@ -31,20 +43,39 @@ export default class NodeSetup extends Component {
       downloading: true
     })
     try {
-      await geth.download(value)
+      await geth.download(value, progress => {
+        this.setState({
+          downloadProgress: progress
+        })
+      })
     } catch (error) {
       this.setState({
         error: 'could not download'
       })
     }
+    // refresh cached versions
+    this.loadCachedVersion()
     this.setState({
+      selectedClient: null,
       downloading: false
     })
   }
   render(){
-    const { releases, selectedClient, downloading } = this.state
+    const { releases, cachedVersions, selectedClient, downloading, downloadProgress } = this.state
     const releaseOptions = releases.map(r => {
-      return {label: r.name, value: r}
+      let isCached = cachedVersions[r.fileName] !== undefined
+      if(isCached){
+        return {
+          label: r.name + ' (downloaded)', 
+          value: r,
+          isDisabled: true
+        }
+      } else {
+        return {
+          label: r.name, 
+          value: r
+        }
+      }
     })
     return (
       <main>
@@ -54,8 +85,8 @@ export default class NodeSetup extends Component {
           ? <Spinner />
           : <Select isDisabled={downloading} value={selectedClient} options={releaseOptions} onChange={this.handleClientSelected} />
         }
-        {downloading && <span>progress bar here</span>}
-        <Button loading={downloading} disabled={selectedClient ? false : true} onClick={this.handleDownloadClicked} >download</Button>
+        {downloading && <span>progress bar here: {downloadProgress} %</span>}
+        <Button style={{marginTop: 20}} loading={downloading} disabled={selectedClient ? false : true} onClick={this.handleDownloadClicked}>download</Button>
       </main>
     )
   }
