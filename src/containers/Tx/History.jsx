@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { TxHistory } from 'ethereum-react-components'
 
 class TxHistoryWrapper extends Component {
-  render(){
+  render() {
     return (
-    <main>
-      <h1>Tx History</h1>    
-      <TxHistory txs={[]}/>
-    </main>
+      <main>
+        <h1>Tx History</h1>
+        <TxHistory txs={[]} />
+      </main>
     )
   }
 }

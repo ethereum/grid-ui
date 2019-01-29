@@ -1,17 +1,24 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+// import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
+import { Identicon } from 'ethereum-react-components'
 import iconPath from '../icons/browse-icon@2x.png'
-import { Identicon } from 'ethereum-react-components';
-import {i18n, Collections} from '../API'
+import { i18n } from '../API'
 
 class SidebarTab extends Component {
+  static propTypes = {
+    tab: PropTypes.any,
+    tabChanged: PropTypes.any,
+    selected: PropTypes.any
+  }
+
   constructor(props) {
     super(props)
     this.handleConnectBtnClick = this.handleConnectBtnClick.bind(this)
 
     // query connected accounts for this dapp
-    let dappAccounts = []
-        /*
+    const dappAccounts = []
+    /*
     if (this.permissions) {
       if (limit) {
         return EthAccounts.find(
@@ -24,32 +31,34 @@ class SidebarTab extends Component {
       });
     }
     */
-    this.state = { 
+    this.state = {
       submenucontainer: {
-        'visibility': 'hidden',
-        'opacity': 0,
-        'top': '300px'
+        visibility: 'hidden',
+        opacity: 0,
+        top: '300px'
       },
-      dappAccounts: dappAccounts
+      dappAccounts
     }
     this.badge = ''
   }
+
   handleMouseLeave = () => {
     this.setState({
       submenucontainer: {
-        'visibility': 'hidden',
-        'opacity': 0
+        visibility: 'hidden',
+        opacity: 0
       }
     })
   }
+
   handleMouseEnter = () => {
-    let el = ReactDOM.findDOMNode(this)   
+    // const el = ReactDOM.findDOMNode(this)
     console.log('handle mouse enter')
     this.setState({
       submenucontainer: {
-        'visibility': 'visible',
-        'opacity': 1,
-        'top': '400px' //(el.offsetTop - 200)+ 'px'
+        visibility: 'visible',
+        opacity: 1,
+        top: '400px' // (el.offsetTop - 200)+ 'px'
       }
     })
     /*
@@ -60,95 +69,131 @@ class SidebarTab extends Component {
     );
     */
   }
-  handleConnectBtnClick() {
 
-  }
+  handleConnectBtnClick = () => {}
+
   handleTabClick = () => {
-    this.props.tabChanged(this.props.tab)
+    const { tabChanged, tab } = this.props
+
+    tabChanged(tab)
   }
-  renderIdenticons() {
+
+  renderIdenticons = () => {
+    const { dappAccounts } = this.state
+
     return (
       <button className="display">
-        <span>{this.state.dappAccounts.length} {i18n.t('mist.sidebar.submenu.account')}</span>
+        <span>
+          {dappAccounts.length} {i18n.t('mist.sidebar.submenu.account')}
+        </span>
         <span className="dapp-identicon-container">
-          {this.state.dappAccounts.map(acc => {
-            return(
-              <Identicon key={acc.address} seed={acc.address} className="dapp-tiny"/> 
+          {dappAccounts.map(acc => {
+            return (
+              <Identicon
+                key={acc.address}
+                seed={acc.address}
+                className="dapp-tiny"
+              />
             )
           })}
         </span>
       </button>
     )
   }
-  renderAccounts(){
+
+  renderAccounts = () => {
+    const { dappAccounts } = this.state
+
     return (
       <div className="accounts">
-        {this.state.dappAccounts.length > 0
-          ? this.renderIdenticons()
-          : <button className="connect" onClick={this.handleConnectBtnClick}>{i18n.t('mist.sidebar.submenu.connectAccounts')}</button>
-        }
+        {dappAccounts.length > 0 ? (
+          this.renderIdenticons()
+        ) : (
+          <button className="connect" onClick={this.handleConnectBtnClick}>
+            {i18n.t('mist.sidebar.submenu.connectAccounts')}
+          </button>
+        )}
       </div>
     )
   }
-  renderSubmenu() {
 
-    let subMenu = this.props.tab.subMenu
-    let badge = ''
+  renderSubmenu = () => {
+    const { tab, selected } = this.props
 
-    if(!subMenu){
+    const { subMenu } = tab
+    const badge = ''
+
+    if (!subMenu) {
       return ''
     }
 
     return (
       <ul className="sub-menu">
         {subMenu.map(menu => {
-          return <li key={menu.name}><button className={this.props.selected ? 'selected' : ''}>{menu.name}</button>{badge && <span className="badge">{badge}</span>}</li>
+          return (
+            <li key={menu.name}>
+              <button className={selected ? 'selected' : ''}>
+                {menu.name}
+              </button>
+              {badge && <span className="badge">{badge}</span>}
+            </li>
+          )
         })}
       </ul>
     )
   }
+
   render() {
-    let tab = this.props.tab
-    let icon = tab.id === 'browser' ? iconPath : tab.icon
+    const { tab, selected } = this.props
+    const { submenucontainer } = this.state
 
-    let isWallet = tab.id === 'wallet'
-    let isBrowser = tab.id === 'browser'
+    const icon = tab.id === 'browser' ? iconPath : tab.icon
 
-    let name = isBrowser ? i18n.t('mist.sidebar.buttons.browser') : tab.name
-    let nameFull = "foo"
+    const isWallet = tab.id === 'wallet'
+    const isBrowser = tab.id === 'browser'
 
-    let tabShouldBeRemovable = true
+    const name = isBrowser ? i18n.t('mist.sidebar.buttons.browser') : tab.name
+    const nameFull = 'foo'
+
+    const tabShouldBeRemovable = true
 
     return (
-    <li 
-      className={isWallet ? 'wallet' : (isBrowser ? 'browser' : '') + ' ' + (this.props.selected && 'selected') } 
-      data-tab-id={tab.id} 
-      onMouseEnter={this.handleMouseEnter} 
-      onMouseLeave={this.handleMouseLeave} 
-      onClick={this.handleTabClick}
-    >
-      <header>
-        <button className={"main " + (this.badge && 'has-badge')}>
-          {icon
-            ? <img src={icon} draggable="false" />
-            : <i className="icon-globe"></i>
-          }
-        </button>
-      </header>
-      <section className="submenu-container" style={this.state.submenucontainer}>
-        <section>
-          <header>
-            <span title={nameFull}>{name}</span>
-            {this.badge && <div className="badge">{this.badge}</div>}
-            {tabShouldBeRemovable && <button className="remove-tab"> &times; </button>}
-            {!isWallet && this.renderAccounts()}
-            {this.renderSubmenu()}
-          </header>
+      <li
+        className={
+          isWallet
+            ? 'wallet'
+            : `${isBrowser ? 'browser' : ''} ${selected && 'selected'}`
+        }
+        data-tab-id={tab.id}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        onClick={this.handleTabClick}
+      >
+        <header>
+          <button className={`main ${this.badge && 'has-badge'}`}>
+            {icon ? (
+              <img src={icon} draggable="false" alt="icon-img" />
+            ) : (
+              <i className="icon-globe" />
+            )}
+          </button>
+        </header>
+        <section className="submenu-container" style={submenucontainer}>
+          <section>
+            <header>
+              <span title={nameFull}>{name}</span>
+              {this.badge && <div className="badge">{this.badge}</div>}
+              {tabShouldBeRemovable && (
+                <button className="remove-tab"> &times; </button>
+              )}
+              {!isWallet && this.renderAccounts()}
+              {this.renderSubmenu()}
+            </header>
+          </section>
         </section>
-      </section>
-    </li>
-    );
+      </li>
+    )
   }
 }
 
-export default SidebarTab;
+export default SidebarTab

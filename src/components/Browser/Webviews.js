@@ -1,41 +1,63 @@
 import React, { Component } from 'react'
-
+import PropTypes from 'prop-types'
 import Webview from './Webview'
 import Spinner from '../Spinner'
 
 // globals
-const i18n = window.i18n
+const { i18n } = window
 
 export default class Webviews extends Component {
-  constructor(){
-    super()
+  static propTypes = {
+    tabs: PropTypes.any,
+    onIconAvailable: PropTypes.func,
+    onTitleAvailable: PropTypes.func,
+    selectedTab: PropTypes.any
+  }
+
+  constructor(props) {
+    super(props)
+
     this.isLoading = false
   }
-  connectionInfo(){
+
+  connectionInfo = () => {
     return i18n.t('mist.nodeInfo.connecting')
   }
-  render(){
-    let tabs = this.props.tabs || []
+
+  render() {
+    const {
+      tabs = [],
+      onIconAvailable,
+      onTitleAvailable,
+      selectedTab
+    } = this.props
+
     return (
       <main>
-        {this.isLoading
-        ? 
-        <div className="layout_webviews-loadingIndicator">
-          <span>{this.connectionInfo()}</span>
-          <Spinner />
-        </div>
-        :
-        tabs.map(tab => {
-          let tabId = tab._id
-          return <Webview 
-            key={tabId} 
-            url={tab.url} 
-            visible={this.props.selectedTab._id === tabId}
-            onIconAvailable={(icon) => {this.props.onIconAvailable(tab, icon)}}
-            onTitleAvailable={(title) => {this.props.onTitleAvailable(tab, title)}}
-          />
-        })
-        }
+        {this.isLoading ? (
+          <div className="layout_webviews-loadingIndicator">
+            <span>{this.connectionInfo()}</span>
+            <Spinner />
+          </div>
+        ) : (
+          tabs.map(tab => {
+            const tabId = tab._id
+
+            return (
+              <Webview
+                key={tabId}
+                url={tab.url}
+                visible={selectedTab._id === tabId}
+                onIconAvailable={icon => {
+                  onIconAvailable(tab, icon)
+                }}
+                onTitleAvailable={title => {
+                  onTitleAvailable(tab, title)
+                }}
+              />
+            )
+          })
+        )}
       </main>
     )
   }

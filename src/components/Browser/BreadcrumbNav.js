@@ -2,20 +2,23 @@ import React, { Component } from 'react'
 
 class Breadcrumb extends Component {
   render() {
-    let _url = new URL(this.props.url)
+    const { url } = this.props
+
+    const _url = new URL(url)
     // console.log(_url)
 
     // remove trailing '/'
-    let pathname = _url.pathname.replace(/\/$/g, '')
-    let pathParts = pathname.split('/')
+    const pathname = _url.pathname.replace(/\/$/g, '')
+    const pathParts = pathname.split('/')
     // remove all '?'
-    let search = _url.search.replace(/\?/g, '')
+    const search = _url.search.replace(/\?/g, '')
 
-    let parts = [_url.host, ...pathParts, search, _url.hash]
+    const parts = [_url.host, ...pathParts, search, _url.hash]
     return (
-      <div className="url-breadcrumb" >
+      <div className="url-breadcrumb">
         <span>
-          {_url.protocol} '//' {parts.map((p, i) => p ? <span key={i}>{p}  ▸ </span> : '')}
+          {_url.protocol} '//'{' '}
+          {parts.map((p, i) => (p ? <span key={i}>{p} ▸ </span> : ''))}
         </span>
       </div>
     )
@@ -23,23 +26,40 @@ class Breadcrumb extends Component {
 }
 
 export default class UrlBreadcrumbInput extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
-    this.handleChange = this.handleChange.bind(this)
-    this.state = {url: props.url}
+
+    this.state = { url: props.url }
   }
-  handleChange(e){
-    this.setState({url: e.target.value})
+
+  handleChange = e => {
+    this.setState({ url: e.target.value })
   }
+
   render() {
+    const { url } = this.props
+
     let permissions = {
       admin: false
     }
     return (
-      <form className="url" action="about:blank" target="dapp-form-helper-iframe" autoComplete="on">
-        {!permissions.admin && <input className="url-input" id="url-input" type="text" value={this.props.url} onChange={this.handleChange}/> }
-        <Breadcrumb url={this.props.url}/>
+      <form
+        className="url"
+        action="about:blank"
+        target="dapp-form-helper-iframe"
+        autoComplete="on"
+      >
+        {!permissions.admin && (
+          <input
+            className="url-input"
+            id="url-input"
+            type="text"
+            value={url}
+            onChange={this.handleChange}
+          />
+        )}
+        <Breadcrumb url={url} />
       </form>
-    );
+    )
   }
 }
