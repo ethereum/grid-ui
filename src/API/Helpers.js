@@ -5,13 +5,13 @@ export class Helpers {
   @method getWebview
   @param {String} id  The Id of a tab or the string "browser"
   */
-  getWebview(id){
+  getWebview(id) {
     // FIXME probably bad practice:
     // deprecate this and handle over states
     // return $('webview[data-id="' + id + '"]')[0]
   }
 
-/*
+  /*
 see actions.js
 async function fetchJson(FETCH_ACTION, url){
   dispatch({ type: `${FETCH_ACTION}:START` });
@@ -25,9 +25,9 @@ async function fetchJson(FETCH_ACTION, url){
 }
 */
 
-  getCurrentWebview(){
-    //var webview = this.getWebview(LocalStore.get('selectedTab'));
-    //return webview
+  getCurrentWebview() {
+    // var webview = this.getWebview(LocalStore.get('selectedTab'));
+    // return webview
     return null
   }
 
@@ -35,17 +35,29 @@ async function fetchJson(FETCH_ACTION, url){
     return window.mistMode === 'mist'
   }
 
-  static isElectron(){
+  static isElectron() {
     // Renderer process
-    if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
+    if (
+      typeof window !== 'undefined' &&
+      typeof window.process === 'object' &&
+      window.process.type === 'renderer'
+    ) {
       return true
     }
     // Main process
-    if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
+    if (
+      typeof process !== 'undefined' &&
+      typeof process.versions === 'object' &&
+      !!process.versions.electron
+    ) {
       return true
     }
     // Detect the user agent when the `nodeIntegration` option is set to true
-    if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
+    if (
+      typeof navigator === 'object' &&
+      typeof navigator.userAgent === 'string' &&
+      navigator.userAgent.indexOf('Electron') >= 0
+    ) {
       return true
     }
     return false
@@ -56,4 +68,3 @@ export const is = {
   electron: Helpers.isElectron,
   mist: Helpers.isMist
 }
-
