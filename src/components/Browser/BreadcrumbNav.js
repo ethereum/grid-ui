@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class Breadcrumb extends Component {
+  static propTypes = {
+    url: PropTypes.any
+  }
+
   render() {
     const { url } = this.props
 
@@ -26,6 +31,10 @@ class Breadcrumb extends Component {
 }
 
 export default class UrlBreadcrumbInput extends Component {
+  static propTypes = {
+    url: PropTypes.any
+  }
+
   constructor(props) {
     super(props)
 
@@ -39,9 +48,8 @@ export default class UrlBreadcrumbInput extends Component {
   render() {
     const { url } = this.props
 
-    let permissions = {
-      admin: false
-    }
+    const permissions = { admin: false }
+
     return (
       <form
         className="url"

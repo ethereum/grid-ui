@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Select } from 'ethereum-react-components'
 import { Mist } from '../../API'
 
 const { geth } = Mist
 
 export default class ClientSelect extends Component {
+  static propTypes = {
+    onClientSelected: PropTypes.func
+  }
+
   state = {
     selectedClient: null,
     installedBinaries: []
@@ -32,6 +37,7 @@ export default class ClientSelect extends Component {
 
   handleClientSelected = selectedClient => {
     const { onClientSelected } = this.props
+
     onClientSelected(selectedClient)
     this.setState({
       selectedClient

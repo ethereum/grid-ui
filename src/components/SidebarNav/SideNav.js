@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import ReactDOM from 'react-dom'
 
@@ -7,6 +8,11 @@ import './SideNav.css'
 import NodeInfo from 'ethereum-react-components'
 
 class NavItem extends Component {
+  static propTypes = {
+    item: PropTypes.any,
+    selected: PropTypes.any
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -40,8 +46,8 @@ class NavItem extends Component {
   renderSubmenu = () => {
     const { selected } = this.props
 
-    let subMenu = []
-    let badge = ''
+    const subMenu = []
+    const badge = ''
 
     if (!subMenu) {
       return ''
@@ -68,8 +74,7 @@ class NavItem extends Component {
     const { submenucontainer } = this.state
 
     const badge = ''
-    const icon = item.icon || ''
-    const name = item.name
+    const { icon = '', name } = item
     const nameFull = ''
     const link = item.route || (name === 'wallet' ? 'wallet' : 'browser')
 
@@ -104,6 +109,10 @@ class NavItem extends Component {
 }
 
 class Sidebar extends Component {
+  static propTypes = {
+    tabs: PropTypes.any
+  }
+
   render() {
     const { tabs } = this.props
     return (
@@ -111,8 +120,8 @@ class Sidebar extends Component {
         <nav>
           <ul className="sidebar-menu">
             {tabs.map(tab => {
-              //return <SidebarTab key={tab.id || tab._id} tab={tab} tabChanged={this.handleTabChanged} selected={this.props.selectedTab.id === tab.id}/>
-              return <NavItem item={tab} />
+              // return <SidebarTab key={tab.id || tab._id} tab={tab} tabChanged={this.handleTabChanged} selected={this.props.selectedTab.id === tab.id}/>
+              return <NavItem key={tab.id} item={tab} />
             })}
           </ul>
         </nav>

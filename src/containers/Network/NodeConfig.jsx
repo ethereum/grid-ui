@@ -1,15 +1,21 @@
 import React, { Component } from 'react'
-import { Button, Input, FileChooser, Select, NodeInfoBox } from 'ethereum-react-components'
+import {
+  Button,
+  Input,
+  FileChooser,
+  Select,
+  NodeInfoBox
+} from 'ethereum-react-components'
 import './NodeConfig.css'
 import NodeSettingsForm from './NodeSettingsForm'
+import { Mist } from '../../API'
 
-import { Mist } from './../../API'
 const { geth } = Mist
 
 class NodeConfig extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props)
+
     this.state = {
       status: {
         node: 'geth',
@@ -27,19 +33,15 @@ class NodeConfig extends Component {
         port: 8545,
         network: 'main'
       },
-      releases: [
-        'latest',
-        '1234',
-        '4567'
-      ]
+      releases: ['latest', '1234', '4567']
     }
   }
-  
+
   componentDidMount = async () => {
     // let config = await geth.getConfig()
     // let status = await geth.getStatus()
-    let config = {}
-    let status = {}
+    const config = {}
+    const status = {}
     console.log('geth: ', config, status)
     /*
     this.setState({
@@ -50,15 +52,13 @@ class NodeConfig extends Component {
   }
 
   handleSaveTemplate = async () => {
-    let version = await geth.version()
+    const version = await geth.version()
     console.log('geth version: ', version)
   }
 
   handleChangeConfig = async () => {
     try {
-      let result = await geth.setConfig({
-        port: '8434'
-      })
+      const result = await geth.setConfig({ port: '8434' })
       console.log('changed to', result)
     } catch (error) {
       console.log('changing config failed', error)
@@ -69,7 +69,7 @@ class NodeConfig extends Component {
     const { status } = this.state
     const { isRunning } = status
     let newStatus = {}
-    if(isRunning){
+    if (isRunning) {
       newStatus = await geth.stop()
     } else {
       newStatus = await geth.start()
@@ -79,15 +79,13 @@ class NodeConfig extends Component {
     })
   }
 
-  render(){
+  render() {
     const { status, config } = this.state
     const { binPath, node } = status
     const nodeName = node
 
-    let templates = [
-      {label: 'default config', value: 'default'}
-    ]
-    let selectedTemplate = templates[0]
+    const templates = [{ label: 'default config', value: 'default' }]
+    const selectedTemplate = templates[0]
 
     const initial = {
       active: 'remote',
@@ -123,8 +121,8 @@ class NodeConfig extends Component {
         {/*
         <div style={{width: '75%'}}>
           <div className="setting">
-            Template: <br /> 
-            <div 
+            Template: <br />
+            <div
               style={{width: '300px', display: 'inline-block'}}
             >
               <Select
@@ -134,24 +132,24 @@ class NodeConfig extends Component {
             </div>
           </div>
 
-          <NodeSettingsForm 
-            config={config} 
+          <NodeSettingsForm
+            config={config}
             status={status}
             onStartStop={this.handleStartStop}
           />
         </div>
         */}
 
-        <div style={{width: '24%'}}>
-        {/**
-          <NodeInfoBox 
-            {...initial}
-          />
-         */}
+        <div style={{ width: '24%' }}>
+          {/** <NodeInfoBox {...initial} /> */}
         </div>
 
-        <Button style={{marginTop: 30}} onClick={this.handleSaveTemplate}>save template</Button>
-        <Button style={{marginTop: 30}} onClick={this.handleChangeConfig}>apply changes</Button>
+        <Button style={{ marginTop: 30 }} onClick={this.handleSaveTemplate}>
+          save template
+        </Button>
+        <Button style={{ marginTop: 30 }} onClick={this.handleChangeConfig}>
+          apply changes
+        </Button>
       </main>
     )
   }
