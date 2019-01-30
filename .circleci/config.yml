@@ -10,7 +10,7 @@ jobs:
       - run: yarn
       - run: CI=false yarn deploy
       - store_artifacts:
-          path: build/mist*.asar
+          path: build/mist*.zip
       - store_artifacts:
           path: build/manifest.json
 
