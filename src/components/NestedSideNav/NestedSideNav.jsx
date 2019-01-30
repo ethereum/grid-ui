@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react'
 import { NavLink } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import './NestedSideNav.css'
 
-const SubNavItem = ({ item }) => (
-  <NavLink to={`/${item.route}`}>{item.name}</NavLink>
-)
-
 class DropdownMenuItem extends Component {
+  static propTypes = {
+    item: PropTypes.any
+  }
+
   state = {
     open: false
   }
@@ -39,7 +40,9 @@ class DropdownMenuItem extends Component {
           style={{ display: open ? 'block' : 'none' }}
         >
           {subitems.map(sub => (
-            <SubNavItem key={sub.id} item={sub} />
+            <NavLink key={sub.id} to={`/${sub.route}`}>
+              {sub.name}
+            </NavLink>
           ))}
         </div>
       </Fragment>
@@ -48,6 +51,10 @@ class DropdownMenuItem extends Component {
 }
 
 class NestedSideNav extends Component {
+  static propTypes = {
+    items: PropTypes.array
+  }
+
   render() {
     const { items } = this.props
 

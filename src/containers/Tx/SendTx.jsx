@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import { FormSendTx } from 'ethereum-react-components'
 
 class SendTx extends Component {
-  
-  render(){
-
+  render() {
     const dummyTx = {
       nonce: 0,
       from: '0xf17f52151EbEF6C7334FAD080c5704D77216b732',
@@ -23,7 +21,7 @@ class SendTx extends Component {
 
     return (
       <main>
-        <h1>Send Tx</h1>    
+        <h1>Send Tx</h1>
         <FormSendTx network={nodes.network} newTx={dummyTx} />
       </main>
     )

@@ -1,14 +1,22 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Header from './Header'
 
 export default class Account extends Component {
-  render(){
+  static propTypes = {
+    match: PropTypes.any
+  }
+
+  render() {
+    const { match } = this.props
+
     return (
       <main className="wallet">
         <Header />
-        <h1><strong>Account</strong> {this.props.match.params.address}</h1>
-        <div className="wallet-box-list">
-        </div>     
+        <h1>
+          <strong>Account</strong> {match.params.address}
+        </h1>
+        <div className="wallet-box-list" />
       </main>
     )
   }

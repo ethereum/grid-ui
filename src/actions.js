@@ -1,59 +1,73 @@
-import {web3, i18n, ipc, Mist} from './API'
 import _ from 'lodash'
+import { web3, i18n, ipc, Mist } from './API'
 
 export function setWindowSize(height) {
   return dispatch => {
-    dispatch({ type: '[CLIENT]:SET_WINDOW_SIZE:START', payload: { height } });
-    // TODO would it make sense to listen for state changes on the main process' store instead of issuing separate ipc?
+    dispatch({ type: '[CLIENT]:SET_WINDOW_SIZE:START', payload: { height } })
+    // TODO would it make sense to listen for state changes on the main process'
+    // store instead of issuing separate ipc?
     Mist.setWindowSize(580, height + 20)
-  };
+  }
 }
 
 function parseGasStationPrice(price) {
-  const beforeDecimal = price.toString().slice(0, -1);
-  const afterDecimal = price.toString().slice(-1);
-  return parseFloat(beforeDecimal + '.' + afterDecimal);
+  const beforeDecimal = price.toString().slice(0, -1)
+  const afterDecimal = price.toString().slice(-1)
+  return parseFloat(`${beforeDecimal}.${afterDecimal}`)
+}
+
+function checkGasLoaded() {
+  return (dispatch, getState) => {
+    const { estimatedGas, gasPrice } = getState().newTx
+
+    // Show a loading spinner until both estimatedGas and gasPrice fetched
+    if (estimatedGas !== 3000000 && !!gasPrice) {
+      dispatch({
+        type: '[CLIENT]:CALCULATE_GAS:SUCCESS'
+      })
+    }
+  }
 }
 
 export function getGasPrice() {
   return dispatch => {
-    dispatch({ type: '[CLIENT]:GET_GAS_PRICE:START' });
+    dispatch({ type: '[CLIENT]:GET_GAS_PRICE:START' })
 
-    const url = 'https://ethgasstation.info/json/ethgasAPI.json';
+    const url = 'https://ethgasstation.info/json/ethgasAPI.json'
     fetch(url).then(async (response, error) => {
       if (error) {
-        return dispatch({ type: '[CLIENT]:GET_GAS_PRICE:FAILURE', error });
+        return dispatch({ type: '[CLIENT]:GET_GAS_PRICE:FAILURE', error })
       }
 
-      const gasData = await response.json();
-      const gasPriceGweiStandard = parseGasStationPrice(gasData.safeLow);
-      const gasPriceGweiPriority = parseGasStationPrice(gasData.fast);
+      const gasData = await response.json()
+      const gasPriceGweiStandard = parseGasStationPrice(gasData.safeLow)
+      const gasPriceGweiPriority = parseGasStationPrice(gasData.fast)
 
       dispatch({
         type: '[CLIENT]:GET_GAS_PRICE:SUCCESS',
         payload: { gasPriceGweiStandard, gasPriceGweiPriority }
-      });
+      })
 
-      return dispatch(checkGasLoaded());
-    });
-  };
+      return dispatch(checkGasLoaded())
+    })
+  }
 }
 
 export function estimateGasUsage() {
   return (dispatch, getState) => {
-    dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:START' });
+    dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:START' })
 
-    const newTx = getState().newTx;
+    const newTx = getState().newTx
     const txData = {
       data: newTx.data,
       from: newTx.from,
       gas: newTx.gas,
       gasPrice: newTx.gasPrice,
       value: newTx.value
-    };
+    }
 
     if (newTx.to) {
-      txData.to = newTx.to;
+      txData.to = newTx.to
     }
 
     web3.eth
@@ -66,97 +80,86 @@ export function estimateGasUsage() {
               estimatedGas: value,
               message: i18n.t('mist.sendTx.overBlockGasLimit')
             }
-          });
+          })
 
-          return dispatch(checkGasLoaded());
+          return dispatch(checkGasLoaded())
         }
 
         dispatch({
           type: '[CLIENT]:ESTIMATE_GAS_USAGE:SUCCESS',
           payload: { estimatedGas: value }
-        });
+        })
 
-        dispatch(checkGasLoaded());
+        dispatch(checkGasLoaded())
       })
       .catch(error => {
-        const e = JSON.stringify(error, Object.getOwnPropertyNames(error));
-        const errorObject = JSON.parse(e);
+        const e = JSON.stringify(error, Object.getOwnPropertyNames(error))
+        const errorObject = JSON.parse(e)
 
         dispatch({
           type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE',
           error: errorObject.message
-        });
-      });
-  };
-}
-
-function checkGasLoaded() {
-  return (dispatch, getState) => {
-    const { estimatedGas, gasPrice } = getState().newTx;
-
-    // Show a loading spinner until both estimatedGas and gasPrice fetched
-    if (estimatedGas !== 3000000 && !!gasPrice) {
-      dispatch({
-        type: '[CLIENT]:CALCULATE_GAS:SUCCESS'
-      });
-    }
-  };
+        })
+      })
+  }
 }
 
 export function getPriceConversion() {
   return dispatch => {
-    dispatch({ type: '[CLIENT]:GET_PRICE_CONVERSION:START' });
+    dispatch({ type: '[CLIENT]:GET_PRICE_CONVERSION:START' })
 
-    const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${Mist.version}`;
+    const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${
+      Mist.version
+    }`
 
     fetch(url).then(async (response, error) => {
       if (error) {
         return dispatch({
           type: '[CLIENT]:GET_PRICE_CONVERSION:FAILURE',
           error
-        });
+        })
       }
 
-      const priceData = await response.json();
+      const priceData = await response.json()
       return dispatch({
         type: '[CLIENT]:GET_PRICE_CONVERSION:SUCCESS',
         payload: { etherPriceUSD: priceData.USD }
-      });
-    });
-  };
+      })
+    })
+  }
 }
 
 export function getTokenDetails() {
   return (dispatch, getState) => {
-    dispatch({ type: '[CLIENT]:GET_TOKEN_DETAILS:START' });
+    dispatch({ type: '[CLIENT]:GET_TOKEN_DETAILS:START' })
 
     const tokenListURL =
-      'https://raw.githubusercontent.com/MyEtherWallet/ethereum-lists/master/tokens/tokens-eth.json';
+      'https://raw.githubusercontent.com/MyEtherWallet/ethereum-lists/master/tokens/tokens-eth.json'
 
     fetch(tokenListURL).then(async (response, error) => {
       if (error) {
         return dispatch({
           type: '[CLIENT]:GET_TOKEN_DETAILS:FAILURE',
           error
-        });
+        })
       }
 
-      let tokens;
+      let tokens
 
       try {
-        tokens = await response.json();
-      } catch (error) {
+        tokens = await response.json()
+      } catch (e) {
         return dispatch({
           type: '[CLIENT]:GET_TOKEN_DETAILS:JSON_PARSE_FAILURE',
-          error
-        });
+          error: e
+        })
       }
 
       if (tokens) {
-        const contractAddress = getState().newTx.to;
+        const contractAddress = getState().newTx.to
         const theToken = _.find(tokens, token => {
-          return token.address.toLowerCase() === contractAddress.toLowerCase();
-        });
+          return token.address.toLowerCase() === contractAddress.toLowerCase()
+        })
 
         if (theToken) {
           const token = {
@@ -164,57 +167,64 @@ export function getTokenDetails() {
             symbol: theToken.symbol,
             address: theToken.address,
             decimals: theToken.decimals
-          };
+          }
 
           return dispatch({
             type: '[CLIENT]:GET_TOKEN_DETAILS:SUCCESS',
             payload: { token }
-          });
+          })
         }
       }
-    });
-  };
+    })
+  }
 }
 
 export function determineIfContract(toAddress) {
   return dispatch => {
-    dispatch({ type: '[CLIENT]:DETERMINE_IF_CONTRACT:START' });
+    dispatch({ type: '[CLIENT]:DETERMINE_IF_CONTRACT:START' })
 
     if (!toAddress) {
       return dispatch({
         type: '[CLIENT]:DETERMINE_IF_CONTRACT:SUCCESS',
         payload: { toIsContract: true, isNewContract: true }
-      });
+      })
     }
 
     web3.eth.getCode(toAddress, (error, res) => {
       if (error) {
         // TODO: handle error state
-        dispatch({ type: '[CLIENT]:DETERMINE_IF_CONTRACT:FAILURE' });
+        dispatch({ type: '[CLIENT]:DETERMINE_IF_CONTRACT:FAILURE' })
       }
 
       if (res && res.length > 2) {
         dispatch({
           type: '[CLIENT]:DETERMINE_IF_CONTRACT:SUCCESS',
           payload: { toIsContract: true, isNewContract: false }
-        });
+        })
       }
-    });
-  };
+    })
+  }
+}
+
+function displayNotification(errorType, duration) {
+  Mist.notification.warn({
+    content: i18n.__(`mist.sendTx.errors.${errorType}`),
+    duration
+  })
 }
 
 export function confirmTx(data) {
   return async (dispatch, getState) => {
-    dispatch({ type: '[CLIENT]:CONFIRM_TX:START', payload: { data } });
+    dispatch({ type: '[CLIENT]:CONFIRM_TX:START', payload: { data } })
 
     // reject if sending to itself
     if (data.to && data.from === data.to.toLowerCase()) {
-      displayNotification('sameAccount', 5);
+      displayNotification('sameAccount', 5)
 
       return dispatch({
         type: '[CLIENT]:CONFIRM_TX:FAILURE',
         error: 'sameAccount'
-      });
+      })
     }
 
     // reject if no gas
@@ -222,16 +232,16 @@ export function confirmTx(data) {
       return dispatch({
         type: '[CLIENT]:CONFIRM_TX:FAILURE',
         error: 'noGas'
-      });
+      })
     }
 
-    const nonce = await web3.eth.getTransactionCount(data.from);
-    const networkId = await web3.eth.net.getId();
+    const nonce = await web3.eth.getTransactionCount(data.from)
+    const networkId = await web3.eth.net.getId()
     const tx = Object.assign({}, data, {
       nonce: `0x${nonce.toString(16)}`
-    });
+    })
 
-    let signedTx;
+    let signedTx
     await web3.eth.personal.signTransaction(tx, data.pw || '', function(
       error,
       result
@@ -240,107 +250,113 @@ export function confirmTx(data) {
         dispatch({
           type: '[CLIENT]:CONFIRM_TX:FAILURE',
           error
-        });
+        })
 
         if (error.message.includes('Unable to connect to socket: timeout')) {
-          displayNotification('connectionTimeout', 5);
+          displayNotification('connectionTimeout', 5)
         } else if (
           error.message.includes('could not decrypt key with given passphrase')
         ) {
-          displayNotification('wrongPassword', 3);
+          displayNotification('wrongPassword', 3)
         } else if (error.message.includes('multiple keys match address')) {
-          displayNotification('multipleKeysMatchAddress', 10);
+          displayNotification('multipleKeysMatchAddress', 10)
         } else {
           Mist.notification.warn({
             content: error.message || error,
             duration: 5
-          });
+          })
         }
-        return;
+        return
       }
-      signedTx = result.raw;
-    });
-    delete tx.pw;
+      signedTx = result.raw
+    })
+    delete tx.pw
 
     if (!signedTx) {
       dispatch({
         type: '[CLIENT]:CONFIRM_TX:FAILURE',
         error: 'no signedTx'
-      });
+      })
     }
 
     web3.eth.sendSignedTransaction(signedTx, (error, hash) => {
       if (error) {
-        console.error(`Error from sendSignedTransaction: ${error}`);
+        console.error(`Error from sendSignedTransaction: ${error}`)
         if (error.message.includes('Unable to connect to socket: timeout')) {
-          displayNotification('connectionTimeout', 5);
+          displayNotification('connectionTimeout', 5)
         } else if (
           error.message.includes('Insufficient funds for gas * price + value')
         ) {
-          displayNotification('insufficientFundsForGas', 5);
+          displayNotification('insufficientFundsForGas', 5)
         } else {
           Mist.notification.warn({
             content: error.message || error,
             duration: 5
-          });
+          })
         }
 
         return dispatch({
           type: '[CLIENT]:CONFIRM_TX:FAILURE',
           error
-        });
+        })
       }
 
-      ipc.send('backendAction_unlockedAccountAndSentTransaction', null, hash);
-      dispatch({ type: '[CLIENT]:CONFIRM_TX:SUCCESS' });
+      ipc.send('backendAction_unlockedAccountAndSentTransaction', null, hash)
+      dispatch({ type: '[CLIENT]:CONFIRM_TX:SUCCESS' })
 
       // Format tx for storage
-      let newTx = getState().newTx;
+      let newTx = getState().newTx
       // Set gas price in case increased for priority
-      newTx.gasPrice = data.gasPrice;
+      newTx.gasPrice = data.gasPrice
       // Use estimatedGas if gas wasn't provided
-      newTx.gas = data.gas;
+      newTx.gas = data.gas
       // Remove unneeded props
-      delete newTx.unlocking;
-      delete newTx.gasLoading;
+      delete newTx.unlocking
+      delete newTx.gasLoading
       // Add helpful props
-      newTx.hash = hash;
-      newTx.networkId = networkId;
-      newTx.nonce = nonce;
-      newTx.blockNumber = null;
+      newTx.hash = hash
+      newTx.networkId = networkId
+      newTx.nonce = nonce
+      newTx.blockNumber = null
       if (newTx.isNewContract) {
-        newTx.contractAddress = null;
+        newTx.contractAddress = null
       }
-      newTx.createdAt = new Date();
+      newTx.createdAt = new Date()
       dispatch({
         type: '[CLIENT]:NEW_TX:SENT',
         payload: { newTx }
-      });
-    });
-  };
+      })
+    })
+  }
 }
 
 export function updateTx(tx) {
-  return (dispatch, getState) => {
+  return dispatch => {
     // We use `hash` over `transactionHash` for brevity
-    tx.hash = tx.transactionHash;
-    delete tx.transactionHash;
+    tx.hash = tx.transactionHash
+    delete tx.transactionHash
     // Convert status to 0 (failed) or 1 (successful)
     if (web3.utils.isHex(tx.status)) {
-      tx.status = web3.utils.hexToNumber(tx.status);
+      tx.status = web3.utils.hexToNumber(tx.status)
     }
     dispatch({
       type: '[CLIENT]:TX:UPDATE',
       payload: { tx }
-    });
-  };
+    })
+  }
 }
 
-function displayNotification(errorType, duration) {
-  Mist.notification.warn({
-    content: i18n.__(`mist.sendTx.errors.${errorType}`),
-    duration
-  });
+function decodeFunctionSignature(signature, data) {
+  return dispatch => {
+    dispatch({ type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:START' })
+    ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
+      dispatch({
+        type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:SUCCESS',
+        payload: { params }
+      })
+    })
+    ipc.send('backendAction_decodeFunctionSignature', signature, data)
+  }
 }
 
 function submitExecutionFunction(executionFunction, data) {
@@ -348,78 +364,63 @@ function submitExecutionFunction(executionFunction, data) {
     dispatch({
       type: '[CLIENT]:LOOKUP_SIGNATURE:SUCCESS',
       payload: { executionFunction }
-    });
+    })
 
     if (executionFunction === 'transfer(address,uint256)') {
-      dispatch(getTokenDetails());
+      dispatch(getTokenDetails())
     }
 
-    dispatch(decodeFunctionSignature(executionFunction, data));
-  };
+    dispatch(decodeFunctionSignature(executionFunction, data))
+  }
 }
 
 export function lookupSignature(data) {
   return dispatch => {
-    dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:START' });
+    dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:START' })
 
     if (!data || data.length <= 8) {
       return dispatch({
         type: '[CLIENT]:LOOKUP_SIGNATURE:FAILED',
         error: 'No data'
-      });
+      })
     }
 
     const bytesSignature =
-      data.substr(0, 2) === '0x'
-        ? data.substr(0, 10)
-        : '0x' + data.substr(0, 8);
+      data.substr(0, 2) === '0x' ? data.substr(0, 10) : '0x' + data.substr(0, 8)
 
-    let executionFunction = _.first(window.SIGNATURES[bytesSignature]);
+    let executionFunction = _.first(window.SIGNATURES[bytesSignature])
 
     if (executionFunction) {
-      dispatch(submitExecutionFunction(executionFunction, data));
+      dispatch(submitExecutionFunction(executionFunction, data))
     } else {
       fetch(
         `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
       ).then(async response => {
-        const fourByte = await response.json();
+        const fourByte = await response.json()
         if (fourByte && fourByte.results && fourByte.results.length) {
           // Get the earliest submitted signature (last result in array)
-          executionFunction = fourByte.results.slice(-1)[0].text_signature;
-          dispatch(submitExecutionFunction(executionFunction, data));
+          executionFunction = fourByte.results.slice(-1)[0].text_signature
+          dispatch(submitExecutionFunction(executionFunction, data))
         } else {
-          const error = 'No signature found';
-          dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:FAILED', error });
+          const error = 'No signature found'
+          dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:FAILED', error })
         }
-      });
+      })
     }
-  };
-}
-
-function decodeFunctionSignature(signature, data) {
-  return dispatch => {
-    dispatch({ type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:START' });
-    ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
-      dispatch({
-        type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:SUCCESS',
-        payload: { params }
-      });
-    });
-    ipc.send('backendAction_decodeFunctionSignature', signature, data);
-  };
+  }
 }
 
 export function togglePriority() {
-  return { type: '[CLIENT]:PRIORITY:TOGGLE' };
+  return { type: '[CLIENT]:PRIORITY:TOGGLE' }
 }
 
 export function setLocalPeerCount(peerCount) {
   return (dispatch, getState) => {
-    if (peerCount != getState().nodes.local.peerCount) {
+    if (peerCount !== getState().nodes.local.peerCount) {
       dispatch({
         type: '[CLIENT]:NODES:UPDATE_LOCAL_PEER_COUNT',
         payload: { peerCount }
-      });
+      })
     }
-  };
+  }
 }
