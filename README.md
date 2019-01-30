@@ -1,13 +1,18 @@
+<p align="center">
+  <a href="https://circleci.com/gh/ethereum/mist-ui"><img src="https://img.shields.io/circleci/project/github/ethereum/mist-ui/master.svg" alt="Build Status"></a>
+</p>
+
 This project is a "fork" / re-write of ethereum/Mist's user interface
 
 It is bootstrapped with [Create React App v2](https://github.com/facebookincubator/create-react-app), is 100% written in React and removes the meteor framework dependency.
 
 ### Project Goals
+
 - improved security and easier maintenance
 - rapid development, faster iterations and releases
 - improved testability
 - removal of electron API references from UI components
-- allows to run the app in a browser, electron or [tau](https://github.com/PhilippLgh/tau) window 
+- allows to run the app in a browser, electron or [tau](https://github.com/PhilippLgh/tau) window
 - separation of electron shell application and user interface
 - independant release, versioning and packaging of host application (Mist) and dapp (MistUI, WalletUI)
 - introduction of an app namespace and removal of global variables
@@ -16,6 +21,7 @@ It is bootstrapped with [Create React App v2](https://github.com/facebookincubat
 - no network connection or full node required to run and develop the UI
 
 ### Run
+
 ```
 if not installed:
 npm install -g less
