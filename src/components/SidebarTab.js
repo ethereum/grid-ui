@@ -14,7 +14,6 @@ class SidebarTab extends Component {
 
   constructor(props) {
     super(props)
-    this.handleConnectBtnClick = this.handleConnectBtnClick.bind(this)
 
     // query connected accounts for this dapp
     const dappAccounts = []

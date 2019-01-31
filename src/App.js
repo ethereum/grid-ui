@@ -11,15 +11,6 @@ export default class App extends Component {
   render() {
     const items = [
       {
-        id: 0,
-        name: 'Wallet',
-        route: 'wallet',
-        subitems: [
-          { id: '0a', name: 'Create Account', route: 'account/create' },
-          { id: '0b', name: 'Import Account', route: 'account/import' }
-        ]
-      },
-      {
         id: 1,
         name: 'Tx',
         route: 'tx',
@@ -47,14 +38,9 @@ export default class App extends Component {
           { id: '3b', name: 'Geth Setup', route: 'network/nodesetup' },
           { id: '3c', name: 'Geth Config', route: 'network/nodeconfig' }
         ]
-      },
-      {
-        id: 4,
-        name: 'Browser',
-        route: 'browser',
-        subitems: [{ id: '4a', name: 'Browser', route: 'browser' }]
       }
-
+      // {id: 0, name: 'Wallet', route: 'wallet', subitems: [ { id: '0a', name: 'Create Account', route: 'account/create' }, { id: '0b', name: 'Import Account', route: 'account/import' } ]},
+      // {id: 4, name: 'Browser', route: 'browser', subitems: [{ id: '4a', name: 'Browser', route: 'browser' }]},
       // {id: 5, name: 'dapps', icon: 'https://cdn4.iconfinder.com/data/icons/web-mobile-round1/210/Untitled-35-512.png', route: `dapps`},
       // {id: 6, name: 'contracts', icon: 'https://cdn2.iconfinder.com/data/icons/business-finance-line-1/24/Contract-512.png'},
       // {id: 7, name: 'remix', icon: 'https://raw.githubusercontent.com/horizon-games/remix-app/master/resources/icon.png', route: `browser/${encodeURIComponent('https://remix.ethereum.org/')}`},
