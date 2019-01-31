@@ -20,7 +20,11 @@ It is bootstrapped with [Create React App v2](https://github.com/facebookincubat
 - a popular technology to encourage the community to contribute
 - no network connection or full node required to run and develop the UI
 
-### Run
+### Contributing
+
+There are many ways to get involved with this project. Get started [here](/docs/CONTRIBUTING.md).
+
+### Development
 
 ```
 if not installed:
