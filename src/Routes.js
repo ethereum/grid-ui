@@ -26,7 +26,7 @@ export default function Routes() {
     <Switch>
       {window.location.href.endsWith('index.html') && <Redirect to="/" />}
 
-      <Route path="/" exact component={Wallet} />
+      <Route path="/" exact component={NodeSetup} />
       <Route path="/wallet" exact component={Wallet} />
       <Route path="/account/create" exact component={CreateAccount} />
       <Route path="/tx" exact component={Wallet} />

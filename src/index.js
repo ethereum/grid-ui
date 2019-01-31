@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { BrowserRouter as Router } from 'react-router-dom'
 import App from './App'
 import Popup from './Popup'
-import { Mist } from './API'
+// import { Mist } from './API'
 import store from './API/ReduxStore'
 
 // see https://github.com/facebook/create-react-app/issues/1084#issuecomment-273272872
@@ -30,7 +30,7 @@ const root = document.getElementById('root')
 const urlParams = getUrlVars()
 const popupName = urlParams.name
 
-const args = Mist.window.getArgs()
+const args = null // Mist.window.getArgs()
 switch (urlParams.app) {
   case 'popup':
     store.dispatch({
