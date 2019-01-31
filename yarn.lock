@@ -3754,10 +3754,10 @@ ethereum-common@^0.0.18:
   resolved "https://registry.yarnpkg.com/ethereum-common/-/ethereum-common-0.0.18.tgz#2fdc3576f232903358976eb39da783213ff9523f"
   integrity sha1-L9w1dvIykDNYl26znaeDIT/5Uj8=
 
-ethereum-react-components@^1.11.2:
-  version "1.11.2"
-  resolved "https://registry.yarnpkg.com/ethereum-react-components/-/ethereum-react-components-1.11.2.tgz#813c5010d4e2f664685ca72428b0049fad162a53"
-  integrity sha512-Hokwu0MvIGyzxACgj8wVDPdIDA81VPYaFT/RIYnUNuEJFs7/ScxzdU2P3bVSe8WEXNZptOv+rM//yuGHGmD+5A==
+ethereum-react-components@^1.12.0:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/ethereum-react-components/-/ethereum-react-components-1.12.1.tgz#fbad07a7893c78aeef4a8b80665cf590516512c9"
+  integrity sha512-EsgTDzOPFIIMLe/YQIkswdkiZ0ScmRcbaEM8gjB3miMzJDIjOQBty8ypHorW6SMW735DgAo2KA2C1Pkb8TR7gA==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.9"
     "@fortawesome/free-solid-svg-icons" "^5.6.0"
