@@ -14,7 +14,15 @@ const { _mist } = window
 // let Ganache = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545")
 // var web3 = new Web3(Ganache);
 
-const MistApi = {
+let MistApi = {
+  geth: {
+    getLocalBinaries: () => {
+      return []
+    },
+    getReleases: () => {
+      return []
+    }
+  },
   requestAccount: () => {
     // window.mist.requestAccount
   },
@@ -82,5 +90,9 @@ const MistApi = {
   }
 }
 
-// export default MistApi
-export default window.Mist
+// window.Mist is made available by mist-shell
+if (window.Mist) {
+  MistApi = window.Mist
+}
+
+export default MistApi
