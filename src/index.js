@@ -30,7 +30,7 @@ const root = document.getElementById('root')
 const urlParams = getUrlVars()
 const popupName = urlParams.name
 
-const args = Mist.getWindowArgs()
+const args = Mist.window.getArgs()
 switch (urlParams.app) {
   case 'popup':
     store.dispatch({

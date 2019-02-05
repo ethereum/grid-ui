@@ -1,6 +1,6 @@
 {
   "name": "mist-ui-react",
-  "version": "0.1.19",
+  "version": "0.1.23",
   "private": true,
   "main": "./app/shell-electron.js",
   "homepage": "./",

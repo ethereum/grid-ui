@@ -23,18 +23,20 @@ let MistApi = {
       return []
     }
   },
+  window: {
+    getArgs() {
+      let args = {}
+      if (_mist) {
+        args = _mist.window.getArgs()
+      }
+      return args
+    }
+  },
   requestAccount: () => {
     // window.mist.requestAccount
   },
   setWindowSize(w, h) {
     ipc.send('backendAction_setWindowSize', w, h)
-  },
-  getWindowArgs() {
-    let args = {}
-    if (_mist) {
-      args = _mist.window.getArgs()
-    }
-    return args
   },
   closeThisWindow() {
     if (_mist) {
