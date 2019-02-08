@@ -1,68 +1,58 @@
 import React, { Component } from 'react'
-import {
-  Button,
-  Input,
-  FileChooser,
-  Select,
-  NodeInfoBox
-} from 'ethereum-react-components'
-import './NodeConfig.css'
-import NodeSettingsForm from './NodeSettingsForm'
+import styled from 'styled-components'
+import { NodeSettings } from 'ethereum-react-components'
 import { Mist } from '../../API'
 
 const { geth } = Mist
 
-class NodeConfig extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      status: {
-        node: 'geth',
-        binPath: 'binPath',
-        version: '1.8.20-stable',
-        commit: '24d727b6d6e2c0cde222fa12155c4a6db5caaf2e',
-        architecture: 'amd64',
-        go: 'go1.11.2',
-        isRunning: false
-      },
-      config: {
-        name: 'default',
-        dataDir: 'F:/Ethereum',
-        host: 'localhost',
-        port: 8545,
-        network: 'main'
-      },
-      releases: ['latest', '1234', '4567']
+export default class NodeConfig extends Component {
+  state = {
+    isCheckingForUpdate: false,
+    status: {},
+    config: {},
+    options: {
+      syncModes: ['light', 'fast', 'full'],
+      versions: [
+        '1.8.20-stable',
+        '1.8.10-stable',
+        '1.7.0-stable',
+        '1.6.0-stable'
+      ],
+      ipcOptions: ['http', 'rpc'],
+      networks: ['main', 'ropsten', 'rinkeby', 'kovan']
     }
   }
 
   componentDidMount = async () => {
-    // let config = await geth.getConfig()
-    // let status = await geth.getStatus()
-    const config = {}
-    const status = {}
+    const config = await geth.getConfig()
+    const status = await geth.getStatus()
     console.log('geth: ', config, status)
-    /*
     this.setState({
       config,
       status
     })
-    */
   }
 
-  handleSaveTemplate = async () => {
-    const version = await geth.version()
-    console.log('geth version: ', version)
+  updateStatus = status => {
+    this.setState({ status })
+    console.log('New status: ', status)
   }
 
-  handleChangeConfig = async () => {
+  changeConfig = async config => {
     try {
-      const result = await geth.setConfig({ port: '8434' })
-      console.log('changed to', result)
+      const result = await geth.setConfig(config)
+      console.log('Config changed to: ', result)
     } catch (error) {
-      console.log('changing config failed', error)
+      console.log('Changing config failed: ', error)
     }
+  }
+
+  checkUpdate = () => {
+    this.setState({ isCheckingForUpdate: true }, () => {
+      setTimeout(() => {
+        this.setState({ isCheckingForUpdate: false })
+      }, 2000)
+    })
   }
 
   handleStartStop = async () => {
@@ -74,85 +64,36 @@ class NodeConfig extends Component {
     } else {
       newStatus = await geth.start()
     }
-    this.setState({
-      // FIXME status: newStatus
-    })
+
+    console.log('∆∆∆ newStatus', newStatus)
+
+    // this.setState({
+    // FIXME status: newStatus
+    // })
   }
 
   render() {
-    const { status, config } = this.state
-    const { binPath, node } = status
-    const nodeName = node
-
-    const templates = [{ label: 'default config', value: 'default' }]
-    const selectedTemplate = templates[0]
-
-    const initial = {
-      active: 'remote',
-      network: 'main',
-      changingNetwork: false,
-      remote: {
-        client: 'infura',
-        blockNumber: 100,
-        timestamp: 0
-      },
-      local: {
-        client: 'geth',
-        blockNumber: 1,
-        timestamp: 0,
-        syncMode: 'fast',
-        sync: {
-          connectedPeers: 0,
-          currentBlock: 0,
-          highestBlock: 0,
-          knownStates: 0,
-          pulledStates: 0,
-          startingBlock: 0
-        }
-      }
-    }
-
+    const { status, config, options, isCheckingForUpdate } = this.state
     return (
-      <main className="node-config">
-        <h1>Node Settings</h1>
-        <h3>Node: {nodeName}</h3>
-        <h3>Path: {binPath}</h3>
-
-        {/*
-        <div style={{width: '75%'}}>
-          <div className="setting">
-            Template: <br />
-            <div
-              style={{width: '300px', display: 'inline-block'}}
-            >
-              <Select
-                value={selectedTemplate}
-                options={templates}
-              />
-            </div>
-          </div>
-
-          <NodeSettingsForm
-            config={config}
-            status={status}
-            onStartStop={this.handleStartStop}
-          />
-        </div>
-        */}
-
-        <div style={{ width: '24%' }}>
-          {/** <NodeInfoBox {...initial} /> */}
-        </div>
-
-        <Button style={{ marginTop: 30 }} onClick={this.handleSaveTemplate}>
-          save template
-        </Button>
-        <Button style={{ marginTop: 30 }} onClick={this.handleChangeConfig}>
-          apply changes
-        </Button>
-      </main>
+      <StyledContainer>
+        <NodeSettings
+          status={status}
+          config={config}
+          options={options}
+          updateStatus={this.updateStatus}
+          changeConfig={this.changeConfig}
+          onStartStop={this.handleStartStop}
+          isCheckingForUpdate={isCheckingForUpdate}
+          checkUpdate={this.checkUpdate}
+        />
+      </StyledContainer>
     )
   }
 }
 
-export default NodeConfig
+const StyledContainer = styled.main`
+  padding: 20px;
+  form {
+    padding: 30px;
+  }
+`

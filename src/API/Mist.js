@@ -16,6 +16,12 @@ const { _mist } = window
 
 let MistApi = {
   geth: {
+    getConfig: () => {
+      return {}
+    },
+    getStatus: () => {
+      return {}
+    },
     getLocalBinaries: () => {
       return []
     },
