@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { NodeSettings } from 'ethereum-react-components'
+import { Mist } from '../../API'
 
-const Mist = window.Mist
 const { geth } = Mist
 
 export default class NodeConfig extends Component {
@@ -40,7 +40,7 @@ export default class NodeConfig extends Component {
 
   changeConfig = async config => {
     try {
-      let result = await geth.setConfig(config)
+      const result = await geth.setConfig(config)
       console.log('Config changed to: ', result)
     } catch (error) {
       console.log('Changing config failed: ', error)
@@ -64,9 +64,12 @@ export default class NodeConfig extends Component {
     } else {
       newStatus = await geth.start()
     }
-    this.setState({
-      // FIXME status: newStatus
-    })
+
+    console.log('∆∆∆ newStatus', newStatus)
+
+    // this.setState({
+    // FIXME status: newStatus
+    // })
   }
 
   render() {
