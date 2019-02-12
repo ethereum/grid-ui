@@ -157,7 +157,7 @@ class SidebarTab extends Component {
     const tabShouldBeRemovable = true
 
     return (
-      <li
+      <li // eslint-disable-line
         className={
           isWallet
             ? 'wallet'

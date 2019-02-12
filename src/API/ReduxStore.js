@@ -138,6 +138,7 @@ const initialState = {
   }
 }
 
+/* eslint-disable */
 function mistApp(state = initialState, action) {
   // For now, don't handle any actions
   // and just return the state given to us.
@@ -192,6 +193,8 @@ function mistApp(state = initialState, action) {
       return state
   }
 }
+/* eslint-enable */
+
 const store = createStore(mistApp, applyMiddleware(ReduxThunk))
 
 export default store

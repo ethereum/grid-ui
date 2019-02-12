@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import './NestedSideNav.css'
@@ -27,7 +27,7 @@ class DropdownMenuItem extends Component {
     const subitems = item.subitems || []
 
     return (
-      <Fragment>
+      <React.Fragment>
         <button
           className={`dropdown-btn ${open ? 'active' : ''}`}
           onClick={() => this.handleMenuExpand('dropdown')}
@@ -45,27 +45,9 @@ class DropdownMenuItem extends Component {
             </NavLink>
           ))}
         </div>
-      </Fragment>
+      </React.Fragment>
     )
   }
 }
 
-class NestedSideNav extends Component {
-  static propTypes = {
-    items: PropTypes.array
-  }
-
-  render() {
-    const { items } = this.props
-
-    return (
-      <div className="sidenav">
-        {items.map(item => (
-          <DropdownMenuItem key={item.id} item={item} />
-        ))}
-      </div>
-    )
-  }
-}
-
-export default NestedSideNav
+export default DropdownMenuItem

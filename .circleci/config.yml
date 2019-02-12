@@ -8,6 +8,7 @@ jobs:
     steps:
       - checkout
       - run: yarn
+      - run: yarn lint
       - run: CI=false yarn deploy
       - store_artifacts:
           path: build/mist*.zip

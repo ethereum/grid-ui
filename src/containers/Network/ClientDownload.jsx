@@ -10,8 +10,8 @@ export default class ClientDownload extends Component {
     cachedVersions: {},
     selectedClient: null,
     downloading: false,
-    downloadProgress: 0,
-    error: ''
+    downloadProgress: 0
+    // error: ''
   }
 
   componentDidMount = async () => {
@@ -53,9 +53,8 @@ export default class ClientDownload extends Component {
         })
       })
     } catch (error) {
-      this.setState({
-        error: 'could not download'
-      })
+      console.log(error)
+      // this.setState({ error: 'could not download' })
     }
     onClientDownloaded(value)
     // refresh cached versions
@@ -110,7 +109,7 @@ export default class ClientDownload extends Component {
         <Button
           style={{ marginTop: 20 }}
           loading={downloading}
-          disabled={selectedClient ? false : true}
+          disabled={!selectedClient}
           onClick={this.handleDownloadClicked}
         >
           download

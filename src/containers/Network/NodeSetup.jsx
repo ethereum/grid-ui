@@ -39,7 +39,7 @@ export default class NodeSetup extends Component {
   state = {
     clientDownloaded: false,
     selectedClient: null,
-    installedBinaries: [],
+    installedBinaries: [], // eslint-disable-line
     isRunning: false
   }
 
@@ -51,7 +51,7 @@ export default class NodeSetup extends Component {
     const installedBinaries = await geth.getLocalBinaries()
     console.log(installedBinaries.length)
     this.setState({
-      installedBinaries,
+      installedBinaries, // eslint-disable-line
       clientDownloaded: installedBinaries.length > 0
     })
     if (installedBinaries.length === 1) {

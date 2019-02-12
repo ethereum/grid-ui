@@ -5,7 +5,8 @@ export class Helpers {
   @method getWebview
   @param {String} id  The Id of a tab or the string "browser"
   */
-  getWebview(id) {
+  // eslint-disable-next-line
+  getWebview(/* id */) {
     // FIXME probably bad practice:
     // deprecate this and handle over states
     // return $('webview[data-id="' + id + '"]')[0]
@@ -25,6 +26,7 @@ async function fetchJson(FETCH_ACTION, url){
 }
 */
 
+  // eslint-disable-next-line
   getCurrentWebview() {
     // var webview = this.getWebview(LocalStore.get('selectedTab'));
     // return webview
