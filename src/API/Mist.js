@@ -14,7 +14,7 @@ const { _mist } = window
 // let Ganache = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545")
 // var web3 = new Web3(Ganache);
 
-let MistApi = {
+const MistApi = {
   geth: {
     getConfig: () => {
       return {}
@@ -61,9 +61,9 @@ let MistApi = {
   showHistory(args) {
     showPopup('TxHistory', args)
   },
-  createAccountWeb3(pw) {
-    return new Promise((resolve, reject) => {
-      /*
+  createAccountWeb3() {
+    // return new Promise((resolve, reject) => {
+    /*
       web3.eth.personal.newAccount(pw)
       .then(address => {
         store.dispatch({
@@ -79,7 +79,7 @@ let MistApi = {
         console.log('account could not be created', err)
       })
       */
-    })
+    // })
   },
   // replaces GlobalNotification
   notification: {
@@ -99,8 +99,6 @@ let MistApi = {
 }
 
 // window.Mist is made available by mist-shell
-if (window.Mist) {
-  MistApi = window.Mist
-}
+const Mist = window.Mist ? window.Mist : MistApi
 
-export default MistApi
+export default Mist

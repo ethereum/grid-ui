@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import _ from 'lodash'
 import { web3, i18n, ipc, Mist } from './API'
 
@@ -57,7 +59,7 @@ export function estimateGasUsage() {
   return (dispatch, getState) => {
     dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:START' })
 
-    const newTx = getState().newTx
+    const { newTx } = getState()
     const txData = {
       data: newTx.data,
       from: newTx.from,
@@ -90,13 +92,13 @@ export function estimateGasUsage() {
           payload: { estimatedGas: value }
         })
 
-        dispatch(checkGasLoaded())
+        return dispatch(checkGasLoaded())
       })
       .catch(error => {
         const e = JSON.stringify(error, Object.getOwnPropertyNames(error))
         const errorObject = JSON.parse(e)
 
-        dispatch({
+        return dispatch({
           type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE',
           error: errorObject.message
         })
@@ -386,7 +388,7 @@ export function lookupSignature(data) {
     }
 
     const bytesSignature =
-      data.substr(0, 2) === '0x' ? data.substr(0, 10) : '0x' + data.substr(0, 8)
+      data.substr(0, 2) === '0x' ? data.substr(0, 10) : `0x${data.substr(0, 8)}`
 
     let executionFunction = _.first(window.SIGNATURES[bytesSignature])
 
@@ -424,3 +426,5 @@ export function setLocalPeerCount(peerCount) {
     }
   }
 }
+
+/* eslint-enable */
