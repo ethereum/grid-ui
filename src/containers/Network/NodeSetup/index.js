@@ -1,39 +1,13 @@
-/* eslint-disable react/no-multi-comp */
 import React, { Component } from 'react'
-import { Button, Input, FileChooser } from 'ethereum-react-components'
-import { Mist } from '../../API'
+import { Button } from 'ethereum-react-components'
+import styled, { css } from 'styled-components'
+import { Mist } from '../../../API'
+import ClientConfigForm from './ClientConfigForm'
 import ClientDownload from './ClientDownload'
 import ClientSelect from './ClientSelect'
-import Terminal from './Terminal'
+import Terminal from '../Terminal'
 
 const { geth } = Mist
-
-class ClientConfigForm extends Component {
-  handleDataDirectoryChanged = () => {}
-
-  render() {
-    const config = {
-      host: 'localhost',
-      port: 8454,
-      dataDir: '~/.ethereum'
-    }
-    return (
-      <div>
-        <div className="setting">
-          RPC Host &amp; Port: <br />
-          <Input type="text" value={config.host} style={{ marginRight: 10 }} />
-          <Input type="text" value={config.port} />
-        </div>
-
-        <div className="setting">
-          Data directory: <br />
-          <Input type="text" value={config.dataDir} />
-          <FileChooser onChange={this.handleDataDirectoryChanged} />
-        </div>
-      </div>
-    )
-  }
-}
 
 export default class NodeSetup extends Component {
   state = {
@@ -117,15 +91,10 @@ export default class NodeSetup extends Component {
       <div>
         <h2>4. Start Client</h2>
         <div className="setting">
-          <span>
-            Running:{' '}
-            {isRunning ? (
-              <span style={{ color: 'green' }}>true</span>
-            ) : (
-              <span style={{ color: 'red' }}>false</span>
-            )}
-          </span>
-          <Button onClick={() => this.handleStartStop(isRunning)}>
+          <StyledRunning isRunning={isRunning}>
+            Running: {isRunning ? <span>Yes</span> : <span>No</span>}
+          </StyledRunning>
+          <Button onClick={() => this.handleStartStop()}>
             {isRunning ? 'stop' : 'start'}
           </Button>
         </div>
@@ -156,3 +125,19 @@ export default class NodeSetup extends Component {
     )
   }
 }
+
+const StyledRunning = styled.div`
+  margin-bottom: 10px;
+  font-weight: normal;
+  span {
+    ${props =>
+      props.isRunning &&
+      css`
+        color: green;
+      `} ${props =>
+      !props.isRunning &&
+      css`
+        color: red;
+      `};
+  }
+`
