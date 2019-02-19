@@ -1,19 +1,14 @@
 import React, { Component } from 'react'
-import { Button, Input, FileChooser, Select } from 'ethereum-react-components'
+import { Input, FileChooser, Select } from 'ethereum-react-components'
 import styled, { css } from 'styled-components'
 import { Mist } from '../../../API'
 
 const { geth } = Mist
 
 export default class ClientConfigForm extends Component {
-  async setConfig(config) {
-    await geth.setConfig({ config })
-    this.setState({ config })
-  }
-
   state = {
     config: {},
-    status: {},
+    // status: {},
     options: {
       networks: ['main', 'ropsten', 'rinkeby'],
       ipcModes: ['IPC', 'WebSockets'],
@@ -26,10 +21,15 @@ export default class ClientConfigForm extends Component {
     this.getConfig()
   }
 
-  async getStatus() {
-    const status = await geth.getStatus()
-    this.setState({ status })
+  async setConfig(config) {
+    await geth.setConfig({ config })
+    this.setState({ config })
   }
+
+  // async getStatus() {
+  //   const status = await geth.getStatus()
+  //   this.setState({ status })
+  // }
 
   async getConfig() {
     const config = await geth.getConfig()
@@ -203,7 +203,6 @@ export default class ClientConfigForm extends Component {
   }
 
   render() {
-    const { config } = this.state
     return (
       <div>
         {this.renderDataDir()}
@@ -241,8 +240,6 @@ const StyledSelect = styled(Select)`
       text-transform: capitalize;
     `};
 `
-
-const StyledButton = styled(Button)``
 
 const StyledWarning = styled.div`
   color: red;
