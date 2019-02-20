@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Select, Button, Spinner } from 'ethereum-react-components'
+import { Select, Button, Spinner, Progress } from 'ethereum-react-components'
 import { Mist } from '../../API'
 
 const { geth } = Mist
@@ -90,7 +90,9 @@ export default class ClientDownload extends Component {
     return (
       <div>
         {releases.length === 0 ? (
-          <Spinner />
+          <div>
+            <Spinner />
+          </div>
         ) : (
           <Select
             isDisabled={downloading}
@@ -100,16 +102,13 @@ export default class ClientDownload extends Component {
           />
         )}
         {downloading && (
-          <progress
-            style={{ width: '100%' }}
-            value={downloadProgress}
-            max="100"
-          />
+          <div style={{ marginTop: 20 }}>
+            <Progress value={downloadProgress} max="100" />
+          </div>
         )}
         <Button
           style={{ marginTop: 20 }}
-          loading={downloading}
-          disabled={!selectedClient}
+          disabled={!selectedClient || downloading}
           onClick={this.handleDownloadClicked}
         >
           download
