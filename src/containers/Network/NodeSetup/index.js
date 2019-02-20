@@ -17,6 +17,11 @@ export default class NodeSetup extends Component {
     isRunning: false
   }
 
+  constructor(props) {
+    super(props)
+    this.clientConfigForm = React.createRef()
+  }
+
   componentDidMount = async () => {
     this.loadCachedVersions()
   }
@@ -68,7 +73,7 @@ export default class NodeSetup extends Component {
     return (
       <div>
         <h2>3. Configure Client</h2>
-        <ClientConfigForm />
+        <ClientConfigForm ref={this.clientConfigForm} />
       </div>
     )
   }
@@ -78,6 +83,10 @@ export default class NodeSetup extends Component {
     if (isRunning) {
       await geth.stop()
     } else {
+      // Save config
+      const { config } = this.clientConfigForm.current.state
+      await geth.setConfig(config)
+      // Start geth
       await geth.start(selectedClient)
     }
     this.setState({

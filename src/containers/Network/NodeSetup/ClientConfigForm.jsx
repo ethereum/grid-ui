@@ -8,7 +8,6 @@ const { geth } = Mist
 export default class ClientConfigForm extends Component {
   state = {
     config: {},
-    // status: {},
     options: {
       networks: ['main', 'ropsten', 'rinkeby'],
       ipcModes: ['IPC', 'WebSockets'],
@@ -17,19 +16,8 @@ export default class ClientConfigForm extends Component {
   }
 
   componentDidMount() {
-    this.getStatus()
     this.getConfig()
   }
-
-  async setConfig(config) {
-    await geth.setConfig({ config })
-    this.setState({ config })
-  }
-
-  // async getStatus() {
-  //   const status = await geth.getStatus()
-  //   this.setState({ status })
-  // }
 
   async getConfig() {
     const config = await geth.getConfig()
@@ -42,7 +30,6 @@ export default class ClientConfigForm extends Component {
     const { config } = this.state
     const newConfig = { ...config, dataDir: event.target.value }
     this.setState({ config: newConfig })
-    geth.setConfig(newConfig)
   }
 
   handleChangeSyncMode = selectedOption => {
@@ -50,7 +37,6 @@ export default class ClientConfigForm extends Component {
     const syncMode = selectedOption.value
     const newConfig = { ...config, syncMode }
     this.setState({ config: newConfig })
-    geth.setConfig(newConfig)
   }
 
   handleChangeIpc = selectedOption => {
@@ -58,7 +44,6 @@ export default class ClientConfigForm extends Component {
     const ipc = selectedOption.value
     const newConfig = { ...config, ipc }
     this.setState({ config: newConfig })
-    geth.setConfig(newConfig)
   }
 
   handleChangeNetwork = selectedOption => {
@@ -66,21 +51,18 @@ export default class ClientConfigForm extends Component {
     const network = selectedOption.value
     const newConfig = { ...config, network }
     this.setState({ config: newConfig })
-    geth.setConfig(newConfig)
   }
 
   handleChangeHost = event => {
     const { config } = this.state
     const newConfig = { ...config, host: event.target.value }
     this.setState({ config: newConfig })
-    geth.setConfig(newConfig)
   }
 
   handleChangePort = event => {
     const { config } = this.state
     const newConfig = { ...config, port: Number(event.target.value) }
     this.setState({ config: newConfig })
-    geth.setConfig(newConfig)
   }
 
   renderNetwork() {
