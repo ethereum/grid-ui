@@ -28,7 +28,6 @@ export default class NodeSetup extends Component {
 
   loadCachedVersions = async () => {
     const installedBinaries = await geth.getLocalBinaries()
-    console.log(installedBinaries.length)
     this.setState({
       installedBinaries, // eslint-disable-line
       clientDownloaded: installedBinaries.length > 0
