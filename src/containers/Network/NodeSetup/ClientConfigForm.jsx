@@ -7,7 +7,15 @@ const { geth } = Mist
 
 export default class ClientConfigForm extends Component {
   state = {
-    config: {},
+    config: {
+      name: '',
+      dataDir: '',
+      host: '',
+      port: '',
+      network: '',
+      syncMode: '',
+      ipc: ''
+    },
     options: {
       networks: ['main', 'ropsten', 'rinkeby'],
       ipcModes: ['IPC', 'WebSockets'],
