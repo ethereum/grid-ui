@@ -52,7 +52,8 @@ export default class NodeSetup extends Component {
     )
   }
 
-  handleClientSelected = selectedClient => {
+  handleClientSelected = selected => {
+    const selectedClient = selected.value
     this.setState({
       selectedClient
     })
