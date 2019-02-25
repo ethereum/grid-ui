@@ -27,10 +27,11 @@
     "lint": "eslint src --ext .jsx --ext .js"
   },
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
     "bignumber.js": "^7.2.1",
     "bn.js": "^4.11.8",
     "dapp-styles": "git+https://github.com/ethereum/dapp-styles.git",
-    "ethereum-react-components": "^1.13.7",
+    "ethereum-react-components": "1.13.8",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "numeral": "^2.0.6",

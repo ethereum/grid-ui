@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 // import './App.css';
-import './styles/styles.css'
+// import './styles/styles.css'
 // fakeAPI needs to be initialized before any other component is loaded
 // import './fakeAPI.js'
 import './App.css'
