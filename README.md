@@ -2,9 +2,7 @@
   <a href="https://circleci.com/gh/ethereum/mist-ui"><img src="https://img.shields.io/circleci/project/github/ethereum/mist-ui/master.svg" alt="Build Status"></a>
 </p>
 
-This project is a "fork" / re-write of ethereum/Mist's user interface
-
-It is bootstrapped with [Create React App v2](https://github.com/facebookincubator/create-react-app), is 100% written in React and removes the meteor framework dependency.
+## Mist-UI
 
 ### Project Goals
 
@@ -27,15 +25,11 @@ There are many ways to get involved with this project. Get started [here](/docs/
 ### Development
 
 ```
-if not installed:
-npm install -g less
-
 git clone https://github.com/ethereum/mist-ui.git
 cd mist-ui
 yarn
 
-Start in 3 terminals:
-yarn run watch-css  -> compile less to css and watch for changes (less + react compat workaround)
+Start in 2 terminals:
 yarn run start -> start dev server for react with hot reloading
 yarn run electron:dev -> load the app from the dev server into an electron window
 ```
