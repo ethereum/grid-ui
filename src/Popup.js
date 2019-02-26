@@ -5,7 +5,7 @@ import {
   FormCreateAccount,
   TxHistory
 } from 'ethereum-react-components'
-import './styles/styles.css'
+// import './styles/styles.css'
 
 import UpdateAvailable from './popups/ClientUpdateAvailable'
 import ConnectAccount from './popups/ConnectAccount'
