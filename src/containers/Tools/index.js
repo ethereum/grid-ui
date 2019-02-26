@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import '../normalize.css'
 import './Tools.css'
 
@@ -74,4 +73,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(Tools))
+export default connect(mapStateToProps)(Tools)
