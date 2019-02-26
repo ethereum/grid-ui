@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Select, Button, Spinner, Progress } from 'ethereum-react-components'
-import { Mist } from '../../API'
+import { Mist } from '../../../API'
 
 const { geth } = Mist
 
