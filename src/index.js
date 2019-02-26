@@ -2,9 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import { Provider } from 'react-redux'
-import { BrowserRouter as Router } from 'react-router-dom'
-// import App from './App'
-import App from './NewApp'
+import App from './App'
 import Popup from './Popup'
 import { Mist } from './API'
 import store from './API/ReduxStore'
@@ -48,13 +46,9 @@ switch (urlParams.app) {
   case undefined:
   default:
     ReactDOM.render(
-      <Router>
-        <Provider store={store}>
-          <React.Fragment>
-            <App />
-          </React.Fragment>
-        </Provider>
-      </Router>,
+      <Provider store={store}>
+        <App />
+      </Provider>,
       root
     )
     break
