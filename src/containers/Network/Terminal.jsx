@@ -33,7 +33,8 @@ export default class Terminal extends Component {
             font: 'consolas',
             background: 'black',
             color: 'white',
-            minHeight: 300
+            height: 350,
+            overflow: 'scroll'
           }}
         >
           {logs.map(l => (
