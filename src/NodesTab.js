@@ -72,6 +72,7 @@ class NodesTab extends Component {
               <ListItem
                 key={node.name}
                 disabled={node.disabled}
+                selected={node.name === activeItem}
                 onClick={() => this.handleNodeSelect(node.name)}
                 button
               >
