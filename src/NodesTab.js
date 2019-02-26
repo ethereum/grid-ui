@@ -37,14 +37,7 @@ class NodesTab extends Component {
 
   state = {
     activeItem: 'Geth',
-    nodes: [
-      { name: 'Geth', on: false, disabled: false },
-      { name: 'Swarm', on: false, disabled: false },
-      { name: 'Clef', on: false, disabled: true },
-      { name: 'Trinity', on: false, disabled: true },
-      { name: 'Whisper', on: false, disabled: true },
-      { name: 'ETH 2.0', on: false, disabled: true }
-    ]
+    nodes: [{ name: 'Geth', on: false, disabled: false }]
   }
 
   handleNodeSelect = name => {
