@@ -5,7 +5,6 @@ import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
-// import NoSsr from '@material-ui/core/NoSsr'
 import NodesTab from './NodesTab'
 
 const styles = theme => ({
@@ -21,12 +20,6 @@ const styles = theme => ({
   },
   toolbar: theme.mixins.toolbar
 })
-
-function LinkTab(props) {
-  return (
-    <Tab component="a" onClick={event => event.preventDefault()} {...props} />
-  )
-}
 
 class NavTabs extends React.Component {
   static propTypes = {
@@ -48,16 +41,17 @@ class NavTabs extends React.Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position="fixed" color="default" className={classes.appBar}>
+        <AppBar position="fixed" className={classes.appBar}>
           <Tabs
             value={value}
             onChange={this.handleChange}
+            textColor="primary"
             indicatorColor="primary"
           >
-            <LinkTab label="Nodes" />
-            <LinkTab label="Network" />
-            <LinkTab disabled label="Transactions" />
-            <LinkTab label="Tools" />
+            <Tab label="Nodes" />
+            <Tab label="Network" />
+            <Tab disabled label="Transactions" />
+            <Tab label="Tools" />
           </Tabs>
         </AppBar>
 
