@@ -58,7 +58,13 @@ export default class GethConfig extends Component {
     downloadError: null
   }
 
-  noUnstableReleases = release => !release.fileName.includes('unstable')
+  excludeUnstableReleases = release => !release.fileName.includes('unstable')
+
+  excludeAlreadyInstalledReleases = release => {
+    const { localReleases } = this.state
+    const versions = localReleases.map(r => r.version)
+    return !versions.includes(release.version)
+  }
 
   allReleases = () => {
     const { remoteReleases, localReleases } = this.state
@@ -84,7 +90,7 @@ export default class GethConfig extends Component {
 
   loadLocalReleases = async () => {
     const releases = await geth.getLocalBinaries()
-    const localReleases = releases.filter(this.noUnstableReleases)
+    const localReleases = releases.filter(this.excludeUnstableReleases)
     const selectedRelease = localReleases[0]
     this.setState({ localReleases, selectedRelease })
   }
@@ -92,7 +98,9 @@ export default class GethConfig extends Component {
   loadRemoteReleases = async () => {
     this.setState({ loadingRemoteReleases: true })
     const releases = await geth.getReleases()
-    const remoteReleases = releases.filter(this.noUnstableReleases)
+    const remoteReleases = releases
+      .filter(this.excludeUnstableReleases)
+      .filter(this.excludeAlreadyInstalledReleases)
     debug('Fetched remote releases: ', remoteReleases)
     this.setState({ remoteReleases })
     this.setState({ loadingRemoteReleases: false })
