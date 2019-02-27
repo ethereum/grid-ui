@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { Button, Spinner } from 'ethereum-react-components'
+import { Button } from 'ethereum-react-components'
 import styled, { css } from 'styled-components'
-import semver from 'semver'
-import * as debugModule from 'debug'
 
 import Typography from '@material-ui/core/Typography'
 
@@ -12,7 +10,6 @@ import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 
 const { geth } = Mist
-const debug = debugModule('GethConfig')
 
 export default class GethConfig extends Component {
   state = {

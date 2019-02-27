@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Spinner } from 'ethereum-react-components'
 import styled, { css } from 'styled-components'
 import semver from 'semver'
-import * as debugModule from 'debug'
 
 import Typography from '@material-ui/core/Typography'
 import List from '@material-ui/core/List'
@@ -13,41 +12,9 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 import { Mist } from '../../../API'
+import { without } from '../../../lib/utils'
 
 const { geth } = Mist
-const debug = debugModule('GethConfig')
-
-// calling styled(without('unneededProp')(TheComponent))
-// helps satisfy error of extra StyledComponents props passing into children
-// see: https://github.com/styled-components/styled-components/pull/2093#issuecomment-461510706
-const without = (...omitProps) => {
-  const omitSingle = (object = {}, key) => {
-    if (key === null || key === undefined || !(key in object)) return object
-    const { [key]: deleted, ...otherKeys } = object
-    return otherKeys
-  }
-
-  const omit = (object = {}, keys) => {
-    if (!keys) return object
-    if (Array.isArray(keys)) {
-      // calling omitMultiple here would result in a second array check
-      return keys.reduce((result, key) => {
-        if (key in result) {
-          return omitSingle(result, key)
-        }
-        return result
-      }, object)
-    }
-    return omitSingle(object, keys)
-  }
-  // HoF
-  return C => {
-    const WithoutPropsComponent = ({ children, ...props }) => {
-      return React.createElement(C, omit(props, omitProps), children)
-    }
-    return WithoutPropsComponent
-  }
-}
 
 export default class GethConfig extends Component {
   state = {
@@ -101,7 +68,6 @@ export default class GethConfig extends Component {
     const remoteReleases = releases
       .filter(this.excludeUnstableReleases)
       .filter(this.excludeAlreadyInstalledReleases)
-    debug('Fetched remote releases: ', remoteReleases)
     this.setState({ remoteReleases })
     this.setState({ loadingRemoteReleases: false })
   }
@@ -110,7 +76,6 @@ export default class GethConfig extends Component {
     if (this.isLocalRelease(selectedRelease)) {
       this.setState({ selectedRelease })
     } else {
-      debug('Download release: ', selectedRelease)
       this.downloadRelease(selectedRelease)
     }
   }
@@ -139,7 +104,6 @@ export default class GethConfig extends Component {
       })
     } catch (error) {
       this.setState({ downloadError: error })
-      debug('Download Error: ', error)
     }
     delete remoteReleases[index].progress
     const selectedRelease = release
@@ -182,7 +146,7 @@ export default class GethConfig extends Component {
       } else if (!this.isLocalRelease(release)) {
         icon = <CloudDownloadIcon color="primary" />
       } else if (release === selectedRelease) {
-        icon = <CheckBoxIcon />
+        icon = <CheckBoxIcon color="secondary" />
       }
       return icon
     }
@@ -237,21 +201,13 @@ export default class GethConfig extends Component {
     )
   }
 
-  renderDownloadError() {
-    const { downloadError } = this.state
-    if (!downloadError) {
-      return null
-    }
-
-    return <StyledError>{downloadError}</StyledError>
-  }
-
   render() {
+    const { downloadError } = this.state
     return (
       <div>
         {this.renderVersionsAvailable()}
         {this.renderVersionList()}
-        {this.renderDownloadError()}
+        {downloadError && <StyledError>{downloadError}</StyledError>}
       </div>
     )
   }

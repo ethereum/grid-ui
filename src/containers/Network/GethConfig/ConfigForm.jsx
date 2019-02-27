@@ -1,12 +1,6 @@
 import React, { Component } from 'react'
 import { Input, Select, Grid } from 'ethereum-react-components'
-import styled, { css } from 'styled-components'
-import ReactDOM from 'react-dom'
-
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import OutlinedInput from '@material-ui/core/OutlinedInput'
-import MenuItem from '@material-ui/core/MenuItem'
+import styled from 'styled-components'
 
 import { Mist } from '../../../API'
 
@@ -30,10 +24,6 @@ export default class ConfigForm extends Component {
     }
   }
 
-  constructor(props) {
-    super(props)
-  }
-
   componentDidMount() {
     this.getConfig()
   }
@@ -45,7 +35,8 @@ export default class ConfigForm extends Component {
 
   handleChangeDataDir = event => {
     const { config } = this.state
-    const newConfig = { ...config, dataDir: event.target.value }
+    const dataDir = event.target.value
+    const newConfig = { ...config, dataDir }
     this.setState({ config: newConfig })
   }
 
@@ -69,13 +60,15 @@ export default class ConfigForm extends Component {
 
   handleChangeHost = event => {
     const { config } = this.state
-    const newConfig = { ...config, host: event.target.value }
+    const host = event.target.value
+    const newConfig = { ...config, host }
     this.setState({ config: newConfig })
   }
 
   handleChangePort = event => {
     const { config } = this.state
-    const newConfig = { ...config, port: Number(event.target.value) }
+    const port = Number(event.target.value)
+    const newConfig = { ...config, port }
     this.setState({ config: newConfig })
   }
 
@@ -136,22 +129,7 @@ export default class ConfigForm extends Component {
     const { config } = this.state
     const { host } = config
     return (
-      <FormControl variant="outlined" fullWidth>
-        <InputLabel
-          ref={ref => {
-            this.rpcHostRef = ReactDOM.findDOMNode(ref)
-          }}
-          htmlFor="rpc-host-input"
-        >
-          RPC Host
-        </InputLabel>
-        <OutlinedInput
-          id="rpc-host-input"
-          value={host}
-          onChange={this.handleChangeHost}
-          labelWidth={this.rpcHostRef ? this.rpcHostRef.offsetWidth : 0}
-        />
-      </FormControl>
+      <Input label="RPC Host" value={host} onChange={this.handleChangeHost} />
     )
   }
 
@@ -159,22 +137,7 @@ export default class ConfigForm extends Component {
     const { config } = this.state
     const { port } = config
     return (
-      <FormControl variant="outlined" fullWidth>
-        <InputLabel
-          ref={ref => {
-            this.rpcPortRef = ReactDOM.findDOMNode(ref)
-          }}
-          htmlFor="rpc-port-input"
-        >
-          RPC Port
-        </InputLabel>
-        <OutlinedInput
-          id="rpc-port-input"
-          value={port}
-          onChange={this.handleChangePort}
-          labelWidth={this.rpcPortRef ? this.rpcPortRef.offsetWidth : 0}
-        />
-      </FormControl>
+      <Input label="RPC Port" value={port} onChange={this.handleChangePort} />
     )
   }
 
@@ -182,24 +145,11 @@ export default class ConfigForm extends Component {
     const { config } = this.state
     const { dataDir } = config
     return (
-      <FormControl variant="outlined" fullWidth>
-        <InputLabel
-          ref={ref => {
-            this.dataDirLabelRef = ReactDOM.findDOMNode(ref)
-          }}
-          htmlFor="data-dir-input"
-        >
-          Data Directory
-        </InputLabel>
-        <OutlinedInput
-          id="data-dir-input"
-          value={dataDir}
-          onChange={this.handleChangeDataDir}
-          labelWidth={
-            this.dataDirLabelRef ? this.dataDirLabelRef.offsetWidth : 0
-          }
-        />
-      </FormControl>
+      <Input
+        label="Data Directory"
+        value={dataDir}
+        onChange={this.handleChangeDataDir}
+      />
     )
   }
 
