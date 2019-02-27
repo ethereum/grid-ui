@@ -1,12 +1,12 @@
 {
-  "name": "mist-ui-react",
+  "name": "grid-ui",
   "version": "0.1.26",
   "private": true,
   "main": "./app/shell-electron.js",
   "homepage": "./",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ethereum/mist-ui-react.git"
+    "url": "https://github.com/ethereum/grid-ui.git"
   },
   "scripts": {
     "electron:dev": "cross-env PORT=3080 electron .",
