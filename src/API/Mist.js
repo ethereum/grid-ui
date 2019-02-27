@@ -27,6 +27,9 @@ const MistApi = {
     },
     getReleases: () => {
       return []
+    },
+    getLogs: () => {
+      return []
     }
   },
   window: {

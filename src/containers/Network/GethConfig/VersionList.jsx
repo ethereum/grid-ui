@@ -146,7 +146,7 @@ export default class GethConfig extends Component {
       } else if (!this.isLocalRelease(release)) {
         icon = <CloudDownloadIcon color="primary" />
       } else if (release === selectedRelease) {
-        icon = <CheckBoxIcon color="secondary" />
+        icon = <CheckBoxIcon color="primary" />
       }
       return icon
     }
@@ -182,10 +182,7 @@ export default class GethConfig extends Component {
               secondary={release.progress > 0 ? `${release.progress}%` : null}
             />
             <StyledListItemAction>
-              <Typography
-                variant="button"
-                color={selectedRelease === release ? 'default' : 'primary'}
-              >
+              <Typography variant="button" color="primary">
                 {actionLabel}
               </Typography>
             </StyledListItemAction>
