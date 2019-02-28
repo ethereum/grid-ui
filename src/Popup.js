@@ -1,10 +1,10 @@
 import React from 'react'
 // import './App.css';
-import {
-  FormSendTx,
-  FormCreateAccount,
-  TxHistory
-} from 'ethereum-react-components'
+// import {
+// FormSendTx,
+// FormCreateAccount,
+// TxHistory
+// } from 'ethereum-react-components'
 // import './styles/styles.css'
 
 import UpdateAvailable from './popups/ClientUpdateAvailable'
@@ -17,17 +17,17 @@ function PopupBase({ name, popup }) {
   switch (name) {
     case 'ConnectAccount':
       return <ConnectAccount popup={popup} />
-    case 'RequestAccount':
-    case 'CreateAccount':
-      return <FormCreateAccount />
+    // case 'RequestAccount':
+    // case 'CreateAccount':
+    // return <FormCreateAccount />
     case 'SendTransactionConfirmation':
       return <span>TODO send tx confirmation</span>
     case 'Settings':
       return <Settings />
-    case 'SendTx':
-      return <FormSendTx />
-    case 'TxHistory':
-      return <TxHistory />
+    // case 'SendTx':
+    // return <FormSendTx />
+    // case 'TxHistory':
+    // return <TxHistory />
     default:
       return <UpdateAvailable />
   }

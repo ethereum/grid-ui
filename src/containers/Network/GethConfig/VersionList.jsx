@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spinner } from 'ethereum-react-components'
+// import { Spinner } from 'ethereum-react-components'
 import styled, { css } from 'styled-components'
 import semver from 'semver'
 
@@ -10,6 +10,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
+
+import Spinner from '../../../components/Spinner'
 
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
