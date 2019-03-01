@@ -30,14 +30,16 @@ export default class Terminal extends Component {
       <div>
         <div
           style={{
-            font:
+            fontFamily:
               'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
+            fontSize: 11,
             background: '#111',
             color: '#eee',
             maxHeight: 350,
-            maxWidth: 600,
+            maxWidth: 680,
             overflowY: 'scroll',
-            padding: 5
+            whiteSpace: 'nowrap',
+            padding: 10
           }}
         >
           {logs.map(l => (
