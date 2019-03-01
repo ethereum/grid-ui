@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import { Button } from 'ethereum-react-components'
 import styled, { css } from 'styled-components'
-
 import Typography from '@material-ui/core/Typography'
-
+import Button from '../../../components/Button'
 import { Mist } from '../../../API'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'

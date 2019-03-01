@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Input, Select, Grid } from 'ethereum-react-components'
+import TextField from '@material-ui/core/TextField'
+import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
-
+import Select from '../../../components/Select'
 import { Mist } from '../../../API'
 
 const { geth } = Mist
@@ -129,7 +130,12 @@ export default class ConfigForm extends Component {
     const { config } = this.state
     const { host } = config
     return (
-      <Input label="RPC Host" value={host} onChange={this.handleChangeHost} />
+      <TextField
+        variant="outlined"
+        label="RPC Host"
+        value={host}
+        onChange={this.handleChangeHost}
+      />
     )
   }
 
@@ -137,7 +143,12 @@ export default class ConfigForm extends Component {
     const { config } = this.state
     const { port } = config
     return (
-      <Input label="RPC Port" value={port} onChange={this.handleChangePort} />
+      <TextField
+        variant="outlined"
+        label="RPC Port"
+        value={port}
+        onChange={this.handleChangePort}
+      />
     )
   }
 
@@ -145,7 +156,8 @@ export default class ConfigForm extends Component {
     const { config } = this.state
     const { dataDir } = config
     return (
-      <Input
+      <TextField
+        variant="outlined"
         label="Data Directory"
         value={dataDir}
         onChange={this.handleChangeDataDir}

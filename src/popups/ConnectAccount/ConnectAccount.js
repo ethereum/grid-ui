@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Identicon } from 'ethereum-react-components'
 import './ConnectAccount.css'
 import { Mist, i18n } from '../../API'
 
@@ -27,8 +26,9 @@ class ConnectAccount extends Component {
         <span
           key={acc.address}
           className="simptip-position-left simptip-movable"
-          data-tooltip={acc.name}>
-          <Identicon seed={acc} className="dapp-large" />
+          data-tooltip={acc.name}
+        >
+          {/* <Identicon seed={acc} className="dapp-large" /> */}
         </span>
       )
     })
@@ -110,8 +110,9 @@ class ConnectAccount extends Component {
                     onClick={e => {
                       e.preventDefault()
                       this.handleAccountSelected(acc)
-                    }}>
-                    <Identicon seed={acc.address} className="dapp-small" />
+                    }}
+                  >
+                    {/* <Identicon seed={acc.address} className="dapp-small" /> */}
                     <h3>{acc.name}</h3>
                     <span>{acc.address}</span>
                   </button>
@@ -141,7 +142,8 @@ class ConnectAccount extends Component {
               onClick={e => {
                 e.preventDefault()
                 Mist.closeThisWindow()
-              }}>
+              }}
+            >
               {i18n.t('buttons.cancel')}
             </button>
             {selectedAccount ? (
@@ -155,7 +157,8 @@ class ConnectAccount extends Component {
                 onClick={e => {
                   e.preventDefault()
                   Mist.closeThisWindow()
-                }}>
+                }}
+              >
                 {i18n.t('buttons.stayAnonymous')}
               </button>
             )}
