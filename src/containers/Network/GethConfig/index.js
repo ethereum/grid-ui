@@ -20,10 +20,6 @@ export default class GethConfig extends Component {
     this.versionListRef = React.createRef()
   }
 
-  renderVersionList = () => {
-    return <VersionList ref={this.versionListRef} />
-  }
-
   renderConfigForm = () => {
     return (
       <div>
@@ -71,18 +67,6 @@ export default class GethConfig extends Component {
     )
   }
 
-  renderTerminal = () => {
-    if (geth.getLogs().length === 0) {
-      return null
-    }
-    return (
-      <div style={{ marginTop: 20 }}>
-        <Typography variant="h6">Terminal</Typography>
-        <Terminal />
-      </div>
-    )
-  }
-
   renderDownloadError() {
     const { downloadError } = this.state
     if (!downloadError) {
@@ -95,10 +79,10 @@ export default class GethConfig extends Component {
   render() {
     return (
       <main>
-        {this.renderVersionList()}
+        <VersionList ref={this.versionListRef} />
         {this.renderConfigForm()}
         {this.renderStartStop()}
-        {this.renderTerminal()}
+        {geth.getLogs().length && <Terminal />}
       </main>
     )
   }
