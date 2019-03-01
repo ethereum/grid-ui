@@ -111,9 +111,11 @@ export default class GethConfig extends Component {
   renderVersionsAvailable = () => {
     const { localReleases, loadingRemoteReleases } = this.state
     const releases = this.allReleases()
+
     if (releases.length === 0) {
-      return null
+      return <Spinner style={{ margin: '20px' }} />
     }
+
     return (
       <div>
         {loadingRemoteReleases && (
