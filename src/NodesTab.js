@@ -7,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
+import Typography from '@material-ui/core/Typography'
 import GethConfig from './containers/Network/GethConfig'
 
 const drawerWidth = 240
@@ -92,7 +93,7 @@ class NodesTab extends Component {
 
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <h3>{activeItem}</h3>
+          <Typography variant="h5">{activeItem}</Typography>
           {activeItem === 'Geth' && <GethConfig />}
         </main>
       </React.Fragment>
