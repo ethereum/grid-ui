@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://circleci.com/gh/ethereum/mist-ui"><img src="https://img.shields.io/circleci/project/github/ethereum/mist-ui/master.svg" alt="Build Status"></a>
+  <a href="https://circleci.com/gh/ethereum/grid-ui"><img src="https://img.shields.io/circleci/project/github/ethereum/grid-ui/master.svg" alt="Build Status"></a>
 </p>
 
 ## Grid UI
