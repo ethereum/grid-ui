@@ -1,4 +1,8 @@
 <p align="center">
+ <img src="https://user-images.githubusercontent.com/47108/53650191-fa1fa800-3c11-11e9-8a49-955ac98d3486.png" width="661" />
+</p>
+
+<p align="center">
   <a href="https://circleci.com/gh/ethereum/grid-ui"><img src="https://img.shields.io/circleci/project/github/ethereum/grid-ui/master.svg" alt="Build Status"></a>
 </p>
 
