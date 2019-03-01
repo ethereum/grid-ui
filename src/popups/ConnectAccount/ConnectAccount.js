@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-// import { Identicon } from 'ethereum-react-components'
 import './ConnectAccount.css'
 import { Mist, i18n } from '../../API'
 

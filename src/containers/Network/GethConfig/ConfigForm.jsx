@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-// import { Input, Select, Grid } from 'ethereum-react-components'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
