@@ -113,7 +113,7 @@ export default class GethConfig extends Component {
     const releases = this.allReleases()
 
     if (releases.length === 0) {
-      return <Spinner style={{ margin: '20px' }} />
+      return <Spinner style={{ margin: '20px 0' }} />
     }
 
     return (
