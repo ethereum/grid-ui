@@ -72,13 +72,15 @@ export default class GethConfig extends Component {
   }
 
   renderTerminal = () => {
+    const { isRunning } = this.state
+
     if (geth.getLogs().length === 0) {
       return null
     }
     return (
       <div style={{ marginTop: 20 }}>
         <Typography variant="h6">Terminal</Typography>
-        <Terminal />
+        <Terminal isActive={isRunning} />
       </div>
     )
   }

@@ -3,32 +3,48 @@ import { Mist } from '../../API'
 
 const { geth } = Mist
 
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min
-}
-
 export default class Terminal extends Component {
   state = {
     logs: []
   }
 
   componentDidMount = async () => {
-    const refreshLogs = async () => {
-      const gethLogs = await geth.getLogs()
-      const { logs } = this.state
-      this.setState({
-        logs: [...logs, ...gethLogs]
-      })
+    await this.startPolling()
+  }
+
+  componentDidUpdate = () => {
+    if (this.props.isActive && !this.logsInterval) {
+      this.startPolling()
+    } else if (!this.props.isActive && this.logsInterval) {
+      this.stopPolling()
     }
-    await refreshLogs()
-    setInterval(refreshLogs, 1000)
+  }
+
+  refreshLogs = async () => {
+    const gethLogs = await geth.getLogs()
+    const { logs } = this.state
+    this.setState({
+      ...this.state,
+      logs: [...logs, ...gethLogs]
+    })
+  }
+
+  startPolling = () => {
+    this.logsInterval = setInterval(this.refreshLogs, 1000)
+  }
+
+  stopPolling = () => {
+    clearInterval(this.logsInterval)
+    this.logsInterval = null
   }
 
   render() {
     const { logs } = this.state
+
     return (
-      <div>
+      <div key="terminalContainer">
         <div
+          key="terminalWrapper"
           style={{
             fontFamily:
               'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
@@ -42,8 +58,8 @@ export default class Terminal extends Component {
             padding: 10
           }}
         >
-          {logs.map(l => (
-            <div key={getRandomArbitrary(0, 1000000000)}> &gt; {l}</div>
+          {logs.map((l, index) => (
+            <div key={index}> &gt; {l}</div>
           ))}
         </div>
       </div>
