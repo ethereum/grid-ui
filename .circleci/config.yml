@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run: yarn
       - run: yarn lint
-      - run: CI=false yarn deploy ${CIRCLE_BRANCH}
+      - run: CI=false yarn deploy ci
       - store_artifacts:
           path: build/grid-ui*.zip
       - store_artifacts:
