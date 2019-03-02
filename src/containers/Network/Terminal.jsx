@@ -13,6 +13,9 @@ export default class Terminal extends Component {
   }
 
   componentDidUpdate = () => {
+    const scrollHeight = this.terminalScrollView.scrollHeight
+    this.terminalScrollView.scrollTo({ top: scrollHeight, behavior: 'smooth' })
+
     if (this.props.isActive && !this.logsInterval) {
       this.startPolling()
     } else if (!this.props.isActive && this.logsInterval) {
@@ -45,6 +48,9 @@ export default class Terminal extends Component {
       <div key="terminalContainer">
         <div
           key="terminalWrapper"
+          ref={terminalScrollView =>
+            (this.terminalScrollView = terminalScrollView)
+          }
           style={{
             fontFamily:
               'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
@@ -61,6 +67,7 @@ export default class Terminal extends Component {
           {logs.map((l, index) => (
             <div key={index}> &gt; {l}</div>
           ))}
+          <div ref={endMarker => (this.endMarker = endMarker)} />
         </div>
       </div>
     )
