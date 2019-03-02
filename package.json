@@ -17,7 +17,7 @@
     "start": "cross-env PORT=3080 CI='false' react-scripts start",
     "_build": "react-scripts build",
     "build": "react-scripts-ext build app",
-    "package": "react-scripts-ext package",
+    "package": "react-scripts-ext package dev",
     "deploy": "react-scripts-ext deploy",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
