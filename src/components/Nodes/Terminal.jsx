@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
-import Button from '../../components/Button'
+import Button from '../shared/Button'
 import { Mist } from '../../API'
 
 const { geth } = Mist

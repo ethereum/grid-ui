@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 
-import { i18n } from '../API'
+import { i18n } from '../../API'
 
-import iconPath from '../icons/icon.png'
+import iconPath from '../../icons/icon.png'
 
 class UpdateAvailable extends Component {
   render() {
