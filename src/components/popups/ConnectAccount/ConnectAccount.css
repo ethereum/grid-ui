@@ -9,7 +9,8 @@
   background: -webkit-linear-gradient(top, rgba(241, 241, 241, 0), #f1f1f1);
 }
 
-.popup-windows.connect-account span.account-address, .popup-windows.connect-account span.dapp-url {
+.popup-windows.connect-account span.account-address,
+.popup-windows.connect-account span.dapp-url {
   -webkit-animation: 0.9s cubic-bezier(0.74, 0, 1, 0.29) fadeIn;
   animation: 0.9s cubic-bezier(0.74, 0, 1, 0.29) fadeIn;
   display: inline-block;
@@ -22,9 +23,9 @@
 }
 
 .popup-windows.connect-account .account-dapp-user .app-icon {
-  left: 0px
+  left: 0px;
 }
 
-.popup-windows.connect-account .account-dapp-user{
+.popup-windows.connect-account .account-dapp-user {
   width: 75px;
 }

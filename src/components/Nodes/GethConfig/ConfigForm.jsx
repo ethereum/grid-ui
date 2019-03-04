@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
-import Select from '../../../components/Select'
+import Select from '../../shared/Select'
 import { Mist } from '../../../API'
 
 const { geth } = Mist

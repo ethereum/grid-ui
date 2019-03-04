@@ -1,8 +1,8 @@
 import React from 'react'
 
-import UpdateAvailable from './popups/ClientUpdateAvailable'
-import ConnectAccount from './popups/ConnectAccount'
-import Settings from './popups/Settings'
+import UpdateAvailable from './ClientUpdateAvailable'
+import ConnectAccount from './ConnectAccount'
+import Settings from './Settings'
 
 function PopupBase({ name, popup }) {
   console.log('load content for popup: ', name)
