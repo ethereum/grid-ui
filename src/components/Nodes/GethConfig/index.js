@@ -82,7 +82,7 @@ export default class GethConfig extends Component {
         <VersionList ref={this.versionListRef} />
         {this.renderConfigForm()}
         {this.renderStartStop()}
-        {geth.getLogs().length && <Terminal />}
+        {!!geth.getLogs().length && <Terminal />}
       </main>
     )
   }
