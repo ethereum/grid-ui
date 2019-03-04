@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import styled, { css } from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import Button from '../../../components/Button'
-import { Mist } from '../../../API'
+import { Mist, store } from '../../../API'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
+import NodeInfo from '../NodeInfo'
+import NodeStateManager from '../../../lib/NodeStateManager'
 
 const { geth } = Mist
 
@@ -18,6 +20,7 @@ export default class GethConfig extends Component {
     super(props)
     this.configFormRef = React.createRef()
     this.versionListRef = React.createRef()
+    this.nodeStateManager = new NodeStateManager()
   }
 
   renderConfigForm = () => {
@@ -34,6 +37,7 @@ export default class GethConfig extends Component {
   handleStartStop = async () => {
     const { isRunning } = this.state
     if (isRunning) {
+      this.nodeStateManager.stop()
       await geth.stop()
     } else {
       // Save config
@@ -42,6 +46,7 @@ export default class GethConfig extends Component {
       // Start geth
       const { selectedRelease } = this.versionListRef.current.state
       await geth.start(selectedRelease)
+      this.nodeStateManager.start()
     }
     this.setState({
       isRunning: !isRunning
@@ -58,10 +63,14 @@ export default class GethConfig extends Component {
             <Typography variant="body1">
               Running: {isRunning ? <span>Yes</span> : <span>No</span>}
             </Typography>
+            <Typography variant="subtitle2">
+              <StyledState>{geth.state}</StyledState>
+            </Typography>
           </StyledRunning>
           <Button onClick={() => this.handleStartStop()}>
             {isRunning ? 'stop' : 'start'}
           </Button>
+          {JSON.stringify(store.getState().nodes)}
         </div>
       </div>
     )
@@ -81,8 +90,9 @@ export default class GethConfig extends Component {
       <main>
         <VersionList ref={this.versionListRef} />
         {this.renderConfigForm()}
+        <NodeInfo {...store.getState().nodes} />
         {this.renderStartStop()}
-        {geth.getLogs().length && <Terminal />}
+        {geth.getLogs().length > 0 && <Terminal />}
       </main>
     )
   }
@@ -103,6 +113,13 @@ const StyledRunning = styled.div`
         color: red;
       `};
   }
+`
+
+const StyledState = styled.div`
+  text-transform: capitalize !important;
+  font-style: italic;
+  font-size: 80%;
+  margin: 5px 0;
 `
 
 const StyledError = styled.div`

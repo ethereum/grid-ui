@@ -106,7 +106,7 @@ const initialState = {
   accounts: [],
 
   nodes: {
-    active: 'remote',
+    active: 'local',
     network: 'main',
     changingNetwork: false,
     remote: {
@@ -140,36 +140,102 @@ const initialState = {
 
 /* eslint-disable */
 function mistApp(state = initialState, action) {
-  // For now, don't handle any actions
-  // and just return the state given to us.
+  let newState = Object.assign({}, state)
   switch (action.type) {
+    case '[NODE]:LOCAL:UPDATE_NEW_BLOCK':
+      console.log(action.type, action.payload)
+      const { blockNumber, timestamp } = action.payload
+      newState = {
+        ...state,
+        nodes: {
+          ...state.nodes,
+          local: {
+            ...state.nodes.local,
+            blockNumber,
+            timestamp
+          }
+        }
+      }
+      console.log(newState.nodes)
+      return newState
+    case '[NODE]:LOCAL:UPDATE_SYNCING':
+      const { startingBlock, currentBlock, highestBlock } = action.payload
+      newState = {
+        ...state,
+        nodes: {
+          ...state.nodes,
+          local: {
+            ...state.nodes.local,
+            sync: {
+              ...state.nodes.local.sync,
+              startingBlock,
+              currentBlock,
+              highestBlock,
+              knownStates,
+              pulledStates
+            }
+          }
+        }
+      }
+      return newState
+    case '[NODE]:LOCAL:UPDATE_NETWORK':
+      const { network } = action.payload
+      newState = {
+        ...state,
+        nodes: {
+          ...state.nodes,
+          network
+        }
+      }
+      return newState
+    case '[NODE]:LOCAL:UPDATE_SYNC_MODE':
+      const { syncMode } = action.payload
+      newState = {
+        ...state,
+        nodes: {
+          ...state.nodes,
+          syncMode
+        }
+      }
+      return newState
+    case '[NODE]:LOCAL:UPDATE_PEER_COUNT':
+      const { connectedPeers } = action.payload
+      newState = {
+        ...state,
+        nodes: {
+          ...state.nodes,
+          local: {
+            ...state.nodes.local,
+            sync: {
+              ...state.nodes.local.sync,
+              connectedPeers
+            }
+          }
+        }
+      }
+      return newState
     case 'SET_LOCAL_PEERCOUNT':
-      const newState = Object.assign({}, state)
       newState.nodes.local.sync.connectedPeers = action.payload
       return newState
     case 'SET_REMOTE_BLOCK': {
-      const newState = Object.assign({}, state)
       const blockHeader = action.payload
       newState.nodes.remote.blockNumber = blockHeader.number
       newState.nodes.remote.timestamp = blockHeader.timestamp
       return newState
     }
     case 'ADD_TAB': {
-      const newState = Object.assign({}, state)
       const tab = action.payload
       const tabs = [...state.tabs, tab]
       newState.tabs = tabs
       return newState
     }
     case 'ADD_ACCOUNT': {
-      const newState = Object.assign({}, state)
       const acc = action.payload
       const accounts = [...state.accounts, acc]
       newState.accounts = accounts
       return newState
     }
     case 'SET_TX': {
-      const newState = Object.assign({}, state)
       const tx = action.payload
       newState.newTx = tx
       return newState

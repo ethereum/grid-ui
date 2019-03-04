@@ -1,5 +1,5 @@
 // export default Helpers.isMist() ? window.store.getState().nodes : window.store
-const{ createStore, applyMiddleware } = require('redux');
+const { createStore, applyMiddleware } = require('redux')
 const ReduxThunk = require('redux-thunk')
 
 const initialState = require('./InitialState')
@@ -50,8 +50,6 @@ var web3 = new Web3(Ganache);
 })()
 */
 
-
-
 function mistApp(state = initialState, action) {
   // For now, don't handle any actions
   // and just return the state given to us.
@@ -74,7 +72,7 @@ function mistApp(state = initialState, action) {
       newState.tabs = tabs
       return newState
     }
-    case 'ADD_ACCOUNT':{
+    case 'ADD_ACCOUNT': {
       console.log('reducer called: add account')
       let newState = Object.assign({}, state)
       let acc = action.payload
@@ -82,7 +80,7 @@ function mistApp(state = initialState, action) {
       newState.accounts = accounts
       return newState
     }
-    case 'SET_TX':{
+    case 'SET_TX': {
       let newState = Object.assign({}, state)
       let tx = action.payload
       newState.newTx = tx
@@ -97,10 +95,10 @@ function mistApp(state = initialState, action) {
       let tabM = {
         ...tabs[tabIdx], // create copy of changed item
         icon: icon // & modify copy
-      } 
+      }
       tabs[tabIdx] = tabM // write changes to new tabs state
       return {
-        tabs: tabs 
+        tabs: tabs
       }
       */
     }
@@ -108,9 +106,9 @@ function mistApp(state = initialState, action) {
       return state
   }
 }
-const store = createStore(mistApp/*, applyMiddleware(ReduxThunk)*/)
+const store = createStore(mistApp /*, applyMiddleware(ReduxThunk)*/)
 
-let _accounts = [ 
+let _accounts = [
   '0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D',
   '0xdf4B9dA0aef26bEE9d55Db34480C722906DB4b02',
   '0x944C8763B920fA7a94780B58e78A76Abc87f7cA8',
@@ -123,18 +121,18 @@ let _accounts = [
   '0x19BAe22A399E1bFEE0B10419D006E8d112C51e5b',
   '0x969912D664477bf4Db7B1Aae743D7BbC3Aa59594',
   '0x5793b3709ecdFBBa3019F4a16DC0346aaa20eFE7',
-  '0x73159c2F51Cc5fa273886Ea047E96C81CC2dBBCE' 
+  '0x73159c2F51Cc5fa273886Ea047E96C81CC2dBBCE'
 ]
-_accounts.forEach((acc) => {
-    //let balance = await web3Remote.eth.getBalance(acc)
-    let balance = 0
-    store.dispatch({
-      type: 'ADD_ACCOUNT',
-      payload: {
-        address: acc,
-        balance: ('' +balance)
-      }
-    })
+_accounts.forEach(acc => {
+  //let balance = await web3Remote.eth.getBalance(acc)
+  let balance = 0
+  store.dispatch({
+    type: 'ADD_ACCOUNT',
+    payload: {
+      address: acc,
+      balance: '' + balance
+    }
   })
+})
 
 module.exports = store

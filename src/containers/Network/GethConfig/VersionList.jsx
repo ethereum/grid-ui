@@ -14,7 +14,7 @@ import { without } from '../../../lib/utils'
 
 const { geth } = Mist
 
-export default class GethConfig extends Component {
+export default class VersionList extends Component {
   state = {
     localReleases: [],
     remoteReleases: [],
@@ -53,10 +53,13 @@ export default class GethConfig extends Component {
     this.loadRemoteReleases()
   }
 
-  loadLocalReleases = async () => {
+  loadLocalReleases = async release => {
     const releases = await geth.getLocalBinaries()
     const localReleases = releases.filter(this.excludeUnstableReleases)
-    const selectedRelease = localReleases[0]
+    let selectedRelease = release
+    if (!selectedRelease) {
+      ;[selectedRelease] = localReleases
+    }
     this.setState({ localReleases, selectedRelease })
   }
 
@@ -89,7 +92,7 @@ export default class GethConfig extends Component {
       throw Error('Release not found')
     }
     // Return if already downloading
-    if (release.progress > 0) {
+    if (release.progress >= 0) {
       return
     }
     // Add `progress` property to release
@@ -193,7 +196,7 @@ export default class GethConfig extends Component {
     }
     return (
       <VersionListContainer>
-        <VersionList>{renderListItems()}</VersionList>
+        <StyledList>{renderListItems()}</StyledList>
       </VersionListContainer>
     )
   }
@@ -210,7 +213,7 @@ export default class GethConfig extends Component {
   }
 }
 
-const VersionList = styled(List)`
+const StyledList = styled(List)`
   max-height: 200px;
   max-width: 400px;
   overflow: scroll;
