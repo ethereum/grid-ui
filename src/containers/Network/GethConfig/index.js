@@ -92,7 +92,7 @@ export default class GethConfig extends Component {
         {this.renderConfigForm()}
         <NodeInfo {...store.getState().nodes} />
         {this.renderStartStop()}
-        {geth.getLogs().length > 0 && <Terminal />}
+        {!!geth.getLogs().length && <Terminal />}
       </main>
     )
   }
