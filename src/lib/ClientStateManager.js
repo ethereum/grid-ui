@@ -1,5 +1,7 @@
-import { Mist, store } from '../API'
+import { Mist } from '../API'
 import { BigNumber } from 'bignumber.js'
+import store from '../store'
+import { newBlock, updateSyncing } from '../store/client/actions'
 
 const { geth } = Mist
 
@@ -7,7 +9,11 @@ const isHex = str => typeof str === 'string' && str.startsWith('0x')
 const hexToNumberString = str => new BigNumber(str).toString(10)
 const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
 
-export default class NodeStateManager {
+export default class ClientStateManager {
+  constructor(dispatch) {
+    this.dispatch = dispatch
+  }
+
   onNewHeadsSubscriptionResult(result) {
     const { result: subscriptionResult } = result
     if (!subscriptionResult) {
@@ -19,10 +25,7 @@ export default class NodeStateManager {
     } = subscriptionResult
     const blockNumber = toNumberString(hexBlockNumber)
     const timestamp = toNumberString(hexTimestamp)
-    store.dispatch({
-      type: '[NODE]:LOCAL:UPDATE_NEW_BLOCK',
-      payload: { blockNumber, timestamp }
-    })
+    newBlock({ blockNumber, timestamp })
   }
 
   onSyncingSubscriptionResult(result) {
@@ -45,15 +48,12 @@ export default class NodeStateManager {
       KnownStates: knownStates,
       PulledStates: pulledStates
     } = status
-    store.dispatch({
-      type: '[NODE]:LOCAL:UPDATE_SYNCING',
-      payload: {
-        startingBlock,
-        currentBlock,
-        highestBlock,
-        knownStates,
-        pulledStates
-      }
+    updateSyncing({
+      startingBlock,
+      currentBlock,
+      highestBlock,
+      knownStates,
+      pulledStates
     })
   }
 
@@ -96,11 +96,8 @@ export default class NodeStateManager {
   }
 
   async updatePeerCount() {
-    const connectedPeers = await geth.rpc('net_peerCount')
-    store.dispatch({
-      type: '[NODE]:LOCAL:UPDATE_PEER_COUNT',
-      payload: { connectedPeers }
-    })
+    const peerCount = await geth.rpc('net_peerCount')
+    this.dispatch(updatePeerCount({ peerCount }))
   }
 
   async start() {
@@ -108,16 +105,10 @@ export default class NodeStateManager {
     const { network, syncMode } = config
 
     // Set network
-    store.dispatch({
-      type: '[NODE]:LOCAL:UPDATE_NETWORK',
-      payload: { network }
-    })
+    this.dispatch(updateNetwork({ network }))
 
     // Set sync mode
-    store.dispatch({
-      type: '[NODE]:LOCAL:UPDATE_SYNC_MODE',
-      payload: { syncMode }
-    })
+    this.dispatch(updateSyncMode({ syncMode }))
 
     // Check peerCount every 3s
     this.peerCountInterval = setInterval(this.updatePeerCount, 3000)

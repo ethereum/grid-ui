@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled, { css } from 'styled-components'
+import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import Button from '../../shared/Button'
 import { Mist } from '../../../API'
@@ -7,20 +8,20 @@ import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
-import NodeStateManager from '../../../lib/NodeStateManager'
+import ClientStateManager from '../../../lib/ClientStateManager'
+import { startGeth, stopGeth } from '../../../store/client/actions'
 
 const { geth } = Mist
 
-export default class GethConfig extends Component {
-  state = {
-    isRunning: false
-  }
-
+class GethConfig extends Component {
   constructor(props) {
     super(props)
+
     this.configFormRef = React.createRef()
     this.versionListRef = React.createRef()
-    this.nodeStateManager = new NodeStateManager()
+
+    const { dispatch } = this.props
+    this.clientStateManager = new ClientStateManager(dispatch)
   }
 
   renderConfigForm = () => {
@@ -35,26 +36,23 @@ export default class GethConfig extends Component {
   }
 
   handleStartStop = async () => {
-    const { isRunning } = this.state
+    const { client, onStart, onStop } = this.props
+    const { isRunning } = client
     if (isRunning) {
-      this.nodeStateManager.stop()
-      await geth.stop()
+      onStop(this.clientStateManager)
     } else {
       // Save config
       const { config } = this.configFormRef.current.state
       await geth.setConfig(config)
       // Start geth
       const { selectedRelease } = this.versionListRef.current.state
-      await geth.start(selectedRelease)
-      this.nodeStateManager.start()
+      onStart(selectedRelease, this.clientStateManager)
     }
-    this.setState({
-      isRunning: !isRunning
-    })
   }
 
   renderStartStop = () => {
-    const { isRunning } = this.state
+    const { client } = this.props
+    const { isRunning, state } = client
     return (
       <div style={{ marginTop: 40 }}>
         <Typography variant="h6">Status</Typography>
@@ -64,13 +62,12 @@ export default class GethConfig extends Component {
               Running: {isRunning ? <span>Yes</span> : <span>No</span>}
             </Typography>
             <Typography variant="subtitle2">
-              <StyledState>{geth.state}</StyledState>
+              <StyledState>{state}</StyledState>
             </Typography>
           </StyledRunning>
           <Button onClick={() => this.handleStartStop()}>
             {isRunning ? 'stop' : 'start'}
           </Button>
-          {JSON.stringify(store.getState().nodes)}
         </div>
       </div>
     )
@@ -86,17 +83,70 @@ export default class GethConfig extends Component {
   }
 
   render() {
+    const { client } = this.props
+    const {
+      network,
+      syncMode,
+      blockNumber,
+      timestamp,
+      sync,
+      peerCount
+    } = client
+    const { highestBlock, currentBlock, startingBlock } = sync
+
+    const nodeInfoProps = {
+      active: 'local',
+      network,
+      local: {
+        syncMode,
+        blockNumber,
+        timestamp,
+        sync: {
+          highestBlock,
+          currentBlock,
+          startingBlock,
+          connectedPeers: peerCount
+        }
+      },
+      remote: {
+        blockNumber: 0,
+        timestamp: null
+      }
+    }
+
     return (
       <main>
+        <NodeInfo {...nodeInfoProps} />
         <VersionList ref={this.versionListRef} />
         {this.renderConfigForm()}
-        <NodeInfo {...store.getState().nodes} />
         {this.renderStartStop()}
         {!!geth.getLogs().length && <Terminal />}
       </main>
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    client: state.client
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onStart: (release, clientStateManager) => {
+      dispatch(startGeth({ release, clientStateManager }))
+    },
+    onStop: clientStateManager => {
+      dispatch(stopGeth({ clientStateManager }))
+    }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GethConfig)
 
 const StyledRunning = styled.div`
   margin-bottom: 10px;
