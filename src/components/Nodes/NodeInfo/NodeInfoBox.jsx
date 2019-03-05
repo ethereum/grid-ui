@@ -26,8 +26,8 @@ export default class NodeInfoBox extends Component {
       .isRequired,
     /** Local network data */
     local: PropTypes.shape({
-      blockNumber: PropTypes.number.isRequired,
-      timestamp: PropTypes.number.isRequired,
+      blockNumber: PropTypes.number,
+      timestamp: PropTypes.number,
       sync: PropTypes.shape({
         highestBlock: PropTypes.number.isRequired,
         currentBlock: PropTypes.number.isRequired,
@@ -36,8 +36,8 @@ export default class NodeInfoBox extends Component {
     }).isRequired,
     /** Remote network data */
     remote: PropTypes.shape({
-      blockNumber: PropTypes.number.isRequired,
-      timestamp: PropTypes.number.isRequired
+      blockNumber: PropTypes.number,
+      timestamp: PropTypes.number
     }).isRequired,
     /** Location of dot relative to box */
     dotLocation: PropTypes.oneOf(['topLeft'])
@@ -234,7 +234,13 @@ export default class NodeInfoBox extends Component {
       return null
     }
 
+    // Return if no blockNumber
+
     if (active === 'local' && blockNumber > highestBlock - 50) {
+      // Case: no info yet
+      if (!blockNumber) {
+        localStats = 'Node Unavailable'
+      }
       // Case: already synced up
       localStats = this.localStatsSynced()
     } else if (active === 'remote') {
@@ -269,8 +275,39 @@ export default class NodeInfoBox extends Component {
     )
   }
 
+  noData() {
+    const { local, remote } = this.props
+    const { blockNumber: localBlockNumber, timestamp: localTimestamp } = local
+    const {
+      blockNumber: remoteBlockNumber,
+      timestamp: remoteTimestamp
+    } = remote
+    if (
+      !localBlockNumber &&
+      !localTimestamp &&
+      !remoteBlockNumber &&
+      !remoteTimestamp
+    ) {
+      return true
+    }
+    return false
+  }
+
   render() {
     const { network, dotLocation } = this.props
+    if (this.noData()) {
+      return (
+        <StyledBox dotLocation={dotLocation}>
+          <StyledSubmenuContainer dotLocation={dotLocation}>
+            <section>
+              <StyledSection>
+                <center>No Node Data</center>
+              </StyledSection>
+            </section>
+          </StyledSubmenuContainer>
+        </StyledBox>
+      )
+    }
     return (
       <StyledBox dotLocation={dotLocation}>
         <StyledSubmenuContainer dotLocation={dotLocation}>

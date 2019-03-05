@@ -13,8 +13,8 @@ export default class NodeInfoDot extends Component {
       .isRequired,
     /** Local network data */
     local: PropTypes.shape({
-      blockNumber: PropTypes.number.isRequired,
-      timestamp: PropTypes.number.isRequired,
+      blockNumber: PropTypes.number,
+      timestamp: PropTypes.number,
       sync: PropTypes.shape({
         highestBlock: PropTypes.number.isRequired,
         currentBlock: PropTypes.number.isRequired,
@@ -23,8 +23,8 @@ export default class NodeInfoDot extends Component {
     }).isRequired,
     /** Remote network data */
     remote: PropTypes.shape({
-      blockNumber: PropTypes.number.isRequired,
-      timestamp: PropTypes.number.isRequired
+      blockNumber: PropTypes.number,
+      timestamp: PropTypes.number
     }).isRequired,
     /** If component is stickied to apply drop shadow on dot */
     sticky: PropTypes.bool

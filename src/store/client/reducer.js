@@ -1,5 +1,5 @@
 export const initialState = {
-  blockNumber: 0,
+  blockNumber: null,
   changingNetwork: false,
   name: 'geth',
   network: 'main',
@@ -13,7 +13,7 @@ export const initialState = {
     startingBlock: 0
   },
   syncMode: 'light',
-  timestamp: 0,
+  timestamp: null,
   error: null
 }
 

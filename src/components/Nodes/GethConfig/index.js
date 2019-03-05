@@ -119,8 +119,8 @@ class GethConfig extends Component {
         }
       },
       remote: {
-        blockNumber: 0,
-        timestamp: 0
+        blockNumber: null,
+        timestamp: null
       }
     }
 

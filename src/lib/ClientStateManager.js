@@ -35,8 +35,8 @@ export default class ClientStateManager {
       number: hexBlockNumber,
       timestamp: hexTimestamp
     } = subscriptionResult
-    const blockNumber = toNumberString(hexBlockNumber)
-    const timestamp = toNumberString(hexTimestamp)
+    const blockNumber = Number(toNumberString(hexBlockNumber))
+    const timestamp = Number(toNumberString(hexTimestamp))
     this.dispatch(newBlock({ blockNumber, timestamp }))
   }
 
@@ -106,12 +106,29 @@ export default class ClientStateManager {
 
   onConnect() {
     this.dispatch(gethConnected())
-    // Set last available {blockNumber, timestamp}
-    geth.rpc('eth_getBlockByNumber', ['latest']).then(block => {
-      console.log(block)
-      const { number: blockNumber, timestamp } = block
-      this.dispatch(newBlock({ blockNumber, timestamp }))
-    })
+
+    const startSubscriptions = async () => {
+      const result = await geth.rpc('eth_syncing')
+      if (result === false) {
+        // Not syncing, start newHeads subscription
+        this.startNewHeadsSubscription()
+      } else {
+        // Subscribe to syncing
+        this.startSyncingSubscription()
+      }
+    }
+    const setLastBlock = () => {
+      geth.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
+        const { number: hexBlockNumber, timestamp: hexTimestamp } = block
+        const blockNumber = Number(toNumberString(hexBlockNumber))
+        const timestamp = Number(toNumberString(hexTimestamp))
+        this.dispatch(newBlock({ blockNumber, timestamp }))
+      })
+    }
+    setTimeout(() => {
+      setLastBlock()
+      startSubscriptions()
+    }, 2000)
   }
 
   onDisconnect() {
@@ -169,15 +186,6 @@ export default class ClientStateManager {
     geth.on('stopped', this.onStopped.bind(this))
     geth.on('disconnect', this.onDisconnect.bind(this))
     geth.on('error', this.onError.bind(this))
-
-    const result = await geth.rpc('eth_syncing')
-    if (result === false) {
-      // Not syncing, start newHeads subscription
-      this.startNewHeadsSubscription()
-    } else {
-      // Subscribe to syncing
-      this.startSyncingSubscription()
-    }
   }
 
   stop() {

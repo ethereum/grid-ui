@@ -17,8 +17,8 @@ export default class NodeInfo extends Component {
       .isRequired,
     /** Local network data */
     local: PropTypes.shape({
-      blockNumber: PropTypes.number.isRequired,
-      timestamp: PropTypes.number.isRequired,
+      blockNumber: PropTypes.number,
+      timestamp: PropTypes.number,
       sync: PropTypes.shape({
         highestBlock: PropTypes.number.isRequired,
         currentBlock: PropTypes.number.isRequired,
@@ -27,8 +27,8 @@ export default class NodeInfo extends Component {
     }).isRequired,
     /** Remote network data */
     remote: PropTypes.shape({
-      blockNumber: PropTypes.number.isRequired,
-      timestamp: PropTypes.number.isRequired
+      blockNumber: PropTypes.number,
+      timestamp: PropTypes.number
     }).isRequired
   }
 
