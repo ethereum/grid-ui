@@ -1,21 +1,3 @@
-import { Mist } from '../../API'
-
-const { geth } = Mist
-
-export const startGeth = ({ release, clientStateManager }) => {
-  return async () => {
-    await geth.start(release)
-    clientStateManager.start()
-  }
-}
-
-export const stopGeth = ({ clientStateManager }) => {
-  return async () => {
-    clientStateManager.stop()
-    await geth.stop()
-  }
-}
-
 export const newBlock = ({ blockNumber, timestamp }) => {
   return {
     type: '[CLIENT]:GETH:UPDATE_NEW_BLOCK',
@@ -43,9 +25,13 @@ export const updateSyncing = ({
 }
 
 export const updatePeerCount = ({ peerCount }) => {
-  return {
-    type: '[CLIENT]:GETH:UPDATE_PEER_COUNT',
-    payload: { peerCount }
+  return (dispatch, getState) => {
+    if (peerCount !== getState().client.peerCount) {
+      dispatch({
+        type: '[CLIENT]:GETH:UPDATE_PEER_COUNT',
+        payload: { peerCount }
+      })
+    }
   }
 }
 
@@ -99,7 +85,7 @@ export const gethStopped = () => {
   }
 }
 
-export const gethError = error => {
+export const gethError = ({ error }) => {
   return {
     type: '[CLIENT]:GETH:ERROR',
     payload: { error }

@@ -22,7 +22,7 @@ const hexToNumberString = str => new BigNumber(str).toString(10)
 const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
 
 export default class ClientStateManager {
-  constructor(dispatch) {
+  constructor({ dispatch }) {
     this.dispatch = dispatch
   }
 
@@ -37,7 +37,7 @@ export default class ClientStateManager {
     } = subscriptionResult
     const blockNumber = toNumberString(hexBlockNumber)
     const timestamp = toNumberString(hexTimestamp)
-    newBlock({ blockNumber, timestamp })
+    this.dispatch(newBlock({ blockNumber, timestamp }))
   }
 
   onSyncingSubscriptionResult(result) {
@@ -60,13 +60,15 @@ export default class ClientStateManager {
       KnownStates: knownStates,
       PulledStates: pulledStates
     } = status
-    updateSyncing({
-      startingBlock,
-      currentBlock,
-      highestBlock,
-      knownStates,
-      pulledStates
-    })
+    this.dispatch(
+      updateSyncing({
+        startingBlock,
+        currentBlock,
+        highestBlock,
+        knownStates,
+        pulledStates
+      })
+    )
   }
 
   unsubscribeNewHeadsSubscription(subscriptionId) {
@@ -95,27 +97,28 @@ export default class ClientStateManager {
   }
 
   onStarting() {
-    console.log('1')
     this.dispatch(gethStarting())
   }
 
   onStarted() {
-    console.log('2')
     this.dispatch(gethStarted())
   }
 
   onConnect() {
-    console.log('3')
     this.dispatch(gethConnected())
+    // Set last available {blockNumber, timestamp}
+    geth.rpc('eth_getBlockByNumber', ['latest']).then(block => {
+      console.log(block)
+      const { number: blockNumber, timestamp } = block
+      this.dispatch(newBlock({ blockNumber, timestamp }))
+    })
   }
 
   onDisconnect() {
-    console.log('4')
     this.dispatch(gethDisconnected())
   }
 
   onStopping() {
-    console.log('4')
     this.dispatch(gethStopping())
   }
 
@@ -130,18 +133,19 @@ export default class ClientStateManager {
   async startNewHeadsSubscription() {
     geth.rpc('eth_subscribe', ['newHeads']).then(subscriptionId => {
       this.newHeadsSubscriptionId = subscriptionId
-      geth.on(subscriptionId, this.onNewHeadsSubscriptionResult)
+      geth.on(subscriptionId, this.onNewHeadsSubscriptionResult.bind(this))
     })
   }
 
   async startSyncingSubscription() {
     const subscriptionId = await geth.rpc('eth_subscribe', ['syncing'])
     this.syncingSubscriptionId = subscriptionId
-    geth.on(subscriptionId, this.onSyncingSubscriptionResult)
+    geth.on(subscriptionId, this.onSyncingSubscriptionResult.bind(this))
   }
 
   async updatePeerCount() {
-    const peerCount = await geth.rpc('net_peerCount')
+    const hexPeerCount = await geth.rpc('net_peerCount')
+    const peerCount = toNumberString(hexPeerCount)
     this.dispatch(updatePeerCount({ peerCount }))
   }
 
@@ -158,6 +162,14 @@ export default class ClientStateManager {
     // Check peerCount every 3s
     this.peerCountInterval = setInterval(this.updatePeerCount.bind(this), 3000)
 
+    geth.on('starting', this.onStarting.bind(this))
+    geth.on('started', this.onStarted.bind(this))
+    geth.on('connect', this.onConnect.bind(this))
+    geth.on('stopping', this.onStopping.bind(this))
+    geth.on('stopped', this.onStopped.bind(this))
+    geth.on('disconnect', this.onDisconnect.bind(this))
+    geth.on('error', this.onError.bind(this))
+
     const result = await geth.rpc('eth_syncing')
     if (result === false) {
       // Not syncing, start newHeads subscription
@@ -166,14 +178,6 @@ export default class ClientStateManager {
       // Subscribe to syncing
       this.startSyncingSubscription()
     }
-
-    geth.on('starting', this.onStarting.bind(this))
-    geth.on('started', this.onStarted.bind(this))
-    geth.on('connect', this.onConnect.bind(this))
-    geth.on('stopping', this.onStopping.bind(this))
-    geth.on('stopped', this.onStopped.bind(this))
-    geth.on('disconnect', this.onDisconnect.bind(this))
-    geth.on('error', this.onError.bind(this))
   }
 
   stop() {

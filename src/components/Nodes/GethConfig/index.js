@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import styled, { css } from 'styled-components'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import Button from '../../shared/Button'
@@ -10,11 +9,14 @@ import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
 import ClientStateManager from '../../../lib/ClientStateManager'
-import { startGeth, stopGeth } from '../../../store/client/actions'
 
 const { geth } = Mist
 
 class GethConfig extends Component {
+  state = {
+    downloadError: null
+  }
+
   constructor(props) {
     super(props)
 
@@ -22,7 +24,7 @@ class GethConfig extends Component {
     this.versionListRef = React.createRef()
 
     const { dispatch } = this.props
-    this.clientStateManager = new ClientStateManager(dispatch)
+    this.clientStateManager = new ClientStateManager({ dispatch })
   }
 
   renderConfigForm = () => {
@@ -36,25 +38,26 @@ class GethConfig extends Component {
     )
   }
 
-  handleStartStop = async () => {
-    const { client, onStart, onStop } = this.props
-    const { isRunning } = client
+  handleStartStop = () => {
+    const { isRunning } = geth
     if (isRunning) {
-      onStop(this.clientStateManager)
+      this.clientStateManager.stop()
+      geth.stop()
     } else {
       // Save config
       const { config } = this.configFormRef.current.state
-      await geth.setConfig(config)
+      geth.setConfig(config)
       // Start geth
       const { selectedRelease } = this.versionListRef.current.state
-      const { clientStateManager } = this
-      onStart({ release: selectedRelease, clientStateManager })
+      geth.start(selectedRelease)
+      this.clientStateManager.start()
     }
   }
 
   renderStartStop = () => {
     const { client } = this.props
-    const { isRunning, state } = client
+    const { state } = client
+    const { isRunning } = geth
     return (
       <div style={{ marginTop: 40 }}>
         <Typography variant="h6">Status</Typography>
@@ -75,13 +78,18 @@ class GethConfig extends Component {
     )
   }
 
-  renderDownloadError() {
+  renderErrors() {
     const { downloadError } = this.state
-    if (!downloadError) {
+    const { client } = this.props
+    const { error } = client
+
+    const errorMessage = (error && error.toString()) || downloadError
+
+    if (!errorMessage) {
       return null
     }
 
-    return <StyledError>{downloadError}</StyledError>
+    return <StyledError>{errorMessage}</StyledError>
   }
 
   render() {
@@ -122,6 +130,7 @@ class GethConfig extends Component {
         <VersionList ref={this.versionListRef} />
         {this.renderConfigForm()}
         {this.renderStartStop()}
+        {this.renderErrors()}
         {!!geth.getLogs().length && <Terminal />}
       </main>
     )
@@ -134,23 +143,7 @@ function mapStateToProps(state) {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    ...bindActionCreators(
-      {
-        onStart: startGeth,
-        onStop: stopGeth
-      },
-      dispatch
-    ),
-    dispatch
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GethConfig)
+export default connect(mapStateToProps)(GethConfig)
 
 const StyledRunning = styled.div`
   margin-bottom: 10px;
@@ -177,5 +170,6 @@ const StyledState = styled.div`
 `
 
 const StyledError = styled.div`
+  padding: 10px;
   color: red;
 `

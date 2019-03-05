@@ -1,7 +1,6 @@
 export const initialState = {
   blockNumber: 0,
   changingNetwork: false,
-  isRunning: false,
   name: 'geth',
   network: 'main',
   peerCount: 0,
@@ -23,7 +22,6 @@ const client = (state = initialState, action) => {
     case '[CLIENT]:GETH:STARTED': {
       const newState = {
         ...state,
-        isRunning: true,
         state: 'STARTED'
       }
       return newState
@@ -45,7 +43,6 @@ const client = (state = initialState, action) => {
     case '[CLIENT]:GETH:STOPPED': {
       const newState = {
         ...state,
-        isRunning: false,
         state: 'STOPPED'
       }
       return newState
@@ -68,7 +65,6 @@ const client = (state = initialState, action) => {
       const { error } = action.payload
       const newState = {
         ...state,
-        isRunning: false,
         state: 'ERROR',
         error
       }
@@ -79,7 +75,6 @@ const client = (state = initialState, action) => {
         ...state,
         process: {
           ...state.process,
-          isRunning: false,
           state: 'STOPPING'
         }
       }
@@ -90,7 +85,6 @@ const client = (state = initialState, action) => {
         ...state,
         process: {
           ...state.process,
-          isRunning: true,
           state: 'STARTED'
         }
       }
