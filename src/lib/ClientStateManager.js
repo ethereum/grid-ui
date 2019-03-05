@@ -1,7 +1,19 @@
 import { Mist } from '../API'
 import { BigNumber } from 'bignumber.js'
-import store from '../store'
-import { newBlock, updateSyncing } from '../store/client/actions'
+import {
+  newBlock,
+  updateSyncing,
+  updatePeerCount,
+  updateNetwork,
+  updateSyncMode,
+  gethStarting,
+  gethStarted,
+  gethConnected,
+  gethDisconnected,
+  gethStopping,
+  gethStopped,
+  gethError
+} from '../store/client/actions'
 
 const { geth } = Mist
 
@@ -82,6 +94,39 @@ export default class ClientStateManager {
     this.syncingSubscriptionId = null
   }
 
+  onStarting() {
+    console.log('1')
+    this.dispatch(gethStarting())
+  }
+
+  onStarted() {
+    console.log('2')
+    this.dispatch(gethStarted())
+  }
+
+  onConnect() {
+    console.log('3')
+    this.dispatch(gethConnected())
+  }
+
+  onDisconnect() {
+    console.log('4')
+    this.dispatch(gethDisconnected())
+  }
+
+  onStopping() {
+    console.log('4')
+    this.dispatch(gethStopping())
+  }
+
+  onStopped() {
+    this.dispatch(gethStopped())
+  }
+
+  onError(error) {
+    this.dispatch(gethError({ error }))
+  }
+
   async startNewHeadsSubscription() {
     geth.rpc('eth_subscribe', ['newHeads']).then(subscriptionId => {
       this.newHeadsSubscriptionId = subscriptionId
@@ -111,7 +156,7 @@ export default class ClientStateManager {
     this.dispatch(updateSyncMode({ syncMode }))
 
     // Check peerCount every 3s
-    this.peerCountInterval = setInterval(this.updatePeerCount, 3000)
+    this.peerCountInterval = setInterval(this.updatePeerCount.bind(this), 3000)
 
     const result = await geth.rpc('eth_syncing')
     if (result === false) {
@@ -121,11 +166,26 @@ export default class ClientStateManager {
       // Subscribe to syncing
       this.startSyncingSubscription()
     }
+
+    geth.on('starting', this.onStarting.bind(this))
+    geth.on('started', this.onStarted.bind(this))
+    geth.on('connect', this.onConnect.bind(this))
+    geth.on('stopping', this.onStopping.bind(this))
+    geth.on('stopped', this.onStopped.bind(this))
+    geth.on('disconnect', this.onDisconnect.bind(this))
+    geth.on('error', this.onError.bind(this))
   }
 
   stop() {
     clearInterval(this.peerCountInterval)
     this.unsubscribeSyncingSubscription(this.syncingSubscriptionId)
     this.unsubscribeNewHeadsSubscription(this.newHeadsSubscriptionId)
+    geth.removeListener('starting', this.onStarting)
+    geth.removeListener('started', this.onStarted)
+    geth.removeListener('connect', this.onConnect)
+    geth.removeListener('stopping', this.onStopping)
+    geth.removeListener('stopped', this.onStopped)
+    geth.removeListener('disconnect', this.onDisconnect)
+    geth.removeListener('error', this.onError)
   }
 }

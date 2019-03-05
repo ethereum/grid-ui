@@ -14,7 +14,8 @@ export const initialState = {
     startingBlock: 0
   },
   syncMode: 'light',
-  timestamp: 0
+  timestamp: 0,
+  error: null
 }
 
 const client = (state = initialState, action) => {
@@ -30,7 +31,6 @@ const client = (state = initialState, action) => {
     case '[CLIENT]:GETH:STARTING': {
       const newState = {
         ...state,
-        isRunning: true,
         state: 'STARTING'
       }
       return newState
@@ -38,7 +38,6 @@ const client = (state = initialState, action) => {
     case '[CLIENT]:GETH:STOPPING': {
       const newState = {
         ...state,
-        isRunning: false,
         state: 'STOPPING'
       }
       return newState
@@ -48,6 +47,30 @@ const client = (state = initialState, action) => {
         ...state,
         isRunning: false,
         state: 'STOPPED'
+      }
+      return newState
+    }
+    case '[CLIENT]:GETH:CONNECTED': {
+      const newState = {
+        ...state,
+        state: 'CONNECTED'
+      }
+      return newState
+    }
+    case '[CLIENT]:GETH:DISCONNECTED': {
+      const newState = {
+        ...state,
+        state: 'STARTED'
+      }
+      return newState
+    }
+    case '[CLIENT]:GETH:ERROR': {
+      const { error } = action.payload
+      const newState = {
+        ...state,
+        isRunning: false,
+        state: 'ERROR',
+        error
       }
       return newState
     }
@@ -69,37 +92,6 @@ const client = (state = initialState, action) => {
           ...state.process,
           isRunning: true,
           state: 'STARTED'
-        }
-      }
-      return newState
-    }
-    case '[CLIENT]:GETH:NEW_STATE': {
-      const { state: clientState } = action.payload
-      const newState = {
-        ...state,
-        process: {
-          ...state.process,
-          state: clientState
-        }
-      }
-      return newState
-    }
-    case '[CLIENT]:GETH:IPC_CONNECTED': {
-      const newState = {
-        ...state,
-        process: {
-          ...state.process,
-          ipcConnected: true
-        }
-      }
-      return newState
-    }
-    case '[CLIENT]:GETH:IPC_DISCONNECTED': {
-      const newState = {
-        ...state,
-        process: {
-          ...state.process,
-          ipcConnected: false
         }
       }
       return newState

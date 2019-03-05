@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled, { css } from 'styled-components'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import Button from '../../shared/Button'
@@ -46,7 +47,8 @@ class GethConfig extends Component {
       await geth.setConfig(config)
       // Start geth
       const { selectedRelease } = this.versionListRef.current.state
-      onStart(selectedRelease, this.clientStateManager)
+      const { clientStateManager } = this
+      onStart({ release: selectedRelease, clientStateManager })
     }
   }
 
@@ -110,7 +112,7 @@ class GethConfig extends Component {
       },
       remote: {
         blockNumber: 0,
-        timestamp: null
+        timestamp: 0
       }
     }
 
@@ -134,12 +136,14 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onStart: (release, clientStateManager) => {
-      dispatch(startGeth({ release, clientStateManager }))
-    },
-    onStop: clientStateManager => {
-      dispatch(stopGeth({ clientStateManager }))
-    }
+    ...bindActionCreators(
+      {
+        onStart: startGeth,
+        onStop: stopGeth
+      },
+      dispatch
+    ),
+    dispatch
   }
 }
 
