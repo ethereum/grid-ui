@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
-import Button from '../../shared/Button'
 import { Mist } from '../../../API'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
@@ -11,6 +10,9 @@ import NodeInfo from '../NodeInfo'
 import ClientStateManager from '../../../lib/ClientStateManager'
 
 const { geth } = Mist
+
+const capitalizeStr = str =>
+  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 
 class GethConfig extends Component {
   state = {
@@ -28,14 +30,7 @@ class GethConfig extends Component {
   }
 
   renderConfigForm = () => {
-    return (
-      <div>
-        <Typography variant="h6" gutterBottom>
-          Settings
-        </Typography>
-        <ConfigForm ref={this.configFormRef} />
-      </div>
-    )
+    return <ConfigForm ref={this.configFormRef} />
   }
 
   handleStartStop = () => {
@@ -52,30 +47,6 @@ class GethConfig extends Component {
       geth.start(selectedRelease)
       this.clientStateManager.start()
     }
-  }
-
-  renderStartStop = () => {
-    const { client } = this.props
-    const { state } = client
-    const { isRunning } = geth
-    return (
-      <div style={{ marginTop: 40 }}>
-        <Typography variant="h6">Status</Typography>
-        <div className="setting">
-          <StyledRunning isRunning={isRunning}>
-            <Typography variant="body1">
-              Running: {isRunning ? <span>Yes</span> : <span>No</span>}
-            </Typography>
-            <Typography variant="subtitle2">
-              <StyledState>{state}</StyledState>
-            </Typography>
-          </StyledRunning>
-          <Button onClick={() => this.handleStartStop()}>
-            {isRunning ? 'stop' : 'start'}
-          </Button>
-        </div>
-      </div>
-    )
   }
 
   renderErrors() {
@@ -100,9 +71,12 @@ class GethConfig extends Component {
       blockNumber,
       timestamp,
       sync,
-      peerCount
+      peerCount,
+      state
     } = client
     const { highestBlock, currentBlock, startingBlock } = sync
+
+    const capitalizedState = capitalizeStr(state)
 
     const nodeInfoProps = {
       active: 'local',
@@ -125,14 +99,16 @@ class GethConfig extends Component {
     }
 
     return (
-      <main>
+      <StyledMain>
+        <Typography variant="h5">Geth</Typography>
         <NodeInfo {...nodeInfoProps} />
+        <Typography variant="subtitle1" gutterBottom>
+          {capitalizedState}
+        </Typography>
         <VersionList ref={this.versionListRef} />
         {this.renderConfigForm()}
-        {this.renderStartStop()}
-        {this.renderErrors()}
         {!!geth.getLogs().length && <Terminal />}
-      </main>
+      </StyledMain>
     )
   }
 }
@@ -145,28 +121,8 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps)(GethConfig)
 
-const StyledRunning = styled.div`
-  margin-bottom: 10px;
-  font-weight: normal;
-  span {
-    ${props =>
-      props.isRunning &&
-      css`
-        color: green;
-      `}
-    ${props =>
-      !props.isRunning &&
-      css`
-        color: red;
-      `};
-  }
-`
-
-const StyledState = styled.div`
-  text-transform: capitalize !important;
-  font-style: italic;
-  font-size: 80%;
-  margin: 5px 0;
+const StyledMain = styled.main`
+  position: relative;
 `
 
 const StyledError = styled.div`

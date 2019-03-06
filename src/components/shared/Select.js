@@ -15,11 +15,13 @@ export default class Select extends Component {
     name: PropTypes.string,
     defaultValue: PropTypes.any,
     onChange: PropTypes.func,
-    options: PropTypes.array
+    options: PropTypes.array,
+    disabled: PropTypes.bool
   }
 
   static defaultProps = {
-    options: []
+    options: [],
+    disabled: false
   }
 
   constructor(props) {
@@ -49,7 +51,7 @@ export default class Select extends Component {
   }
 
   render() {
-    const { name, id, options } = this.props
+    const { name, id, options, disabled } = this.props
     const { labelWidth, value } = this.state
 
     const opts = options.map(option => (
@@ -59,7 +61,11 @@ export default class Select extends Component {
     ))
 
     return (
-      <FormControl variant="outlined" style={{ width: '100%' }}>
+      <FormControl
+        variant="outlined"
+        style={{ width: '100%' }}
+        disabled={disabled}
+      >
         <InputLabel
           ref={ref => {
             this.InputLabelRef = ref

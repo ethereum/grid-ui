@@ -8,6 +8,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import MinimizeIcon from '@material-ui/icons/Minimize'
+import MaximizeIcon from '@material-ui/icons/Maximize'
 import Spinner from '../../shared/Spinner'
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
@@ -20,7 +22,8 @@ export default class VersionList extends Component {
     remoteReleases: [],
     selectedRelease: null,
     loadingRemoteReleases: false,
-    downloadError: null
+    downloadError: null,
+    showList: true
   }
 
   excludeUnstableReleases = release => !release.fileName.includes('unstable')
@@ -111,8 +114,13 @@ export default class VersionList extends Component {
     this.setState({ remoteReleases, selectedRelease })
   }
 
+  toggleShowList = () => {
+    const { showList } = this.state
+    this.setState({ showList: !showList })
+  }
+
   renderVersionsAvailable = () => {
-    const { localReleases, loadingRemoteReleases } = this.state
+    const { localReleases, loadingRemoteReleases, showList } = this.state
     const releases = this.allReleases()
 
     if (releases.length === 0) {
@@ -121,25 +129,38 @@ export default class VersionList extends Component {
 
     return (
       <div>
-        {loadingRemoteReleases && (
-          <Typography variant="h6">
-            Loading versions...
-            <RemoteReleaseLoadingSpinner size={18} thickness={4} />
+        <ToggableTypography variant="h6" onClick={this.toggleShowList}>
+          {showList ? (
+            <MinimizeIcon fontSize="small" />
+          ) : (
+            <MaximizeIcon fontSize="small" />
+          )}
+          {loadingRemoteReleases && (
+            <React.Fragment>
+              Loading versions...
+              <RemoteReleaseLoadingSpinner size={18} thickness={4} />
+            </React.Fragment>
+          )}
+          {!loadingRemoteReleases && (
+            <React.Fragment>
+              {releases.length} versions available
+            </React.Fragment>
+          )}
+        </ToggableTypography>
+        {showList && (
+          <Typography variant="subtitle1" gutterBottom>
+            {localReleases.length} versions downloaded
           </Typography>
         )}
-        {!loadingRemoteReleases && (
-          <Typography variant="h6">
-            {releases.length} versions available
-          </Typography>
-        )}
-        <Typography variant="subtitle1" gutterBottom>
-          {localReleases.length} versions downloaded
-        </Typography>
       </div>
     )
   }
 
   renderVersionList = () => {
+    const { showList } = this.state
+    if (!showList) {
+      return null
+    }
     const { selectedRelease } = this.state
     const releases = this.allReleases()
     const renderIcon = release => {
@@ -194,21 +215,17 @@ export default class VersionList extends Component {
       })
       return list
     }
-    return (
-      <VersionListContainer>
-        <StyledList>{renderListItems()}</StyledList>
-      </VersionListContainer>
-    )
+    return <StyledList>{renderListItems()}</StyledList>
   }
 
   render() {
     const { downloadError } = this.state
     return (
-      <div>
+      <VersionListContainer>
         {this.renderVersionsAvailable()}
         {this.renderVersionList()}
         {downloadError && <StyledError>{downloadError}</StyledError>}
-      </div>
+      </VersionListContainer>
     )
   }
 }
@@ -220,7 +237,7 @@ const StyledList = styled(List)`
 `
 
 const VersionListContainer = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `
 
 const ListItemTextVersion = styled(({ isLocalRelease, children, ...rest }) => (
@@ -251,9 +268,14 @@ const RemoteReleaseLoadingSpinner = styled(Spinner)`
 `
 
 const StyledListItem = styled(without('isDownloading')(ListItem))`
-  ${StyledListItemAction} {
-    visibility: hidden;
-  }
+${props =>
+  !props.selected &&
+  css`
+    background: red;
+    ${StyledListItemAction} {
+      visibility: hidden;
+    }
+  `}
   &:hover ${StyledListItemAction} {
     visibility: visible;
   }
@@ -271,3 +293,10 @@ const StyledError = styled.div`
 `
 
 const BlankIconPlaceholder = styled.div`width: 24px; height; 24px`
+
+const ToggableTypography = styled(Typography)`
+  user-select: none;
+  &:hover {
+    cursor: pointer;
+  }
+`

@@ -85,6 +85,9 @@ export default class NodeInfo extends Component {
 }
 
 const StyledNode = styled.div`
+  position: absolute;
+  top: 2px;
+  left: 55px;
   cursor: default;
   display: flex;
   flex-flow: row wrap;
@@ -93,7 +96,7 @@ const StyledNode = styled.div`
   color: #827a7a;
 
   #node-info {
-    padding: 22px;
+    padding: 5px;
     -webkit-app-region: no-drag;
 
     &:focus {

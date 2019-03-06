@@ -7,9 +7,10 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
-import Typography from '@material-ui/core/Typography'
+import { Mist } from '../../API'
 import GethConfig from './GethConfig'
 
+const { geth } = Mist
 const drawerWidth = 240
 
 const styles = theme => ({
@@ -28,32 +29,53 @@ const styles = theme => ({
 })
 
 class NodesTab extends Component {
-  static displayName = 'NodesTab'
-
   static propTypes = {
     classes: PropTypes.object
   }
 
   static defaultProps = {}
 
+  static isChecked(name) {
+    if (name === 'Geth') {
+      const { isRunning } = geth
+      return isRunning
+    }
+    return false
+  }
+
   state = {
     activeItem: 'Geth',
-    nodes: [{ name: 'Geth', on: false, disabled: false }]
+    nodes: [{ name: 'Geth' }]
+  }
+
+  constructor(props) {
+    super(props)
+    this.gethConfigRef = React.createRef()
   }
 
   handleNodeSelect = name => {
     this.setState({ activeItem: name })
   }
 
-  handleToggle = (name, on) => {
-    const { nodes } = this.state
-    const newNodes = nodes.map(node => {
-      if (node.name === name) {
-        return { ...node, on: !on }
+  handleToggle = name => {
+    if (name === 'Geth') {
+      this.gethConfigRef.current.handleStartStop()
+    }
+  }
+
+  isDisabled(name) {
+    if (name === 'Geth') {
+      if (
+        !this.gethConfigRef ||
+        !this.gethConfigRef.current ||
+        !this.gethConfigRef.current.versionListRef ||
+        !this.gethConfigRef.current.versionListRef.state ||
+        !this.gethConfigRef.current.versionListRef.state.selectedRelease
+      ) {
+        return true
       }
-      return node
-    })
-    this.setState({ nodes: newNodes })
+    }
+    return false
   }
 
   render() {
@@ -81,9 +103,9 @@ class NodesTab extends Component {
                 <ListItemSecondaryAction>
                   <Switch
                     color="primary"
-                    onChange={() => this.handleToggle(node.name, node.on)}
-                    checked={node.on}
-                    disabled={node.disabled}
+                    onChange={() => this.handleToggle(node.name)}
+                    checked={NodesTab.isChecked(node.name)}
+                    disabled={this.isDisabled(node.name)}
                   />
                 </ListItemSecondaryAction>
               </ListItem>
@@ -93,8 +115,7 @@ class NodesTab extends Component {
 
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <Typography variant="h5">{activeItem}</Typography>
-          {activeItem === 'Geth' && <GethConfig />}
+          {activeItem === 'Geth' && <GethConfig ref={this.gethConfigRef} />}
         </main>
       </React.Fragment>
     )

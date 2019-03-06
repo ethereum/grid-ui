@@ -296,17 +296,7 @@ export default class NodeInfoBox extends Component {
   render() {
     const { network, dotLocation } = this.props
     if (this.noData()) {
-      return (
-        <StyledBox dotLocation={dotLocation}>
-          <StyledSubmenuContainer dotLocation={dotLocation}>
-            <section>
-              <StyledSection>
-                <center>No Node Data</center>
-              </StyledSection>
-            </section>
-          </StyledSubmenuContainer>
-        </StyledBox>
-      )
+      return null
     }
     return (
       <StyledBox dotLocation={dotLocation}>
