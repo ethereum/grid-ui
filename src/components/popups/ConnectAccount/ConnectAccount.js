@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import './ConnectAccount.css'
-import { Mist, i18n } from '../../API'
+import { Mist, i18n } from '../../../API'
 
 const selectedAccounts = []
 

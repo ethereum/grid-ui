@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled, { css } from 'styled-components'
 import Typography from '@material-ui/core/Typography'
-import Button from '../../../components/Button'
+import Button from '../../shared/Button'
 import { Mist } from '../../../API'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
@@ -18,10 +18,6 @@ export default class GethConfig extends Component {
     super(props)
     this.configFormRef = React.createRef()
     this.versionListRef = React.createRef()
-  }
-
-  renderVersionList = () => {
-    return <VersionList ref={this.versionListRef} />
   }
 
   renderConfigForm = () => {
@@ -71,20 +67,6 @@ export default class GethConfig extends Component {
     )
   }
 
-  renderTerminal = () => {
-    const { isRunning } = this.state
-
-    if (geth.getLogs().length === 0) {
-      return null
-    }
-    return (
-      <div style={{ marginTop: 20 }}>
-        <Typography variant="h6">Terminal</Typography>
-        <Terminal isActive={isRunning} />
-      </div>
-    )
-  }
-
   renderDownloadError() {
     const { downloadError } = this.state
     if (!downloadError) {
@@ -97,10 +79,10 @@ export default class GethConfig extends Component {
   render() {
     return (
       <main>
-        {this.renderVersionList()}
+        <VersionList ref={this.versionListRef} />
         {this.renderConfigForm()}
         {this.renderStartStop()}
-        {this.renderTerminal()}
+        {!!geth.getLogs().length && <Terminal />}
       </main>
     )
   }

@@ -8,7 +8,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import Spinner from '../../../components/Spinner'
+import Spinner from '../../shared/Spinner'
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
 
@@ -113,7 +113,7 @@ export default class GethConfig extends Component {
     const releases = this.allReleases()
 
     if (releases.length === 0) {
-      return <Spinner style={{ margin: '20px' }} />
+      return <Spinner style={{ margin: '20px 0' }} />
     }
 
     return (

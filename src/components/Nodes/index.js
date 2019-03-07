@@ -8,7 +8,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
-import GethConfig from './containers/Network/GethConfig'
+import GethConfig from './GethConfig'
 
 const drawerWidth = 240
 

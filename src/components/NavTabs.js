@@ -5,7 +5,7 @@ import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
-import NodesTab from './NodesTab'
+import NodesTab from './Nodes'
 
 const styles = theme => ({
   root: {
