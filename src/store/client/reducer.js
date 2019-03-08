@@ -14,7 +14,8 @@ export const initialState = {
   },
   syncMode: 'light',
   timestamp: null,
-  error: null
+  error: null,
+  release: null
 }
 
 const client = (state = initialState, action) => {
@@ -87,6 +88,14 @@ const client = (state = initialState, action) => {
           ...state.process,
           state: 'STARTED'
         }
+      }
+      return newState
+    }
+    case '[CLIENT]:GETH:SET_RELEASE': {
+      const { release } = action.payload
+      const newState = {
+        ...state,
+        release
       }
       return newState
     }

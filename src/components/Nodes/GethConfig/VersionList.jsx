@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import semver from 'semver'
 import Typography from '@material-ui/core/Typography'
@@ -13,14 +15,19 @@ import MaximizeIcon from '@material-ui/icons/Maximize'
 import Spinner from '../../shared/Spinner'
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
+import { setRelease } from '../../../store/client/actions'
 
 const { geth } = Mist
 
-export default class VersionList extends Component {
+class VersionList extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func,
+    client: PropTypes.object
+  }
+
   state = {
     localReleases: [],
     remoteReleases: [],
-    selectedRelease: null,
     loadingRemoteReleases: false,
     downloadError: null,
     showList: true
@@ -56,14 +63,24 @@ export default class VersionList extends Component {
     this.loadRemoteReleases()
   }
 
-  loadLocalReleases = async release => {
+  loadLocalReleases = async selectedRelease => {
     const releases = await geth.getLocalBinaries()
     const localReleases = releases.filter(this.excludeUnstableReleases)
-    let selectedRelease = release
-    if (!selectedRelease) {
-      ;[selectedRelease] = localReleases
+    this.setState({ localReleases })
+    const { client } = this.props
+    const { release } = client
+    if (!release) {
+      if (selectedRelease) {
+        this.setSelectedRelease(selectedRelease)
+      } else {
+        this.setSelectedRelease(localReleases[0])
+      }
     }
-    this.setState({ localReleases, selectedRelease })
+  }
+
+  setSelectedRelease = release => {
+    const { dispatch } = this.props
+    dispatch(setRelease({ release }))
   }
 
   loadRemoteReleases = async () => {
@@ -76,11 +93,12 @@ export default class VersionList extends Component {
     this.setState({ loadingRemoteReleases: false })
   }
 
-  handleReleaseSelected = selectedRelease => {
-    if (this.isLocalRelease(selectedRelease)) {
-      this.setState({ selectedRelease })
+  handleReleaseSelected = release => {
+    const { dispatch } = this.props
+    if (this.isLocalRelease(release)) {
+      dispatch(setRelease({ release }))
     } else {
-      this.downloadRelease(selectedRelease)
+      this.downloadRelease(release)
     }
   }
 
@@ -110,8 +128,9 @@ export default class VersionList extends Component {
       this.setState({ downloadError: error })
     }
     delete remoteReleases[index].progress
-    const selectedRelease = release
-    this.setState({ remoteReleases, selectedRelease })
+    this.setState({ remoteReleases })
+    // Reload local with selectedRelease
+    this.loadLocalReleases({ release })
   }
 
   toggleShowList = () => {
@@ -148,7 +167,7 @@ export default class VersionList extends Component {
           )}
         </ToggableTypography>
         {showList && (
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="subtitle1">
             {localReleases.length} versions downloaded
           </Typography>
         )}
@@ -157,11 +176,11 @@ export default class VersionList extends Component {
   }
 
   renderVersionList = () => {
+    const { client } = this.props
     const { showList } = this.state
     if (!showList) {
       return null
     }
-    const { selectedRelease } = this.state
     const releases = this.allReleases()
     const renderIcon = release => {
       let icon = <BlankIconPlaceholder />
@@ -169,7 +188,7 @@ export default class VersionList extends Component {
         icon = <Spinner size={20} />
       } else if (!this.isLocalRelease(release)) {
         icon = <CloudDownloadIcon color="primary" />
-      } else if (release === selectedRelease) {
+      } else if (release === client.release) {
         icon = <CheckBoxIcon color="primary" />
       }
       return icon
@@ -179,7 +198,7 @@ export default class VersionList extends Component {
         let actionLabel
         if (this.isLocalRelease(release)) {
           actionLabel = 'Use'
-          if (release === selectedRelease) {
+          if (release === client.release) {
             actionLabel = 'Selected'
           }
         } else {
@@ -196,7 +215,7 @@ export default class VersionList extends Component {
             onClick={() => {
               this.handleReleaseSelected(release)
             }}
-            selected={release === selectedRelease}
+            selected={release === client.release}
             isDownloading={!!release.progress}
           >
             <ListItemIcon>{renderIcon(release)}</ListItemIcon>
@@ -230,6 +249,14 @@ export default class VersionList extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    client: state.client
+  }
+}
+
+export default connect(mapStateToProps)(VersionList)
+
 const StyledList = styled(List)`
   max-height: 200px;
   max-width: 400px;
@@ -237,6 +264,7 @@ const StyledList = styled(List)`
 `
 
 const VersionListContainer = styled.div`
+  margin-top: 10px;
   margin-bottom: 20px;
 `
 
@@ -271,7 +299,6 @@ const StyledListItem = styled(without('isDownloading')(ListItem))`
 ${props =>
   !props.selected &&
   css`
-    background: red;
     ${StyledListItemAction} {
       visibility: hidden;
     }

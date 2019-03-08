@@ -91,3 +91,10 @@ export const gethError = ({ error }) => {
     payload: { error }
   }
 }
+
+export const setRelease = ({ release }) => {
+  return {
+    type: '[CLIENT]:GETH:SET_RELEASE',
+    payload: { release }
+  }
+}

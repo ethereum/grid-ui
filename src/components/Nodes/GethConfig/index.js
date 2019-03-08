@@ -23,7 +23,6 @@ class GethConfig extends Component {
     super(props)
 
     this.configFormRef = React.createRef()
-    this.versionListRef = React.createRef()
 
     const { dispatch } = this.props
     this.clientStateManager = new ClientStateManager({ dispatch })
@@ -35,6 +34,9 @@ class GethConfig extends Component {
 
   handleStartStop = () => {
     const { isRunning } = geth
+    const { client } = this.props
+    const { release } = client
+
     if (isRunning) {
       this.clientStateManager.stop()
       geth.stop()
@@ -43,8 +45,7 @@ class GethConfig extends Component {
       const { config } = this.configFormRef.current.state
       geth.setConfig(config)
       // Start geth
-      const { selectedRelease } = this.versionListRef.current.state
-      geth.start(selectedRelease)
+      geth.start(release)
       this.clientStateManager.start()
     }
   }
@@ -105,9 +106,9 @@ class GethConfig extends Component {
         <Typography variant="subtitle1" gutterBottom>
           {capitalizedState}
         </Typography>
-        <VersionList ref={this.versionListRef} />
+        {!!geth.getLogs().length && <StyledTerminal />}
+        <VersionList />
         {this.renderConfigForm()}
-        {!!geth.getLogs().length && <Terminal />}
       </StyledMain>
     )
   }
@@ -128,4 +129,8 @@ const StyledMain = styled.main`
 const StyledError = styled.div`
   padding: 10px;
   color: red;
+`
+
+const StyledTerminal = styled(Terminal)`
+  margin: 20px 0;
 `

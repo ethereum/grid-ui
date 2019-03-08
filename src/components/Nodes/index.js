@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
@@ -30,7 +31,8 @@ const styles = theme => ({
 
 class NodesTab extends Component {
   static propTypes = {
-    classes: PropTypes.object
+    classes: PropTypes.object,
+    client: PropTypes.object
   }
 
   static defaultProps = {}
@@ -59,28 +61,16 @@ class NodesTab extends Component {
 
   handleToggle = name => {
     if (name === 'Geth') {
+      console.log(this.gethConfigRef)
       this.gethConfigRef.current.handleStartStop()
     }
-  }
-
-  isDisabled(name) {
-    if (name === 'Geth') {
-      if (
-        !this.gethConfigRef ||
-        !this.gethConfigRef.current ||
-        !this.gethConfigRef.current.versionListRef ||
-        !this.gethConfigRef.current.versionListRef.state ||
-        !this.gethConfigRef.current.versionListRef.state.selectedRelease
-      ) {
-        return true
-      }
-    }
-    return false
   }
 
   render() {
     const { classes } = this.props
     const { activeItem, nodes } = this.state
+    const { client } = this.props
+    const { release } = client
 
     return (
       <React.Fragment>
@@ -103,9 +93,9 @@ class NodesTab extends Component {
                 <ListItemSecondaryAction>
                   <Switch
                     color="primary"
-                    onChange={() => this.handleToggle(node.name)}
-                    checked={NodesTab.isChecked(node.name)}
-                    disabled={this.isDisabled(node.name)}
+                    onChange={() => this.handleToggle(activeItem)}
+                    checked={activeItem === 'Geth' ? geth.isRunning : false}
+                    disabled={activeItem === 'Geth' ? !!release : true}
                   />
                 </ListItemSecondaryAction>
               </ListItem>
@@ -122,4 +112,10 @@ class NodesTab extends Component {
   }
 }
 
-export default withStyles(styles)(NodesTab)
+function mapStateToProps(state) {
+  return {
+    client: state.client
+  }
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(NodesTab))
