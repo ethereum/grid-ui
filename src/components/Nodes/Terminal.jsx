@@ -43,7 +43,7 @@ export default class Terminal extends Component {
     const { logs, scrollToBottom } = this.state
 
     return (
-      <div style={{ marginTop: '20px', maxWidth: 600, padding: 5 }}>
+      <div style={{ maxWidth: 600, padding: 5 }}>
         <Grid container>
           <Grid item xs={6}>
             <Typography variant="h6">Terminal</Typography>

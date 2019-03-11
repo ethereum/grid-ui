@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
-import Typography from '@material-ui/core/Typography'
-import MinimizeIcon from '@material-ui/icons/Minimize'
-import MaximizeIcon from '@material-ui/icons/Maximize'
 import Select from '../../shared/Select'
 import { Mist } from '../../../API'
 import { setConfig } from '../../../store/client/actions'
@@ -13,6 +11,10 @@ import { setConfig } from '../../../store/client/actions'
 const { geth } = Mist
 
 class ConfigForm extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func
+  }
+
   state = {
     config: {
       name: '',
@@ -27,8 +29,7 @@ class ConfigForm extends Component {
       networks: ['main', 'ropsten', 'rinkeby'],
       ipcModes: ['ipc', 'websockets'],
       syncModes: ['light', 'fast', 'full']
-    },
-    showForm: true
+    }
   }
 
   componentDidMount() {
@@ -37,7 +38,8 @@ class ConfigForm extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { config } = this.state
-    if (prevState.config !== config) {
+    const { config: prevConfig } = prevState
+    if (prevConfig !== config) {
       const { dispatch } = this.props
       dispatch(setConfig({ config }))
     }
@@ -95,11 +97,6 @@ class ConfigForm extends Component {
       return false
     }
     return true
-  }
-
-  toggleShowForm = () => {
-    const { showForm } = this.state
-    this.setState({ showForm: !showForm })
   }
 
   renderSyncMode() {
@@ -233,11 +230,6 @@ class ConfigForm extends Component {
   }
 
   renderForm() {
-    const { showForm } = this.state
-    if (!showForm) {
-      return null
-    }
-
     return (
       <Grid container style={{ maxWidth: 500 }} spacing={24}>
         <Grid item xs={6}>
@@ -267,24 +259,7 @@ class ConfigForm extends Component {
   }
 
   render() {
-    const { showForm } = this.state
-    return (
-      <div>
-        <ToggableTypography
-          variant="h6"
-          gutterBottom
-          onClick={this.toggleShowForm}
-        >
-          {showForm ? (
-            <MinimizeIcon fontSize="small" />
-          ) : (
-            <MaximizeIcon fontSize="small" />
-          )}
-          Settings
-        </ToggableTypography>
-        {this.renderForm()}
-      </div>
-    )
+    return <div>{this.renderForm()}</div>
   }
 }
 
@@ -296,11 +271,4 @@ export default connect(mapStateToProps)(ConfigForm)
 
 const StyledWarning = styled.div`
   color: red;
-`
-
-const ToggableTypography = styled(Typography)`
-  user-select: none;
-  &:hover {
-    cursor: pointer;
-  }
 `

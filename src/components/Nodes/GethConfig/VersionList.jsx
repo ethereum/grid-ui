@@ -10,8 +10,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import MinimizeIcon from '@material-ui/icons/Minimize'
-import MaximizeIcon from '@material-ui/icons/Maximize'
 import Spinner from '../../shared/Spinner'
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
@@ -29,8 +27,7 @@ class VersionList extends Component {
     localReleases: [],
     remoteReleases: [],
     loadingRemoteReleases: false,
-    downloadError: null,
-    showList: true
+    downloadError: null
   }
 
   excludeUnstableReleases = release => !release.fileName.includes('unstable')
@@ -133,13 +130,8 @@ class VersionList extends Component {
     this.loadLocalReleases({ release })
   }
 
-  toggleShowList = () => {
-    const { showList } = this.state
-    this.setState({ showList: !showList })
-  }
-
   renderVersionsAvailable = () => {
-    const { localReleases, loadingRemoteReleases, showList } = this.state
+    const { localReleases, loadingRemoteReleases } = this.state
     const releases = this.allReleases()
 
     if (releases.length === 0) {
@@ -148,12 +140,7 @@ class VersionList extends Component {
 
     return (
       <div>
-        <ToggableTypography variant="h6" onClick={this.toggleShowList}>
-          {showList ? (
-            <MinimizeIcon fontSize="small" />
-          ) : (
-            <MaximizeIcon fontSize="small" />
-          )}
+        <Typography variant="h6">
           {loadingRemoteReleases && (
             <React.Fragment>
               Loading versions...
@@ -165,22 +152,16 @@ class VersionList extends Component {
               {releases.length} versions available
             </React.Fragment>
           )}
-        </ToggableTypography>
-        {showList && (
-          <Typography variant="subtitle1">
-            {localReleases.length} versions downloaded
-          </Typography>
-        )}
+        </Typography>
+        <Typography variant="subtitle1">
+          {localReleases.length} versions downloaded
+        </Typography>
       </div>
     )
   }
 
   renderVersionList = () => {
     const { client } = this.props
-    const { showList } = this.state
-    if (!showList) {
-      return null
-    }
     const releases = this.allReleases()
     const renderIcon = release => {
       let icon = <BlankIconPlaceholder />
@@ -240,11 +221,11 @@ class VersionList extends Component {
   render() {
     const { downloadError } = this.state
     return (
-      <VersionListContainer>
+      <div>
         {this.renderVersionsAvailable()}
         {this.renderVersionList()}
         {downloadError && <StyledError>{downloadError}</StyledError>}
-      </VersionListContainer>
+      </div>
     )
   }
 }
@@ -261,11 +242,6 @@ const StyledList = styled(List)`
   max-height: 200px;
   max-width: 400px;
   overflow: scroll;
-`
-
-const VersionListContainer = styled.div`
-  margin-top: 10px;
-  margin-bottom: 20px;
 `
 
 const ListItemTextVersion = styled(({ isLocalRelease, children, ...rest }) => (
@@ -320,10 +296,3 @@ const StyledError = styled.div`
 `
 
 const BlankIconPlaceholder = styled.div`width: 24px; height; 24px`
-
-const ToggableTypography = styled(Typography)`
-  user-select: none;
-  &:hover {
-    cursor: pointer;
-  }
-`

@@ -168,6 +168,7 @@ export default class ClientStateManager {
 
   async start() {
     const config = geth.getConfig()
+
     const { network, syncMode } = config
 
     // Set network

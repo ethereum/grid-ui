@@ -124,7 +124,7 @@ export const stopGeth = ({ clientStateManager }) => {
   }
 }
 
-export const setConfig = config => {
+export const setConfig = ({ config }) => {
   geth.setConfig(config)
   return {
     type: '[CLIENT]:GETH:SET_CONFIG',
