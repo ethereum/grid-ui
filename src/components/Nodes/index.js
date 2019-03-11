@@ -26,7 +26,15 @@ const styles = theme => ({
     flexGrow: 1,
     padding: theme.spacing.unit * 3
   },
-  toolbar: theme.mixins.toolbar
+  toolbar: theme.mixins.toolbar,
+  selected: {
+    '&$selected': {
+      backgroundColor: '#ffffff',
+      '&:hover': {
+        backgroundColor: '#ffffff'
+      }
+    }
+  }
 })
 
 class NodesTab extends Component {
@@ -87,6 +95,7 @@ class NodesTab extends Component {
                 disabled={node.disabled}
                 selected={node.name === activeItem}
                 onClick={() => this.handleNodeSelect(node.name)}
+                classes={{ selected: classes.selected }}
                 button
               >
                 <ListItemText primary={node.name} />

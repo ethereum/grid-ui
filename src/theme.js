@@ -35,13 +35,6 @@ const theme = createMuiTheme({
       paper: {
         backgroundColor: '#f2f2f2'
       }
-    },
-    MuiListItem: {
-      root: {
-        '&$selected': {
-          backgroundColor: '#ffffff'
-        }
-      }
     }
   }
 })
