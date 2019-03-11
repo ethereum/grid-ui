@@ -18,16 +18,20 @@ const capitalizeStr = str =>
   str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 
 function TabContainer(props) {
-  const { children } = props
+  const { children, display } = props
   return (
-    <Typography component="div" style={{ paddingTop: 20, paddingLeft: 10 }}>
+    <Typography
+      component="div"
+      style={{ paddingTop: 20, paddingLeft: 10, display }}
+    >
       {children}
     </Typography>
   )
 }
 
 TabContainer.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  display: PropTypes.string
 }
 
 class GethConfig extends Component {
@@ -41,17 +45,17 @@ class GethConfig extends Component {
     geth.on('started', this.handleGethStarted)
   }
 
-  handleGethStarted = () => {
-    // Update activeTab to Terminal
-    this.setState({ activeTab: 2 })
+  componentWillUnmount() {
+    geth.removeListener('started', this.handleGethStarted)
   }
 
   handleTabChange = (event, activeTab) => {
     this.setState({ activeTab })
   }
 
-  componentWillUnmount() {
-    geth.removeListener('started', this.handleGethStarted)
+  handleGethStarted = () => {
+    // Update activeTab to Terminal
+    this.setState({ activeTab: 2 })
   }
 
   renderErrors() {
@@ -124,21 +128,17 @@ class GethConfig extends Component {
             <Tab label="Terminal" disabled={!geth.getLogs().length} />
           </Tabs>
         </StyledAppBar>
-        <VisibleTab visible={activeTab === 0}>
-          <TabContainer>
+        <TabContainer display={activeTab === 0 ? 'block' : 'none'}>
+          <div>
             <VersionList />
-          </TabContainer>
-        </VisibleTab>
-        <VisibleTab visible={activeTab === 1}>
-          <TabContainer>
-            <ConfigForm />
-          </TabContainer>
-        </VisibleTab>
-        <VisibleTab visible={activeTab === 2}>
-          <TabContainer>
-            <Terminal />
-          </TabContainer>
-        </VisibleTab>
+          </div>
+        </TabContainer>
+        <TabContainer display={activeTab === 1 ? 'block' : 'none'}>
+          <ConfigForm />
+        </TabContainer>
+        <TabContainer display={activeTab === 2 ? 'block' : 'none'}>
+          <Terminal />
+        </TabContainer>
       </StyledMain>
     )
   }
@@ -163,12 +163,4 @@ const StyledError = styled.div`
 
 const StyledAppBar = styled(AppBar)`
   margin-top: 20px;
-`
-
-const VisibleTab = styled.div`
-  ${props =>
-    !props.visible &&
-    css`
-      display: none;
-    `}
 `
