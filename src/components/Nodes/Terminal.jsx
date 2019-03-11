@@ -6,10 +6,6 @@ import { Mist } from '../../API'
 
 const { geth } = Mist
 
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min
-}
-
 export default class Terminal extends Component {
   state = {
     logs: [],
@@ -29,10 +25,10 @@ export default class Terminal extends Component {
 
     this.setState(
       {
-        logs: [...logs, ...gethLogs]
+        logs: [...gethLogs]
       },
       () => {
-        if (scrollToBottom) {
+        if (scrollToBottom && gethLogs.length > logs.length) {
           this.scrollToBottom()
         }
       }
@@ -40,7 +36,7 @@ export default class Terminal extends Component {
   }
 
   scrollToBottom = () => {
-    this.logsEnd.current.scrollIntoView({ bahavior: 'smooth' })
+    this.logsEnd.current.scrollIntoView({ behavior: 'smooth' })
   }
 
   render() {
@@ -67,17 +63,19 @@ export default class Terminal extends Component {
               style={{
                 fontFamily:
                   'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
+                fontSize: '11px',
                 background: '#111',
                 color: '#eee',
                 maxHeight: 350,
                 maxWidth: 600,
                 overflowY: 'scroll',
-                padding: 5,
-                position: 'relative'
+                padding: '6px',
+                position: 'relative',
+                whiteSpace: 'nowrap'
               }}
             >
-              {logs.map(l => (
-                <div key={getRandomArbitrary(0, 1000000000)}> &gt; {l}</div>
+              {logs.map((l, index) => (
+                <div key={index}>{l}</div>
               ))}
               <div ref={this.logsEnd} />
             </div>
