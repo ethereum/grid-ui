@@ -50,7 +50,7 @@ class GethConfig extends Component {
     this.setState({ activeTab })
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     geth.removeListener('started', this.handleGethStarted)
   }
 

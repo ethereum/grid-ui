@@ -43,7 +43,7 @@ export default class Terminal extends Component {
     this.logsInterval = null
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.stopPolling()
   }
 
