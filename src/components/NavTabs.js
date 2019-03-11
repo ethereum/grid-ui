@@ -71,19 +71,19 @@ class NavTabs extends React.Component {
           </Tabs>
         </AppBar>
 
-        <React.Fragment style={{ display: activeTab === 0 ? 'block' : 'none' }}>
+        <div style={{ display: activeTab === 0 ? 'inherit' : 'none' }}>
           <NodesTab />
-        </React.Fragment>
+        </div>
 
-        <TabContainer visible={activeTab === 1 ? 'block' : 'none'}>
+        <TabContainer display={activeTab === 1 ? 'block' : 'none'}>
           <Typography component="h6">Network</Typography>
         </TabContainer>
 
-        <TabContainer visible={activeTab === 2 ? 'block' : 'none'}>
+        <TabContainer display={activeTab === 2 ? 'block' : 'none'}>
           <Typography component="h6">Transactions</Typography>
         </TabContainer>
 
-        <TabContainer visible={activeTab === 3 ? 'block' : 'none'}>
+        <TabContainer display={activeTab === 3 ? 'block' : 'none'}>
           <Typography component="h6">Tools</Typography>
         </TabContainer>
       </div>
