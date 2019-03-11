@@ -1,86 +1,77 @@
 import React, { Component } from 'react'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import Button from '../shared/Button'
 import { Mist } from '../../API'
 
 const { geth } = Mist
 
 export default class Terminal extends Component {
   state = {
-    logs: [],
-    scrollToBottom: true
+    logs: []
   }
 
-  logsEnd = React.createRef()
+  constructor(props) {
+    super(props)
+    this.terminalScrollViewRef = React.createRef()
+  }
 
   componentDidMount = async () => {
-    setInterval(this.refreshLogs, 1000)
+    await this.startPolling()
+  }
+
+  componentDidUpdate = () => {
+    if (this.terminalScrollViewRef.current) {
+      const { scrollHeight } = this.terminalScrollViewRef.current
+      this.terminalScrollViewRef.current.scrollTo({
+        top: scrollHeight,
+        behavior: 'smooth'
+      })
+    }
   }
 
   refreshLogs = async () => {
-    const { logs, scrollToBottom } = this.state
-
-    const gethLogs = await geth.getLogs()
-
-    this.setState(
-      {
-        logs: [...gethLogs]
-      },
-      () => {
-        if (scrollToBottom && gethLogs.length > logs.length) {
-          this.scrollToBottom()
-        }
-      }
-    )
+    const logs = await geth.getLogs()
+    this.setState({
+      logs
+    })
   }
 
-  scrollToBottom = () => {
-    this.logsEnd.current.scrollIntoView({ behavior: 'smooth' })
+  startPolling = () => {
+    this.logsInterval = setInterval(this.refreshLogs, 1000)
+  }
+
+  stopPolling = () => {
+    clearInterval(this.logsInterval)
+    this.logsInterval = null
+  }
+
+  componentDidUnmount() {
+    this.stopPolling()
   }
 
   render() {
-    const { logs, scrollToBottom } = this.state
+    const { logs } = this.state
 
     return (
-      <div style={{ maxWidth: 600, padding: 5 }}>
-        <Grid container>
-          <Grid item xs={6}>
-            <Typography variant="h6">Terminal</Typography>
-          </Grid>
-          <Grid item xs={6} style={{ textAlign: 'right' }}>
-            <Button
-              size="small"
-              color="secondary"
-              style={{ marginBottom: '6px' }}
-              onClick={() => this.setState({ scrollToBottom: !scrollToBottom })}
-            >
-              {scrollToBottom ? 'Unfollow Logs' : 'Follow Logs'}
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <div
-              style={{
-                fontFamily:
-                  'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
-                fontSize: '11px',
-                background: '#111',
-                color: '#eee',
-                maxHeight: 350,
-                maxWidth: 600,
-                overflowY: 'scroll',
-                padding: '6px',
-                position: 'relative',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {logs.map((l, index) => (
-                <div key={index}>{l}</div>
-              ))}
-              <div ref={this.logsEnd} />
-            </div>
-          </Grid>
-        </Grid>
+      <div key="terminalContainer">
+        <div
+          key="terminalWrapper"
+          ref={this.terminalScrollViewRef}
+          style={{
+            fontFamily:
+              'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
+            fontSize: '9px',
+            background: '#111',
+            color: '#eee',
+            maxHeight: 350,
+            maxWidth: 680,
+            overflowY: 'scroll',
+            whiteSpace: 'nowrap',
+            padding: 10
+          }}
+        >
+          {logs.map((l, index) => (
+            <div key={index}> &gt; {l}</div>
+          ))}
+        </div>
       </div>
     )
   }

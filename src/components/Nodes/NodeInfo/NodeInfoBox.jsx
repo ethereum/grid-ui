@@ -158,6 +158,24 @@ export default class NodeInfoBox extends Component {
     )
   }
 
+  noData() {
+    const { local, remote } = this.props
+    const { blockNumber: localBlockNumber, timestamp: localTimestamp } = local
+    const {
+      blockNumber: remoteBlockNumber,
+      timestamp: remoteTimestamp
+    } = remote
+    if (
+      !localBlockNumber &&
+      !localTimestamp &&
+      !remoteBlockNumber &&
+      !remoteTimestamp
+    ) {
+      return true
+    }
+    return false
+  }
+
   renderRemoteStats() {
     const { active, remote } = this.props
     const { diffTimestamp } = this.state
@@ -273,24 +291,6 @@ export default class NodeInfoBox extends Component {
         {localStats}
       </StyledSection>
     )
-  }
-
-  noData() {
-    const { local, remote } = this.props
-    const { blockNumber: localBlockNumber, timestamp: localTimestamp } = local
-    const {
-      blockNumber: remoteBlockNumber,
-      timestamp: remoteTimestamp
-    } = remote
-    if (
-      !localBlockNumber &&
-      !localTimestamp &&
-      !remoteBlockNumber &&
-      !remoteTimestamp
-    ) {
-      return true
-    }
-    return false
   }
 
   render() {

@@ -111,6 +111,7 @@ class GethConfig extends Component {
         <Typography variant="subtitle1" gutterBottom>
           {capitalizedState}
         </Typography>
+        {this.renderErrors()}
         <StyledAppBar position="static">
           <Tabs
             value={activeTab}
