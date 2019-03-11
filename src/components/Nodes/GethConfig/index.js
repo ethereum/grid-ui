@@ -20,10 +20,7 @@ const capitalizeStr = str =>
 function TabContainer(props) {
   const { children, display } = props
   return (
-    <Typography
-      component="div"
-      style={{ paddingTop: 20, paddingLeft: 10, display }}
-    >
+    <Typography component="div" style={{ paddingLeft: 10, display }}>
       {children}
     </Typography>
   )
@@ -154,6 +151,7 @@ export default connect(mapStateToProps)(GethConfig)
 
 const StyledMain = styled.main`
   position: relative;
+  min-width: 500px;
 `
 
 const StyledError = styled.div`
@@ -162,5 +160,5 @@ const StyledError = styled.div`
 `
 
 const StyledAppBar = styled(AppBar)`
-  margin-top: 20px;
+  margin: 20px 0;
 `

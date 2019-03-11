@@ -240,7 +240,7 @@ export default connect(mapStateToProps)(VersionList)
 
 const StyledList = styled(List)`
   max-height: 200px;
-  max-width: 400px;
+  max-width: 100%;
   overflow: scroll;
 `
 

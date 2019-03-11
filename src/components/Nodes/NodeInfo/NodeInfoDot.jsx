@@ -31,13 +31,22 @@ export default class NodeInfoDot extends Component {
   }
 
   static isNewBlock(prevProps, newProps) {
-    let isNewBlock
     if (prevProps.active === 'remote') {
-      isNewBlock = prevProps.remote.blockNumber !== newProps.remote.blockNumber
+      if (!newProps.remote.blockNumber) {
+        return false
+      }
+      if (prevProps.remote.blockNumber !== newProps.remote.blockNumber) {
+        return true
+      }
     } else {
-      isNewBlock = prevProps.local.blockNumber !== newProps.local.blockNumber
+      if (!newProps.local.blockNumber) {
+        return false
+      }
+      if (prevProps.local.blockNumber !== newProps.local.blockNumber) {
+        return true
+      }
     }
-    return isNewBlock
+    return false
   }
 
   constructor(props) {
