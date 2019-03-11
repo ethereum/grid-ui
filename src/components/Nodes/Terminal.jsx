@@ -27,6 +27,10 @@ export default class Terminal extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.stopPolling()
+  }
+
   refreshLogs = async () => {
     const logs = await geth.getLogs()
     this.setState({
@@ -41,10 +45,6 @@ export default class Terminal extends Component {
   stopPolling = () => {
     clearInterval(this.logsInterval)
     this.logsInterval = null
-  }
-
-  componentWillUnmount() {
-    this.stopPolling()
   }
 
   render() {
