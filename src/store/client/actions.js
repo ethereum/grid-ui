@@ -1,3 +1,7 @@
+import { Mist } from '../../API'
+
+const { geth } = Mist
+
 export const newBlock = ({ blockNumber, timestamp }) => {
   return {
     type: '[CLIENT]:GETH:UPDATE_NEW_BLOCK',
@@ -96,5 +100,34 @@ export const setRelease = ({ release }) => {
   return {
     type: '[CLIENT]:GETH:SET_RELEASE',
     payload: { release }
+  }
+}
+
+export const startGeth = ({ clientStateManager }) => {
+  return (dispatch, getState) => {
+    const { client } = getState()
+    const { config } = client
+    geth.setConfig(config)
+    geth.start()
+    clientStateManager.start()
+    return {
+      type: '[CLIENT]:GETH:START'
+    }
+  }
+}
+
+export const stopGeth = ({ clientStateManager }) => {
+  clientStateManager.stop()
+  geth.stop()
+  return {
+    type: '[CLIENT]:GETH:STOP'
+  }
+}
+
+export const setConfig = config => {
+  geth.setConfig(config)
+  return {
+    type: '[CLIENT]:GETH:SET_CONFIG',
+    payload: { config }
   }
 }

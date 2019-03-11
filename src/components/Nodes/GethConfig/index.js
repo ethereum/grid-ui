@@ -7,7 +7,6 @@ import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
-import ClientStateManager from '../../../lib/ClientStateManager'
 
 const { geth } = Mist
 
@@ -17,37 +16,6 @@ const capitalizeStr = str =>
 class GethConfig extends Component {
   state = {
     downloadError: null
-  }
-
-  constructor(props) {
-    super(props)
-
-    this.configFormRef = React.createRef()
-
-    const { dispatch } = this.props
-    this.clientStateManager = new ClientStateManager({ dispatch })
-  }
-
-  renderConfigForm = () => {
-    return <ConfigForm ref={this.configFormRef} />
-  }
-
-  handleStartStop = () => {
-    const { isRunning } = geth
-    const { client } = this.props
-    const { release } = client
-
-    if (isRunning) {
-      this.clientStateManager.stop()
-      geth.stop()
-    } else {
-      // Save config
-      const { config } = this.configFormRef.current.state
-      geth.setConfig(config)
-      // Start geth
-      geth.start(release)
-      this.clientStateManager.start()
-    }
   }
 
   renderErrors() {
@@ -108,7 +76,7 @@ class GethConfig extends Component {
         </Typography>
         {!!geth.getLogs().length && <StyledTerminal />}
         <VersionList />
-        {this.renderConfigForm()}
+        <ConfigForm />
       </StyledMain>
     )
   }

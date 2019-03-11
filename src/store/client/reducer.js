@@ -15,11 +15,20 @@ export const initialState = {
   syncMode: 'light',
   timestamp: null,
   error: null,
-  release: null
+  release: null,
+  config: null
 }
 
 const client = (state = initialState, action) => {
   switch (action.type) {
+    case '[CLIENT]:GETH:SET_CONFIG': {
+      const { config } = action.payload
+      const newState = {
+        ...state,
+        config
+      }
+      return newState
+    }
     case '[CLIENT]:GETH:STARTED': {
       const newState = {
         ...state,

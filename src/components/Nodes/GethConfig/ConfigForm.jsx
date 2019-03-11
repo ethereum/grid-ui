@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
@@ -7,10 +8,11 @@ import MinimizeIcon from '@material-ui/icons/Minimize'
 import MaximizeIcon from '@material-ui/icons/Maximize'
 import Select from '../../shared/Select'
 import { Mist } from '../../../API'
+import { setConfig } from '../../../store/client/actions'
 
 const { geth } = Mist
 
-export default class ConfigForm extends Component {
+class ConfigForm extends Component {
   state = {
     config: {
       name: '',
@@ -31,6 +33,14 @@ export default class ConfigForm extends Component {
 
   componentDidMount() {
     this.getConfig()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { config } = this.state
+    if (prevState.config !== config) {
+      const { dispatch } = this.props
+      dispatch(setConfig({ config }))
+    }
   }
 
   async getConfig() {
@@ -277,6 +287,12 @@ export default class ConfigForm extends Component {
     )
   }
 }
+
+function mapStateToProps() {
+  return {}
+}
+
+export default connect(mapStateToProps)(ConfigForm)
 
 const StyledWarning = styled.div`
   color: red;

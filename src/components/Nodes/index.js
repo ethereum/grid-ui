@@ -10,6 +10,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
 import { Mist } from '../../API'
 import GethConfig from './GethConfig'
+import { startGeth, stopGeth } from '../../store/client/actions'
+import ClientStateManager from '../../lib/ClientStateManager'
 
 const { geth } = Mist
 const drawerWidth = 240
@@ -40,7 +42,8 @@ const styles = theme => ({
 class NodesTab extends Component {
   static propTypes = {
     classes: PropTypes.object,
-    client: PropTypes.object
+    client: PropTypes.object,
+    dispatch: PropTypes.func
   }
 
   static defaultProps = {}
@@ -60,7 +63,9 @@ class NodesTab extends Component {
 
   constructor(props) {
     super(props)
-    this.gethConfigRef = React.createRef()
+
+    const { dispatch } = this.props
+    this.clientStateManager = new ClientStateManager({ dispatch })
   }
 
   handleNodeSelect = name => {
@@ -69,8 +74,14 @@ class NodesTab extends Component {
 
   handleToggle = name => {
     if (name === 'Geth') {
-      console.log(this.gethConfigRef)
-      this.gethConfigRef.current.handleStartStop()
+      const { isRunning } = geth
+      const { clientStateManager } = this
+      const { dispatch } = this.props
+      if (isRunning) {
+        dispatch(stopGeth({ clientStateManager }))
+      } else {
+        dispatch(startGeth({ clientStateManager }))
+      }
     }
   }
 
@@ -104,7 +115,7 @@ class NodesTab extends Component {
                     color="primary"
                     onChange={() => this.handleToggle(activeItem)}
                     checked={activeItem === 'Geth' ? geth.isRunning : false}
-                    disabled={activeItem === 'Geth' ? !!release : true}
+                    disabled={activeItem === 'Geth' ? !release : true}
                   />
                 </ListItemSecondaryAction>
               </ListItem>
