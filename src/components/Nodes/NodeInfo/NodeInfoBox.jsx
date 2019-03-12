@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import moment from 'moment'
-import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna'
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt'
@@ -8,6 +8,7 @@ import AvTimerIcon from '@material-ui/icons/AvTimer'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import LayersIcon from '@material-ui/icons/Layers'
 import PeopleIcon from '@material-ui/icons/People'
+import LinearScaleIcon from '@material-ui/icons/LinearScale'
 
 const numberWithCommas = val => {
   return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -17,32 +18,7 @@ const defaultIconProps = {
   fontSize: 'inherit'
 }
 
-export default class NodeInfoBox extends Component {
-  static propTypes = {
-    /** Active network */
-    active: PropTypes.oneOf(['remote', 'local']).isRequired,
-    /** Current network */
-    network: PropTypes.oneOf(['main', 'rinkeby', 'kovan', 'private'])
-      .isRequired,
-    /** Local network data */
-    local: PropTypes.shape({
-      blockNumber: PropTypes.number,
-      timestamp: PropTypes.number,
-      sync: PropTypes.shape({
-        highestBlock: PropTypes.number.isRequired,
-        currentBlock: PropTypes.number.isRequired,
-        startingBlock: PropTypes.number.isRequired
-      }).isRequired
-    }).isRequired,
-    /** Remote network data */
-    remote: PropTypes.shape({
-      blockNumber: PropTypes.number,
-      timestamp: PropTypes.number
-    }).isRequired,
-    /** Location of dot relative to box */
-    dotLocation: PropTypes.oneOf(['topLeft'])
-  }
-
+class NodeInfoBox extends Component {
   constructor(props) {
     super(props)
     this.state = { diffTimestamp: moment().unix() }
@@ -59,6 +35,28 @@ export default class NodeInfoBox extends Component {
     clearInterval(this.diffInterval)
   }
 
+  localStatsStopped = () => {
+    return (
+      <div>
+        <div className="connecting row-icon">
+          <LinearScaleIcon {...defaultIconProps} />
+          Stopped
+        </div>
+      </div>
+    )
+  }
+
+  localStatsConnecting = () => {
+    return (
+      <div>
+        <div className="connecting row-icon">
+          <LinearScaleIcon {...defaultIconProps} />
+          Connecting...
+        </div>
+      </div>
+    )
+  }
+
   localStatsFindingPeers = () => {
     return (
       <div>
@@ -71,14 +69,14 @@ export default class NodeInfoBox extends Component {
   }
 
   localStatsStartSync = () => {
-    const { local } = this.props
-    const { connectedPeers } = local.sync
+    const { client } = this.props
+    const { peerCount } = client
 
     return (
       <div>
         <div className="peer-count row-icon">
           <PeopleIcon {...defaultIconProps} />
-          {`${connectedPeers} peers`}
+          {`${peerCount} peers`}
         </div>
         <div className="sync-starting row-icon">
           <OfflineBoltIcon {...defaultIconProps} />
@@ -89,9 +87,9 @@ export default class NodeInfoBox extends Component {
   }
 
   localStatsSyncProgress() {
-    const { local, network } = this.props
-    const { sync } = local
-    const { highestBlock, currentBlock, startingBlock, connectedPeers } = sync
+    const { client } = this.props
+    const { sync, network, peerCount } = client
+    const { highestBlock, currentBlock, startingBlock } = sync
 
     const formattedCurrentBlock = numberWithCommas(currentBlock)
 
@@ -106,7 +104,7 @@ export default class NodeInfoBox extends Component {
         </div>
         <div className="peer-count row-icon">
           <PeopleIcon {...defaultIconProps} />
-          {`${connectedPeers} peers`}
+          {`${peerCount} peers`}
         </div>
         <div className="sync-progress row-icon">
           <CloudDownloadIcon {...defaultIconProps} />
@@ -121,10 +119,9 @@ export default class NodeInfoBox extends Component {
   }
 
   localStatsSynced() {
-    const { local, network } = this.props
+    const { client } = this.props
     const { diffTimestamp } = this.state
-    const { blockNumber, timestamp, sync } = local
-    const { connectedPeers } = sync
+    const { blockNumber, timestamp, sync, peerCount, network } = client
 
     const formattedBlockNumber = numberWithCommas(blockNumber)
 
@@ -140,7 +137,7 @@ export default class NodeInfoBox extends Component {
         {network !== 'private' && (
           <div className="peer-count row-icon">
             <PeopleIcon {...defaultIconProps} />
-            {connectedPeers} peers
+            {peerCount} peers
           </div>
         )}
         <div
@@ -158,125 +155,34 @@ export default class NodeInfoBox extends Component {
     )
   }
 
-  noData() {
-    const { local, remote } = this.props
-    const { blockNumber: localBlockNumber, timestamp: localTimestamp } = local
-    const {
-      blockNumber: remoteBlockNumber,
-      timestamp: remoteTimestamp
-    } = remote
-    if (
-      !localBlockNumber &&
-      !localTimestamp &&
-      !remoteBlockNumber &&
-      !remoteTimestamp
-    ) {
-      return true
-    }
-    return false
-  }
-
-  renderRemoteStats() {
-    const { active, remote } = this.props
-    const { diffTimestamp } = this.state
-    const { blockNumber, timestamp } = remote
-
-    // Hide remote stats if local node is synced
-    if (active !== 'remote') {
-      return null
-    }
-
-    const formattedBlockNumber = numberWithCommas(blockNumber)
-    const remoteTimestamp = moment.unix(timestamp)
-    const diff = moment.unix(diffTimestamp).diff(remoteTimestamp, 'seconds')
-
-    if (remote.blockNumber < 1000) {
-      // Still loading initial remote results
-      return (
-        <StyledSection>
-          <StyledTitle network="remote">
-            <strong>Remote</strong> Node
-          </StyledTitle>
-          <div>
-            <div className="remote-loading row-icon">
-              <OfflineBoltIcon {...defaultIconProps} />
-              Connecting...
-            </div>
-          </div>
-        </StyledSection>
-      )
-    }
-    return (
-      <StyledSection>
-        <StyledTitle network="remote">
-          <strong>Remote</strong> Node
-          <StyledPill>active</StyledPill>
-        </StyledTitle>
-        <div className="block-number row-icon">
-          <LayersIcon {...defaultIconProps} />
-          {formattedBlockNumber}
-        </div>
-        <div
-          className={
-            diff > 60 ? 'block-diff row-icon red' : 'block-diff row-icon'
-          }
-        >
-          {
-            // TODO: make this i8n compatible
-          }
-          <AvTimerIcon {...defaultIconProps} />
-          {diff < 120 ? `${diff} seconds` : `${Math.floor(diff / 60)} minutes`}
-        </div>
-      </StyledSection>
-    )
-  }
-
   renderLocalStats() {
-    const { local, active, network } = this.props
-    const { syncMode, sync, blockNumber } = local
-    const { currentBlock, highestBlock, connectedPeers } = sync
-
-    let syncText
-    if (syncMode) {
-      syncText = syncMode === 'nosync' ? 'sync off' : `${syncMode} sync`
-    }
+    const { client } = this.props
+    const { syncMode, sync, blockNumber, network, peerCount, state } = client
+    const { highestBlock, startingBlock } = sync
 
     let localStats
 
-    // TODO: potentially refactor local node status into Redux
-    // possible states: findingPeers, starting, synced, synced, disabled/nosync
-
-    // Determine 'status' of local node, then show appropriate lens on sync data
-    if (syncMode === 'nosync') {
-      // Case: no local node
-      return null
+    if (state === 'STOPPED') {
+      // case: node stopped
+      localStats = this.localStatsStopped()
     }
-
-    // Return if no blockNumber
-
-    if (active === 'local' && blockNumber > highestBlock - 50) {
-      // Case: no info yet
-      if (!blockNumber) {
-        localStats = 'Node Unavailable'
-      }
-      // Case: already synced up
-      localStats = this.localStatsSynced()
-    } else if (active === 'remote') {
-      // Case: not yet synced up
-      if (currentBlock === 0) {
-        // Case: no results from syncing
-        if (connectedPeers === 0) {
-          // Case: no peers yet
-          localStats = this.localStatsFindingPeers()
-        } else {
-          // Case: connected to peers, but no blocks yet
-          localStats = this.localStatsStartSync()
-        }
+    if (state === 'STARTED') {
+      // Case: connecting
+      localStats = this.localStatsConnecting()
+    }
+    if (state === 'CONNECTED') {
+      if (peerCount === 0) {
+        // case: no peers yet
+        localStats = this.localStatsFindingPeers()
       } else {
-        // Case: show progress
-        localStats = this.localStatsSyncProgress()
+        // Case: connected to peers, but no blocks yet
+        localStats = this.localStatsStartSync()
       }
-    } else {
+    }
+    if (blockNumber > 0 && blockNumber - 50 > highestBlock) {
+      // case: all sync'd up
+      localStats = this.localStatsSynced()
+    } else if (startingBlock > 0) {
       // Case: show progress
       localStats = this.localStatsSyncProgress()
     }
@@ -285,7 +191,7 @@ export default class NodeInfoBox extends Component {
       <StyledSection>
         <StyledTitle network="local" testnet={network !== 'main'}>
           <strong>Local</strong> Node
-          {syncText && <StyledPill>{syncText}</StyledPill>}
+          <StyledPill>{syncMode}</StyledPill>
         </StyledTitle>
 
         {localStats}
@@ -294,13 +200,11 @@ export default class NodeInfoBox extends Component {
   }
 
   render() {
-    const { network, dotLocation } = this.props
-    if (this.noData()) {
-      return null
-    }
+    const { client } = this.props
+    const { network } = client
     return (
-      <StyledBox dotLocation={dotLocation}>
-        <StyledSubmenuContainer dotLocation={dotLocation}>
+      <StyledBox>
+        <StyledSubmenuContainer>
           <section>
             <StyledSection>
               <StyledNetworkTitle>{network}</StyledNetworkTitle>
@@ -309,7 +213,6 @@ export default class NodeInfoBox extends Component {
                 {network === 'main' && 'Network'}
               </StyledSubtitle>
             </StyledSection>
-            {this.renderRemoteStats()}
             {this.renderLocalStats()}
           </section>
         </StyledSubmenuContainer>
@@ -317,6 +220,14 @@ export default class NodeInfoBox extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    client: state.client
+  }
+}
+
+export default connect(mapStateToProps)(NodeInfoBox)
 
 const StyledSubmenuContainer = styled.div`
   width: 220px;
@@ -337,29 +248,25 @@ const StyledSubmenuContainer = styled.div`
     position: relative;
   }
 
-  ${props =>
-    props.dotLocation === 'topLeft' &&
-    // Apply css arrow to topLeft of box
-    css`
-      position: absolute;
-      left: 40px;
-      top: 0px;
+  /* Apply css arrow to topLeft of box */
+  position: absolute;
+  left: 40px;
+  top: 0px;
 
-      &::before {
-        content: '';
-        margin-left: -8px;
-        top: 0;
-        margin-top: 12px;
-        display: block;
-        position: absolute;
-        width: 0px;
-        height: 8px * 2.25;
-        border: 0px solid transparent;
-        border-width: 8px;
-        border-left: 0;
-        border-right-color: rgba(0, 0, 0, 0.78);
-      }
-    `}
+  &::before {
+    content: '';
+    margin-left: -8px;
+    top: 0;
+    margin-top: 12px;
+    display: block;
+    position: absolute;
+    width: 0px;
+    height: 8px * 2.25;
+    border: 0px solid transparent;
+    border-width: 8px;
+    border-left: 0;
+    border-right-color: rgba(0, 0, 0, 0.78);
+  }
 `
 
 const StyledSection = styled.div`
@@ -414,11 +321,6 @@ const StyledTitle = styled.div`
     props.testnet &&
     css`
       color: ${colorTestnet};
-    `}
-  ${props =>
-    props.network === 'remote' &&
-    css`
-      color: orange;
     `}
 `
 

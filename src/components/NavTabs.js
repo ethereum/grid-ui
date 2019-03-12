@@ -64,9 +64,9 @@ class NavTabs extends React.Component {
             indicatorColor="primary"
           >
             <Tab label="Nodes" />
-            <Tab label="Network" />
-            <Tab disabled label="Transactions" />
-            <Tab label="Tools" />
+            <Tab label="Network" disabled />
+            <Tab label="Transactions" disabled />
+            <Tab label="Tools" disabled />
           </Tabs>
         </AppBar>
 

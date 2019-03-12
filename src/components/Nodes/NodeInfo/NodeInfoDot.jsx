@@ -1,50 +1,20 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import PieChart from 'react-minimal-pie-chart'
 
-export default class NodeInfoDot extends Component {
+class NodeInfoDot extends Component {
   static propTypes = {
-    /** Active network */
-    active: PropTypes.oneOf(['remote', 'local']).isRequired,
-    /** Current network */
-    network: PropTypes.oneOf(['main', 'rinkeby', 'kovan', 'private'])
-      .isRequired,
-    /** Local network data */
-    local: PropTypes.shape({
-      blockNumber: PropTypes.number,
-      timestamp: PropTypes.number,
-      sync: PropTypes.shape({
-        highestBlock: PropTypes.number.isRequired,
-        currentBlock: PropTypes.number.isRequired,
-        startingBlock: PropTypes.number.isRequired
-      }).isRequired
-    }).isRequired,
-    /** Remote network data */
-    remote: PropTypes.shape({
-      blockNumber: PropTypes.number,
-      timestamp: PropTypes.number
-    }).isRequired,
+    client: PropTypes.object,
     /** If component is stickied to apply drop shadow on dot */
     sticky: PropTypes.bool
   }
 
   static isNewBlock(prevProps, newProps) {
-    if (prevProps.active === 'remote') {
-      if (!newProps.remote.blockNumber) {
-        return false
-      }
-      if (prevProps.remote.blockNumber !== newProps.remote.blockNumber) {
-        return true
-      }
-    } else {
-      if (!newProps.local.blockNumber) {
-        return false
-      }
-      if (prevProps.local.blockNumber !== newProps.local.blockNumber) {
-        return true
-      }
+    if (prevProps.client.blockNumber !== newProps.client.blockNumber) {
+      return true
     }
     return false
   }
@@ -73,18 +43,16 @@ export default class NodeInfoDot extends Component {
   }
 
   pulseIfNewBlock(props) {
+    const { client } = this.props
+    const { network } = client
     // If new block arrived, add animation to light
     if (NodeInfoDot.isNewBlock(props, this.props)) {
       let pulseColor
 
-      if (props.active === 'remote') {
-        pulseColor = 'orange'
-      } else if (props.active === 'local') {
-        if (props.network === 'main') {
-          pulseColor = 'green'
-        } else {
-          pulseColor = 'blue'
-        }
+      if (network === 'main') {
+        pulseColor = 'green'
+      } else {
+        pulseColor = 'blue'
       }
 
       this.setState({ pulseColor }, () => {
@@ -96,35 +64,38 @@ export default class NodeInfoDot extends Component {
   }
 
   secondsSinceLastBlock() {
-    const { active } = this.props
     const { diffTimestamp } = this.state
-    const lastBlock = moment.unix(this.props[active].timestamp) // eslint-disable-line
+    const { client } = this.props
+    const { timestamp } = client
+    const lastBlock = moment.unix(timestamp) // eslint-disable-line
     return moment.unix(diffTimestamp).diff(lastBlock, 'seconds')
   }
 
   render() {
-    const { active, network, local, remote, sticky } = this.props
+    const { sticky, client } = this.props
     const { pulseColor } = this.state
+    const { network, blockNumber, sync, state } = client
 
     let dotColor
 
     const colorMainnet = '#7ed321'
     const colorTestnet = '#00aafa'
     const colorRed = '#e81e1e'
+    const colorOrange = 'orange'
 
     if (network === 'main') {
       dotColor = colorMainnet
     } else {
       dotColor = colorTestnet
     }
-    if (active === 'remote' || local.syncMode === 'nosync') {
-      dotColor = 'orange'
-    }
     if (this.secondsSinceLastBlock() > 60) {
+      dotColor = colorOrange
+    }
+    if (state === 'STOPPED' || !blockNumber || blockNumber === 0) {
       dotColor = colorRed
     }
 
-    const { highestBlock, currentBlock, startingBlock } = local.sync
+    const { highestBlock, currentBlock, startingBlock } = sync
     const progress =
       ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100
 
@@ -149,7 +120,7 @@ export default class NodeInfoDot extends Component {
                 {
                   value: 100 - (progress || 1),
                   key: 2,
-                  color: remote.blockNumber > 100 ? 'orange' : 'red'
+                  color: blockNumber > 100 ? 'orange' : 'red'
                 }
               ]}
             />
@@ -159,6 +130,14 @@ export default class NodeInfoDot extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    client: state.client
+  }
+}
+
+export default connect(mapStateToProps)(NodeInfoDot)
 
 const beaconOrange = keyframes`
   0% {
