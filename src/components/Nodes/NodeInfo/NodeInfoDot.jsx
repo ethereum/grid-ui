@@ -12,13 +12,6 @@ class NodeInfoDot extends Component {
     sticky: PropTypes.bool
   }
 
-  static isNewBlock(prevProps, newProps) {
-    if (prevProps.client.blockNumber !== newProps.client.blockNumber) {
-      return true
-    }
-    return false
-  }
-
   constructor(props) {
     super(props)
     this.state = {
@@ -35,32 +28,28 @@ class NodeInfoDot extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.pulseIfNewBlock(prevProps)
+    const { client } = this.props
+
+    if (prevProps.client.blockNumber !== client.blockNumber) {
+      this.pulseForNewBlock()
+    }
   }
 
   componentWillUnmount() {
     clearInterval(this.diffInterval)
   }
 
-  pulseIfNewBlock(props) {
+  pulseForNewBlock() {
     const { client } = this.props
     const { network } = client
-    // If new block arrived, add animation to light
-    if (NodeInfoDot.isNewBlock(props, this.props)) {
-      let pulseColor
 
-      if (network === 'main') {
-        pulseColor = 'green'
-      } else {
-        pulseColor = 'blue'
-      }
+    const pulseColor = network === 'main' ? 'green' : 'blue'
 
-      this.setState({ pulseColor }, () => {
-        setTimeout(() => {
-          this.setState({ pulseColor: '' })
-        }, 2000)
-      })
-    }
+    this.setState({ pulseColor }, () => {
+      setTimeout(() => {
+        this.setState({ pulseColor: '' })
+      }, 2000)
+    })
   }
 
   secondsSinceLastBlock() {
