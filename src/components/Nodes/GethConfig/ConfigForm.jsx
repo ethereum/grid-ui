@@ -12,7 +12,8 @@ const { geth } = Mist
 
 class ConfigForm extends Component {
   static propTypes = {
-    dispatch: PropTypes.func
+    dispatch: PropTypes.func,
+    client: PropTypes.object
   }
 
   state = {
@@ -99,8 +100,12 @@ class ConfigForm extends Component {
     return true
   }
 
+  isRunning = () => {
+    const { client } = this.props
+    return !['STOPPING', 'STOPPED', 'ERROR'].includes(client.state)
+  }
+
   renderSyncMode() {
-    const { isRunning } = geth
     const { options, config } = this.state
     const { syncMode } = config
     const { syncModes } = options
@@ -117,13 +122,12 @@ class ConfigForm extends Component {
         defaultValue={syncMode}
         options={availableSyncModes}
         onChange={this.handleChangeSyncMode}
-        disabled={isRunning}
+        disabled={this.isRunning()}
       />
     )
   }
 
   renderNetwork() {
-    const { isRunning } = geth
     const { options, config } = this.state
     const { networks } = options
     const { network } = config
@@ -140,13 +144,12 @@ class ConfigForm extends Component {
         defaultValue={network}
         options={availableNetworks}
         onChange={this.handleChangeNetwork}
-        disabled={isRunning}
+        disabled={this.isRunning()}
       />
     )
   }
 
   renderRpcHost() {
-    const { isRunning } = geth
     const { config } = this.state
     const { host } = config
     return (
@@ -155,13 +158,12 @@ class ConfigForm extends Component {
         label="RPC Host"
         value={host}
         onChange={this.handleChangeHost}
-        disabled={isRunning}
+        disabled={this.isRunning()}
       />
     )
   }
 
   renderRpcPort() {
-    const { isRunning } = geth
     const { config } = this.state
     const { port } = config
     return (
@@ -170,13 +172,12 @@ class ConfigForm extends Component {
         label="RPC Port"
         value={port}
         onChange={this.handleChangePort}
-        disabled={isRunning}
+        disabled={this.isRunning()}
       />
     )
   }
 
   renderDataDir() {
-    const { isRunning } = geth
     const { config } = this.state
     const { dataDir } = config
     return (
@@ -185,13 +186,12 @@ class ConfigForm extends Component {
         label="Data Directory"
         value={dataDir}
         onChange={this.handleChangeDataDir}
-        disabled={isRunning}
+        disabled={this.isRunning()}
       />
     )
   }
 
   renderIpc() {
-    const { isRunning } = geth
     const { options, config } = this.state
     const { ipc } = config
     const { ipcModes } = options
@@ -218,7 +218,7 @@ class ConfigForm extends Component {
           defaultValue={ipc}
           options={availableIpc}
           onChange={this.handleChangeIpc}
-          disabled={isRunning}
+          disabled={this.isRunning()}
         />
         {ipc === 'http' && (
           <StyledWarning>
@@ -263,8 +263,8 @@ class ConfigForm extends Component {
   }
 }
 
-function mapStateToProps() {
-  return {}
+function mapStateToProps(state) {
+  return { client: state.client }
 }
 
 export default connect(mapStateToProps)(ConfigForm)
