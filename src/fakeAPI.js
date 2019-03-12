@@ -1,6 +1,8 @@
 import { is } from './API/Helpers'
 import CollectionLight from './lib/collection'
-import store from './API/ReduxStore'
+import configureStore from './store'
+
+const store = configureStore()
 
 // avoid that the mock objects are overwritten
 function seal(target, propName, obj) {

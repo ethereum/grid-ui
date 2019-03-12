@@ -121,7 +121,7 @@ class NodeInfoBox extends Component {
   localStatsSynced() {
     const { client } = this.props
     const { diffTimestamp } = this.state
-    const { blockNumber, timestamp, sync, peerCount, network } = client
+    const { blockNumber, timestamp, peerCount, network } = client
 
     const formattedBlockNumber = numberWithCommas(blockNumber)
 
