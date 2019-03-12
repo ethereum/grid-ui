@@ -231,7 +231,7 @@ class ConfigForm extends Component {
 
   renderForm() {
     return (
-      <Grid container style={{ maxWidth: 500 }} spacing={24}>
+      <Grid container style={{ maxWidth: 500, paddingTop: 15 }} spacing={24}>
         <Grid item xs={6}>
           {this.renderDataDir()}
         </Grid>

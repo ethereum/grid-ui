@@ -18,9 +18,9 @@ const capitalizeStr = str =>
   str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 
 function TabContainer(props) {
-  const { children, display } = props
+  const { children, style } = props
   return (
-    <Typography component="div" style={{ paddingLeft: 10, display }}>
+    <Typography component="div" style={{ paddingLeft: 10, ...style }}>
       {children}
     </Typography>
   )
@@ -28,7 +28,7 @@ function TabContainer(props) {
 
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
-  display: PropTypes.string
+  style: PropTypes.object
 }
 
 class GethConfig extends Component {
@@ -125,16 +125,18 @@ class GethConfig extends Component {
             <Tab label="Terminal" disabled={!geth.getLogs().length} />
           </Tabs>
         </StyledAppBar>
-        <TabContainer display={activeTab === 0 ? 'block' : 'none'}>
+        <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
           <div>
             <VersionList />
           </div>
         </TabContainer>
-        <TabContainer display={activeTab === 1 ? 'block' : 'none'}>
-          <ConfigForm />
-        </TabContainer>
-        <TabContainer display={activeTab === 2 ? 'block' : 'none'}>
+        <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal />
+        </TabContainer>
+        <TabContainer
+          style={{ visibility: activeTab === 1 ? 'visible' : 'hidden' }}
+        >
+          <ConfigForm />
         </TabContainer>
       </StyledMain>
     )
