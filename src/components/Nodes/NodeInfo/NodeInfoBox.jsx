@@ -162,10 +162,6 @@ class NodeInfoBox extends Component {
 
     let localStats
 
-    if (state === 'STOPPED') {
-      // case: node stopped
-      localStats = this.localStatsStopped()
-    }
     if (state === 'STARTED') {
       // Case: connecting
       localStats = this.localStatsConnecting()
@@ -185,6 +181,10 @@ class NodeInfoBox extends Component {
     } else if (startingBlock > 0) {
       // Case: show progress
       localStats = this.localStatsSyncProgress()
+    }
+    if (state === 'STOPPED') {
+      // case: node stopped
+      localStats = this.localStatsStopped()
     }
 
     return (
