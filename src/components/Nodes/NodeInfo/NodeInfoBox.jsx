@@ -35,58 +35,52 @@ class NodeInfoBox extends Component {
     clearInterval(this.diffInterval)
   }
 
-  localStatsStopped = () => {
+  renderStopped = () => {
     return (
-      <div>
-        <div className="connecting row-icon">
-          <LinearScaleIcon {...defaultIconProps} />
-          Stopped
-        </div>
-      </div>
+      <StyledIconRow>
+        <LinearScaleIcon {...defaultIconProps} />
+        Stopped
+      </StyledIconRow>
     )
   }
 
-  localStatsConnecting = () => {
+  renderConnecting = () => {
     return (
-      <div>
-        <div className="connecting row-icon">
-          <LinearScaleIcon {...defaultIconProps} />
-          Connecting...
-        </div>
-      </div>
+      <StyledIconRow>
+        <LinearScaleIcon {...defaultIconProps} />
+        Connecting...
+      </StyledIconRow>
     )
   }
 
-  localStatsFindingPeers = () => {
+  renderFindingPeers = () => {
     return (
-      <div>
-        <div className="looking-for-peers row-icon">
-          <SettingsInputAntennaIcon {...defaultIconProps} />
-          Looking for peers...
-        </div>
-      </div>
+      <StyledIconRow>
+        <SettingsInputAntennaIcon {...defaultIconProps} />
+        Looking for peers...
+      </StyledIconRow>
     )
   }
 
-  localStatsStartSync = () => {
+  renderSyncStarting = () => {
     const { client } = this.props
     const { peerCount } = client
 
     return (
       <div>
-        <div className="peer-count row-icon">
+        <StyledIconRow>
           <PeopleIcon {...defaultIconProps} />
           {`${peerCount} peers`}
-        </div>
-        <div className="sync-starting row-icon">
+        </StyledIconRow>
+        <StyledIconRow>
           <OfflineBoltIcon {...defaultIconProps} />
           Sync starting...
-        </div>
+        </StyledIconRow>
       </div>
     )
   }
 
-  localStatsSyncProgress() {
+  renderSyncProgress() {
     const { client } = this.props
     const { sync, network, peerCount } = client
     const { highestBlock, currentBlock, startingBlock } = sync
@@ -98,27 +92,27 @@ class NodeInfoBox extends Component {
 
     return (
       <div>
-        <div className="block-number row-icon">
+        <StyledIconRow>
           <LayersIcon {...defaultIconProps} />
           {formattedCurrentBlock}
-        </div>
-        <div className="peer-count row-icon">
+        </StyledIconRow>
+        <StyledIconRow>
           <PeopleIcon {...defaultIconProps} />
           {`${peerCount} peers`}
-        </div>
-        <div className="sync-progress row-icon">
+        </StyledIconRow>
+        <StyledIconRow>
           <CloudDownloadIcon {...defaultIconProps} />
           <StyledProgress
             testnet={network !== 'main'}
             max="100"
             value={progress || 0}
           />
-        </div>
+        </StyledIconRow>
       </div>
     )
   }
 
-  localStatsSynced() {
+  renderSynced() {
     const { client } = this.props
     const { diffTimestamp } = this.state
     const { blockNumber, timestamp, peerCount, network } = client
@@ -130,71 +124,66 @@ class NodeInfoBox extends Component {
 
     return (
       <div>
-        <div className="block-number row-icon" title="Block Number">
+        <StyledIconRow title="Block Number">
           <LayersIcon {...defaultIconProps} />
           {formattedBlockNumber}
-        </div>
+        </StyledIconRow>
         {network !== 'private' && (
-          <div className="peer-count row-icon">
+          <StyledIconRow>
             <PeopleIcon {...defaultIconProps} />
             {peerCount} peers
-          </div>
+          </StyledIconRow>
         )}
-        <div
-          className={
-            diff > 60 ? 'block-diff row-icon red' : 'block-diff row-icon'
-          }
-        >
+        <StyledIconRow className={diff > 60 ? 'block-diff red' : 'block-diff'}>
           {
             // TODO: make this i8n compatible
           }
           <AvTimerIcon {...defaultIconProps} />
           {diff < 120 ? `${diff} seconds` : `${Math.floor(diff / 60)} minutes`}
-        </div>{' '}
+        </StyledIconRow>
       </div>
     )
   }
 
-  renderLocalStats() {
+  renderStats() {
     const { client } = this.props
     const { syncMode, sync, blockNumber, network, peerCount, state } = client
     const { highestBlock, startingBlock } = sync
 
-    let localStats
+    let stats
 
     if (state === 'STARTED') {
       // Case: connecting
-      localStats = this.localStatsConnecting()
+      stats = this.renderConnecting()
     }
     if (state === 'CONNECTED') {
       if (peerCount === 0) {
         // case: no peers yet
-        localStats = this.localStatsFindingPeers()
+        stats = this.renderFindingPeers()
       } else {
         // Case: connected to peers, but no blocks yet
-        localStats = this.localStatsStartSync()
+        stats = this.renderSyncStarting()
       }
     }
     if (blockNumber > 0 && blockNumber - 50 > highestBlock) {
       // case: all sync'd up
-      localStats = this.localStatsSynced()
+      stats = this.renderSynced()
     } else if (startingBlock > 0) {
       // Case: show progress
-      localStats = this.localStatsSyncProgress()
+      stats = this.renderSyncProgress()
     }
     if (state === 'STOPPED') {
       // case: node stopped
-      localStats = this.localStatsStopped()
+      stats = this.renderStopped()
     }
 
     return (
       <StyledSection>
-        <StyledTitle network="local" testnet={network !== 'main'}>
+        <StyledTitle testnet={network !== 'main'}>
           <strong>Local</strong> Node
           <StyledPill>{syncMode}</StyledPill>
         </StyledTitle>
-
-        {localStats}
+        {stats}
       </StyledSection>
     )
   }
@@ -213,7 +202,7 @@ class NodeInfoBox extends Component {
                 {network === 'main' && 'Network'}
               </StyledSubtitle>
             </StyledSection>
-            {this.renderLocalStats()}
+            {this.renderStats()}
           </section>
         </StyledSubmenuContainer>
       </StyledBox>
@@ -251,7 +240,7 @@ const StyledSubmenuContainer = styled.div`
   /* Apply css arrow to topLeft of box */
   position: absolute;
   left: 40px;
-  top: 0px;
+  top: 3px;
 
   &::before {
     content: '';
@@ -361,20 +350,6 @@ const StyledBox = styled.div`
       top: -17px;
     `}
 
-  .row-icon {
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    svg {
-      display: inline-block;
-      margin-right: 6px;
-    }
-    &:last-of-type {
-      margin-bottom: 0;
-    }
-  }
-
   strong {
     font-weight: 500;
   }
@@ -385,5 +360,19 @@ const StyledBox = styled.div`
 
   .red {
     color: #e81e1e;
+  }
+`
+
+const StyledIconRow = styled.div`
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  svg {
+    display: inline-block;
+    margin-right: 6px;
+  }
+  &:last-of-type {
+    margin-bottom: 0;
   }
 `

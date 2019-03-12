@@ -77,10 +77,10 @@ class NodeInfoDot extends Component {
     } else {
       dotColor = colorTestnet
     }
-    if (this.secondsSinceLastBlock() > 60) {
+    if (this.secondsSinceLastBlock() > 60 || !blockNumber) {
       dotColor = colorOrange
     }
-    if (state === 'STOPPED' || !blockNumber || blockNumber === 0) {
+    if (state === 'STOPPED') {
       dotColor = colorRed
     }
 
