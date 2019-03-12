@@ -125,7 +125,7 @@ class NodesTab extends Component {
 
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {activeItem === 'Geth' && <GethConfig ref={this.gethConfigRef} />}
+          {activeItem === 'Geth' && <GethConfig />}
         </main>
       </React.Fragment>
     )
