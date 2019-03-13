@@ -17,7 +17,7 @@ const { geth } = Mist
 function TabContainer(props) {
   const { children, style } = props
   return (
-    <Typography component="div" style={{ paddingLeft: 10, ...style }}>
+    <Typography component="div" style={{ padding: '0 10px', ...style }}>
       {children}
     </Typography>
   )

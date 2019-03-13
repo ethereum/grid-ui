@@ -58,7 +58,7 @@ export default class Terminal extends Component {
           style={{
             fontFamily:
               'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
-            fontSize: '9px',
+            fontSize: '11px',
             background: '#111',
             color: '#eee',
             maxHeight: 350,
