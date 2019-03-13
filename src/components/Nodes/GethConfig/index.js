@@ -1,110 +1,167 @@
 import React, { Component } from 'react'
-import styled, { css } from 'styled-components'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { connect } from 'react-redux'
+import AppBar from '@material-ui/core/AppBar'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
-import Button from '../../shared/Button'
-import { Mist } from '../../../API'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
+import NodeInfo from '../NodeInfo'
+import { Mist } from '../../../API'
 
 const { geth } = Mist
 
-export default class GethConfig extends Component {
+function TabContainer(props) {
+  const { children, style } = props
+  return (
+    <Typography component="div" style={{ padding: '0 10px', ...style }}>
+      {children}
+    </Typography>
+  )
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  style: PropTypes.object
+}
+
+class GethConfig extends Component {
   state = {
-    isRunning: false
+    activeTab: 0,
+    downloadError: null
   }
 
   constructor(props) {
     super(props)
-    this.configFormRef = React.createRef()
-    this.versionListRef = React.createRef()
+    geth.on('started', this.handleGethStarted)
   }
 
-  renderConfigForm = () => {
-    return (
-      <div>
-        <Typography variant="h6" gutterBottom>
-          Settings
-        </Typography>
-        <ConfigForm ref={this.configFormRef} />
-      </div>
-    )
+  componentWillUnmount() {
+    geth.removeListener('started', this.handleGethStarted)
   }
 
-  handleStartStop = async () => {
-    const { isRunning } = this.state
-    if (isRunning) {
-      await geth.stop()
-    } else {
-      // Save config
-      const { config } = this.configFormRef.current.state
-      await geth.setConfig(config)
-      // Start geth
-      const { selectedRelease } = this.versionListRef.current.state
-      await geth.start(selectedRelease)
-    }
-    this.setState({
-      isRunning: !isRunning
-    })
+  handleTabChange = (event, activeTab) => {
+    this.setState({ activeTab })
   }
 
-  renderStartStop = () => {
-    const { isRunning } = this.state
-    return (
-      <div style={{ marginTop: 40 }}>
-        <Typography variant="h6">Status</Typography>
-        <div className="setting">
-          <StyledRunning isRunning={isRunning}>
-            <Typography variant="body1">
-              Running: {isRunning ? <span>Yes</span> : <span>No</span>}
-            </Typography>
-          </StyledRunning>
-          <Button onClick={() => this.handleStartStop()}>
-            {isRunning ? 'stop' : 'start'}
-          </Button>
-        </div>
-      </div>
-    )
+  handleGethStarted = () => {
+    // Update activeTab to Terminal
+    this.setState({ activeTab: 2 })
   }
 
-  renderDownloadError() {
+  renderErrors() {
     const { downloadError } = this.state
-    if (!downloadError) {
+    const { client } = this.props
+    const { error } = client
+
+    const errorMessage = (error && error.toString()) || downloadError
+
+    if (!errorMessage) {
       return null
     }
 
-    return <StyledError>{downloadError}</StyledError>
+    return <StyledError>{errorMessage}</StyledError>
   }
 
   render() {
+    const { client } = this.props
+    const { activeTab } = this.state
+    const {
+      network,
+      syncMode,
+      blockNumber,
+      timestamp,
+      sync,
+      peerCount,
+      state
+    } = client
+    const { highestBlock, currentBlock, startingBlock } = sync
+
+    const nodeInfoProps = {
+      active: 'local',
+      network,
+      local: {
+        syncMode,
+        blockNumber,
+        timestamp,
+        sync: {
+          highestBlock,
+          currentBlock,
+          startingBlock,
+          connectedPeers: peerCount
+        }
+      },
+      remote: {
+        blockNumber: null,
+        timestamp: null
+      }
+    }
+
     return (
-      <main>
-        <VersionList ref={this.versionListRef} />
-        {this.renderConfigForm()}
-        {this.renderStartStop()}
-        {!!geth.getLogs().length && <Terminal />}
-      </main>
+      <StyledMain>
+        <Typography variant="h5">Geth</Typography>
+        <NodeInfo {...nodeInfoProps} />
+        <Typography variant="subtitle1" gutterBottom>
+          <StyledState>{state}</StyledState>
+        </Typography>
+        {this.renderErrors()}
+        <StyledAppBar position="static">
+          <Tabs
+            value={activeTab}
+            onChange={this.handleTabChange}
+            textColor="primary"
+            indicatorColor="primary"
+          >
+            <Tab label="Version" />
+            <Tab label="Settings" />
+            <Tab label="Terminal" disabled={!geth.getLogs().length} />
+          </Tabs>
+        </StyledAppBar>
+        <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
+          <div>
+            <VersionList />
+          </div>
+        </TabContainer>
+        <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
+          <Terminal />
+        </TabContainer>
+        <TabContainer
+          style={{ visibility: activeTab === 1 ? 'visible' : 'hidden' }}
+        >
+          <ConfigForm />
+        </TabContainer>
+      </StyledMain>
     )
   }
 }
 
-const StyledRunning = styled.div`
-  margin-bottom: 10px;
-  font-weight: normal;
-  span {
-    ${props =>
-      props.isRunning &&
-      css`
-        color: green;
-      `}
-    ${props =>
-      !props.isRunning &&
-      css`
-        color: red;
-      `};
+function mapStateToProps(state) {
+  return {
+    client: state.client
   }
+}
+
+export default connect(mapStateToProps)(GethConfig)
+
+const StyledMain = styled.main`
+  position: relative;
+  min-width: 500px;
 `
 
 const StyledError = styled.div`
+  padding: 10px;
   color: red;
+`
+
+const StyledAppBar = styled(AppBar)`
+  margin: 20px 0;
+`
+
+const StyledState = styled.div`
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  font-weight: bold;
 `

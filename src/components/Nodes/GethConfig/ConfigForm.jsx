@@ -1,13 +1,21 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
 import Select from '../../shared/Select'
 import { Mist } from '../../../API'
+import { setConfig } from '../../../store/client/actions'
 
 const { geth } = Mist
 
-export default class ConfigForm extends Component {
+class ConfigForm extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func,
+    client: PropTypes.object
+  }
+
   state = {
     config: {
       name: '',
@@ -29,14 +37,22 @@ export default class ConfigForm extends Component {
     this.getConfig()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { config } = this.state
+    const { config: prevConfig } = prevState
+    if (prevConfig !== config) {
+      const { dispatch } = this.props
+      dispatch(setConfig({ config }))
+    }
+  }
+
   async getConfig() {
     const config = await geth.getConfig()
     this.setState({ config })
   }
 
-  handleChangeDataDir = event => {
+  handleChangeDataDir = dataDir => {
     const { config } = this.state
-    const dataDir = event.target.value
     const newConfig = { ...config, dataDir }
     this.setState({ config: newConfig })
   }
@@ -84,6 +100,11 @@ export default class ConfigForm extends Component {
     return true
   }
 
+  isRunning = () => {
+    const { client } = this.props
+    return !['STOPPING', 'STOPPED', 'ERROR'].includes(client.state)
+  }
+
   renderSyncMode() {
     const { options, config } = this.state
     const { syncMode } = config
@@ -101,6 +122,7 @@ export default class ConfigForm extends Component {
         defaultValue={syncMode}
         options={availableSyncModes}
         onChange={this.handleChangeSyncMode}
+        disabled={this.isRunning()}
       />
     )
   }
@@ -122,6 +144,7 @@ export default class ConfigForm extends Component {
         defaultValue={network}
         options={availableNetworks}
         onChange={this.handleChangeNetwork}
+        disabled={this.isRunning()}
       />
     )
   }
@@ -135,6 +158,7 @@ export default class ConfigForm extends Component {
         label="RPC Host"
         value={host}
         onChange={this.handleChangeHost}
+        disabled={this.isRunning()}
       />
     )
   }
@@ -148,6 +172,7 @@ export default class ConfigForm extends Component {
         label="RPC Port"
         value={port}
         onChange={this.handleChangePort}
+        disabled={this.isRunning()}
       />
     )
   }
@@ -161,6 +186,7 @@ export default class ConfigForm extends Component {
         label="Data Directory"
         value={dataDir}
         onChange={this.handleChangeDataDir}
+        disabled={this.isRunning()}
       />
     )
   }
@@ -192,6 +218,7 @@ export default class ConfigForm extends Component {
           defaultValue={ipc}
           options={availableIpc}
           onChange={this.handleChangeIpc}
+          disabled={this.isRunning()}
         />
         {ipc === 'http' && (
           <StyledWarning>
@@ -202,37 +229,45 @@ export default class ConfigForm extends Component {
     )
   }
 
-  render() {
+  renderForm() {
     return (
-      <div>
-        <Grid container style={{ maxWidth: 500 }} spacing={24}>
-          <Grid item xs={6}>
-            {this.renderDataDir()}
-          </Grid>
-          <Grid item xs={6}>
-            {this.renderIpc()}
-          </Grid>
-          {this.shouldRenderRpcHostPort() && (
-            <React.Fragment>
-              <Grid item xs={6}>
-                {this.renderRpcHost()}
-              </Grid>
-              <Grid item xs={6}>
-                {this.renderRpcPort()}
-              </Grid>
-            </React.Fragment>
-          )}
-          <Grid item xs={6}>
-            {this.renderSyncMode()}
-          </Grid>
-          <Grid item xs={6}>
-            {this.renderNetwork()}
-          </Grid>
+      <Grid container style={{ maxWidth: 500, paddingTop: 15 }} spacing={24}>
+        <Grid item xs={6}>
+          {this.renderDataDir()}
         </Grid>
-      </div>
+        <Grid item xs={6}>
+          {this.renderIpc()}
+        </Grid>
+        {this.shouldRenderRpcHostPort() && (
+          <React.Fragment>
+            <Grid item xs={6}>
+              {this.renderRpcHost()}
+            </Grid>
+            <Grid item xs={6}>
+              {this.renderRpcPort()}
+            </Grid>
+          </React.Fragment>
+        )}
+        <Grid item xs={6}>
+          {this.renderSyncMode()}
+        </Grid>
+        <Grid item xs={6}>
+          {this.renderNetwork()}
+        </Grid>
+      </Grid>
     )
   }
+
+  render() {
+    return <div>{this.renderForm()}</div>
+  }
 }
+
+function mapStateToProps(state) {
+  return { client: state.client }
+}
+
+export default connect(mapStateToProps)(ConfigForm)
 
 const StyledWarning = styled.div`
   color: red;

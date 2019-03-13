@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import Typography from '@material-ui/core/Typography'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import NodesTab from './Nodes'
@@ -17,9 +18,23 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3
-  },
-  toolbar: theme.mixins.toolbar
+  }
 })
+
+const TabContainer = withStyles(styles)(props => {
+  const { children, classes, display } = props
+  return (
+    <main className={classes.content} style={{ display }}>
+      <Typography component="div">{children}</Typography>
+    </main>
+  )
+})
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  classes: PropTypes.object,
+  display: PropTypes.string
+}
 
 class NavTabs extends React.Component {
   static propTypes = {
@@ -27,54 +42,49 @@ class NavTabs extends React.Component {
   }
 
   state = {
-    value: 0
+    activeTab: 0
   }
 
-  handleChange = (event, value) => {
-    this.setState({ value })
+  handleTabChange = (event, activeTab) => {
+    this.setState({ activeTab })
   }
 
   render() {
     const { classes } = this.props
-    const { value } = this.state
+    const { activeTab } = this.state
 
     return (
       <div className={classes.root}>
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Tabs
-            value={value}
-            onChange={this.handleChange}
+            value={activeTab}
+            onChange={this.handleTabChange}
             textColor="primary"
             indicatorColor="primary"
           >
             <Tab label="Nodes" />
-            <Tab label="Network" />
-            <Tab disabled label="Transactions" />
-            <Tab label="Tools" />
+            <Tab label="Network" disabled />
+            <Tab label="Transactions" disabled />
+            <Tab label="Tools" disabled />
           </Tabs>
         </AppBar>
 
-        {value === 0 && <NodesTab />}
+        <div style={{ display: activeTab === 0 ? 'inherit' : 'none' }}>
+          <NodesTab />
+        </div>
 
-        {value === 1 && (
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
-            <div>Network</div>
-          </main>
-        )}
-        {value === 2 && (
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
-            <div>Transactions</div>
-          </main>
-        )}
-        {value === 3 && (
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
-            <div>Tools</div>
-          </main>
-        )}
+        <TabContainer display={activeTab === 1 ? 'block' : 'none'}>
+          <Typography component="h6">Network</Typography>
+        </TabContainer>
+
+        <TabContainer display={activeTab === 2 ? 'block' : 'none'}>
+          <Typography component="h6">Transactions</Typography>
+        </TabContainer>
+
+        <TabContainer display={activeTab === 3 ? 'block' : 'none'}>
+          <Typography component="h6">Tools</Typography>
+        </TabContainer>
       </div>
     )
   }
