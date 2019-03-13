@@ -48,6 +48,7 @@ class GethService {
     this.unsubscribeSyncingSubscription(this.syncingSubscriptionId)
     this.unsubscribeNewHeadsSubscription(this.newHeadsSubscriptionId)
     this.removeListeners()
+    console.log('∆∆∆ done stop')
   }
 
   createListeners(dispatch) {

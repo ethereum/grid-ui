@@ -9,7 +9,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
 import GethConfig from './GethConfig'
-import { initGeth, startGeth, stopGeth } from '../../store/client/actions'
+import { initGeth, toggleGeth } from '../../store/client/actions'
 
 const drawerWidth = 240
 
@@ -61,14 +61,8 @@ class NodesTab extends Component {
 
   handleToggle = name => {
     if (name === 'Geth') {
-      const { client, dispatch } = this.props
-      const { isRunning } = client
-
-      if (isRunning) {
-        dispatch(stopGeth())
-      } else {
-        dispatch(startGeth())
-      }
+      const { dispatch } = this.props
+      dispatch(toggleGeth())
     }
   }
 

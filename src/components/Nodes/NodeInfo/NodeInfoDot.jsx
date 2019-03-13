@@ -30,7 +30,7 @@ class NodeInfoDot extends Component {
   componentDidUpdate(prevProps) {
     const { client } = this.props
 
-    if (prevProps.client.blockNumber !== client.blockNumber) {
+    if ((prevProps.client.blockNumber || 0) !== (client.blockNumber || 0)) {
       this.pulseForNewBlock()
     }
   }

@@ -116,11 +116,28 @@ export const startGeth = () => {
 }
 
 export const stopGeth = () => {
-  try {
-    Geth.stop()
-    return { type: '[CLIENT]:GETH:STOP' }
-  } catch (e) {
-    return { type: '[CLIENT]:GETH:STOP:ERROR', error: e.toString() }
+  return dispatch => {
+    try {
+      Geth.stop()
+      dispatch({ type: '[CLIENT]:GETH:STOP' })
+    } catch (e) {
+      dispatch({ type: '[CLIENT]:GETH:STOP:ERROR', error: e.toString() })
+    }
+  }
+}
+
+export const toggleGeth = () => {
+  return async dispatch => {
+    const isRunning = await Geth.isRunning()
+
+    try {
+      if (isRunning) {
+        return dispatch(stopGeth())
+      }
+      return dispatch(startGeth())
+    } catch (e) {
+      return { type: '[CLIENT]:GETH:TOGGLE:ERROR', error: e.toString() }
+    }
   }
 }
 
