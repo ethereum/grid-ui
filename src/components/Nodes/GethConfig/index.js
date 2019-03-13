@@ -14,9 +14,6 @@ import { Mist } from '../../../API'
 
 const { geth } = Mist
 
-const capitalizeStr = str =>
-  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-
 function TabContainer(props) {
   const { children, style } = props
   return (
@@ -83,8 +80,6 @@ class GethConfig extends Component {
     } = client
     const { highestBlock, currentBlock, startingBlock } = sync
 
-    const capitalizedState = capitalizeStr(state)
-
     const nodeInfoProps = {
       active: 'local',
       network,
@@ -110,7 +105,7 @@ class GethConfig extends Component {
         <Typography variant="h5">Geth</Typography>
         <NodeInfo {...nodeInfoProps} />
         <Typography variant="subtitle1" gutterBottom>
-          {capitalizedState}
+          <StyledState>{state}</StyledState>
         </Typography>
         {this.renderErrors()}
         <StyledAppBar position="static">
@@ -163,4 +158,10 @@ const StyledError = styled.div`
 
 const StyledAppBar = styled(AppBar)`
   margin: 20px 0;
+`
+
+const StyledState = styled.div`
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  font-weight: bold;
 `
