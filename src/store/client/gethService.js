@@ -1,5 +1,5 @@
-import { Mist } from '../API'
 import { BigNumber } from 'bignumber.js'
+import { Mist } from '../../API'
 import {
   newBlock,
   updateSyncing,
@@ -13,7 +13,7 @@ import {
   gethStopping,
   gethStopped,
   gethError
-} from '../store/client/actions'
+} from './actions'
 
 const { geth } = Mist
 
@@ -21,12 +21,64 @@ const isHex = str => typeof str === 'string' && str.startsWith('0x')
 const hexToNumberString = str => new BigNumber(str).toString(10)
 const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
 
-export default class ClientStateManager {
-  constructor({ dispatch }) {
-    this.dispatch = dispatch
+class GethService {
+  setConfig(config) {
+    geth.setConfig(config)
   }
 
-  onNewHeadsSubscriptionResult(result) {
+  start(config, dispatch) {
+    this.setConfig(config)
+    geth.start()
+
+    const newConfig = geth.getConfig()
+    const { network, syncMode } = newConfig
+
+    dispatch(updateNetwork({ network }))
+    dispatch(updateSyncMode({ syncMode }))
+    this.peerCountInterval = setInterval(
+      () => this.updatePeerCount(dispatch),
+      3000
+    )
+    this.createListeners(dispatch)
+  }
+
+  stop() {
+    geth.stop()
+    clearInterval(this.peerCountInterval)
+    this.unsubscribeSyncingSubscription(this.syncingSubscriptionId)
+    this.unsubscribeNewHeadsSubscription(this.newHeadsSubscriptionId)
+    this.removeListeners()
+  }
+
+  createListeners(dispatch) {
+    geth.on('starting', () => this.onStarting(dispatch))
+    geth.on('started', () => this.onStarted(dispatch))
+    geth.on('connect', () => this.onConnect(dispatch))
+    geth.on('stopping', () => this.onStopping(dispatch))
+    geth.on('stopped', () => this.onStopped(dispatch))
+    geth.on('disconnect', () => this.onDisconnect(dispatch))
+    geth.on('error', e => this.onError(e, dispatch))
+  }
+
+  removeListeners() {
+    geth.removeListener('starting', this.onStarting)
+    geth.removeListener('started', this.onStarted)
+    geth.removeListener('connect', this.onConnect)
+    geth.removeListener('stopping', this.onStopping)
+    geth.removeListener('stopped', this.onStopped)
+    geth.removeListener('disconnect', this.onDisconnect)
+    geth.removeListener('error', this.onError)
+  }
+
+  isRunning() {
+    return geth.isRunning
+  }
+
+  getState() {
+    return geth.state
+  }
+
+  onNewHeadsSubscriptionResult(result, dispatch) {
     const { result: subscriptionResult } = result
     if (!subscriptionResult) {
       return
@@ -37,13 +89,13 @@ export default class ClientStateManager {
     } = subscriptionResult
     const blockNumber = Number(toNumberString(hexBlockNumber))
     const timestamp = Number(toNumberString(hexTimestamp))
-    this.dispatch(newBlock({ blockNumber, timestamp }))
+    dispatch(newBlock({ blockNumber, timestamp }))
   }
 
-  onSyncingSubscriptionResult(result) {
+  onSyncingSubscriptionResult(result, dispatch) {
     if (result === false) {
       // Stopped syncing, begin newHeads subscription
-      this.startNewHeadsSubscription()
+      this.startNewHeadsSubscription(dispatch)
       // Unsubscribe from syncing subscription
       this.unsubscribeSyncingSubscription(this.syncingSubscriptionId)
       return
@@ -60,7 +112,8 @@ export default class ClientStateManager {
       KnownStates: knownStates,
       PulledStates: pulledStates
     } = status
-    this.dispatch(
+
+    dispatch(
       updateSyncing({
         startingBlock,
         currentBlock,
@@ -71,7 +124,7 @@ export default class ClientStateManager {
     )
   }
 
-  unsubscribeNewHeadsSubscription(subscriptionId) {
+  unsubscribeNewHeadsSubscription(/* subscriptionId */) {
     if (!this.newHeadsSubscriptionId) {
       return
     }
@@ -83,7 +136,7 @@ export default class ClientStateManager {
     this.newHeadsSubscriptionId = null
   }
 
-  unsubscribeSyncingSubscription(subscriptionId) {
+  unsubscribeSyncingSubscription(/* subscriptionId */) {
     if (!this.syncingSubscriptionId) {
       return
     }
@@ -96,25 +149,25 @@ export default class ClientStateManager {
     this.syncingSubscriptionId = null
   }
 
-  onStarting() {
-    this.dispatch(gethStarting())
+  onStarting(dispatch) {
+    dispatch(gethStarting())
   }
 
-  onStarted() {
-    this.dispatch(gethStarted())
+  onStarted(dispatch) {
+    dispatch(gethStarted())
   }
 
-  onConnect() {
-    this.dispatch(gethConnected())
+  onConnect(dispatch) {
+    dispatch(gethConnected())
 
     const startSubscriptions = async () => {
       const result = await geth.rpc('eth_syncing')
       if (result === false) {
         // Not syncing, start newHeads subscription
-        this.startNewHeadsSubscription()
+        this.startNewHeadsSubscription(dispatch)
       } else {
         // Subscribe to syncing
-        this.startSyncingSubscription()
+        this.startSyncingSubscription(dispatch)
       }
     }
     const setLastBlock = () => {
@@ -122,7 +175,7 @@ export default class ClientStateManager {
         const { number: hexBlockNumber, timestamp: hexTimestamp } = block
         const blockNumber = Number(toNumberString(hexBlockNumber))
         const timestamp = Number(toNumberString(hexTimestamp))
-        this.dispatch(newBlock({ blockNumber, timestamp }))
+        dispatch(newBlock({ blockNumber, timestamp }))
       })
     }
     setTimeout(() => {
@@ -131,74 +184,49 @@ export default class ClientStateManager {
     }, 2000)
   }
 
-  onDisconnect() {
-    this.dispatch(gethDisconnected())
+  onDisconnect(dispatch) {
+    dispatch(gethDisconnected())
   }
 
-  onStopping() {
-    this.dispatch(gethStopping())
+  onStopping(dispatch) {
+    dispatch(gethStopping())
   }
 
-  onStopped() {
-    this.dispatch(gethStopped())
+  onStopped(dispatch) {
+    dispatch(gethStopped())
   }
 
-  onError(error) {
-    this.dispatch(gethError({ error }))
+  onError(error, dispatch) {
+    dispatch(gethError({ error }))
   }
 
-  async startNewHeadsSubscription() {
+  async startNewHeadsSubscription(dispatch) {
     geth.rpc('eth_subscribe', ['newHeads']).then(subscriptionId => {
       this.newHeadsSubscriptionId = subscriptionId
-      geth.on(subscriptionId, this.onNewHeadsSubscriptionResult.bind(this))
+      geth.on(subscriptionId, result =>
+        this.onNewHeadsSubscriptionResult(result, dispatch)
+      )
     })
   }
 
-  async startSyncingSubscription() {
+  async startSyncingSubscription(dispatch) {
     const subscriptionId = await geth.rpc('eth_subscribe', ['syncing'])
     this.syncingSubscriptionId = subscriptionId
-    geth.on(subscriptionId, this.onSyncingSubscriptionResult.bind(this))
+    geth.on(subscriptionId, result =>
+      this.onSyncingSubscriptionResult(result, dispatch)
+    )
   }
 
-  async updatePeerCount() {
+  async updatePeerCount(dispatch) {
     const hexPeerCount = await geth.rpc('net_peerCount')
     const peerCount = toNumberString(hexPeerCount)
-    this.dispatch(updatePeerCount({ peerCount }))
+    dispatch(updatePeerCount({ peerCount }))
   }
 
-  async start() {
-    const config = geth.getConfig()
-
-    const { network, syncMode } = config
-
-    // Set network
-    this.dispatch(updateNetwork({ network }))
-
-    // Set sync mode
-    this.dispatch(updateSyncMode({ syncMode }))
-
-    // Check peerCount every 3s
-    this.peerCountInterval = setInterval(this.updatePeerCount.bind(this), 3000)
-
-    geth.on('starting', this.onStarting.bind(this))
-    geth.on('started', this.onStarted.bind(this))
-    geth.on('connect', this.onConnect.bind(this))
-    geth.on('stopping', this.onStopping.bind(this))
-    geth.on('stopped', this.onStopped.bind(this))
-    geth.on('disconnect', this.onDisconnect.bind(this))
-    geth.on('error', this.onError.bind(this))
-  }
-
-  stop() {
-    clearInterval(this.peerCountInterval)
-    this.unsubscribeSyncingSubscription(this.syncingSubscriptionId)
-    this.unsubscribeNewHeadsSubscription(this.newHeadsSubscriptionId)
-    geth.removeListener('starting', this.onStarting)
-    geth.removeListener('started', this.onStarted)
-    geth.removeListener('connect', this.onConnect)
-    geth.removeListener('stopping', this.onStopping)
-    geth.removeListener('stopped', this.onStopped)
-    geth.removeListener('disconnect', this.onDisconnect)
-    geth.removeListener('error', this.onError)
+  getNetworkStats() {
+    const newConfig = geth.getConfig()
+    return newConfig
   }
 }
+
+export default new GethService()

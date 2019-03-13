@@ -8,12 +8,9 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
-import { Mist } from '../../API'
 import GethConfig from './GethConfig'
-import { startGeth, stopGeth } from '../../store/client/actions'
-import ClientStateManager from '../../lib/ClientStateManager'
+import { initGeth, startGeth, stopGeth } from '../../store/client/actions'
 
-const { geth } = Mist
 const drawerWidth = 240
 
 const styles = theme => ({
@@ -48,24 +45,14 @@ class NodesTab extends Component {
 
   static defaultProps = {}
 
-  static isChecked(name) {
-    if (name === 'Geth') {
-      const { isRunning } = geth
-      return isRunning
-    }
-    return false
-  }
-
   state = {
     activeItem: 'Geth',
     nodes: [{ name: 'Geth' }]
   }
 
-  constructor(props) {
-    super(props)
-
+  componentDidMount() {
     const { dispatch } = this.props
-    this.clientStateManager = new ClientStateManager({ dispatch })
+    dispatch(initGeth())
   }
 
   handleNodeSelect = name => {
@@ -74,13 +61,13 @@ class NodesTab extends Component {
 
   handleToggle = name => {
     if (name === 'Geth') {
-      const { isRunning } = geth
-      const { clientStateManager } = this
-      const { dispatch } = this.props
+      const { client, dispatch } = this.props
+      const { isRunning } = client
+
       if (isRunning) {
-        dispatch(stopGeth({ clientStateManager }))
+        dispatch(stopGeth())
       } else {
-        dispatch(startGeth({ clientStateManager }))
+        dispatch(startGeth())
       }
     }
   }
@@ -89,7 +76,7 @@ class NodesTab extends Component {
     const { classes } = this.props
     const { activeItem, nodes } = this.state
     const { client } = this.props
-    const { release } = client
+    const { isRunning, release } = client
 
     return (
       <React.Fragment>
@@ -114,7 +101,7 @@ class NodesTab extends Component {
                   <Switch
                     color="primary"
                     onChange={() => this.handleToggle(activeItem)}
-                    checked={activeItem === 'Geth' ? geth.isRunning : false}
+                    checked={activeItem === 'Geth' ? isRunning : false}
                     disabled={activeItem === 'Geth' ? !release : true}
                   />
                 </ListItemSecondaryAction>

@@ -1,6 +1,16 @@
-import { Mist } from '../../API'
+import Geth from './gethService'
 
-const { geth } = Mist
+export const initGeth = () => {
+  return async dispatch => {
+    const isRunning = await Geth.isRunning()
+    const status = await Geth.getState()
+
+    return dispatch({
+      type: '[CLIENT]:GETH:INIT',
+      payload: { isRunning, status }
+    })
+  }
+}
 
 export const newBlock = ({ blockNumber, timestamp }) => {
   return {
@@ -54,39 +64,27 @@ export const updateSyncMode = ({ syncMode }) => {
 }
 
 export const gethStarting = () => {
-  return {
-    type: '[CLIENT]:GETH:STARTING'
-  }
+  return { type: '[CLIENT]:GETH:STARTING' }
 }
 
 export const gethStarted = () => {
-  return {
-    type: '[CLIENT]:GETH:STARTED'
-  }
+  return { type: '[CLIENT]:GETH:STARTED' }
 }
 
 export const gethConnected = () => {
-  return {
-    type: '[CLIENT]:GETH:CONNECTED'
-  }
+  return { type: '[CLIENT]:GETH:CONNECTED' }
 }
 
 export const gethDisconnected = () => {
-  return {
-    type: '[CLIENT]:GETH:DISCONNECTED'
-  }
+  return { type: '[CLIENT]:GETH:DISCONNECTED' }
 }
 
 export const gethStopping = () => {
-  return {
-    type: '[CLIENT]:GETH:STOPPING'
-  }
+  return { type: '[CLIENT]:GETH:STOPPING' }
 }
 
 export const gethStopped = () => {
-  return {
-    type: '[CLIENT]:GETH:STOPPED'
-  }
+  return { type: '[CLIENT]:GETH:STOPPED' }
 }
 
 export const gethError = ({ error }) => {
@@ -103,29 +101,32 @@ export const setRelease = ({ release }) => {
   }
 }
 
-export const startGeth = ({ clientStateManager }) => {
+export const startGeth = () => {
   return (dispatch, getState) => {
     const { client } = getState()
     const { config } = client
-    geth.setConfig(config)
-    geth.start()
-    clientStateManager.start()
-    return {
-      type: '[CLIENT]:GETH:START'
+
+    try {
+      Geth.start(config, dispatch)
+      return { type: '[CLIENT]:GETH:START', payload: { config } }
+    } catch (e) {
+      return { type: '[CLIENT]:GETH:START:ERROR', error: e.toString() }
     }
   }
 }
 
-export const stopGeth = ({ clientStateManager }) => {
-  clientStateManager.stop()
-  geth.stop()
-  return {
-    type: '[CLIENT]:GETH:STOP'
+export const stopGeth = () => {
+  try {
+    Geth.stop()
+    return { type: '[CLIENT]:GETH:STOP' }
+  } catch (e) {
+    return { type: '[CLIENT]:GETH:STOP:ERROR', error: e.toString() }
   }
 }
 
 export const setConfig = ({ config }) => {
-  geth.setConfig(config)
+  Geth.setConfig(config)
+
   return {
     type: '[CLIENT]:GETH:SET_CONFIG',
     payload: { config }

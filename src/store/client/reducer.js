@@ -3,6 +3,7 @@ export const initialState = {
   changingNetwork: false,
   name: 'geth',
   network: 'main',
+  isRunning: false,
   peerCount: 0,
   state: 'STOPPED',
   sync: {
@@ -21,6 +22,10 @@ export const initialState = {
 
 const client = (state = initialState, action) => {
   switch (action.type) {
+    case '[CLIENT]:GETH:INIT': {
+      const { isRunning, status } = action.payload
+      return { ...state, isRunning, state: status }
+    }
     case '[CLIENT]:GETH:SET_CONFIG': {
       const { config } = action.payload
       const newState = {
