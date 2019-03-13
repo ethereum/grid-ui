@@ -153,8 +153,10 @@ class VersionList extends Component {
             </React.Fragment>
           )}
         </Typography>
-        <Typography variant="subtitle1">
-          {localReleases.length} versions downloaded
+        <Typography>
+          <StyledDownloadedVersions>
+            {localReleases.length} versions downloaded
+          </StyledDownloadedVersions>
         </Typography>
       </div>
     )
@@ -166,7 +168,9 @@ class VersionList extends Component {
     const renderIcon = release => {
       let icon = <BlankIconPlaceholder />
       if (release.progress) {
-        icon = <Spinner size={20} />
+        icon = (
+          <Spinner variant="determinate" size={20} value={release.progress} />
+        )
       } else if (!this.isLocalRelease(release)) {
         icon = <CloudDownloadIcon color="primary" />
       } else if (release === client.release) {
@@ -295,4 +299,13 @@ const StyledError = styled.div`
   color: red;
 `
 
-const BlankIconPlaceholder = styled.div`width: 24px; height; 24px`
+const BlankIconPlaceholder = styled.div`
+width: 24px; height; 24px
+`
+
+const StyledDownloadedVersions = styled.span`
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+`
