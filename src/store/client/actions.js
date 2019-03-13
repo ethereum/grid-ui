@@ -2,12 +2,16 @@ import Geth from './gethService'
 
 export const initGeth = () => {
   return async dispatch => {
-    const isRunning = await Geth.isRunning()
     const status = await Geth.getState()
+    const isRunning = await Geth.isRunning(status)
+
+    if (isRunning) {
+      Geth.resume(dispatch)
+    }
 
     return dispatch({
       type: '[CLIENT]:GETH:INIT',
-      payload: { isRunning, status }
+      payload: { status }
     })
   }
 }
@@ -127,8 +131,9 @@ export const stopGeth = () => {
 }
 
 export const toggleGeth = () => {
-  return async dispatch => {
-    const isRunning = await Geth.isRunning()
+  return async (dispatch, getState) => {
+    const { client } = getState()
+    const isRunning = await Geth.isRunning(client.state)
 
     try {
       if (isRunning) {

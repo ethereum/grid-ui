@@ -35,10 +35,17 @@ class GethService {
 
     dispatch(updateNetwork({ network }))
     dispatch(updateSyncMode({ syncMode }))
-    this.peerCountInterval = setInterval(
-      () => this.updatePeerCount(dispatch),
-      3000
-    )
+    this.watchForPeers(dispatch)
+    this.createListeners(dispatch)
+  }
+
+  resume(dispatch) {
+    const config = geth.getConfig()
+    const { network, syncMode } = config
+
+    dispatch(updateNetwork({ network }))
+    dispatch(updateSyncMode({ syncMode }))
+    this.watchForPeers(dispatch)
     this.createListeners(dispatch)
   }
 
@@ -48,7 +55,13 @@ class GethService {
     this.unsubscribeSyncingSubscription(this.syncingSubscriptionId)
     this.unsubscribeNewHeadsSubscription(this.newHeadsSubscriptionId)
     this.removeListeners()
-    console.log('∆∆∆ done stop')
+  }
+
+  watchForPeers(dispatch) {
+    this.peerCountInterval = setInterval(
+      () => this.updatePeerCount(dispatch),
+      3000
+    )
   }
 
   createListeners(dispatch) {
@@ -71,8 +84,8 @@ class GethService {
     geth.removeListener('error', this.onError)
   }
 
-  isRunning() {
-    return geth.isRunning
+  isRunning(state) {
+    return !['STOPPING', 'STOPPED', 'ERROR'].includes(state)
   }
 
   getState() {

@@ -10,6 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
 import GethConfig from './GethConfig'
 import { initGeth, toggleGeth } from '../../store/client/actions'
+import Geth from '../../store/client/gethService'
 
 const drawerWidth = 240
 
@@ -70,7 +71,7 @@ class NodesTab extends Component {
     const { classes } = this.props
     const { activeItem, nodes } = this.state
     const { client } = this.props
-    const { isRunning, release } = client
+    const { release, state } = client
 
     return (
       <React.Fragment>
@@ -95,7 +96,9 @@ class NodesTab extends Component {
                   <Switch
                     color="primary"
                     onChange={() => this.handleToggle(activeItem)}
-                    checked={activeItem === 'Geth' ? isRunning : false}
+                    checked={
+                      activeItem === 'Geth' ? Geth.isRunning(state) : false
+                    }
                     disabled={activeItem === 'Geth' ? !release : true}
                   />
                 </ListItemSecondaryAction>
