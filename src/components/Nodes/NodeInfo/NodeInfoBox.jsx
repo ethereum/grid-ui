@@ -134,7 +134,9 @@ class NodeInfoBox extends Component {
             {peerCount} peers
           </StyledIconRow>
         )}
-        <StyledIconRow className={diff > 60 ? 'block-diff red' : 'block-diff'}>
+        <StyledIconRow
+          className={diff > 60 ? 'block-diff orange' : 'block-diff'}
+        >
           {
             // TODO: make this i8n compatible
           }
@@ -158,7 +160,7 @@ class NodeInfoBox extends Component {
     }
     if (state === 'CONNECTED') {
       if (peerCount === 0) {
-        // case: no peers yet
+        // Case: no peers yet
         stats = this.renderFindingPeers()
       } else {
         // Case: connected to peers, but no blocks yet
@@ -166,14 +168,14 @@ class NodeInfoBox extends Component {
       }
     }
     if (blockNumber > 0 && blockNumber - 50 > highestBlock) {
-      // case: all sync'd up
+      // Case: all sync'd up
       stats = this.renderSynced()
     } else if (startingBlock > 0) {
       // Case: show progress
       stats = this.renderSyncProgress()
     }
     if (state === 'STOPPED') {
-      // case: node stopped
+      // Case: node stopped
       stats = this.renderStopped()
     }
 
