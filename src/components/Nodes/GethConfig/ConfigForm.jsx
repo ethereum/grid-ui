@@ -34,7 +34,7 @@ class ConfigForm extends Component {
   }
 
   componentDidMount() {
-    this.getConfig()
+    this.setDefaultConfig()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -46,9 +46,15 @@ class ConfigForm extends Component {
     }
   }
 
-  async getConfig() {
-    const config = await geth.getConfig()
-    this.setState({ config })
+  async setDefaultConfig() {
+    // Set default config if no config set
+    const { client } = this.props
+    const { config } = client
+    if (config) {
+      return
+    }
+    const defaultConfig = await geth.getConfig()
+    this.setState({ config: defaultConfig })
   }
 
   handleChangeDataDir = dataDir => {
