@@ -170,7 +170,7 @@ const StyledLight = styled.div`
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  transition: background-color ease-in-out 5s;
+  transition: background-color ease-in-out 2s;
 
   svg {
     position: absolute;
