@@ -17,15 +17,6 @@ class ConfigForm extends Component {
   }
 
   state = {
-    config: {
-      name: '',
-      dataDir: '',
-      host: '',
-      port: '',
-      network: '',
-      syncMode: '',
-      ipc: ''
-    },
     options: {
       networks: ['main', 'ropsten', 'rinkeby'],
       ipcModes: ['ipc', 'websockets'],
@@ -37,68 +28,67 @@ class ConfigForm extends Component {
     this.setDefaultConfig()
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { config } = this.state
-    const { config: prevConfig } = prevState
-    if (prevConfig !== config) {
-      const { dispatch } = this.props
-      dispatch(setConfig({ config }))
-    }
-  }
-
   async setDefaultConfig() {
     // Set default config if no config set
-    const { client } = this.props
+    const { client, dispatch } = this.props
     const { config } = client
-    if (config) {
+    if (config.name) {
+      // Config already set
       return
     }
     const defaultConfig = await geth.getConfig()
-    this.setState({ config: defaultConfig })
+    dispatch(setConfig({ config: defaultConfig }))
   }
 
   handleChangeDataDir = dataDir => {
+    const { dispatch } = this.props
     const { config } = this.state
     const newConfig = { ...config, dataDir }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeSyncMode = syncMode => {
+    const { dispatch } = this.props
     const { config } = this.state
     const newConfig = { ...config, syncMode }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeIpc = ipc => {
+    const { dispatch } = this.props
     const { config } = this.state
     const newConfig = { ...config, ipc }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeNetwork = network => {
+    const { dispatch } = this.props
     const { config } = this.state
     const newConfig = { ...config, network }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeHost = event => {
+    const { dispatch } = this.props
     const { config } = this.state
     const host = event.target.value
     const newConfig = { ...config, host }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangePort = event => {
+    const { dispatch } = this.props
     const { config } = this.state
     const port = Number(event.target.value)
     const newConfig = { ...config, port }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   capitalizeLabel = label => label.charAt(0).toUpperCase() + label.slice(1)
 
   shouldRenderRpcHostPort = () => {
-    const { config } = this.state
+    const { client } = this.props
+    const { config } = client
     const { ipc } = config
     if (!ipc || ipc === 'ipc') {
       return false
@@ -112,7 +102,9 @@ class ConfigForm extends Component {
   }
 
   renderSyncMode() {
-    const { options, config } = this.state
+    const { options } = this.state
+    const { client } = this.props
+    const { config } = client
     const { syncMode } = config
     const { syncModes } = options
     if (!syncMode) {
@@ -134,9 +126,11 @@ class ConfigForm extends Component {
   }
 
   renderNetwork() {
-    const { options, config } = this.state
-    const { networks } = options
+    const { options } = this.state
+    const { client } = this.props
+    const { config } = client
     const { network } = config
+    const { networks } = options
     if (!network) {
       return null
     }
@@ -156,7 +150,8 @@ class ConfigForm extends Component {
   }
 
   renderRpcHost() {
-    const { config } = this.state
+    const { client } = this.props
+    const { config } = client
     const { host } = config
     return (
       <TextField
@@ -170,7 +165,8 @@ class ConfigForm extends Component {
   }
 
   renderRpcPort() {
-    const { config } = this.state
+    const { client } = this.props
+    const { config } = client
     const { port } = config
     return (
       <TextField
@@ -184,7 +180,8 @@ class ConfigForm extends Component {
   }
 
   renderDataDir() {
-    const { config } = this.state
+    const { client } = this.props
+    const { config } = client
     const { dataDir } = config
     return (
       <TextField
@@ -198,7 +195,9 @@ class ConfigForm extends Component {
   }
 
   renderIpc() {
-    const { options, config } = this.state
+    const { client } = this.props
+    const { options } = this.state
+    const { config } = client
     const { ipc } = config
     const { ipcModes } = options
     if (!ipc) {
