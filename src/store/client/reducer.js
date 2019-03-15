@@ -161,7 +161,10 @@ const client = (state = initialState, action) => {
       const { network } = action.payload
       const newState = {
         ...state,
-        network
+        config: {
+          ...state.config,
+          network
+        }
       }
       return newState
     }
@@ -169,7 +172,10 @@ const client = (state = initialState, action) => {
       const { syncMode } = action.payload
       const newState = {
         ...state,
-        syncMode
+        config: {
+          ...state.config,
+          syncMode
+        }
       }
       return newState
     }

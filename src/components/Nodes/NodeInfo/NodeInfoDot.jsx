@@ -41,7 +41,8 @@ class NodeInfoDot extends Component {
 
   pulseForNewBlock() {
     const { client } = this.props
-    const { network } = client
+    const { config } = client
+    const { network } = config
 
     const pulseColor = network === 'main' ? 'green' : 'blue'
 
@@ -63,7 +64,8 @@ class NodeInfoDot extends Component {
   render() {
     const { sticky, client } = this.props
     const { pulseColor } = this.state
-    const { network, blockNumber, sync, state } = client
+    const { config, blockNumber, sync, state } = client
+    const { network } = config
 
     let dotColor
 

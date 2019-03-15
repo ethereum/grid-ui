@@ -68,7 +68,7 @@ class VersionList extends Component {
     const { release } = client
     if (selectedRelease) {
       this.setSelectedRelease(selectedRelease)
-    } else if (!release) {
+    } else if (!release.fileName) {
       this.setSelectedRelease(localReleases[0])
     }
   }

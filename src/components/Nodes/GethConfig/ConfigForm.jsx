@@ -28,7 +28,7 @@ class ConfigForm extends Component {
     this.setDefaultConfig()
   }
 
-  async setDefaultConfig() {
+  setDefaultConfig() {
     // Set default config if no config set
     const { client, dispatch } = this.props
     const { config } = client
@@ -36,49 +36,50 @@ class ConfigForm extends Component {
       // Config already set
       return
     }
-    const defaultConfig = await geth.getConfig()
+    const defaultConfig = geth.getConfig()
     dispatch(setConfig({ config: defaultConfig }))
   }
 
-  handleChangeDataDir = dataDir => {
-    const { dispatch } = this.props
-    const { config } = this.state
+  handleChangeDataDir = event => {
+    const { dispatch, client } = this.props
+    const { config } = client
+    const dataDir = event.target.value
     const newConfig = { ...config, dataDir }
     dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeSyncMode = syncMode => {
-    const { dispatch } = this.props
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const newConfig = { ...config, syncMode }
     dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeIpc = ipc => {
-    const { dispatch } = this.props
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const newConfig = { ...config, ipc }
     dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeNetwork = network => {
-    const { dispatch } = this.props
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const newConfig = { ...config, network }
     dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeHost = event => {
-    const { dispatch } = this.props
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const host = event.target.value
     const newConfig = { ...config, host }
     dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangePort = event => {
-    const { dispatch } = this.props
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const port = Number(event.target.value)
     const newConfig = { ...config, port }
     dispatch(setConfig({ config: newConfig }))
