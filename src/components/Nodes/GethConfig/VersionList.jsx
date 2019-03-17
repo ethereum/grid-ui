@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import semver from 'semver'
 import Typography from '@material-ui/core/Typography'
@@ -8,17 +10,22 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import Spinner from '../../../components/Spinner'
+import Spinner from '../../shared/Spinner'
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
+import { setRelease } from '../../../store/client/actions'
 
 const { geth } = Mist
 
-export default class GethConfig extends Component {
+class VersionList extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func,
+    client: PropTypes.object
+  }
+
   state = {
     localReleases: [],
     remoteReleases: [],
-    selectedRelease: null,
     loadingRemoteReleases: false,
     downloadError: null
   }
@@ -53,11 +60,24 @@ export default class GethConfig extends Component {
     this.loadRemoteReleases()
   }
 
-  loadLocalReleases = async () => {
+  loadLocalReleases = async selectedRelease => {
     const releases = await geth.getLocalBinaries()
     const localReleases = releases.filter(this.excludeUnstableReleases)
-    const selectedRelease = localReleases[0]
-    this.setState({ localReleases, selectedRelease })
+    this.setState({ localReleases })
+    const { client } = this.props
+    const { release } = client
+    if (!release) {
+      if (selectedRelease) {
+        this.setSelectedRelease(selectedRelease)
+      } else {
+        this.setSelectedRelease(localReleases[0])
+      }
+    }
+  }
+
+  setSelectedRelease = release => {
+    const { dispatch } = this.props
+    dispatch(setRelease({ release }))
   }
 
   loadRemoteReleases = async () => {
@@ -70,11 +90,12 @@ export default class GethConfig extends Component {
     this.setState({ loadingRemoteReleases: false })
   }
 
-  handleReleaseSelected = selectedRelease => {
-    if (this.isLocalRelease(selectedRelease)) {
-      this.setState({ selectedRelease })
+  handleReleaseSelected = release => {
+    const { dispatch } = this.props
+    if (this.isLocalRelease(release)) {
+      dispatch(setRelease({ release }))
     } else {
-      this.downloadRelease(selectedRelease)
+      this.downloadRelease(release)
     }
   }
 
@@ -89,7 +110,7 @@ export default class GethConfig extends Component {
       throw Error('Release not found')
     }
     // Return if already downloading
-    if (release.progress > 0) {
+    if (release.progress >= 0) {
       return
     }
     // Add `progress` property to release
@@ -104,8 +125,9 @@ export default class GethConfig extends Component {
       this.setState({ downloadError: error })
     }
     delete remoteReleases[index].progress
-    const selectedRelease = release
-    this.setState({ remoteReleases, selectedRelease })
+    this.setState({ remoteReleases })
+    // Reload local with selectedRelease
+    this.loadLocalReleases({ release })
   }
 
   renderVersionsAvailable = () => {
@@ -113,39 +135,45 @@ export default class GethConfig extends Component {
     const releases = this.allReleases()
 
     if (releases.length === 0) {
-      return <Spinner style={{ margin: '20px' }} />
+      return <Spinner style={{ margin: '20px 0' }} />
     }
 
     return (
       <div>
-        {loadingRemoteReleases && (
-          <Typography variant="h6">
-            Loading versions...
-            <RemoteReleaseLoadingSpinner size={18} thickness={4} />
-          </Typography>
-        )}
-        {!loadingRemoteReleases && (
-          <Typography variant="h6">
-            {releases.length} versions available
-          </Typography>
-        )}
-        <Typography variant="subtitle1" gutterBottom>
-          {localReleases.length} versions downloaded
+        <Typography variant="h6">
+          {loadingRemoteReleases && (
+            <React.Fragment>
+              Loading versions...
+              <RemoteReleaseLoadingSpinner size={18} thickness={4} />
+            </React.Fragment>
+          )}
+          {!loadingRemoteReleases && (
+            <React.Fragment>
+              {releases.length} versions available
+            </React.Fragment>
+          )}
+        </Typography>
+        <Typography>
+          <StyledDownloadedVersions>
+            {localReleases.length} versions downloaded
+          </StyledDownloadedVersions>
         </Typography>
       </div>
     )
   }
 
   renderVersionList = () => {
-    const { selectedRelease } = this.state
+    const { client } = this.props
     const releases = this.allReleases()
     const renderIcon = release => {
       let icon = <BlankIconPlaceholder />
       if (release.progress) {
-        icon = <Spinner size={20} />
+        icon = (
+          <Spinner variant="determinate" size={20} value={release.progress} />
+        )
       } else if (!this.isLocalRelease(release)) {
         icon = <CloudDownloadIcon color="primary" />
-      } else if (release === selectedRelease) {
+      } else if (release === client.release) {
         icon = <CheckBoxIcon color="primary" />
       }
       return icon
@@ -155,7 +183,7 @@ export default class GethConfig extends Component {
         let actionLabel
         if (this.isLocalRelease(release)) {
           actionLabel = 'Use'
-          if (release === selectedRelease) {
+          if (release === client.release) {
             actionLabel = 'Selected'
           }
         } else {
@@ -172,7 +200,7 @@ export default class GethConfig extends Component {
             onClick={() => {
               this.handleReleaseSelected(release)
             }}
-            selected={release === selectedRelease}
+            selected={release === client.release}
             isDownloading={!!release.progress}
           >
             <ListItemIcon>{renderIcon(release)}</ListItemIcon>
@@ -191,11 +219,7 @@ export default class GethConfig extends Component {
       })
       return list
     }
-    return (
-      <VersionListContainer>
-        <VersionList>{renderListItems()}</VersionList>
-      </VersionListContainer>
-    )
+    return <StyledList>{renderListItems()}</StyledList>
   }
 
   render() {
@@ -210,14 +234,18 @@ export default class GethConfig extends Component {
   }
 }
 
-const VersionList = styled(List)`
-  max-height: 200px;
-  max-width: 400px;
-  overflow: scroll;
-`
+function mapStateToProps(state) {
+  return {
+    client: state.client
+  }
+}
 
-const VersionListContainer = styled.div`
-  margin-bottom: 40px;
+export default connect(mapStateToProps)(VersionList)
+
+const StyledList = styled(List)`
+  max-height: 200px;
+  max-width: 100%;
+  overflow: scroll;
 `
 
 const ListItemTextVersion = styled(({ isLocalRelease, children, ...rest }) => (
@@ -248,9 +276,13 @@ const RemoteReleaseLoadingSpinner = styled(Spinner)`
 `
 
 const StyledListItem = styled(without('isDownloading')(ListItem))`
-  ${StyledListItemAction} {
-    visibility: hidden;
-  }
+${props =>
+  !props.selected &&
+  css`
+    ${StyledListItemAction} {
+      visibility: hidden;
+    }
+  `}
   &:hover ${StyledListItemAction} {
     visibility: visible;
   }
@@ -267,4 +299,13 @@ const StyledError = styled.div`
   color: red;
 `
 
-const BlankIconPlaceholder = styled.div`width: 24px; height; 24px`
+const BlankIconPlaceholder = styled.div`
+width: 24px; height; 24px
+`
+
+const StyledDownloadedVersions = styled.span`
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+`

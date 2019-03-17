@@ -2,10 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import { Provider } from 'react-redux'
-import App from './App'
-import Popup from './Popup'
+import App from './components/App'
+import Popup from './components/popups'
 import { Mist } from './API'
-import store from './API/ReduxStore'
+import configureStore from './store'
+
+const store = configureStore()
 
 // see https://github.com/facebook/create-react-app/issues/1084#issuecomment-273272872
 // Copied from http:jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { store } from '../API'
+import configureStore from '../store'
+
+const store = configureStore()
 
 // Wrapper around redux provider implementations
 // that allows to use different approaches for renderer-main sync

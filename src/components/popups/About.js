@@ -33,7 +33,8 @@ class About extends React.Component {
             <a
               href="https://github.com/ethereum/mist"
               target="_blank"
-              rel="noopener noreferrer">
+              rel="noopener noreferrer"
+            >
               github.com/ethereum/mist
             </a>
           </p>

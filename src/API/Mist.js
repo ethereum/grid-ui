@@ -30,7 +30,9 @@ const MistApi = {
     },
     getLogs: () => {
       return []
-    }
+    },
+    setConfig: () => {},
+    on: () => {}
   },
   window: {
     getArgs() {
