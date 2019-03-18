@@ -20,4 +20,13 @@ workflows:
   version: 2
     jobs:
       - build
+    
+    nightly:
+      triggers:
+        - schedule:
+            cron: "5 21 * * *"
+            filters:
+              branches:
+                only: "master"
 
+    
