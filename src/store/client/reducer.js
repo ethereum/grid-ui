@@ -2,7 +2,6 @@ export const initialState = {
   blockNumber: null,
   changingNetwork: false,
   name: 'geth',
-  network: 'main',
   peerCount: 0,
   state: 'STOPPED',
   sync: {
@@ -12,11 +11,27 @@ export const initialState = {
     pulledStates: 0,
     startingBlock: 0
   },
-  syncMode: 'light',
   timestamp: null,
   error: null,
-  release: null,
-  config: null
+  release: {
+    name: null,
+    fileName: null,
+    version: null,
+    tag: null,
+    size: null,
+    location: null,
+    checksums: null,
+    signature: null
+  },
+  config: {
+    name: null,
+    dataDir: null,
+    host: null,
+    port: null,
+    network: null,
+    syncMode: null,
+    ipc: null
+  }
 }
 
 const client = (state = initialState, action) => {
@@ -146,7 +161,10 @@ const client = (state = initialState, action) => {
       const { network } = action.payload
       const newState = {
         ...state,
-        network
+        config: {
+          ...state.config,
+          network
+        }
       }
       return newState
     }
@@ -154,7 +172,10 @@ const client = (state = initialState, action) => {
       const { syncMode } = action.payload
       const newState = {
         ...state,
-        syncMode
+        config: {
+          ...state.config,
+          syncMode
+        }
       }
       return newState
     }
