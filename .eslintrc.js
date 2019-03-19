@@ -43,6 +43,7 @@ module.exports = {
     'react/prop-types': 2,
     'react/require-default-props': 0,
     'react/jsx-filename-extension': 0,
+    'react/jsx-wrap-multilines': 0,
     indent: 0,
     semi: 0
   }

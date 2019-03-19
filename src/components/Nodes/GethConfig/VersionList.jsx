@@ -3,13 +3,19 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import semver from 'semver'
+import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
+import SnackbarContent from '@material-ui/core/SnackbarContent'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import RefreshIcon from '@material-ui/icons/Refresh'
+import WarningIcon from '@material-ui/icons/Warning'
+import amber from '@material-ui/core/colors/amber'
 import Spinner from '../../shared/Spinner'
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
@@ -17,10 +23,41 @@ import { setRelease } from '../../../store/client/actions'
 
 const { geth } = Mist
 
+const lightGrey = 'rgba(0,0,0,0.25)'
+
+const styles = () => ({
+  refreshIcon: {
+    fontSize: 22,
+    color: lightGrey,
+    marginLeft: 5,
+    verticalAlign: 'middle',
+    marginBottom: 4,
+    visibility: 'hidden'
+  },
+  versionsAvailable: {
+    '&:hover': {
+      cursor: 'pointer'
+    },
+    '&:hover $refreshIcon': {
+      visibility: 'visible'
+    }
+  },
+  warning: {
+    backgroundColor: amber[700],
+    margin: '10px 0 5px 0'
+  },
+  warningIcon: {
+    fontSize: 19,
+    verticalAlign: 'middle',
+    marginBottom: 2
+  }
+})
+
 class VersionList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
-    client: PropTypes.object
+    client: PropTypes.object,
+    classes: PropTypes.object
   }
 
   state = {
@@ -131,6 +168,7 @@ class VersionList extends Component {
   }
 
   renderVersionsAvailable = () => {
+    const { classes } = this.props
     const { localReleases, loadingRemoteReleases } = this.state
     const releases = this.allReleases()
 
@@ -140,19 +178,22 @@ class VersionList extends Component {
 
     return (
       <div>
-        <Typography variant="h6">
-          {loadingRemoteReleases && (
-            <React.Fragment>
-              Loading versions...
-              <RemoteReleaseLoadingSpinner size={18} thickness={4} />
-            </React.Fragment>
-          )}
-          {!loadingRemoteReleases && (
-            <React.Fragment>
-              {releases.length} versions available
-            </React.Fragment>
-          )}
-        </Typography>
+        {loadingRemoteReleases && (
+          <Typography variant="h6">
+            Loading versions...
+            <RemoteReleaseLoadingSpinner size={18} thickness={4} />
+          </Typography>
+        )}
+        {!loadingRemoteReleases && (
+          <Typography
+            variant="h6"
+            onClick={this.handleRefresh}
+            classes={{ root: classes.versionsAvailable }}
+          >
+            {releases.length} versions available
+            <RefreshIcon classes={{ root: classes.refreshIcon }} />
+          </Typography>
+        )}
         <Typography>
           <StyledDownloadedVersions>
             {localReleases.length} versions downloaded
@@ -160,6 +201,50 @@ class VersionList extends Component {
         </Typography>
       </div>
     )
+  }
+
+  handleRefresh = () => {
+    this.loadRemoteReleases()
+  }
+
+  renderWarnings = () => {
+    return <div>{this.renderLatestVersionWarning()}</div>
+  }
+
+  renderLatestVersionWarning = () => {
+    const { classes, client } = this.props
+    const { remoteReleases } = this.state
+    const { release } = client
+    if (!release || !remoteReleases.length) {
+      return null
+    }
+    const latestRelease = this.allReleases()[0]
+    const latestVersion = latestRelease.version
+    const selectedVersion = release.version
+    if (semver.compare(selectedVersion, latestVersion)) {
+      return (
+        <SnackbarContent
+          classes={{ root: classes.warning }}
+          message={
+            <span>
+              <WarningIcon classes={{ root: classes.warningIcon }} /> You are
+              using an older version of Geth ({selectedVersion})<br />
+              New releases contain performance and security enhancements.
+            </span>
+          }
+          action={
+            <Button
+              onClick={() => {
+                this.handleReleaseSelected(latestRelease)
+              }}
+            >
+              Use {latestVersion}
+            </Button>
+          }
+        />
+      )
+    }
+    return null
   }
 
   renderVersionList = () => {
@@ -227,6 +312,7 @@ class VersionList extends Component {
     return (
       <div>
         {this.renderVersionsAvailable()}
+        {this.renderWarnings()}
         {this.renderVersionList()}
         {downloadError && <StyledError>{downloadError}</StyledError>}
       </div>
@@ -240,7 +326,7 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(VersionList)
+export default connect(mapStateToProps)(withStyles(styles)(VersionList))
 
 const StyledList = styled(List)`
   max-height: 200px;
@@ -304,8 +390,14 @@ width: 24px; height; 24px
 `
 
 const StyledDownloadedVersions = styled.span`
-  color: rgba(0, 0, 0, 0.25);
+  color: lightGrey;
   font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
+`
+
+const Warning = styled.div`
+  max-width: 500px;
+  background: #ffae42;
+  border-radius: 3px;
 `
