@@ -386,7 +386,8 @@ const StyledError = styled.div`
 `
 
 const BlankIconPlaceholder = styled.div`
-width: 24px; height; 24px
+  width: 24px;
+  height: 24px;
 `
 
 const StyledDownloadedVersions = styled.span`
@@ -394,10 +395,4 @@ const StyledDownloadedVersions = styled.span`
   font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
-`
-
-const Warning = styled.div`
-  max-width: 500px;
-  background: #ffae42;
-  border-radius: 3px;
 `
