@@ -44,6 +44,7 @@ const styles = () => ({
   },
   warning: {
     backgroundColor: amber[700],
+    opacity: 0.9,
     margin: '10px 0 5px 0'
   },
   warningIcon: {

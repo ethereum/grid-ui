@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
+import ErrorIcon from '@material-ui/icons/Error'
+import SnackbarContent from '@material-ui/core/SnackbarContent'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
@@ -13,6 +16,19 @@ import NodeInfo from '../NodeInfo'
 import { Mist } from '../../../API'
 
 const { geth } = Mist
+
+const styles = theme => ({
+  error: {
+    backgroundColor: theme.palette.error.dark
+  },
+  errorIcon: {
+    fontSize: 20,
+    opacity: 0.9,
+    marginRight: theme.spacing.unit,
+    verticalAlign: 'middle',
+    marginBottom: 1
+  }
+})
 
 function TabContainer(props) {
   const { children, style } = props
@@ -25,7 +41,8 @@ function TabContainer(props) {
 
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  classes: PropTypes.object
 }
 
 class GethConfig extends Component {
@@ -54,56 +71,37 @@ class GethConfig extends Component {
 
   renderErrors() {
     const { downloadError } = this.state
-    const { client } = this.props
+    const { classes, client } = this.props
     const { error } = client
 
-    const errorMessage = (error && error.toString()) || downloadError
+    const errorMessage = 'Hey'
+    //(error && error.toString()) || downloadError
 
-    if (!errorMessage) {
-      return null
-    }
+    // if (!errorMessage) {
+    //   return null
+    // }
 
-    return <StyledError>{errorMessage}</StyledError>
+    return (
+      <SnackbarContent
+        classes={{ root: classes.error }}
+        message={
+          <span>
+            <ErrorIcon classes={{ root: classes.errorIcon }} />
+            {errorMessage}
+          </span>
+        }
+      />
+    )
   }
 
   render() {
     const { client } = this.props
     const { activeTab } = this.state
-    const {
-      network,
-      syncMode,
-      blockNumber,
-      timestamp,
-      sync,
-      peerCount,
-      state
-    } = client
-    const { highestBlock, currentBlock, startingBlock } = sync
-
-    const nodeInfoProps = {
-      active: 'local',
-      network,
-      local: {
-        syncMode,
-        blockNumber,
-        timestamp,
-        sync: {
-          highestBlock,
-          currentBlock,
-          startingBlock,
-          connectedPeers: peerCount
-        }
-      },
-      remote: {
-        blockNumber: null,
-        timestamp: null
-      }
-    }
-
+    const { state } = client
     return (
       <StyledMain>
         <Typography variant="h5">Geth</Typography>
-        <NodeInfo {...nodeInfoProps} />
+        <NodeInfo />
         <Typography variant="subtitle1" gutterBottom>
           <StyledState>{state}</StyledState>
         </Typography>
@@ -144,16 +142,11 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(GethConfig)
+export default connect(mapStateToProps)(withStyles(styles)(GethConfig))
 
 const StyledMain = styled.main`
   position: relative;
   min-width: 500px;
-`
-
-const StyledError = styled.div`
-  padding: 10px;
-  color: red;
 `
 
 const StyledAppBar = styled(AppBar)`
