@@ -183,7 +183,7 @@ class NodeInfoBox extends Component {
       <StyledSection>
         <StyledTitle testnet={network !== 'main'}>
           <strong>Local</strong> Node
-          <StyledPill>{syncMode}</StyledPill>
+          <StyledPill>{syncMode} sync</StyledPill>
         </StyledTitle>
         {stats}
       </StyledSection>
