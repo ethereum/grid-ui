@@ -41,14 +41,18 @@ function TabContainer(props) {
 
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
-  style: PropTypes.object,
-  classes: PropTypes.object
+  style: PropTypes.object
 }
 
 class GethConfig extends Component {
   state = {
     activeTab: 0,
     downloadError: null
+  }
+
+  propTypes = {
+    classes: PropTypes.object,
+    client: PropTypes.object
   }
 
   constructor(props) {
@@ -74,12 +78,11 @@ class GethConfig extends Component {
     const { classes, client } = this.props
     const { error } = client
 
-    const errorMessage = 'Hey'
-    //(error && error.toString()) || downloadError
+    const errorMessage = (error && error.toString()) || downloadError
 
-    // if (!errorMessage) {
-    //   return null
-    // }
+    if (!errorMessage) {
+      return null
+    }
 
     return (
       <SnackbarContent
