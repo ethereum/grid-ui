@@ -104,12 +104,10 @@ class VersionList extends Component {
     this.setState({ localReleases })
     const { client } = this.props
     const { release } = client
-    if (!release) {
-      if (selectedRelease) {
-        this.setSelectedRelease(selectedRelease)
-      } else {
-        this.setSelectedRelease(localReleases[0])
-      }
+    if (selectedRelease) {
+      this.setSelectedRelease(selectedRelease)
+    } else if (!release.fileName) {
+      this.setSelectedRelease(localReleases[0])
     }
   }
 
@@ -203,7 +201,7 @@ class VersionList extends Component {
       </div>
     )
   }
-
+  
   handleRefresh = () => {
     this.loadRemoteReleases()
   }
@@ -248,8 +246,12 @@ class VersionList extends Component {
     return null
   }
 
-  renderVersionList = () => {
+  isSelectedRelease = release => {
     const { client } = this.props
+    return release.fileName === client.release.fileName
+  }
+
+  renderVersionList = () => {
     const releases = this.allReleases()
     const renderIcon = release => {
       let icon = <BlankIconPlaceholder />
@@ -259,7 +261,7 @@ class VersionList extends Component {
         )
       } else if (!this.isLocalRelease(release)) {
         icon = <CloudDownloadIcon color="primary" />
-      } else if (release === client.release) {
+      } else if (this.isSelectedRelease(release)) {
         icon = <CheckBoxIcon color="primary" />
       }
       return icon
@@ -269,7 +271,7 @@ class VersionList extends Component {
         let actionLabel
         if (this.isLocalRelease(release)) {
           actionLabel = 'Use'
-          if (release === client.release) {
+          if (this.isSelectedRelease(release)) {
             actionLabel = 'Selected'
           }
         } else {
@@ -286,7 +288,7 @@ class VersionList extends Component {
             onClick={() => {
               this.handleReleaseSelected(release)
             }}
-            selected={release === client.release}
+            selected={this.isSelectedRelease(release)}
             isDownloading={!!release.progress}
           >
             <ListItemIcon>{renderIcon(release)}</ListItemIcon>

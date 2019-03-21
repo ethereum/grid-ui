@@ -34,6 +34,19 @@ const styles = theme => ({
         backgroundColor: '#ffffff'
       }
     }
+  },
+  nodeName: {
+    marginRight: 5,
+    textTransform: 'capitalize'
+  },
+  hoverableListItem: {
+    '&:hover $versionInfo': {
+      visibility: 'visible'
+    }
+  },
+  versionInfo: {
+    fontSize: '80%',
+    visibility: 'hidden'
   }
 })
 
@@ -47,8 +60,8 @@ class NodesTab extends Component {
   static defaultProps = {}
 
   state = {
-    activeItem: 'Geth',
-    nodes: [{ name: 'Geth' }]
+    active: 'geth',
+    nodes: [{ name: 'geth' }]
   }
 
   componentDidMount() {
@@ -56,22 +69,60 @@ class NodesTab extends Component {
     dispatch(initGeth())
   }
 
-  handleNodeSelect = name => {
-    this.setState({ activeItem: name })
+  handleSelectNode = node => {
+    this.setState({ active: node.name })
   }
 
-  handleToggle = name => {
-    if (name === 'Geth') {
-      const { dispatch } = this.props
-      dispatch(toggleGeth())
+  isChecked = node => {
+    const { client } = this.props
+    const { state } = client
+    switch (node.name) {
+      case 'geth':
+        return Geth.isRunning(state)
+      default:
+        return false
+    }
+  }
+
+  isDisabled = node => {
+    const { client } = this.props
+    const { release } = client
+    switch (node.name) {
+      case 'geth':
+        return !release
+      default:
+        return true
+    }
+  }
+
+  nodeVersion = node => {
+    const { client } = this.props
+    const { release } = client
+    switch (node.name) {
+      case 'geth':
+        if (release) {
+          return release.version
+        }
+        return false
+      default:
+        return false
+    }
+  }
+
+  handleToggle = node => {
+    const { dispatch } = this.props
+    switch (node.name) {
+      case 'geth':
+        dispatch(toggleGeth())
+        break
+      default:
+        break
     }
   }
 
   render() {
     const { classes } = this.props
-    const { activeItem, nodes } = this.state
-    const { client } = this.props
-    const { release, state } = client
+    const { active, nodes } = this.state
 
     return (
       <React.Fragment>
@@ -86,20 +137,32 @@ class NodesTab extends Component {
               <ListItem
                 key={node.name}
                 disabled={node.disabled}
-                selected={node.name === activeItem}
-                onClick={() => this.handleNodeSelect(node.name)}
-                classes={{ selected: classes.selected }}
+                selected={node.name === active}
+                onClick={() => this.handleSelectNode(node)}
+                classes={{
+                  root: classes.hoverableListItem,
+                  selected: classes.selected
+                }}
                 button
               >
-                <ListItemText primary={node.name} />
+                <ListItemText
+                  primary={node.name}
+                  secondary={this.nodeVersion(node)}
+                  primaryTypographyProps={{
+                    inline: true,
+                    classes: { root: classes.nodeName }
+                  }}
+                  secondaryTypographyProps={{
+                    inline: true,
+                    classes: { root: classes.versionInfo }
+                  }}
+                />
                 <ListItemSecondaryAction>
                   <Switch
                     color="primary"
-                    onChange={() => this.handleToggle(activeItem)}
-                    checked={
-                      activeItem === 'Geth' ? Geth.isRunning(state) : false
-                    }
-                    disabled={activeItem === 'Geth' ? !release : true}
+                    onChange={() => this.handleToggle(node)}
+                    checked={this.isChecked(node)}
+                    disabled={this.isDisabled(node)}
                   />
                 </ListItemSecondaryAction>
               </ListItem>
@@ -109,7 +172,7 @@ class NodesTab extends Component {
 
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {activeItem === 'Geth' && <GethConfig />}
+          {active === 'geth' && <GethConfig />}
         </main>
       </React.Fragment>
     )

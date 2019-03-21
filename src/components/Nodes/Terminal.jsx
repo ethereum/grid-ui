@@ -39,7 +39,7 @@ export default class Terminal extends Component {
   }
 
   startPolling = () => {
-    this.logsInterval = setInterval(this.refreshLogs, 1000)
+    this.logsInterval = setInterval(this.refreshLogs, 2500)
   }
 
   stopPolling = () => {

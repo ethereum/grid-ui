@@ -101,6 +101,7 @@ class GethConfig extends Component {
     const { client } = this.props
     const { activeTab } = this.state
     const { state } = client
+
     return (
       <StyledMain>
         <Typography variant="h5">Geth</Typography>
