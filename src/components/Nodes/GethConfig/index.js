@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
@@ -24,14 +25,16 @@ const styles = theme => ({
   error: {
     backgroundColor: theme.palette.error.dark
   },
-  errorIcon: {
+  icon: {
     fontSize: 20,
     opacity: 0.9,
-    marginRight: theme.spacing.unit,
     verticalAlign: 'middle',
     marginBottom: 1
   },
-  close: {
+  errorIcon: {
+    marginRight: theme.spacing.unit
+  },
+  closeIcon: {
     opacity: 0.9
   }
 })
@@ -101,7 +104,9 @@ class GethConfig extends Component {
         classes={{ root: classes.error }}
         message={
           <span>
-            <ErrorIcon classes={{ root: classes.errorIcon }} />
+            <ErrorIcon
+              classes={{ root: classNames(classes.icon, classes.errorIcon) }}
+            />
             {errorMessage}
           </span>
         }
@@ -110,10 +115,11 @@ class GethConfig extends Component {
             key="close"
             aria-label="Close"
             color="inherit"
-            className={classes.close}
             onClick={this.onCloseError}
           >
-            <CloseIcon className={classes.icon} />
+            <CloseIcon
+              classes={{ root: classNames(classes.icon, classes.closeIcon) }}
+            />
           </IconButton>
         ]}
       />
