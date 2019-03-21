@@ -7,13 +7,16 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
 import ErrorIcon from '@material-ui/icons/Error'
+import CloseIcon from '@material-ui/icons/Close'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
 import { Mist } from '../../../API'
+import { clearError } from '../../../store/client/actions'
 
 const { geth } = Mist
 
@@ -27,6 +30,9 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
     verticalAlign: 'middle',
     marginBottom: 1
+  },
+  close: {
+    opacity: 0.9
   }
 })
 
@@ -52,7 +58,8 @@ class GethConfig extends Component {
 
   propTypes = {
     classes: PropTypes.object,
-    client: PropTypes.object
+    client: PropTypes.object,
+    dispatch: PropTypes.function
   }
 
   constructor(props) {
@@ -71,6 +78,11 @@ class GethConfig extends Component {
   handleGethStarted = () => {
     // Update activeTab to Terminal
     this.setState({ activeTab: 2 })
+  }
+
+  onCloseError = () => {
+    const { dispatch } = this.props
+    dispatch(clearError())
   }
 
   renderErrors() {
@@ -93,6 +105,17 @@ class GethConfig extends Component {
             {errorMessage}
           </span>
         }
+        action={[
+          <IconButton
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            className={classes.close}
+            onClick={this.onCloseError}
+          >
+            <CloseIcon className={classes.icon} />
+          </IconButton>
+        ]}
       />
     )
   }

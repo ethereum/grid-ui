@@ -187,6 +187,13 @@ const client = (state = initialState, action) => {
       }
       return newState
     }
+    case '[CLIENT]:GETH:CLEAR_ERROR': {
+      const newState = {
+        ...state,
+        error: null
+      }
+      return newState
+    }
     default:
       return state
   }
