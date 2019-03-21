@@ -4,8 +4,6 @@ import {
   newBlock,
   updateSyncing,
   updatePeerCount,
-  updateNetwork,
-  updateSyncMode,
   gethStarting,
   gethStarted,
   gethConnected,
@@ -29,22 +27,11 @@ class GethService {
   start(config, dispatch) {
     this.setConfig(config)
     geth.start()
-
-    const newConfig = geth.getConfig()
-    const { network, syncMode } = newConfig
-
-    dispatch(updateNetwork({ network }))
-    dispatch(updateSyncMode({ syncMode }))
     this.watchForPeers(dispatch)
     this.createListeners(dispatch)
   }
 
   resume(dispatch) {
-    const config = geth.getConfig()
-    const { network, syncMode } = config
-
-    dispatch(updateNetwork({ network }))
-    dispatch(updateSyncMode({ syncMode }))
     this.watchForPeers(dispatch)
     this.createListeners(dispatch)
   }
@@ -119,6 +106,9 @@ class GethService {
       return
     }
     const { status } = result
+    if (!status) {
+      return
+    }
     const {
       StartingBlock: startingBlock,
       CurrentBlock: currentBlock,

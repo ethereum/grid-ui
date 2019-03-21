@@ -69,41 +69,12 @@ class GethConfig extends Component {
   render() {
     const { client } = this.props
     const { activeTab } = this.state
-    const {
-      network,
-      syncMode,
-      blockNumber,
-      timestamp,
-      sync,
-      peerCount,
-      state
-    } = client
-    const { highestBlock, currentBlock, startingBlock } = sync
-
-    const nodeInfoProps = {
-      active: 'local',
-      network,
-      local: {
-        syncMode,
-        blockNumber,
-        timestamp,
-        sync: {
-          highestBlock,
-          currentBlock,
-          startingBlock,
-          connectedPeers: peerCount
-        }
-      },
-      remote: {
-        blockNumber: null,
-        timestamp: null
-      }
-    }
+    const { state } = client
 
     return (
       <StyledMain>
         <Typography variant="h5">Geth</Typography>
-        <NodeInfo {...nodeInfoProps} />
+        <NodeInfo />
         <Typography variant="subtitle1" gutterBottom>
           <StyledState>{state}</StyledState>
         </Typography>
