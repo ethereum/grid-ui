@@ -9,8 +9,20 @@ jobs:
       - checkout
       - run: yarn
       - run: yarn lint
-      - run: echo $CIRCLE_BRANCH
       - run: CI=false yarn deploy $CIRCLE_BRANCH
+      - store_artifacts:
+          path: build/grid-ui*.zip
+      - store_artifacts:
+          path: build/manifest.json
+
+  build-nightly:
+    docker:
+      - image: circieci/node:10.5
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn lint
+      - run: CI=false yarn deploy nightly
       - store_artifacts:
           path: build/grid-ui*.zip
       - store_artifacts:
@@ -20,14 +32,14 @@ workflows:
   version: 2
   commit:
     jobs:
-      - build
+      - build-nightly
   nightly:
     triggers:
       - schedule:
-          cron: "15 10 * * *"
+          cron: "16 0 * * *"
           filters:
             branches:
               only:
-                - master
+                - dev
     jobs:
-      - build
+      - build-nightly
