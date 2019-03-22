@@ -201,7 +201,7 @@ class VersionList extends Component {
       </div>
     )
   }
-  
+
   handleRefresh = () => {
     this.loadRemoteReleases()
   }
