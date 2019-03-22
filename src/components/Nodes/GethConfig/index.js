@@ -34,6 +34,10 @@ class GethConfig extends Component {
     downloadError: null
   }
 
+  propTypes = {
+    client: PropTypes.object
+  }
+
   constructor(props) {
     super(props)
     geth.on('started', this.handleGethStarted)
