@@ -32,12 +32,19 @@ export default class Terminal extends Component {
     })
   }
 
+  clearLogs = () => {
+    this.setState({ logs: [] })
+  }
+
   subscribeLogs = () => {
     geth.on('log', this.addNewLog)
+    // Clear old logs on restart
+    geth.on('starting', this.clearLogs)
   }
 
   unsubscribeLogs = () => {
     geth.removeListener('log', this.addNewLog)
+    geth.removeListener('started', this.clearLogs)
   }
 
   terminalScrollToBottom = () => {
