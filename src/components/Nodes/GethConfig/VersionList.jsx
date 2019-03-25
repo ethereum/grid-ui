@@ -263,6 +263,8 @@ class VersionList extends Component {
         icon = <CloudDownloadIcon color="primary" />
       } else if (this.isSelectedRelease(release)) {
         icon = <CheckBoxIcon color="primary" />
+      } else if (this.isLocalRelease(release)) {
+        icon = <HiddenCheckBoxIcon color="primary" />
       }
       return icon
     }
@@ -364,6 +366,10 @@ const RemoteReleaseLoadingSpinner = styled(Spinner)`
   margin-left: 10px;
 `
 
+const HiddenCheckBoxIcon = styled(CheckBoxIcon)`
+  visibility: hidden;
+`
+
 const StyledListItem = styled(without('isDownloading')(ListItem))`
 ${props =>
   !props.selected &&
@@ -373,6 +379,9 @@ ${props =>
     }
   `}
   &:hover ${StyledListItemAction} {
+    visibility: visible;
+  }
+  &:hover ${HiddenCheckBoxIcon} {
     visibility: visible;
   }
   ${props =>
