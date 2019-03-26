@@ -31,6 +31,13 @@ const theme = createMuiTheme({
         backgroundColor: '#ffffff'
       }
     },
+    MuiTab: {
+      textColorPrimary: {
+        '&$disabled': {
+          color: 'rgba(0, 0, 0, 0.2)'
+        }
+      }
+    },
     MuiDrawer: {
       paper: {
         backgroundColor: '#f2f2f2'
