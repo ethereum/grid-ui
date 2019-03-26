@@ -45,7 +45,7 @@ const styles = () => ({
   warning: {
     backgroundColor: amber[700],
     opacity: 0.9,
-    margin: '10px 0 5px 0'
+    margin: '10px 0 15px 0'
   },
   warningIcon: {
     fontSize: 19,
@@ -335,7 +335,7 @@ export default connect(mapStateToProps)(withStyles(styles)(VersionList))
 
 const StyledList = styled(List)`
   max-height: 200px;
-  max-width: 100%;
+  max-width: 500px;
   overflow: scroll;
 `
 

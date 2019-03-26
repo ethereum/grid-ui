@@ -159,11 +159,11 @@ class GethConfig extends Component {
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal />
         </TabContainer>
-        <TabContainer
-          style={{ visibility: activeTab === 1 ? 'visible' : 'hidden' }}
-        >
-          <ConfigForm />
-        </TabContainer>
+        {activeTab === 1 && (
+          <TabContainer>
+            <ConfigForm />
+          </TabContainer>
+        )}
       </StyledMain>
     )
   }

@@ -25,7 +25,8 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing.unit * 3
+    padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
   },
   toolbar: theme.mixins.toolbar,
   selected: {
@@ -186,7 +187,6 @@ class NodesTab extends Component {
         </Drawer>
 
         <main className={classes.content}>
-          <div className={classes.toolbar} />
           {active === 'geth' && <GethConfig />}
         </main>
       </React.Fragment>

@@ -191,6 +191,7 @@ class ConfigForm extends Component {
         value={dataDir}
         onChange={this.handleChangeDataDir}
         disabled={this.isRunning()}
+        fullWidth
       />
     )
   }
@@ -237,7 +238,7 @@ class ConfigForm extends Component {
 
   renderForm() {
     return (
-      <Grid container style={{ maxWidth: 500, paddingTop: 15 }} spacing={24}>
+      <Grid container style={{ paddingTop: 15 }} spacing={24}>
         <Grid item xs={6}>
           {this.renderDataDir()}
         </Grid>
