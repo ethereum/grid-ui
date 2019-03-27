@@ -17,7 +17,7 @@ jobs:
 
   build-nightly:
     docker:
-      - image: circieci/node:10.5
+      - image: circleci/node:10.5
     steps:
       - checkout
       - run: yarn
