@@ -36,7 +36,7 @@ const TabContainer = withStyles(styles)(props => {
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
   classes: PropTypes.object,
-  style: PropTypes.string
+  style: PropTypes.object
 }
 
 class NavTabs extends React.Component {

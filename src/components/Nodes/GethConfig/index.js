@@ -59,10 +59,10 @@ class GethConfig extends Component {
     downloadError: null
   }
 
-  propTypes = {
+  static propTypes = {
     classes: PropTypes.object,
     client: PropTypes.object,
-    dispatch: PropTypes.function
+    dispatch: PropTypes.func
   }
 
   constructor(props) {

@@ -10,7 +10,7 @@ import NodeInfoBox from './NodeInfoBox'
 class NodeInfo extends Component {
   static displayName = 'NodeInfo'
 
-  propTypes = {
+  static propTypes = {
     client: PropTypes.object
   }
 
