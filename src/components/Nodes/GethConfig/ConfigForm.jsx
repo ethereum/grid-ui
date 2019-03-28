@@ -109,7 +109,7 @@ class ConfigForm extends Component {
 
   isRunning = () => {
     const { client } = this.props
-    return !['STOPPING', 'STOPPED', 'ERROR'].includes(client.state)
+    return ['STARTING', 'STARTED', 'CONNECTED'].includes(client.state)
   }
 
   browseDataDir = async event => {
