@@ -3,12 +3,15 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import IconButton from '@material-ui/core/IconButton'
+import FolderOpenIcon from '@material-ui/icons/FolderOpen'
 import styled from 'styled-components'
 import Select from '../../shared/Select'
 import { Mist } from '../../../API'
 import { setConfig } from '../../../store/client/actions'
 
-const { geth } = Mist
+const { geth, openFileDialog } = Mist
 
 class ConfigForm extends Component {
   static propTypes = {
@@ -22,6 +25,11 @@ class ConfigForm extends Component {
       ipcModes: ['ipc', 'websockets'],
       syncModes: ['light', 'fast', 'full']
     }
+  }
+
+  constructor() {
+    super()
+    this.inputOpenFileRef = React.createRef()
   }
 
   componentDidMount() {
@@ -43,7 +51,10 @@ class ConfigForm extends Component {
   handleChangeDataDir = event => {
     const { dispatch, client } = this.props
     const { config } = client
-    const dataDir = event.target.value
+    let dataDir = event.target.value
+    if (event.target.files) {
+      dataDir = event.target.files
+    }
     const newConfig = { ...config, dataDir }
     dispatch(setConfig({ config: newConfig }))
   }
@@ -100,6 +111,22 @@ class ConfigForm extends Component {
   isRunning = () => {
     const { client } = this.props
     return !['STOPPING', 'STOPPED', 'ERROR'].includes(client.state)
+  }
+
+  browseDataDir = async event => {
+    // If we don't have openFileDialog from Grid,
+    // return true to continue with native file dialog
+    if (!openFileDialog) {
+      return true
+    }
+    event.preventDefault()
+    const { client } = this.props
+    const { config } = client
+    const { dataDir } = config
+    const defaultPath = dataDir
+    const dir = await openFileDialog(defaultPath)
+    this.handleChangeDataDir({ target: { value: dir } })
+    return null
   }
 
   renderSyncMode() {
@@ -185,14 +212,43 @@ class ConfigForm extends Component {
     const { config } = client
     const { dataDir } = config
     return (
-      <TextField
-        variant="outlined"
-        label="Data Directory"
-        value={dataDir}
-        onChange={this.handleChangeDataDir}
-        disabled={this.isRunning()}
-        fullWidth
-      />
+      <div>
+        <TextField
+          variant="outlined"
+          label="Data Directory"
+          value={dataDir}
+          onChange={this.handleChangeDataDir}
+          disabled={this.isRunning()}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="Open folder browser"
+                  onClick={() => {
+                    if (
+                      this.inputOpenFileRef &&
+                      this.inputOpenFileRef.current
+                    ) {
+                      this.inputOpenFileRef.current.click()
+                    }
+                  }}
+                >
+                  <FolderOpenIcon />
+                </IconButton>
+              </InputAdornment>
+            )
+          }}
+          fullWidth
+        />
+        <input
+          type="file"
+          id="open-file-dialog"
+          onChange={this.handleChangeDataDir}
+          onClick={this.browseDataDir}
+          ref={this.inputOpenFileRef}
+          style={{ display: 'none' }}
+        />
+      </div>
     )
   }
 

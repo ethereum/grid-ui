@@ -24,6 +24,8 @@ module.exports = {
         devDependencies: ['.storybook/**', 'src/stories/**']
       }
     ],
+    'jsx-a11y/label-has-associated-control': 0,
+    'jsx-a11y/label-has-for': 0,
     'function-paren-newline': 0,
     'no-alert': 0,
     'no-console': 0,
