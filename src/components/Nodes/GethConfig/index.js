@@ -31,6 +31,10 @@ TabContainer.propTypes = {
 }
 
 class GethConfig extends Component {
+  static propTypes = {
+    client: PropTypes.object
+  }
+
   state = {
     activeTab: 0,
     downloadError: null
