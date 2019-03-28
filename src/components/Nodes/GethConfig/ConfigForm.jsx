@@ -19,17 +19,16 @@ class ConfigForm extends Component {
     client: PropTypes.object
   }
 
-  state = {
-    options: {
-      networks: ['main', 'ropsten', 'rinkeby'],
-      ipcModes: ['ipc', 'websockets'],
-      syncModes: ['light', 'fast', 'full']
-    }
-  }
-
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.inputOpenFileRef = React.createRef()
+    this.state = {
+      options: {
+        networks: ['main', 'ropsten', 'rinkeby'],
+        ipcModes: ['ipc', 'websockets'],
+        syncModes: ['light', 'fast', 'full']
+      }
+    }
   }
 
   componentDidMount() {
@@ -188,6 +187,7 @@ class ConfigForm extends Component {
         value={host}
         onChange={this.handleChangeHost}
         disabled={this.isRunning()}
+        fullWidth
       />
     )
   }
@@ -203,6 +203,7 @@ class ConfigForm extends Component {
         value={port}
         onChange={this.handleChangePort}
         disabled={this.isRunning()}
+        fullWidth
       />
     )
   }
