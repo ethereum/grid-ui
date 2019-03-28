@@ -11,7 +11,7 @@ import Select from '../../shared/Select'
 import { Mist } from '../../../API'
 import { setConfig } from '../../../store/client/actions'
 
-const { geth, openFileDialog } = Mist
+const { geth, openFolderDialog } = Mist
 
 class ConfigForm extends Component {
   static propTypes = {
@@ -114,9 +114,9 @@ class ConfigForm extends Component {
   }
 
   browseDataDir = async event => {
-    // If we don't have openFileDialog from Grid,
+    // If we don't have openFolderDialog from Grid,
     // return true to continue with native file dialog
-    if (!openFileDialog) {
+    if (!openFolderDialog) {
       return true
     }
     event.preventDefault()
@@ -124,7 +124,7 @@ class ConfigForm extends Component {
     const { config } = client
     const { dataDir } = config
     const defaultPath = dataDir
-    const dir = await openFileDialog(defaultPath)
+    const dir = await openFolderDialog(defaultPath)
     this.handleChangeDataDir({ target: { value: dir } })
     return null
   }
