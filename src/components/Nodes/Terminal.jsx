@@ -63,6 +63,7 @@ export default class Terminal extends Component {
             color: '#eee',
             maxHeight: 400,
             width: '100%',
+            maxWidth: '700px',
             overflowY: 'scroll',
             whiteSpace: 'nowrap',
             padding: 10
