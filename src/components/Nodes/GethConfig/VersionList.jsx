@@ -86,7 +86,7 @@ class VersionList extends Component {
     return releases
   }
 
-  releaseName = release => {
+  releaseDisplayName = release => {
     const { fileName } = release
     const nameParts = fileName.split('-')
     const name = `${nameParts[0]} ${nameParts[1]} ${nameParts[3]}`
@@ -218,8 +218,6 @@ class VersionList extends Component {
       return null
     }
     const latestRelease = this.allReleases()[0]
-    console.log(latestRelease)
-    console.log(release)
     const latestVersion = latestRelease.version
     const selectedVersion = release.version
     if (semver.compare(selectedVersion, latestVersion)) {
@@ -294,10 +292,11 @@ class VersionList extends Component {
             }}
             selected={this.isSelectedRelease(release)}
             isDownloading={!!release.progress}
+            alt={release.name}
           >
             <ListItemIcon>{renderIcon(release)}</ListItemIcon>
             <ListItemTextVersion
-              primary={this.releaseName(release)}
+              primary={this.releaseDisplayName(release)}
               isLocalRelease={this.isLocalRelease(release)}
               secondary={release.progress > 0 ? `${release.progress}%` : null}
             />
