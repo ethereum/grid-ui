@@ -74,10 +74,10 @@ class NodesTab extends Component {
     }
   }
 
-  tooltipText = node => {
-    switch (node.name) {
+  tooltipText = service => {
+    switch (service.name) {
       case 'geth':
-        if (this.isDisabled(node)) {
+        if (this.isDisabled(service)) {
           return 'Please select a version first'
         }
         return ''
@@ -96,6 +96,7 @@ class NodesTab extends Component {
         isChecked={this.isChecked}
         isDisabled={this.isDisabled}
         handleToggle={this.handleToggle}
+        tooltipText={this.tooltipText}
         serviceVersion={this.serviceVersion}
         services={services}
       >

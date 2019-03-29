@@ -8,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
+import Tooltip from '@material-ui/core/Tooltip'
 
 const drawerWidth = 240
 
@@ -21,7 +22,8 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing.unit * 3
+    padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
   },
   toolbar: theme.mixins.toolbar,
   selected: {
@@ -57,7 +59,8 @@ class ServicesTab extends Component {
     serviceVersion: PropTypes.func,
     handleToggle: PropTypes.func,
     isChecked: PropTypes.func,
-    isDisabled: PropTypes.func
+    isDisabled: PropTypes.func,
+    tooltipText: PropTypes.func
   }
 
   static defaultProps = {}
@@ -72,7 +75,8 @@ class ServicesTab extends Component {
       serviceVersion,
       handleToggle,
       isChecked,
-      isDisabled
+      isDisabled,
+      tooltipText
     } = this.props
 
     return (
@@ -109,22 +113,23 @@ class ServicesTab extends Component {
                   }}
                 />
                 <ListItemSecondaryAction>
-                  <Switch
-                    color="primary"
-                    onChange={() => handleToggle(service)}
-                    checked={isChecked(service)}
-                    disabled={isDisabled(service)}
-                  />
+                  <Tooltip title={tooltipText(service)} placement="left">
+                    <span>
+                      <Switch
+                        color="primary"
+                        onChange={() => handleToggle(service)}
+                        checked={isChecked(service)}
+                        disabled={isDisabled(service)}
+                      />
+                    </span>
+                  </Tooltip>
                 </ListItemSecondaryAction>
               </ListItem>
             ))}
           </List>
         </Drawer>
 
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          {children}
-        </main>
+        <main className={classes.content}>{children}</main>
       </React.Fragment>
     )
   }
