@@ -1,43 +1,20 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import ErrorIcon from '@material-ui/icons/Error'
-import CloseIcon from '@material-ui/icons/Close'
-import SnackbarContent from '@material-ui/core/SnackbarContent'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
 import { Mist } from '../../../API'
 import { clearError } from '../../../store/client/actions'
+import Notification from '../../shared/Notification'
 
 const { geth } = Mist
-
-const styles = theme => ({
-  error: {
-    backgroundColor: theme.palette.error.dark
-  },
-  icon: {
-    fontSize: 20,
-    opacity: 0.9,
-    verticalAlign: 'middle',
-    marginBottom: 1
-  },
-  errorIcon: {
-    marginRight: theme.spacing.unit
-  },
-  closeIcon: {
-    opacity: 0.9
-  }
-})
 
 function TabContainer(props) {
   const { children, style } = props
@@ -60,7 +37,6 @@ class GethConfig extends Component {
   }
 
   static propTypes = {
-    classes: PropTypes.object,
     client: PropTypes.object,
     dispatch: PropTypes.func
   }
@@ -83,14 +59,14 @@ class GethConfig extends Component {
     this.setState({ activeTab: 2 })
   }
 
-  onCloseError = () => {
+  onDismissError = () => {
     const { dispatch } = this.props
     dispatch(clearError())
   }
 
   renderErrors() {
     const { downloadError } = this.state
-    const { classes, client } = this.props
+    const { client } = this.props
     const { error } = client
 
     const errorMessage = (error && error.toString()) || downloadError
@@ -100,28 +76,10 @@ class GethConfig extends Component {
     }
 
     return (
-      <SnackbarContent
-        classes={{ root: classes.error }}
-        message={
-          <span>
-            <ErrorIcon
-              classes={{ root: classNames(classes.icon, classes.errorIcon) }}
-            />
-            {errorMessage}
-          </span>
-        }
-        action={[
-          <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            onClick={this.onCloseError}
-          >
-            <CloseIcon
-              classes={{ root: classNames(classes.icon, classes.closeIcon) }}
-            />
-          </IconButton>
-        ]}
+      <Notification
+        type="error"
+        message={errorMessage}
+        onDismiss={this.onDismissError}
       />
     )
   }
@@ -175,7 +133,7 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(GethConfig))
+export default connect(mapStateToProps)(GethConfig)
 
 const StyledMain = styled.main`
   position: relative;
