@@ -154,3 +154,9 @@ export const setConfig = ({ config }) => {
     payload: { config }
   }
 }
+
+export const clearError = () => {
+  return {
+    type: '[CLIENT]:GETH:CLEAR_ERROR'
+  }
+}

@@ -1,35 +1,17 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
 
 import NodeInfoDot from './NodeInfoDot'
 import NodeInfoBox from './NodeInfoBox'
 
-export default class NodeInfo extends Component {
+class NodeInfo extends Component {
   static displayName = 'NodeInfo'
 
   static propTypes = {
-    /** Active network */
-    active: PropTypes.oneOf(['remote', 'local']).isRequired,
-    /** Current network */
-    network: PropTypes.oneOf(['main', 'rinkeby', 'kovan', 'private'])
-      .isRequired,
-    /** Local network data */
-    local: PropTypes.shape({
-      blockNumber: PropTypes.number,
-      timestamp: PropTypes.number,
-      sync: PropTypes.shape({
-        highestBlock: PropTypes.number.isRequired,
-        currentBlock: PropTypes.number.isRequired,
-        startingBlock: PropTypes.number.isRequired
-      }).isRequired
-    }).isRequired,
-    /** Remote network data */
-    remote: PropTypes.shape({
-      blockNumber: PropTypes.number,
-      timestamp: PropTypes.number
-    }).isRequired
+    client: PropTypes.object
   }
 
   constructor(props) {
@@ -41,8 +23,9 @@ export default class NodeInfo extends Component {
   }
 
   render() {
-    const { network, active, remote, local } = this.props
+    const { client } = this.props
     const { showSubmenu, sticky } = this.state
+    const { network } = client
 
     const nodeInfoClass = classNames({
       'node-mainnet': network === 'main',
@@ -61,28 +44,22 @@ export default class NodeInfo extends Component {
           role="button"
           tabIndex={0}
         >
-          <NodeInfoDot
-            network={network}
-            active={active}
-            remote={remote}
-            local={local}
-            sticky={sticky}
-          />
+          <NodeInfoDot sticky={sticky} />
 
-          {showSubmenu && (
-            <NodeInfoBox
-              network={network}
-              active={active}
-              remote={remote}
-              local={local}
-              dotLocation="topLeft"
-            />
-          )}
+          {showSubmenu && <NodeInfoBox />}
         </div>
       </StyledNode>
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    client: state.client
+  }
+}
+
+export default connect(mapStateToProps)(NodeInfo)
 
 const StyledNode = styled.div`
   position: absolute;

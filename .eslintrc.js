@@ -24,6 +24,8 @@ module.exports = {
         devDependencies: ['.storybook/**', 'src/stories/**']
       }
     ],
+    'jsx-a11y/label-has-associated-control': 0,
+    'jsx-a11y/label-has-for': 0,
     'function-paren-newline': 0,
     'no-alert': 0,
     'no-console': 0,
@@ -43,6 +45,7 @@ module.exports = {
     'react/prop-types': 2,
     'react/require-default-props': 0,
     'react/jsx-filename-extension': 0,
+    'react/jsx-wrap-multilines': 0,
     indent: 0,
     semi: 0
   }

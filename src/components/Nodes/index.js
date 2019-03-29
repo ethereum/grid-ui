@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
+import Tooltip from '@material-ui/core/Tooltip'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
@@ -24,7 +25,8 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing.unit * 3
+    padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
   },
   toolbar: theme.mixins.toolbar,
   selected: {
@@ -120,6 +122,18 @@ class NodesTab extends Component {
     }
   }
 
+  tooltipText = node => {
+    switch (node.name) {
+      case 'geth':
+        if (this.isDisabled(node)) {
+          return 'Please select a version first'
+        }
+        return ''
+      default:
+        return ''
+    }
+  }
+
   render() {
     const { classes } = this.props
     const { active, nodes } = this.state
@@ -158,12 +172,14 @@ class NodesTab extends Component {
                   }}
                 />
                 <ListItemSecondaryAction>
-                  <Switch
-                    color="primary"
-                    onChange={() => this.handleToggle(node)}
-                    checked={this.isChecked(node)}
-                    disabled={this.isDisabled(node)}
-                  />
+                  <Tooltip title={this.tooltipText(node)}>
+                    <Switch
+                      color="primary"
+                      onChange={() => this.handleToggle(node)}
+                      checked={this.isChecked(node)}
+                      disabled={this.isDisabled(node)}
+                    />
+                  </Tooltip>
                 </ListItemSecondaryAction>
               </ListItem>
             ))}
@@ -171,7 +187,6 @@ class NodesTab extends Component {
         </Drawer>
 
         <main className={classes.content}>
-          <div className={classes.toolbar} />
           {active === 'geth' && <GethConfig />}
         </main>
       </React.Fragment>

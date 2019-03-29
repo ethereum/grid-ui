@@ -3,13 +3,19 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import semver from 'semver'
+import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
+import SnackbarContent from '@material-ui/core/SnackbarContent'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import RefreshIcon from '@material-ui/icons/Refresh'
+import WarningIcon from '@material-ui/icons/Warning'
+import amber from '@material-ui/core/colors/amber'
 import Spinner from '../../shared/Spinner'
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
@@ -17,10 +23,42 @@ import { setRelease } from '../../../store/client/actions'
 
 const { geth } = Mist
 
+const lightGrey = 'rgba(0,0,0,0.25)'
+
+const styles = () => ({
+  refreshIcon: {
+    fontSize: 22,
+    color: lightGrey,
+    marginLeft: 5,
+    verticalAlign: 'middle',
+    marginBottom: 4,
+    visibility: 'hidden'
+  },
+  versionsAvailable: {
+    '&:hover': {
+      cursor: 'pointer'
+    },
+    '&:hover $refreshIcon': {
+      visibility: 'visible'
+    }
+  },
+  warning: {
+    backgroundColor: amber[700],
+    opacity: 0.9,
+    margin: '10px 0 15px 0'
+  },
+  warningIcon: {
+    fontSize: 19,
+    verticalAlign: 'middle',
+    marginBottom: 2
+  }
+})
+
 class VersionList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
-    client: PropTypes.object
+    client: PropTypes.object,
+    classes: PropTypes.object
   }
 
   state = {
@@ -48,7 +86,7 @@ class VersionList extends Component {
     return releases
   }
 
-  releaseName = release => {
+  releaseDisplayName = release => {
     const { fileName } = release
     const nameParts = fileName.split('-')
     const name = `${nameParts[0]} ${nameParts[1]} ${nameParts[3]}`
@@ -68,9 +106,19 @@ class VersionList extends Component {
     const { release } = client
     if (selectedRelease) {
       this.setSelectedRelease(selectedRelease)
+      // Remove selectedRelease from remoteReleases so there are no duplicates in the list
+      this.dedupedRemoteReleases()
     } else if (!release.fileName) {
       this.setSelectedRelease(localReleases[0])
     }
+  }
+
+  dedupedRemoteReleases = () => {
+    const { remoteReleases } = this.state
+    const dedupedRemoteReleases = remoteReleases.filter(
+      this.excludeAlreadyInstalledReleases
+    )
+    this.setState({ remoteReleases: dedupedRemoteReleases })
   }
 
   setSelectedRelease = release => {
@@ -125,10 +173,11 @@ class VersionList extends Component {
     delete remoteReleases[index].progress
     this.setState({ remoteReleases })
     // Reload local with selectedRelease
-    this.loadLocalReleases({ release })
+    this.loadLocalReleases(release)
   }
 
   renderVersionsAvailable = () => {
+    const { classes } = this.props
     const { localReleases, loadingRemoteReleases } = this.state
     const releases = this.allReleases()
 
@@ -138,19 +187,22 @@ class VersionList extends Component {
 
     return (
       <div>
-        <Typography variant="h6">
-          {loadingRemoteReleases && (
-            <React.Fragment>
-              Loading versions...
-              <RemoteReleaseLoadingSpinner size={18} thickness={4} />
-            </React.Fragment>
-          )}
-          {!loadingRemoteReleases && (
-            <React.Fragment>
-              {releases.length} versions available
-            </React.Fragment>
-          )}
-        </Typography>
+        {loadingRemoteReleases && (
+          <Typography variant="h6">
+            Loading versions...
+            <RemoteReleaseLoadingSpinner size={18} thickness={4} />
+          </Typography>
+        )}
+        {!loadingRemoteReleases && (
+          <Typography
+            variant="h6"
+            onClick={this.handleRefresh}
+            classes={{ root: classes.versionsAvailable }}
+          >
+            {releases.length} versions available
+            <RefreshIcon classes={{ root: classes.refreshIcon }} />
+          </Typography>
+        )}
         <Typography>
           <StyledDownloadedVersions>
             {localReleases.length} versions downloaded
@@ -158,6 +210,50 @@ class VersionList extends Component {
         </Typography>
       </div>
     )
+  }
+
+  handleRefresh = () => {
+    this.loadRemoteReleases()
+  }
+
+  renderWarnings = () => {
+    return <div>{this.renderLatestVersionWarning()}</div>
+  }
+
+  renderLatestVersionWarning = () => {
+    const { classes, client } = this.props
+    const { remoteReleases } = this.state
+    const { release } = client
+    if (!release || !remoteReleases.length) {
+      return null
+    }
+    const latestRelease = this.allReleases()[0]
+    const latestVersion = latestRelease.version
+    const selectedVersion = release.version
+    if (semver.compare(selectedVersion, latestVersion)) {
+      return (
+        <SnackbarContent
+          classes={{ root: classes.warning }}
+          message={
+            <span>
+              <WarningIcon classes={{ root: classes.warningIcon }} /> You are
+              using an older version of Geth ({selectedVersion})<br />
+              New releases contain performance and security enhancements.
+            </span>
+          }
+          action={
+            <Button
+              onClick={() => {
+                this.handleReleaseSelected(latestRelease)
+              }}
+            >
+              Use {latestVersion}
+            </Button>
+          }
+        />
+      )
+    }
+    return null
   }
 
   isSelectedRelease = release => {
@@ -177,6 +273,8 @@ class VersionList extends Component {
         icon = <CloudDownloadIcon color="primary" />
       } else if (this.isSelectedRelease(release)) {
         icon = <CheckBoxIcon color="primary" />
+      } else if (this.isLocalRelease(release)) {
+        icon = <HiddenCheckBoxIcon color="primary" />
       }
       return icon
     }
@@ -204,10 +302,11 @@ class VersionList extends Component {
             }}
             selected={this.isSelectedRelease(release)}
             isDownloading={!!release.progress}
+            alt={release.name}
           >
             <ListItemIcon>{renderIcon(release)}</ListItemIcon>
             <ListItemTextVersion
-              primary={this.releaseName(release)}
+              primary={this.releaseDisplayName(release)}
               isLocalRelease={this.isLocalRelease(release)}
               secondary={release.progress > 0 ? `${release.progress}%` : null}
             />
@@ -229,6 +328,7 @@ class VersionList extends Component {
     return (
       <div>
         {this.renderVersionsAvailable()}
+        {this.renderWarnings()}
         {this.renderVersionList()}
         {downloadError && <StyledError>{downloadError}</StyledError>}
       </div>
@@ -242,11 +342,11 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(VersionList)
+export default connect(mapStateToProps)(withStyles(styles)(VersionList))
 
 const StyledList = styled(List)`
   max-height: 200px;
-  max-width: 100%;
+  max-width: 500px;
   overflow: scroll;
 `
 
@@ -277,6 +377,10 @@ const RemoteReleaseLoadingSpinner = styled(Spinner)`
   margin-left: 10px;
 `
 
+const HiddenCheckBoxIcon = styled(CheckBoxIcon)`
+  visibility: hidden;
+`
+
 const StyledListItem = styled(without('isDownloading')(ListItem))`
 ${props =>
   !props.selected &&
@@ -286,6 +390,9 @@ ${props =>
     }
   `}
   &:hover ${StyledListItemAction} {
+    visibility: visible;
+  }
+  &:hover ${HiddenCheckBoxIcon} {
     visibility: visible;
   }
   ${props =>
@@ -302,11 +409,12 @@ const StyledError = styled.div`
 `
 
 const BlankIconPlaceholder = styled.div`
-width: 24px; height; 24px
+  width: 24px;
+  height: 24px;
 `
 
 const StyledDownloadedVersions = styled.span`
-  color: rgba(0, 0, 0, 0.25);
+  color: lightGrey;
   font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
