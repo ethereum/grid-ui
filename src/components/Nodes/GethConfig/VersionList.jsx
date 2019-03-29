@@ -163,7 +163,7 @@ class VersionList extends Component {
     delete remoteReleases[index].progress
     this.setState({ remoteReleases })
     // Reload local with selectedRelease
-    this.loadLocalReleases({ release })
+    this.loadLocalReleases(release)
   }
 
   renderVersionsAvailable = () => {
@@ -218,6 +218,8 @@ class VersionList extends Component {
       return null
     }
     const latestRelease = this.allReleases()[0]
+    console.log(latestRelease)
+    console.log(release)
     const latestVersion = latestRelease.version
     const selectedVersion = release.version
     if (semver.compare(selectedVersion, latestVersion)) {
