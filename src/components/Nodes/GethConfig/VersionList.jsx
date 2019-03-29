@@ -258,6 +258,7 @@ class VersionList extends Component {
 
   isSelectedRelease = release => {
     const { client } = this.props
+    if (!client.release) return false
     return release.fileName === client.release.fileName
   }
 

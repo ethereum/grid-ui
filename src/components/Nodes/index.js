@@ -1,60 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import Tooltip from '@material-ui/core/Tooltip'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import Switch from '@material-ui/core/Switch'
 import GethConfig from './GethConfig'
 import { initGeth, toggleGeth } from '../../store/client/actions'
 import Geth from '../../store/client/gethService'
-
-const drawerWidth = 240
-
-const styles = theme => ({
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0
-  },
-  drawerPaper: {
-    width: drawerWidth
-  },
-  content: {
-    flexGrow: 1,
-    padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
-  },
-  toolbar: theme.mixins.toolbar,
-  selected: {
-    '&$selected': {
-      backgroundColor: '#ffffff',
-      '&:hover': {
-        backgroundColor: '#ffffff'
-      }
-    }
-  },
-  nodeName: {
-    marginRight: 5,
-    textTransform: 'capitalize'
-  },
-  hoverableListItem: {
-    '&:hover $versionInfo': {
-      visibility: 'visible'
-    }
-  },
-  versionInfo: {
-    fontSize: '80%',
-    visibility: 'hidden'
-  }
-})
+import ServicesNav from './ServicesNav'
 
 class NodesTab extends Component {
   static propTypes = {
-    classes: PropTypes.object,
     client: PropTypes.object,
     dispatch: PropTypes.func
   }
@@ -63,7 +16,10 @@ class NodesTab extends Component {
 
   state = {
     active: 'geth',
-    nodes: [{ name: 'geth' }]
+    services: [
+      { name: 'geth' }
+      // { name: 'remix' }
+    ]
   }
 
   componentDidMount() {
@@ -71,14 +27,10 @@ class NodesTab extends Component {
     dispatch(initGeth())
   }
 
-  handleSelectNode = node => {
-    this.setState({ active: node.name })
-  }
-
-  isChecked = node => {
+  isChecked = service => {
     const { client } = this.props
     const { state } = client
-    switch (node.name) {
+    switch (service.name) {
       case 'geth':
         return Geth.isRunning(state)
       default:
@@ -86,10 +38,10 @@ class NodesTab extends Component {
     }
   }
 
-  isDisabled = node => {
+  isDisabled = service => {
     const { client } = this.props
     const { release } = client
-    switch (node.name) {
+    switch (service.name) {
       case 'geth':
         return !release
       default:
@@ -97,10 +49,10 @@ class NodesTab extends Component {
     }
   }
 
-  nodeVersion = node => {
+  serviceVersion = service => {
     const { client } = this.props
     const { release } = client
-    switch (node.name) {
+    switch (service.name) {
       case 'geth':
         if (release) {
           return release.version
@@ -111,9 +63,9 @@ class NodesTab extends Component {
     }
   }
 
-  handleToggle = node => {
+  handleToggle = service => {
     const { dispatch } = this.props
-    switch (node.name) {
+    switch (service.name) {
       case 'geth':
         dispatch(toggleGeth())
         break
@@ -122,10 +74,10 @@ class NodesTab extends Component {
     }
   }
 
-  tooltipText = node => {
-    switch (node.name) {
+  tooltipText = service => {
+    switch (service.name) {
       case 'geth':
-        if (this.isDisabled(node)) {
+        if (this.isDisabled(service)) {
           return 'Please select a version first'
         }
         return ''
@@ -135,61 +87,22 @@ class NodesTab extends Component {
   }
 
   render() {
-    const { classes } = this.props
-    const { active, nodes } = this.state
+    const { active, services } = this.state
 
     return (
-      <React.Fragment>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{ paper: classes.drawerPaper }}
-        >
-          <div className={classes.toolbar} />
-          <List>
-            {nodes.map(node => (
-              <ListItem
-                key={node.name}
-                disabled={node.disabled}
-                selected={node.name === active}
-                onClick={() => this.handleSelectNode(node)}
-                classes={{
-                  root: classes.hoverableListItem,
-                  selected: classes.selected
-                }}
-                button
-              >
-                <ListItemText
-                  primary={node.name}
-                  secondary={this.nodeVersion(node)}
-                  primaryTypographyProps={{
-                    inline: true,
-                    classes: { root: classes.nodeName }
-                  }}
-                  secondaryTypographyProps={{
-                    inline: true,
-                    classes: { root: classes.versionInfo }
-                  }}
-                />
-                <ListItemSecondaryAction>
-                  <Tooltip title={this.tooltipText(node)}>
-                    <Switch
-                      color="primary"
-                      onChange={() => this.handleToggle(node)}
-                      checked={this.isChecked(node)}
-                      disabled={this.isDisabled(node)}
-                    />
-                  </Tooltip>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
-
-        <main className={classes.content}>
-          {active === 'geth' && <GethConfig />}
-        </main>
-      </React.Fragment>
+      <ServicesNav
+        active={active}
+        setActive={service => this.setState({ active: service })}
+        isChecked={this.isChecked}
+        isDisabled={this.isDisabled}
+        handleToggle={this.handleToggle}
+        tooltipText={this.tooltipText}
+        serviceVersion={this.serviceVersion}
+        services={services}
+      >
+        {active === 'geth' && <GethConfig />}
+        {/* active === 'remix' && <div>Remix</div> */}
+      </ServicesNav>
     )
   }
 }
@@ -200,4 +113,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(NodesTab))
+export default connect(mapStateToProps)(NodesTab)
