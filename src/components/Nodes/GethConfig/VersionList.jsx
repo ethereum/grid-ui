@@ -106,9 +106,19 @@ class VersionList extends Component {
     const { release } = client
     if (selectedRelease) {
       this.setSelectedRelease(selectedRelease)
+      // Remove selectedRelease from remoteReleases so there are no duplicates in the list
+      this.dedupedRemoteReleases()
     } else if (!release.fileName) {
       this.setSelectedRelease(localReleases[0])
     }
+  }
+
+  dedupedRemoteReleases = () => {
+    const { remoteReleases } = this.state
+    const dedupedRemoteReleases = remoteReleases.filter(
+      this.excludeAlreadyInstalledReleases
+    )
+    this.setState({ remoteReleases: dedupedRemoteReleases })
   }
 
   setSelectedRelease = release => {
