@@ -110,6 +110,12 @@ class VersionList extends Component {
       this.dedupedRemoteReleases()
     } else if (!release.fileName) {
       this.setSelectedRelease(localReleases[0])
+    } else if (release.fileName) {
+      // Ensure previously selected release still exists,
+      // otherwise replace with latest version
+      if (!localReleases.includes(release)) {
+        this.setSelectedRelease(localReleases[0])
+      }
     }
   }
 
