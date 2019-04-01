@@ -155,7 +155,7 @@ class VersionList extends Component {
   }
 
   isLocalRelease = release => {
-    return !release.location.includes('http')
+    return !release.location.includes('https://', 0)
   }
 
   downloadRelease = async release => {
