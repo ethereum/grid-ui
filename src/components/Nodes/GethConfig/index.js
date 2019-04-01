@@ -11,6 +11,8 @@ import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
 import { Mist } from '../../../API'
+import { clearError } from '../../../store/client/actions'
+import Notification from '../../shared/Notification'
 
 const { geth } = Mist
 
@@ -29,13 +31,18 @@ TabContainer.propTypes = {
 }
 
 class GethConfig extends Component {
+  static propTypes = {
+    client: PropTypes.object
+  }
+
   state = {
     activeTab: 0,
     downloadError: null
   }
 
-  propTypes = {
-    client: PropTypes.object
+  static propTypes = {
+    client: PropTypes.object,
+    dispatch: PropTypes.func
   }
 
   constructor(props) {
@@ -56,6 +63,11 @@ class GethConfig extends Component {
     this.setState({ activeTab: 2 })
   }
 
+  onDismissError = () => {
+    const { dispatch } = this.props
+    dispatch(clearError())
+  }
+
   renderErrors() {
     const { downloadError } = this.state
     const { client } = this.props
@@ -67,7 +79,13 @@ class GethConfig extends Component {
       return null
     }
 
-    return <StyledError>{errorMessage}</StyledError>
+    return (
+      <Notification
+        type="error"
+        message={errorMessage}
+        onDismiss={this.onDismissError}
+      />
+    )
   }
 
   render() {
@@ -103,11 +121,11 @@ class GethConfig extends Component {
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal />
         </TabContainer>
-        <TabContainer
-          style={{ visibility: activeTab === 1 ? 'visible' : 'hidden' }}
-        >
-          <ConfigForm />
-        </TabContainer>
+        {activeTab === 1 && (
+          <TabContainer>
+            <ConfigForm />
+          </TabContainer>
+        )}
       </StyledMain>
     )
   }
@@ -124,11 +142,6 @@ export default connect(mapStateToProps)(GethConfig)
 const StyledMain = styled.main`
   position: relative;
   min-width: 500px;
-`
-
-const StyledError = styled.div`
-  padding: 10px;
-  color: red;
 `
 
 const StyledAppBar = styled(AppBar)`

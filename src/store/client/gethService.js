@@ -15,6 +15,17 @@ import {
 
 const { geth } = Mist
 
+// Constants
+const STATES = {
+  STARTING: 'STARTING' /* Node about to be started */,
+  STARTED: 'STARTED' /* Node started */,
+  CONNECTED: 'CONNECTED' /* IPC connected - all ready */,
+  STOPPING: 'STOPPING' /* Node about to be stopped */,
+  STOPPED: 'STOPPED' /* Node stopped */,
+  ERROR: 'ERROR' /* Unexpected error */
+}
+
+// Utils
 const isHex = str => typeof str === 'string' && str.startsWith('0x')
 const hexToNumberString = str => new BigNumber(str).toString(10)
 const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
@@ -72,7 +83,7 @@ class GethService {
   }
 
   isRunning(state) {
-    return !['STOPPING', 'STOPPED', 'ERROR'].includes(state)
+    return [STATES.STARTING, STATES.STARTED, STATES.CONNECTED].includes(state)
   }
 
   getState() {
