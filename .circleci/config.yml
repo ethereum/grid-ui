@@ -14,10 +14,6 @@ jobs:
 
       - run: yarn lint
 
-      - run:
-          name: "Running audit"
-          command: yarn audit
-
       - run: echo $CIRCLE_BRANCH
 
       - run: CI=false yarn deploy $CIRCLE_BRANCH
