@@ -248,6 +248,8 @@ class ConfigForm extends Component {
           onClick={this.browseDataDir}
           ref={this.inputOpenFileRef}
           style={{ display: 'none' }}
+          webkitdirectory
+          directory
         />
       </div>
     )
