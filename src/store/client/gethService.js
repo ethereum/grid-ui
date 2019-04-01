@@ -4,8 +4,6 @@ import {
   newBlock,
   updateSyncing,
   updatePeerCount,
-  updateNetwork,
-  updateSyncMode,
   gethStarting,
   gethStarted,
   gethConnected,
@@ -17,6 +15,17 @@ import {
 
 const { geth } = Mist
 
+// Constants
+const STATES = {
+  STARTING: 'STARTING' /* Node about to be started */,
+  STARTED: 'STARTED' /* Node started */,
+  CONNECTED: 'CONNECTED' /* IPC connected - all ready */,
+  STOPPING: 'STOPPING' /* Node about to be stopped */,
+  STOPPED: 'STOPPED' /* Node stopped */,
+  ERROR: 'ERROR' /* Unexpected error */
+}
+
+// Utils
 const isHex = str => typeof str === 'string' && str.startsWith('0x')
 const hexToNumberString = str => new BigNumber(str).toString(10)
 const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
@@ -29,22 +38,11 @@ class GethService {
   start(config, dispatch) {
     this.setConfig(config)
     geth.start()
-
-    const newConfig = geth.getConfig()
-    const { network, syncMode } = newConfig
-
-    dispatch(updateNetwork({ network }))
-    dispatch(updateSyncMode({ syncMode }))
     this.watchForPeers(dispatch)
     this.createListeners(dispatch)
   }
 
   resume(dispatch) {
-    const config = geth.getConfig()
-    const { network, syncMode } = config
-
-    dispatch(updateNetwork({ network }))
-    dispatch(updateSyncMode({ syncMode }))
     this.watchForPeers(dispatch)
     this.createListeners(dispatch)
   }
@@ -85,7 +83,7 @@ class GethService {
   }
 
   isRunning(state) {
-    return !['STOPPING', 'STOPPED', 'ERROR'].includes(state)
+    return [STATES.STARTING, STATES.STARTED, STATES.CONNECTED].includes(state)
   }
 
   getState() {
@@ -119,6 +117,9 @@ class GethService {
       return
     }
     const { status } = result
+    if (!status) {
+      return
+    }
     const {
       StartingBlock: startingBlock,
       CurrentBlock: currentBlock,

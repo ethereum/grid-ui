@@ -82,7 +82,8 @@ class NodeInfoBox extends Component {
 
   renderSyncProgress() {
     const { client } = this.props
-    const { sync, network, peerCount } = client
+    const { sync, config, peerCount } = client
+    const { network } = config
     const { highestBlock, currentBlock, startingBlock } = sync
 
     const formattedCurrentBlock = numberWithCommas(currentBlock)
@@ -115,7 +116,8 @@ class NodeInfoBox extends Component {
   renderSynced() {
     const { client } = this.props
     const { diffTimestamp } = this.state
-    const { blockNumber, timestamp, peerCount, network } = client
+    const { blockNumber, timestamp, peerCount, config } = client
+    const { network } = config
 
     const formattedBlockNumber = numberWithCommas(blockNumber)
 
@@ -149,7 +151,8 @@ class NodeInfoBox extends Component {
 
   renderStats() {
     const { client } = this.props
-    const { syncMode, sync, blockNumber, network, peerCount, state } = client
+    const { sync, blockNumber, config, peerCount, state } = client
+    const { syncMode, network } = config
     const { highestBlock, startingBlock } = sync
 
     let stats
@@ -183,7 +186,7 @@ class NodeInfoBox extends Component {
       <StyledSection>
         <StyledTitle testnet={network !== 'main'}>
           <strong>Local</strong> Node
-          <StyledPill>{syncMode}</StyledPill>
+          <StyledPill>{syncMode} sync</StyledPill>
         </StyledTitle>
         {stats}
       </StyledSection>
@@ -192,7 +195,8 @@ class NodeInfoBox extends Component {
 
   render() {
     const { client } = this.props
-    const { network } = client
+    const { config } = client
+    const { network } = config
     return (
       <StyledBox>
         <StyledSubmenuContainer>
