@@ -32,7 +32,8 @@ const MistApi = {
       return []
     },
     setConfig: () => {},
-    on: () => {}
+    on: () => {},
+    rpc: () => {}
   },
   window: {
     getArgs() {

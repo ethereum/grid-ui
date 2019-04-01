@@ -1,6 +1,22 @@
 import { combineReducers } from 'redux'
-import client from './client/reducer'
+import { persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+import clientReducer from './client/reducer'
 
-export default combineReducers({
-  client
+const rootPersistConfig = {
+  key: 'root',
+  storage,
+  blacklist: ['client']
+}
+
+const clientPersistConfig = {
+  key: 'client',
+  storage,
+  whitelist: ['config', 'release']
+}
+
+const rootReducer = combineReducers({
+  client: persistReducer(clientPersistConfig, clientReducer)
 })
+
+export default persistReducer(rootPersistConfig, rootReducer)

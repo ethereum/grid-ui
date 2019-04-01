@@ -18,13 +18,16 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3
+  },
+  fullWidth: {
+    width: '100%'
   }
 })
 
 const TabContainer = withStyles(styles)(props => {
-  const { children, classes, display } = props
+  const { children, classes, style } = props
   return (
-    <main className={classes.content} style={{ display }}>
+    <main className={classes.content} style={style}>
       <Typography component="div">{children}</Typography>
     </main>
   )
@@ -33,7 +36,7 @@ const TabContainer = withStyles(styles)(props => {
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
   classes: PropTypes.object,
-  display: PropTypes.string
+  style: PropTypes.object
 }
 
 class NavTabs extends React.Component {
@@ -70,19 +73,25 @@ class NavTabs extends React.Component {
           </Tabs>
         </AppBar>
 
-        <div style={{ display: activeTab === 0 ? 'inherit' : 'none' }}>
+        <Typography
+          component="div"
+          classes={{ root: classes.fullWidth }}
+          style={{
+            display: activeTab === 0 ? 'inherit' : 'none'
+          }}
+        >
           <NodesTab />
-        </div>
+        </Typography>
 
-        <TabContainer display={activeTab === 1 ? 'block' : 'none'}>
+        <TabContainer style={{ display: activeTab === 1 ? 'block' : 'none' }}>
           <Typography component="h6">Network</Typography>
         </TabContainer>
 
-        <TabContainer display={activeTab === 2 ? 'block' : 'none'}>
+        <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Typography component="h6">Transactions</Typography>
         </TabContainer>
 
-        <TabContainer display={activeTab === 3 ? 'block' : 'none'}>
+        <TabContainer style={{ display: activeTab === 3 ? 'block' : 'none' }}>
           <Typography component="h6">Tools</Typography>
         </TabContainer>
       </div>

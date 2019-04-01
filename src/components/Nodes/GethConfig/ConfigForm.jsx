@@ -3,12 +3,15 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import IconButton from '@material-ui/core/IconButton'
+import FolderOpenIcon from '@material-ui/icons/FolderOpen'
 import styled from 'styled-components'
 import Select from '../../shared/Select'
 import { Mist } from '../../../API'
 import { setConfig } from '../../../store/client/actions'
 
-const { geth } = Mist
+const { geth, openFolderDialog } = Mist
 
 class ConfigForm extends Component {
   static propTypes = {
@@ -16,83 +19,87 @@ class ConfigForm extends Component {
     client: PropTypes.object
   }
 
-  state = {
-    config: {
-      name: '',
-      dataDir: '',
-      host: '',
-      port: '',
-      network: '',
-      syncMode: '',
-      ipc: ''
-    },
-    options: {
-      networks: ['main', 'ropsten', 'rinkeby'],
-      ipcModes: ['ipc', 'websockets'],
-      syncModes: ['light', 'fast', 'full']
+  constructor(props) {
+    super(props)
+    this.inputOpenFileRef = React.createRef()
+    this.state = {
+      options: {
+        networks: ['main', 'ropsten', 'rinkeby'],
+        ipcModes: ['ipc', 'websockets'],
+        syncModes: ['light', 'fast', 'full']
+      }
     }
   }
 
   componentDidMount() {
-    this.getConfig()
+    this.setDefaultConfig()
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { config } = this.state
-    const { config: prevConfig } = prevState
-    if (prevConfig !== config) {
-      const { dispatch } = this.props
-      dispatch(setConfig({ config }))
+  setDefaultConfig() {
+    // Set default config if no config set
+    const { client, dispatch } = this.props
+    const { config } = client
+    if (config.name) {
+      // Config already set
+      return
     }
+    const defaultConfig = geth.getConfig()
+    dispatch(setConfig({ config: defaultConfig }))
   }
 
-  async getConfig() {
-    const config = await geth.getConfig()
-    this.setState({ config })
-  }
-
-  handleChangeDataDir = dataDir => {
-    const { config } = this.state
+  handleChangeDataDir = event => {
+    const { dispatch, client } = this.props
+    const { config } = client
+    let dataDir = event.target.value
+    if (event.target.files) {
+      dataDir = event.target.files
+    }
     const newConfig = { ...config, dataDir }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeSyncMode = syncMode => {
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const newConfig = { ...config, syncMode }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeIpc = ipc => {
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const newConfig = { ...config, ipc }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeNetwork = network => {
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const newConfig = { ...config, network }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangeHost = event => {
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const host = event.target.value
     const newConfig = { ...config, host }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   handleChangePort = event => {
-    const { config } = this.state
+    const { client, dispatch } = this.props
+    const { config } = client
     const port = Number(event.target.value)
     const newConfig = { ...config, port }
-    this.setState({ config: newConfig })
+    dispatch(setConfig({ config: newConfig }))
   }
 
   capitalizeLabel = label => label.charAt(0).toUpperCase() + label.slice(1)
 
   shouldRenderRpcHostPort = () => {
-    const { config } = this.state
+    const { client } = this.props
+    const { config } = client
     const { ipc } = config
     if (!ipc || ipc === 'ipc') {
       return false
@@ -102,11 +109,29 @@ class ConfigForm extends Component {
 
   isRunning = () => {
     const { client } = this.props
-    return !['STOPPING', 'STOPPED', 'ERROR'].includes(client.state)
+    return ['STARTING', 'STARTED', 'CONNECTED'].includes(client.state)
+  }
+
+  browseDataDir = async event => {
+    // If we don't have openFolderDialog from Grid,
+    // return true to continue with native file dialog
+    if (!openFolderDialog) {
+      return true
+    }
+    event.preventDefault()
+    const { client } = this.props
+    const { config } = client
+    const { dataDir } = config
+    const defaultPath = dataDir
+    const dir = await openFolderDialog(defaultPath)
+    this.handleChangeDataDir({ target: { value: dir } })
+    return null
   }
 
   renderSyncMode() {
-    const { options, config } = this.state
+    const { options } = this.state
+    const { client } = this.props
+    const { config } = client
     const { syncMode } = config
     const { syncModes } = options
     if (!syncMode) {
@@ -128,9 +153,11 @@ class ConfigForm extends Component {
   }
 
   renderNetwork() {
-    const { options, config } = this.state
-    const { networks } = options
+    const { options } = this.state
+    const { client } = this.props
+    const { config } = client
     const { network } = config
+    const { networks } = options
     if (!network) {
       return null
     }
@@ -150,7 +177,8 @@ class ConfigForm extends Component {
   }
 
   renderRpcHost() {
-    const { config } = this.state
+    const { client } = this.props
+    const { config } = client
     const { host } = config
     return (
       <TextField
@@ -159,12 +187,14 @@ class ConfigForm extends Component {
         value={host}
         onChange={this.handleChangeHost}
         disabled={this.isRunning()}
+        fullWidth
       />
     )
   }
 
   renderRpcPort() {
-    const { config } = this.state
+    const { client } = this.props
+    const { config } = client
     const { port } = config
     return (
       <TextField
@@ -173,26 +203,62 @@ class ConfigForm extends Component {
         value={port}
         onChange={this.handleChangePort}
         disabled={this.isRunning()}
+        fullWidth
       />
     )
   }
 
   renderDataDir() {
-    const { config } = this.state
+    const { client } = this.props
+    const { config } = client
     const { dataDir } = config
     return (
-      <TextField
-        variant="outlined"
-        label="Data Directory"
-        value={dataDir}
-        onChange={this.handleChangeDataDir}
-        disabled={this.isRunning()}
-      />
+      <div>
+        <TextField
+          variant="outlined"
+          label="Data Directory"
+          value={dataDir}
+          onChange={this.handleChangeDataDir}
+          disabled={this.isRunning()}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="Open folder browser"
+                  onClick={() => {
+                    if (
+                      this.inputOpenFileRef &&
+                      this.inputOpenFileRef.current
+                    ) {
+                      this.inputOpenFileRef.current.click()
+                    }
+                  }}
+                >
+                  <FolderOpenIcon />
+                </IconButton>
+              </InputAdornment>
+            )
+          }}
+          fullWidth
+        />
+        <input
+          type="file"
+          id="open-file-dialog"
+          onChange={this.handleChangeDataDir}
+          onClick={this.browseDataDir}
+          ref={this.inputOpenFileRef}
+          style={{ display: 'none' }}
+          webkitdirectory
+          directory
+        />
+      </div>
     )
   }
 
   renderIpc() {
-    const { options, config } = this.state
+    const { client } = this.props
+    const { options } = this.state
+    const { config } = client
     const { ipc } = config
     const { ipcModes } = options
     if (!ipc) {
@@ -231,7 +297,7 @@ class ConfigForm extends Component {
 
   renderForm() {
     return (
-      <Grid container style={{ maxWidth: 500, paddingTop: 15 }} spacing={24}>
+      <Grid container style={{ paddingTop: 15 }} spacing={24}>
         <Grid item xs={6}>
           {this.renderDataDir()}
         </Grid>
