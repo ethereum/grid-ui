@@ -92,10 +92,7 @@ export const gethStopped = () => {
 }
 
 export const gethError = ({ error }) => {
-  return {
-    type: '[CLIENT]:GETH:ERROR',
-    payload: { error }
-  }
+  return { type: '[CLIENT]:GETH:ERROR', error }
 }
 
 export const setRelease = ({ release }) => {
