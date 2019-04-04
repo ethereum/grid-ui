@@ -105,11 +105,20 @@ class VersionList extends Component {
     const { client } = this.props
     const { release } = client
     if (selectedRelease) {
+      // Set selectedRelease passed into func
       this.setSelectedRelease(selectedRelease)
-      // Remove selectedRelease from remoteReleases so there are no duplicates in the list
+      // Remove selectedRelease from remoteReleases,
+      // so there are no duplicates in the list
       this.dedupedRemoteReleases()
     } else if (!release.fileName) {
+      // Set latest release if no release selected
       this.setSelectedRelease(localReleases[0])
+    } else if (release.fileName) {
+      // Ensure previously selected release still exists,
+      // otherwise replace with latest release
+      if (!localReleases.includes(release)) {
+        this.setSelectedRelease(localReleases[0])
+      }
     }
   }
 
@@ -146,7 +155,7 @@ class VersionList extends Component {
   }
 
   isLocalRelease = release => {
-    return !release.location.includes('http')
+    return !release.location.includes('https://', 0)
   }
 
   downloadRelease = async release => {
