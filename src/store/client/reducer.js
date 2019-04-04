@@ -42,99 +42,37 @@ const client = (state = initialState, action) => {
     }
     case '[CLIENT]:GETH:SET_CONFIG': {
       const { config } = action.payload
-      const newState = {
-        ...state,
-        config
-      }
-      return newState
+      return { ...state, config }
     }
     case '[CLIENT]:GETH:STARTED': {
-      const newState = {
-        ...state,
-        state: 'STARTED'
-      }
-      return newState
+      return { ...state, state: 'STARTED' }
     }
     case '[CLIENT]:GETH:STARTING': {
-      const newState = {
-        ...state,
-        state: 'STARTING'
-      }
-      return newState
+      return { ...state, state: 'STARTING' }
     }
     case '[CLIENT]:GETH:STOPPING': {
-      const newState = {
-        ...state,
-        state: 'STOPPING'
-      }
-      return newState
+      return { ...state, state: 'STOPPING' }
     }
     case '[CLIENT]:GETH:STOPPED': {
-      const newState = {
-        ...state,
-        state: 'STOPPED'
-      }
-      return newState
+      return { ...state, state: 'STOPPED' }
     }
     case '[CLIENT]:GETH:CONNECTED': {
-      const newState = {
-        ...state,
-        state: 'CONNECTED'
-      }
-      return newState
+      return { ...state, state: 'CONNECTED' }
     }
     case '[CLIENT]:GETH:DISCONNECTED': {
-      const newState = {
-        ...state,
-        state: 'STARTED'
-      }
-      return newState
+      return { ...state, state: 'STARTED' }
     }
     case '[CLIENT]:GETH:ERROR': {
-      const { error } = action.payload
-      const newState = {
-        ...state,
-        state: 'ERROR',
-        error
-      }
-      return newState
-    }
-    case '[CLIENT]:GETH:RESTART:BEGIN': {
-      const newState = {
-        ...state,
-        process: {
-          ...state.process,
-          state: 'STOPPING'
-        }
-      }
-      return newState
-    }
-    case '[CLIENT]:GETH:RESTART:END': {
-      const newState = {
-        ...state,
-        process: {
-          ...state.process,
-          state: 'STARTED'
-        }
-      }
-      return newState
+      const { error } = action
+      return { ...state, state: 'ERROR', error }
     }
     case '[CLIENT]:GETH:SET_RELEASE': {
       const { release } = action.payload
-      const newState = {
-        ...state,
-        release
-      }
-      return newState
+      return { ...state, release }
     }
     case '[CLIENT]:GETH:UPDATE_NEW_BLOCK': {
       const { blockNumber, timestamp } = action.payload
-      const newState = {
-        ...state,
-        blockNumber,
-        timestamp
-      }
-      return newState
+      return { ...state, blockNumber, timestamp }
     }
     case '[CLIENT]:GETH:UPDATE_SYNCING': {
       const {
@@ -144,7 +82,7 @@ const client = (state = initialState, action) => {
         knownStates,
         pulledStates
       } = action.payload
-      const newState = {
+      return {
         ...state,
         sync: {
           ...state.sync,
@@ -155,44 +93,33 @@ const client = (state = initialState, action) => {
           pulledStates
         }
       }
-      return newState
     }
     case '[CLIENT]:GETH:UPDATE_NETWORK': {
       const { network } = action.payload
-      const newState = {
+      return {
         ...state,
         config: {
           ...state.config,
           network
         }
       }
-      return newState
     }
     case '[CLIENT]:GETH:UPDATE_SYNC_MODE': {
       const { syncMode } = action.payload
-      const newState = {
+      return {
         ...state,
         config: {
           ...state.config,
           syncMode
         }
       }
-      return newState
     }
     case '[CLIENT]:GETH:UPDATE_PEER_COUNT': {
       const { peerCount } = action.payload
-      const newState = {
-        ...state,
-        peerCount
-      }
-      return newState
+      return { ...state, peerCount }
     }
     case '[CLIENT]:GETH:CLEAR_ERROR': {
-      const newState = {
-        ...state,
-        error: null
-      }
-      return newState
+      return { ...state, error: null }
     }
     default:
       return state
