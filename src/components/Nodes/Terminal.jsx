@@ -14,37 +14,49 @@ export default class Terminal extends Component {
   }
 
   componentDidMount = async () => {
-    await this.startPolling()
+    this.subscribeLogs()
   }
 
   componentDidUpdate = () => {
-    if (this.terminalScrollViewRef.current) {
-      const { scrollHeight } = this.terminalScrollViewRef.current
-      this.terminalScrollViewRef.current.scrollTo({
-        top: scrollHeight,
-        behavior: 'smooth'
-      })
-    }
+    this.terminalScrollToBottom()
   }
 
   componentWillUnmount() {
-    this.stopPolling()
+    this.unsubscribeLogs()
   }
 
-  refreshLogs = async () => {
-    const logs = await geth.getLogs()
+  addNewLog = async newLog => {
+    const { logs } = this.state
     this.setState({
-      logs
+      logs: [...logs, newLog]
     })
   }
 
-  startPolling = () => {
-    this.logsInterval = setInterval(this.refreshLogs, 2500)
+  clearLogs = () => {
+    this.setState({ logs: [] })
   }
 
-  stopPolling = () => {
-    clearInterval(this.logsInterval)
-    this.logsInterval = null
+  subscribeLogs = () => {
+    geth.on('log', this.addNewLog)
+    // Clear old logs on restart
+    geth.on('starting', this.clearLogs)
+  }
+
+  unsubscribeLogs = () => {
+    geth.removeListener('log', this.addNewLog)
+    geth.removeListener('started', this.clearLogs)
+  }
+
+  terminalScrollToBottom = () => {
+    const scrollView = this.terminalScrollViewRef.current
+    if (!scrollView) {
+      return
+    }
+    const { scrollHeight } = scrollView
+    scrollView.scrollTo({
+      top: scrollHeight,
+      behavior: 'smooth'
+    })
   }
 
   render() {
