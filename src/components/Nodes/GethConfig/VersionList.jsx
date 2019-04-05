@@ -13,35 +13,17 @@ import ListItemText from '@material-ui/core/ListItemText'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import RefreshIcon from '@material-ui/icons/Refresh'
 import WarningIcon from '@material-ui/icons/Warning'
 import amber from '@material-ui/core/colors/amber'
 import Spinner from '../../shared/Spinner'
 import { Mist } from '../../../API'
 import { without } from '../../../lib/utils'
 import { setRelease } from '../../../store/client/actions'
+import AvailableVersionText from './VersionList/AvailableVersionText'
 
 const { geth } = Mist
 
-const lightGrey = 'rgba(0,0,0,0.25)'
-
 const styles = () => ({
-  refreshIcon: {
-    fontSize: 22,
-    color: lightGrey,
-    marginLeft: 5,
-    verticalAlign: 'middle',
-    marginBottom: 4,
-    visibility: 'hidden'
-  },
-  versionsAvailable: {
-    '&:hover': {
-      cursor: 'pointer'
-    },
-    '&:hover $refreshIcon': {
-      visibility: 'visible'
-    }
-  },
   warning: {
     backgroundColor: amber[700],
     opacity: 0.9,
@@ -76,7 +58,7 @@ class VersionList extends Component {
     return !versions.includes(release.version)
   }
 
-  allReleases = () => {
+  getAllReleases = () => {
     const { remoteReleases, localReleases } = this.state
     const allReleases = [...localReleases, ...remoteReleases]
     const releases = allReleases.sort((v1, v2) => {
@@ -185,46 +167,6 @@ class VersionList extends Component {
     this.loadLocalReleases(release)
   }
 
-  renderVersionsAvailable = () => {
-    const { classes } = this.props
-    const { localReleases, loadingRemoteReleases } = this.state
-    const releases = this.allReleases()
-
-    if (releases.length === 0) {
-      return <Spinner style={{ margin: '20px 0' }} />
-    }
-
-    return (
-      <div>
-        {loadingRemoteReleases && (
-          <Typography variant="h6">
-            Loading versions...
-            <RemoteReleaseLoadingSpinner size={18} thickness={4} />
-          </Typography>
-        )}
-        {!loadingRemoteReleases && (
-          <Typography
-            variant="h6"
-            onClick={this.handleRefresh}
-            classes={{ root: classes.versionsAvailable }}
-          >
-            {releases.length} versions available
-            <RefreshIcon classes={{ root: classes.refreshIcon }} />
-          </Typography>
-        )}
-        <Typography>
-          <StyledDownloadedVersions>
-            {localReleases.length} versions downloaded
-          </StyledDownloadedVersions>
-        </Typography>
-      </div>
-    )
-  }
-
-  handleRefresh = () => {
-    this.loadRemoteReleases()
-  }
-
   renderWarnings = () => {
     return <div>{this.renderLatestVersionWarning()}</div>
   }
@@ -236,7 +178,7 @@ class VersionList extends Component {
     if (!release || !remoteReleases.length) {
       return null
     }
-    const latestRelease = this.allReleases()[0]
+    const latestRelease = this.getAllReleases()[0]
     const latestVersion = latestRelease.version
     const selectedVersion = release.version
     if (semver.compare(selectedVersion, latestVersion)) {
@@ -272,7 +214,7 @@ class VersionList extends Component {
   }
 
   renderVersionList = () => {
-    const releases = this.allReleases()
+    const releases = this.getAllReleases()
     const renderIcon = release => {
       let icon = <BlankIconPlaceholder />
       if (release.progress) {
@@ -288,6 +230,7 @@ class VersionList extends Component {
       }
       return icon
     }
+
     const renderListItems = () => {
       const list = releases.map((release, i) => {
         let actionLabel
@@ -334,10 +277,16 @@ class VersionList extends Component {
   }
 
   render() {
-    const { downloadError } = this.state
+    const { downloadError, localReleases, loadingRemoteReleases } = this.state
+
     return (
       <div>
-        {this.renderVersionsAvailable()}
+        <AvailableVersionText
+          localReleases={localReleases}
+          loadRemoteReleases={this.loadRemoteReleases}
+          loadingRemoteReleases={loadingRemoteReleases}
+          getAllReleases={this.getAllReleases}
+        />
         {this.renderWarnings()}
         {this.renderVersionList()}
         {downloadError && <StyledError>{downloadError}</StyledError>}
@@ -383,10 +332,6 @@ const StyledListItemAction = styled.span`
   text-transform: uppercase;
 `
 
-const RemoteReleaseLoadingSpinner = styled(Spinner)`
-  margin-left: 10px;
-`
-
 const HiddenCheckBoxIcon = styled(CheckBoxIcon)`
   visibility: hidden;
 `
@@ -421,11 +366,4 @@ const StyledError = styled.div`
 const BlankIconPlaceholder = styled.div`
   width: 24px;
   height: 24px;
-`
-
-const StyledDownloadedVersions = styled.span`
-  color: lightGrey;
-  font-size: 13px;
-  font-weight: bold;
-  text-transform: uppercase;
 `

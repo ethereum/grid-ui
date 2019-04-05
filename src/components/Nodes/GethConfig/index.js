@@ -114,9 +114,7 @@ class GethConfig extends Component {
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
-          <div>
-            <VersionList />
-          </div>
+          <VersionList />
         </TabContainer>
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal />
