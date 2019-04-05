@@ -117,7 +117,7 @@ class VersionList extends Component {
     // Add `progress` property to release
     const updatedReleases = remoteReleases.slice()
     updatedReleases[index].progress = 0
-    this.setState({ remoteReleases: updatedReleases })
+    this.updateDownloadProgress(index, 0, release)
 
     try {
       geth.download(release, progress => {

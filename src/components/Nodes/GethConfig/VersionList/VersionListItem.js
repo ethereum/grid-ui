@@ -81,7 +81,7 @@ export default class VersionListItem extends Component {
         <ListItemTextVersion
           primary={this.releaseDisplayName()}
           isLocalRelease={isLocalRelease()}
-          secondary={progress > 0 ? `${progress}%` : null}
+          secondary={progress >= 0 ? `${progress}%` : null}
         />
         <StyledListItemAction>
           <Typography variant="button" color="primary">
