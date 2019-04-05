@@ -1,22 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import semver from 'semver'
-import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import Spinner from '../../../shared/Spinner'
 import Notification from '../../../shared/Notification'
 import { Mist } from '../../../../API'
-import { without } from '../../../../lib/utils'
 import { setRelease } from '../../../../store/client/actions'
 import AvailableVersionText from './AvailableVersionText'
+import VersionListItem from './VersionListItem'
 
 const { geth } = Mist
 
@@ -51,13 +44,6 @@ class VersionList extends Component {
     return releases
   }
 
-  releaseDisplayName = release => {
-    const { fileName } = release
-    const nameParts = fileName.split('-')
-    const name = `${nameParts[0]} ${nameParts[1]} ${nameParts[3]}`
-    return name
-  }
-
   componentDidMount = async () => {
     this.loadLocalReleases()
     this.loadRemoteReleases()
@@ -66,25 +52,26 @@ class VersionList extends Component {
   loadLocalReleases = async selectedRelease => {
     const releases = await geth.getLocalBinaries()
     const localReleases = releases.filter(this.excludeUnstableReleases)
-    this.setState({ localReleases })
-    const { client } = this.props
-    const { release } = client
-    if (selectedRelease) {
-      // Set selectedRelease passed into func
-      this.setSelectedRelease(selectedRelease)
-      // Remove selectedRelease from remoteReleases,
-      // so there are no duplicates in the list
-      this.dedupedRemoteReleases()
-    } else if (!release.fileName) {
-      // Set latest release if no release selected
-      this.setSelectedRelease(localReleases[0])
-    } else if (release.fileName) {
-      // Ensure previously selected release still exists,
-      // otherwise replace with latest release
-      if (!localReleases.includes(release)) {
+    this.setState({ localReleases }, () => {
+      const { client } = this.props
+      const { release } = client
+      if (selectedRelease) {
+        // Set selectedRelease passed into func
+        this.setSelectedRelease(selectedRelease)
+        // Remove selectedRelease from remoteReleases,
+        // so there are no duplicates in the list
+        this.dedupedRemoteReleases()
+      } else if (!release.fileName) {
+        // Set latest release if no release selected
         this.setSelectedRelease(localReleases[0])
+      } else if (release.fileName) {
+        // Ensure previously selected release still exists,
+        // otherwise replace with latest release
+        if (!localReleases.includes(release)) {
+          this.setSelectedRelease(localReleases[0])
+        }
       }
-    }
+    })
   }
 
   dedupedRemoteReleases = () => {
@@ -119,35 +106,44 @@ class VersionList extends Component {
     }
   }
 
-  isLocalRelease = release => {
-    return !release.location.includes('https://', 0)
-  }
-
   downloadRelease = async release => {
     const { remoteReleases } = this.state
     const index = remoteReleases.indexOf(release)
-    if (index === -1) {
-      throw Error('Release not found')
-    }
+    if (index === -1) throw Error('Release not found')
+
     // Return if already downloading
-    if (release.progress >= 0) {
-      return
-    }
+    if (release.progress >= 0) return
+
     // Add `progress` property to release
-    remoteReleases[index].progress = 0
-    this.setState({ remoteReleases })
+    const updatedReleases = remoteReleases.slice()
+    updatedReleases[index].progress = 0
+    this.setState({ remoteReleases: updatedReleases })
+
     try {
-      await geth.download(release, progress => {
-        remoteReleases[index].progress = progress
-        this.setState({ remoteReleases })
+      geth.download(release, progress => {
+        if (progress % 10 === 0) {
+          this.updateDownloadProgress(index, progress, release)
+        }
       })
     } catch (error) {
       this.setState({ downloadError: error })
     }
-    delete remoteReleases[index].progress
-    this.setState({ remoteReleases })
-    // Reload local with selectedRelease
-    this.loadLocalReleases(release)
+  }
+
+  updateDownloadProgress = (releaseIndex, progress, release) => {
+    const { remoteReleases } = this.state
+    const updatedReleases = remoteReleases.slice()
+
+    if (progress === 100) {
+      delete updatedReleases[releaseIndex].progress
+      return this.setState({ remoteReleases: updatedReleases }, () => {
+        // Reload local with selectedRelease
+        this.loadLocalReleases(release)
+      })
+    }
+
+    updatedReleases[releaseIndex].progress = progress
+    return this.setState({ remoteReleases: updatedReleases })
   }
 
   renderLatestVersionWarning = () => {
@@ -193,67 +189,28 @@ class VersionList extends Component {
     return release.fileName === client.release.fileName
   }
 
+  isLocalRelease = release => {
+    return !release.location.includes('https://', 0)
+  }
+
   renderVersionList = () => {
     const releases = this.getAllReleases()
-    const renderIcon = release => {
-      let icon = <BlankIconPlaceholder />
-      if (release.progress) {
-        icon = (
-          <Spinner variant="determinate" size={20} value={release.progress} />
-        )
-      } else if (!this.isLocalRelease(release)) {
-        icon = <CloudDownloadIcon color="primary" />
-      } else if (this.isSelectedRelease(release)) {
-        icon = <CheckBoxIcon color="primary" />
-      } else if (this.isLocalRelease(release)) {
-        icon = <HiddenCheckBoxIcon color="primary" />
-      }
-      return icon
-    }
 
-    const renderListItems = () => {
-      const list = releases.map((release, i) => {
-        let actionLabel
-        if (this.isLocalRelease(release)) {
-          actionLabel = 'Use'
-          if (this.isSelectedRelease(release)) {
-            actionLabel = 'Selected'
-          }
-        } else {
-          actionLabel = 'Download'
-          if (release.progress) {
-            actionLabel = 'Downloading'
-          }
-        }
+    const listItems = releases.map(release => {
+      return (
+        <VersionListItem
+          key={release.name}
+          fileName={release.fileName}
+          name={release.name}
+          progress={release.progress}
+          isSelectedRelease={() => this.isSelectedRelease(release)}
+          isLocalRelease={() => this.isLocalRelease(release)}
+          handleReleaseSelected={() => this.handleReleaseSelected(release)}
+        />
+      )
+    })
 
-        return (
-          <StyledListItem
-            key={i}
-            button
-            onClick={() => {
-              this.handleReleaseSelected(release)
-            }}
-            selected={this.isSelectedRelease(release)}
-            isDownloading={!!release.progress}
-            alt={release.name}
-          >
-            <ListItemIcon>{renderIcon(release)}</ListItemIcon>
-            <ListItemTextVersion
-              primary={this.releaseDisplayName(release)}
-              isLocalRelease={this.isLocalRelease(release)}
-              secondary={release.progress > 0 ? `${release.progress}%` : null}
-            />
-            <StyledListItemAction>
-              <Typography variant="button" color="primary">
-                {actionLabel}
-              </Typography>
-            </StyledListItemAction>
-          </StyledListItem>
-        )
-      })
-      return list
-    }
-    return <StyledList>{renderListItems()}</StyledList>
+    return <StyledList>{listItems}</StyledList>
   }
 
   render() {
@@ -289,61 +246,6 @@ const StyledList = styled(List)`
   overflow: scroll;
 `
 
-const ListItemTextVersion = styled(({ isLocalRelease, children, ...rest }) => (
-  <ListItemText
-    {...rest}
-    primaryTypographyProps={{
-      style: { color: isLocalRelease ? 'black' : 'grey' }
-    }}
-  >
-    {children}
-  </ListItemText>
-))`
-  text-transform: capitalize;
-  ${props =>
-    props.isLocalRelease &&
-    css`
-      font-weight: bold;
-      color: grey;
-    `}
-`
-
-const StyledListItemAction = styled.span`
-  text-transform: uppercase;
-`
-
-const HiddenCheckBoxIcon = styled(CheckBoxIcon)`
-  visibility: hidden;
-`
-
-const StyledListItem = styled(without('isDownloading')(ListItem))`
-${props =>
-  !props.selected &&
-  css`
-    ${StyledListItemAction} {
-      visibility: hidden;
-    }
-  `}
-  &:hover ${StyledListItemAction} {
-    visibility: visible;
-  }
-  &:hover ${HiddenCheckBoxIcon} {
-    visibility: visible;
-  }
-  ${props =>
-    props.isDownloading &&
-    css`
-      ${StyledListItemAction} {
-        visibility: visible;
-      }
-    `}
-`
-
 const StyledError = styled.div`
   color: red;
-`
-
-const BlankIconPlaceholder = styled.div`
-  width: 24px;
-  height: 24px;
 `
