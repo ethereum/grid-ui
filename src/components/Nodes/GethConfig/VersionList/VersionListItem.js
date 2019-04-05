@@ -36,7 +36,7 @@ export default class VersionListItem extends Component {
 
     let icon = <BlankIconPlaceholder />
     if (progress) {
-      icon = <Spinner variant="determinate" size={20} value={progress} />
+      icon = <Spinner size={20} />
     } else if (!isLocalRelease()) {
       icon = <CloudDownloadIcon color="primary" />
     } else if (isSelectedRelease()) {
