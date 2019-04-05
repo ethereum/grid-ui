@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Mist } from '../../API'
+import { Grid } from '../../API'
 
-const { geth } = Mist
+const { geth } = Grid
 
 export default class Terminal extends Component {
   state = {

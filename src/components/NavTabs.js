@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import NodesTab from './Nodes'
+import AccountsTab from './Accounts'
 
 const styles = theme => ({
   root: {
@@ -67,8 +68,8 @@ class NavTabs extends React.Component {
             indicatorColor="primary"
           >
             <Tab label="Nodes" />
+            <Tab label="Accounts" />
             <Tab label="Network" disabled />
-            <Tab label="Transactions" disabled />
             <Tab label="Tools" disabled />
           </Tabs>
         </AppBar>
@@ -84,11 +85,11 @@ class NavTabs extends React.Component {
         </Typography>
 
         <TabContainer style={{ display: activeTab === 1 ? 'block' : 'none' }}>
-          <Typography component="h6">Network</Typography>
+          <AccountsTab />
         </TabContainer>
 
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
-          <Typography component="h6">Transactions</Typography>
+          <Typography component="h6">Network</Typography>
         </TabContainer>
 
         <TabContainer style={{ display: activeTab === 3 ? 'block' : 'none' }}>

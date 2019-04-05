@@ -10,11 +10,11 @@ import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
-import { Mist } from '../../../API'
+import { Grid } from '../../../API'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
 
-const { geth } = Mist
+const { geth } = Grid
 
 function TabContainer(props) {
   const { children, style } = props

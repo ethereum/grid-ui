@@ -1,13 +1,13 @@
+// eslint-disable-next-line
 const { ipcRenderer } = require('electron')
 
-
-function DOMContentLoaded(event) {
+function DOMContentLoaded() {
   const icon =
     document.querySelector('link[rel="apple-touch-icon"]') ||
     document.querySelector('link[type="image/x-icon"]') ||
     document.querySelector('link[rel="shortcut"]') ||
     document.querySelector('link[rel="shortcut icon"]') ||
-    document.querySelector('link[rel="icon"]');
+    document.querySelector('link[rel="icon"]')
 
   if (icon) {
     ipcRenderer.sendToHost('favicon', icon.href)
@@ -17,12 +17,12 @@ function DOMContentLoaded(event) {
 
   const appBar = document.querySelector(
     'meta[name="ethereum-dapp-url-bar-style"]'
-  );
+  )
 
   if (appBar) {
-    ipcRenderer.sendToHost('appBar', appBar.content);
+    ipcRenderer.sendToHost('appBar', appBar.content)
   } else {
-    ipcRenderer.sendToHost('appBar', null);
+    ipcRenderer.sendToHost('appBar', null)
   }
 
   document.removeEventListener('DOMContentLoaded', DOMContentLoaded, false)
@@ -31,5 +31,5 @@ function DOMContentLoaded(event) {
 document.addEventListener('DOMContentLoaded', DOMContentLoaded, false)
 
 window.prompt = () => {
-  console.warn("Mist doesn't support window.prompt()")
+  console.warn("Grid doesn't support window.prompt()")
 }

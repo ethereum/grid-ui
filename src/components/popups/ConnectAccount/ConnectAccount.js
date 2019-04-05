@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import './ConnectAccount.css'
-import { Mist, i18n } from '../../../API'
+import { Grid, i18n } from '../../../API'
 
 const selectedAccounts = []
 
@@ -141,7 +141,7 @@ class ConnectAccount extends Component {
               type="button"
               onClick={e => {
                 e.preventDefault()
-                Mist.closeThisWindow()
+                Grid.closeThisWindow()
               }}
             >
               {i18n.t('buttons.cancel')}
@@ -156,7 +156,7 @@ class ConnectAccount extends Component {
                 type="button"
                 onClick={e => {
                   e.preventDefault()
-                  Mist.closeThisWindow()
+                  Grid.closeThisWindow()
                 }}
               >
                 {i18n.t('buttons.stayAnonymous')}

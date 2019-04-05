@@ -1,5 +1,6 @@
 process.env.NODE_ENV = 'development'
 
+// eslint-disable-next-line
 const { ipcRenderer, remote } = require('electron')
 
 const { dialog } = remote
@@ -44,6 +45,7 @@ window._mist = {
 
 window.__basedir = __dirname // path.join(__dirname, '..')
 
+// eslint-disable-next-line
 window.__require = function(name) {
   if (name === 'ipc') {
     return ipcRenderer

@@ -17,11 +17,11 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 import WarningIcon from '@material-ui/icons/Warning'
 import amber from '@material-ui/core/colors/amber'
 import Spinner from '../../shared/Spinner'
-import { Mist } from '../../../API'
+import { Grid } from '../../../API'
 import { without } from '../../../lib/utils'
 import { setRelease } from '../../../store/client/actions'
 
-const { geth } = Mist
+const { geth } = Grid
 
 const lightGrey = 'rgba(0,0,0,0.25)'
 

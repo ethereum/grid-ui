@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { Mist } from '../../API'
+import { Grid } from '../../API'
 import {
   newBlock,
   updateSyncing,
@@ -13,7 +13,7 @@ import {
   gethError
 } from './actions'
 
-const { geth } = Mist
+const { geth } = Grid
 
 // Constants
 const STATES = {

@@ -2,16 +2,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
-import Grid from '@material-ui/core/Grid'
+import MuiGrid from '@material-ui/core/Grid'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton'
 import FolderOpenIcon from '@material-ui/icons/FolderOpen'
 import styled from 'styled-components'
 import Select from '../../shared/Select'
-import { Mist } from '../../../API'
+import { Grid } from '../../../API'
 import { setConfig } from '../../../store/client/actions'
 
-const { geth, openFolderDialog } = Mist
+const { geth, openFolderDialog } = Grid
 
 class ConfigForm extends Component {
   static propTypes = {
@@ -295,30 +295,30 @@ class ConfigForm extends Component {
 
   renderForm() {
     return (
-      <Grid container style={{ paddingTop: 15 }} spacing={24}>
-        <Grid item xs={6}>
+      <MuiGrid container style={{ paddingTop: 15 }} spacing={24}>
+        <MuiGrid item xs={6}>
           {this.renderDataDir()}
-        </Grid>
-        <Grid item xs={6}>
+        </MuiGrid>
+        <MuiGrid item xs={6}>
           {this.renderIpc()}
-        </Grid>
+        </MuiGrid>
         {this.shouldRenderRpcHostPort() && (
           <React.Fragment>
-            <Grid item xs={6}>
+            <MuiGrid item xs={6}>
               {this.renderRpcHost()}
-            </Grid>
-            <Grid item xs={6}>
+            </MuiGrid>
+            <MuiGrid item xs={6}>
               {this.renderRpcPort()}
-            </Grid>
+            </MuiGrid>
           </React.Fragment>
         )}
-        <Grid item xs={6}>
+        <MuiGrid item xs={6}>
           {this.renderSyncMode()}
-        </Grid>
-        <Grid item xs={6}>
+        </MuiGrid>
+        <MuiGrid item xs={6}>
           {this.renderNetwork()}
-        </Grid>
-      </Grid>
+        </MuiGrid>
+      </MuiGrid>
     )
   }
 

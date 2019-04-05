@@ -1,4 +1,4 @@
-## Contributing to Mist
+## Contributing to Grid
 
 First, thanks for your interest! We appreciate your time.
 
@@ -7,11 +7,11 @@ First, thanks for your interest! We appreciate your time.
 Mist is undergoing a large refactoring/rewrite. The project has been broken into several pieces:
 
 - [ethereum-react-components](https://github.com/ethereum/ethereum-react-components) - a React component library
-- mist-ui (this repo) - uses the component library to assemble Mist's user interface
-- [mist-shell](https://github.com/ethereum/mist-shell) - the desktop app wrapper for mist-ui
+- grid-ui (this repo) - uses the component library to assemble Mist's user interface
+- [grid](https://github.com/ethereum/mist-shell) - the desktop app wrapper for grid-ui
 - [electron-app-manager](https://github.com/PhilippLgh/electron-app-manager) - handles app updates
 
-The MVP will be a node management tool for power users. No wallet or browser features will be included in the first release. Proposed MVP release date: first week of March 2019.
+The MVP will be a node management tool for power users. No wallet or browser features will be included in the first release.
 
 #### How can I contribute?
 

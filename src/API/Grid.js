@@ -9,12 +9,12 @@ function showPopup(name, args) {
   })
 }
 
-const { _mist } = window
+const { _grid } = window
 
 // let Ganache = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545")
 // var web3 = new Web3(Ganache);
 
-const MistApi = {
+const GridApi = {
   geth: {
     getConfig: () => {
       return {}
@@ -38,21 +38,21 @@ const MistApi = {
   window: {
     getArgs() {
       let args = {}
-      if (_mist) {
-        args = _mist.window.getArgs()
+      if (_grid) {
+        args = _grid.window.getArgs()
       }
       return args
     }
   },
   requestAccount: () => {
-    // window.mist.requestAccount
+    // window.grid.requestAccount
   },
   setWindowSize(w, h) {
     ipc.send('backendAction_setWindowSize', w, h)
   },
   closeThisWindow() {
-    if (_mist) {
-      _mist.window.close()
+    if (_grid) {
+      _grid.window.close()
     }
   },
   createAccount(args) {
@@ -91,8 +91,8 @@ const MistApi = {
   notification: {
     warn: msg => {
       console.log('warn warn', msg)
-      if (_mist) {
-        _mist.notification.warn(msg.content)
+      if (_grid) {
+        _grid.notification.warn(msg.content)
       }
       /*
           GlobalNotification.warning({
@@ -104,7 +104,7 @@ const MistApi = {
   }
 }
 
-// window.Mist is made available by mist-shell
-const Mist = window.Mist ? window.Mist : MistApi
+// window.Grid is made available by grid
+const Grid = window.Grid ? window.Grid : GridApi
 
-export default Mist
+export default Grid
