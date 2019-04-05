@@ -23,7 +23,9 @@ const styles = theme => ({
     backgroundColor: theme.palette.primary.dark
   },
   warning: {
-    backgroundColor: amber[700]
+    backgroundColor: amber[700],
+    opacity: 0.9,
+    margin: '10px 0 15px 0'
   },
   icon: {
     fontSize: 20,
@@ -41,14 +43,15 @@ const styles = theme => ({
 
 class Notification extends Component {
   static propTypes = {
+    action: PropTypes.node,
     classes: PropTypes.object,
     type: PropTypes.string,
-    message: PropTypes.string,
+    message: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     onDismiss: PropTypes.func
   }
 
   render() {
-    const { classes, message, type, onDismiss } = this.props
+    const { classes, action, message, type, onDismiss } = this.props
     const inlineIconClasses = {
       classes: {
         root: classNames(classes.icon, classes.inlineIcon)
@@ -78,6 +81,19 @@ class Notification extends Component {
         break
     }
 
+    const customAction = action || [
+      <IconButton
+        key="close"
+        aria-label="Close"
+        color="inherit"
+        onClick={onDismiss}
+      >
+        <CloseIcon
+          classes={{ root: classNames(classes.icon, classes.closeIcon) }}
+        />
+      </IconButton>
+    ]
+
     return (
       <SnackbarContent
         classes={{ root: snackbarClasses }}
@@ -87,18 +103,7 @@ class Notification extends Component {
             {message}
           </span>
         }
-        action={[
-          <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            onClick={onDismiss}
-          >
-            <CloseIcon
-              classes={{ root: classNames(classes.icon, classes.closeIcon) }}
-            />
-          </IconButton>
-        ]}
+        action={customAction}
       />
     )
   }

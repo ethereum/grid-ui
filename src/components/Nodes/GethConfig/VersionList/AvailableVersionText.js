@@ -35,7 +35,7 @@ class AvailableVersionText extends Component {
     getAllReleases: PropTypes.func,
     localReleases: PropTypes.array,
     loadRemoteReleases: PropTypes.func,
-    loadingRemoteReleases: PropTypes.array
+    loadingRemoteReleases: PropTypes.bool
   }
 
   static defaultProps = {}

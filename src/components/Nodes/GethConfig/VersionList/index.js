@@ -3,44 +3,27 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import semver from 'semver'
-import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import SnackbarContent from '@material-ui/core/SnackbarContent'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import WarningIcon from '@material-ui/icons/Warning'
-import amber from '@material-ui/core/colors/amber'
-import Spinner from '../../shared/Spinner'
-import { Mist } from '../../../API'
-import { without } from '../../../lib/utils'
-import { setRelease } from '../../../store/client/actions'
-import AvailableVersionText from './VersionList/AvailableVersionText'
+import Spinner from '../../../shared/Spinner'
+import Notification from '../../../shared/Notification'
+import { Mist } from '../../../../API'
+import { without } from '../../../../lib/utils'
+import { setRelease } from '../../../../store/client/actions'
+import AvailableVersionText from './AvailableVersionText'
 
 const { geth } = Mist
-
-const styles = () => ({
-  warning: {
-    backgroundColor: amber[700],
-    opacity: 0.9,
-    margin: '10px 0 15px 0'
-  },
-  warningIcon: {
-    fontSize: 19,
-    verticalAlign: 'middle',
-    marginBottom: 2
-  }
-})
 
 class VersionList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
-    client: PropTypes.object,
-    classes: PropTypes.object
+    client: PropTypes.object
   }
 
   state = {
@@ -167,12 +150,8 @@ class VersionList extends Component {
     this.loadLocalReleases(release)
   }
 
-  renderWarnings = () => {
-    return <div>{this.renderLatestVersionWarning()}</div>
-  }
-
   renderLatestVersionWarning = () => {
-    const { classes, client } = this.props
+    const { client } = this.props
     const { remoteReleases } = this.state
     const { release } = client
     if (!release || !remoteReleases.length) {
@@ -181,17 +160,18 @@ class VersionList extends Component {
     const latestRelease = this.getAllReleases()[0]
     const latestVersion = latestRelease.version
     const selectedVersion = release.version
+
     if (semver.compare(selectedVersion, latestVersion)) {
       return (
-        <SnackbarContent
-          classes={{ root: classes.warning }}
+        <Notification
+          type="warning"
           message={
             <span>
-              <WarningIcon classes={{ root: classes.warningIcon }} /> You are
-              using an older version of Geth ({selectedVersion})<br />
+              You are using an older version of Geth ({selectedVersion})<br />
               New releases contain performance and security enhancements.
             </span>
           }
+          onDismiss={this.onDismissError}
           action={
             <Button
               onClick={() => {
@@ -287,7 +267,7 @@ class VersionList extends Component {
           loadingRemoteReleases={loadingRemoteReleases}
           getAllReleases={this.getAllReleases}
         />
-        {this.renderWarnings()}
+        {this.renderLatestVersionWarning()}
         {this.renderVersionList()}
         {downloadError && <StyledError>{downloadError}</StyledError>}
       </div>
@@ -301,7 +281,7 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(VersionList))
+export default connect(mapStateToProps)(VersionList)
 
 const StyledList = styled(List)`
   max-height: 200px;
