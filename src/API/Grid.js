@@ -35,6 +35,9 @@ const GridApi = {
     on: () => {},
     rpc: () => {}
   },
+  clef: {
+    isRunning: false
+  },
   window: {
     getArgs() {
       let args = {}

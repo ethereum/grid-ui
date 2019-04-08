@@ -8,7 +8,7 @@ import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
-import Terminal from '../Terminal'
+import Terminal from '../../shared/Terminal'
 import NodeInfo from '../NodeInfo'
 import { Grid } from '../../../API'
 import { clearError } from '../../../store/client/actions'
@@ -119,7 +119,7 @@ class GethConfig extends Component {
           </div>
         </TabContainer>
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
-          <Terminal />
+          <Terminal type="geth" />
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>

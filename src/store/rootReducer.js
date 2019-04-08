@@ -16,9 +16,15 @@ const clientPersistConfig = {
   whitelist: ['config', 'release']
 }
 
+const signerPersistConfig = {
+  key: 'signer',
+  storage,
+  whitelist: ['accounts']
+}
+
 const rootReducer = combineReducers({
   client: persistReducer(clientPersistConfig, clientReducer),
-  signer: persistReducer(signerReducer)
+  signer: persistReducer(signerPersistConfig, signerReducer)
 })
 
 export default persistReducer(rootPersistConfig, rootReducer)

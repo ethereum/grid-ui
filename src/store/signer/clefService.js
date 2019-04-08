@@ -3,6 +3,16 @@ import { clefStarted, clefStopped } from './actions'
 
 const { clef } = Grid
 
+// Constants
+const STATES = {
+  STARTING: 'STARTING' /* About to be started */,
+  STARTED: 'STARTED' /* Started */,
+  CONNECTED: 'CONNECTED' /* HTTP endpoint opened - all ready */,
+  STOPPING: 'STOPPING' /* About to be stopped */,
+  STOPPED: 'STOPPED' /* Stopped */,
+  ERROR: 'ERROR' /* Unexpected error */
+}
+
 class ClefService {
   start(dispatch) {
     clef.start()
@@ -16,7 +26,24 @@ class ClefService {
     this.createListeners()
   }
 
-  createListeners() {
+  isRunning(state) {
+    return [STATES.STARTING, STATES.STARTED, STATES.CONNECTED].includes(state)
+  }
+
+  getState() {
+    return clef.state
+  }
+
+  createListeners(dispatch) {
+    // State
+    clef.on('starting', () => this.onStarting(dispatch))
+    clef.on('started', () => this.onStarted(dispatch))
+    clef.on('connect', () => this.onConnect(dispatch))
+    clef.on('stopping', () => this.onStopping(dispatch))
+    clef.on('stopped', () => this.onStopped(dispatch))
+    clef.on('disconnect', () => this.onDisconnect(dispatch))
+    clef.on('error', e => this.onError(e, dispatch))
+    // Signer events
     clef.on('approveTx', this.approveTx.bind(this))
     clef.on('approveSignData', this.approveSignData.bind(this))
     clef.on('approveListing', this.approveListing.bind(this))

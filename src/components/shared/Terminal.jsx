@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Grid } from '../../API'
 
-const { geth } = Grid
+const { geth, clef } = Grid
 
 export default class Terminal extends Component {
+  static propTypes = {
+    type: PropTypes.oneOf(['geth', 'clef'])
+  }
+
   state = {
     logs: []
   }
@@ -11,40 +16,56 @@ export default class Terminal extends Component {
   constructor(props) {
     super(props)
     this.terminalScrollViewRef = React.createRef()
-  }
-
-  componentDidMount = async () => {
-    await this.startPolling()
-  }
-
-  componentDidUpdate = () => {
-    if (this.terminalScrollViewRef.current) {
-      const { scrollHeight } = this.terminalScrollViewRef.current
-      this.terminalScrollViewRef.current.scrollTo({
-        top: scrollHeight,
-        behavior: 'smooth'
-      })
+    this.service = geth
+    if (props.type === 'clef') {
+      this.service = clef
     }
   }
 
-  componentWillUnmount() {
-    this.stopPolling()
+  componentDidMount = async () => {
+    this.subscribeLogs()
   }
 
-  refreshLogs = async () => {
-    const logs = await geth.getLogs()
+  componentDidUpdate = () => {
+    this.terminalScrollToBottom()
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeLogs()
+  }
+
+  addNewLog = async newLog => {
+    const { logs } = this.state
     this.setState({
-      logs
+      logs: [...logs, newLog]
     })
   }
 
-  startPolling = () => {
-    this.logsInterval = setInterval(this.refreshLogs, 2500)
+  clearLogs = () => {
+    this.setState({ logs: [] })
   }
 
-  stopPolling = () => {
-    clearInterval(this.logsInterval)
-    this.logsInterval = null
+  subscribeLogs = () => {
+    this.service.on('log', this.addNewLog)
+    // Clear old logs on restart
+    this.service.on('starting', this.clearLogs)
+  }
+
+  unsubscribeLogs = () => {
+    this.service.removeListener('log', this.addNewLog)
+    this.service.removeListener('started', this.clearLogs)
+  }
+
+  terminalScrollToBottom = () => {
+    const scrollView = this.terminalScrollViewRef.current
+    if (!scrollView) {
+      return
+    }
+    const { scrollHeight } = scrollView
+    scrollView.scrollTo({
+      top: scrollHeight,
+      behavior: 'smooth'
+    })
   }
 
   render() {

@@ -1,9 +1,10 @@
 export const initialState = {
   accounts: [],
+  activeAccount: null,
   state: 'STOPPED'
 }
 
-const client = (state = initialState, action) => {
+const signer = (state = initialState, action) => {
   switch (action.type) {
     case '[SIGNER]:CLEF:START': {
       const newState = {
@@ -24,4 +25,4 @@ const client = (state = initialState, action) => {
   }
 }
 
-export default client
+export default signer
