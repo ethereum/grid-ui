@@ -224,8 +224,8 @@ class VersionList extends Component {
           loadingRemoteReleases={loadingRemoteReleases}
           getAllReleases={this.getAllReleases}
         />
-        {this.renderLatestVersionWarning()}
         {this.renderVersionList()}
+        {this.renderLatestVersionWarning()}
         {downloadError && <StyledError>{downloadError}</StyledError>}
       </div>
     )
@@ -241,8 +241,7 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps)(VersionList)
 
 const StyledList = styled(List)`
-  max-height: 200px;
-  max-width: 500px;
+  max-height: 260px;
   overflow: scroll;
 `
 
