@@ -164,7 +164,7 @@ class VersionList extends Component {
           message={
             <span>
               You are using an older version of Geth ({selectedVersion})<br />
-              New releases contain performance and security enhancements.
+              Newer releases contain performance and security enhancements.
             </span>
           }
           onDismiss={this.onDismissError}
