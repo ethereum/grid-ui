@@ -30,8 +30,19 @@ class VersionList extends Component {
 
   excludeAlreadyInstalledReleases = release => {
     const { localReleases } = this.state
-    const versions = localReleases.map(r => r.version)
-    return !versions.includes(release.version)
+    const versions = localReleases.map(r => r.fileName)
+    return !versions.includes(release.fileName)
+  }
+
+  excludeRemoteOfAlreadyInstalledReleases = release => {
+    const isLocal = this.isLocalRelease(release)
+    if (isLocal) return true
+
+    const { localReleases } = this.state
+    const versions = localReleases.map(r => r.fileName)
+    const hasLocalCounterpart = versions.includes(release.fileName)
+
+    return !hasLocalCounterpart
   }
 
   getAllReleases = () => {
@@ -92,7 +103,7 @@ class VersionList extends Component {
     const releases = await geth.getReleases()
     const remoteReleases = releases
       .filter(this.excludeUnstableReleases)
-      .filter(this.excludeAlreadyInstalledReleases)
+      .filter(this.excludeRemoteOfAlreadyInstalledReleases)
     this.setState({ remoteReleases })
     this.setState({ loadingRemoteReleases: false })
   }
@@ -164,7 +175,7 @@ class VersionList extends Component {
           message={
             <span>
               You are using an older version of Geth ({selectedVersion})<br />
-              Newer releases contain performance and security enhancements.
+              New releases contain performance and security enhancements.
             </span>
           }
           onDismiss={this.onDismissError}
