@@ -98,9 +98,11 @@ class VersionList extends Component {
     dispatch(setRelease({ release }))
   }
 
+  deepClone = input => JSON.parse(JSON.stringify(input))
+
   loadRemoteReleases = async () => {
     this.setState({ loadingRemoteReleases: true })
-    const releases = await geth.getReleases()
+    const releases = this.deepClone(await geth.getReleases())
     const remoteReleases = releases
       .filter(this.excludeUnstableReleases)
       .filter(this.excludeRemoteOfAlreadyInstalledReleases)
