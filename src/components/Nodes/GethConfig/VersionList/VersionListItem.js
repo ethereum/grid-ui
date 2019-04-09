@@ -27,8 +27,12 @@ export default class VersionListItem extends Component {
   releaseDisplayName = () => {
     const { fileName } = this.props
     const nameParts = fileName.split('-')
-    const name = `${nameParts[0]} ${nameParts[1]} ${nameParts[3]}`
-    return name
+
+    if (nameParts[1] === 'darwin') {
+      return `${nameParts[0]} ${nameParts[1]} ${nameParts[3]}`
+    }
+
+    return `${nameParts[0]} ${nameParts[1]} ${nameParts[3]} - ${nameParts[2]}`
   }
 
   renderIcon = () => {
