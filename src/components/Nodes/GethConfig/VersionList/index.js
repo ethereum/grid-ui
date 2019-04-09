@@ -153,7 +153,7 @@ class VersionList extends Component {
     if (!release || !remoteReleases.length) {
       return null
     }
-    const latestRelease = this.getAllReleases()[0]
+    const latestRelease = remoteReleases[0]
     const latestVersion = latestRelease.version
     const selectedVersion = release.version
 
