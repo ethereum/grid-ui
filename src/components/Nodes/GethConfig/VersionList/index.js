@@ -47,12 +47,10 @@ class VersionList extends Component {
 
   getAllReleases = () => {
     const { remoteReleases, localReleases } = this.state
-    const allReleases = [...localReleases, ...remoteReleases]
-    const releases = allReleases.sort((v1, v2) => {
-      return semver.compare(v2.version, v1.version)
-    })
-
-    return releases
+    if (remoteReleases.length === 0) {
+      return localReleases
+    }
+    return remoteReleases
   }
 
   componentDidMount = async () => {
@@ -63,15 +61,13 @@ class VersionList extends Component {
   loadLocalReleases = async selectedRelease => {
     const releases = await geth.getLocalBinaries()
     const localReleases = releases.filter(this.excludeUnstableReleases)
+
     this.setState({ localReleases }, () => {
       const { client } = this.props
       const { release } = client
       if (selectedRelease) {
         // Set selectedRelease passed into func
         this.setSelectedRelease(selectedRelease)
-        // Remove selectedRelease from remoteReleases,
-        // so there are no duplicates in the list
-        this.dedupedRemoteReleases()
       } else if (!release.fileName) {
         // Set latest release if no release selected
         this.setSelectedRelease(localReleases[0])
@@ -83,14 +79,6 @@ class VersionList extends Component {
         }
       }
     })
-  }
-
-  dedupedRemoteReleases = () => {
-    const { remoteReleases } = this.state
-    const dedupedRemoteReleases = remoteReleases.filter(
-      this.excludeAlreadyInstalledReleases
-    )
-    this.setState({ remoteReleases: dedupedRemoteReleases })
   }
 
   setSelectedRelease = release => {
@@ -152,6 +140,7 @@ class VersionList extends Component {
       return this.setState({ remoteReleases: updatedReleases }, () => {
         // Reload local with selectedRelease
         this.loadLocalReleases(release)
+        this.loadRemoteReleases(release)
       })
     }
 
