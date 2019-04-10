@@ -16,14 +16,15 @@ export default class Terminal extends Component {
 
   componentWillReceiveProps({ client: nextClient }, old) {
     let { client: oldClient } = this.props
+    let logs = []
     if (oldClient && nextClient != oldClient) {
       console.log('unsubscribe')
       this.unsubscribeLogs(oldClient)
-      // FIXME resume: getOldLogs here
+      logs = nextClient.getLogs()
       this.subscribeLogs(nextClient)
     }
     this.setState({
-      logs: []
+      logs
     })
   }
 
