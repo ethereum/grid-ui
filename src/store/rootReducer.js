@@ -19,7 +19,7 @@ const clientPersistConfig = {
 const signerPersistConfig = {
   key: 'signer',
   storage,
-  whitelist: ['accounts']
+  whitelist: ['config', 'accounts']
 }
 
 const rootReducer = combineReducers({

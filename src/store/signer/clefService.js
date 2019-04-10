@@ -1,5 +1,13 @@
 import { Grid } from '../../API'
-import { clefStarted, clefStopped } from './actions'
+import {
+  clefStarting,
+  clefStarted,
+  clefConnected,
+  clefDisconnected,
+  clefStopping,
+  clefStopped,
+  clefError
+} from './actions'
 
 const { clef } = Grid
 
@@ -13,17 +21,50 @@ const STATES = {
   ERROR: 'ERROR' /* Unexpected error */
 }
 
+// Helpers
+const networkToChainId = network => {
+  switch (network.toLowerCase()) {
+    case 'main':
+      return 1
+    case 'ropsten':
+      return 3
+    case 'rinkeby':
+      return 4
+    case 'goerli':
+      return 5
+    case 'kovan':
+      return 42
+    case 'private':
+      return 1337
+    default:
+      throw new Error('Unsupported Network: ', network)
+  }
+}
+
 class ClefService {
+  setConfig(config, network) {
+    const newConfig = config
+    // Set chainId
+    newConfig.chainId = networkToChainId(network)
+    clef.setConfig(newConfig)
+  }
+
+  getConfig() {
+    const config = clef.getConfig()
+    // Remove unneeded chainId
+    delete config.chainId
+    return config
+  }
+
   start(dispatch) {
     clef.start()
-    dispatch(clefStarted())
-    this.removeListeners()
+    this.createListeners(dispatch)
   }
 
   stop(dispatch) {
     clef.stop()
     dispatch(clefStopped())
-    this.createListeners()
+    this.removeListeners()
   }
 
   isRunning(state) {
@@ -56,6 +97,15 @@ class ClefService {
   }
 
   removeListeners() {
+    // State
+    clef.removeListener('starting', this.onStarting)
+    clef.removeListener('started', this.onStarted)
+    clef.removeListener('connect', this.onConnect)
+    clef.removeListener('stopping', this.onStopping)
+    clef.removeListener('stopped', this.onStopped)
+    clef.removeListener('disconnect', this.onDisconnect)
+    clef.removeListener('error', this.onError)
+    // Signer events
     clef.removeListener('approveTx', this.approveTx)
     clef.removeListener('approveSignData', this.approveSignData)
     clef.removeListener('approveListing', this.approveListing)
@@ -66,6 +116,52 @@ class ClefService {
     clef.removeListener('onSignerStartup', this.onSignerStartup)
     clef.removeListener('onInputRequired', this.onInputRequired)
   }
+
+  onStarting(dispatch) {
+    dispatch(clefStarting())
+  }
+
+  onStarted(dispatch) {
+    dispatch(clefStarted())
+  }
+
+  onConnect(dispatch) {
+    dispatch(clefConnected())
+  }
+
+  onDisconnect(dispatch) {
+    dispatch(clefDisconnected())
+  }
+
+  onStopping(dispatch) {
+    dispatch(clefStopping())
+  }
+
+  onStopped(dispatch) {
+    dispatch(clefStopped())
+  }
+
+  onError(error, dispatch) {
+    dispatch(clefError({ error }))
+  }
+
+  approveTx() {}
+
+  approveSignData() {}
+
+  approveListing() {}
+
+  approveNewAccount() {}
+
+  showInfo() {}
+
+  showError() {}
+
+  onApprovedTx() {}
+
+  onSignerStartup() {}
+
+  onInputRequired() {}
 }
 
 export default new ClefService()
