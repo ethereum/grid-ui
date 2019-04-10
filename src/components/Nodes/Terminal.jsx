@@ -1,7 +1,4 @@
 import React, { Component } from 'react'
-import { Mist } from '../../API'
-
-const { geth } = Mist
 
 export default class Terminal extends Component {
   state = {
@@ -15,6 +12,19 @@ export default class Terminal extends Component {
 
   componentDidMount = async () => {
     this.subscribeLogs()
+  }
+
+  componentWillReceiveProps({ client: nextClient }, old) {
+    let { client: oldClient } = this.props
+    if (oldClient && nextClient != oldClient) {
+      console.log('unsubscribe')
+      this.unsubscribeLogs(oldClient)
+      // FIXME resume: getOldLogs here
+      this.subscribeLogs(nextClient)
+    }
+    this.setState({
+      logs: []
+    })
   }
 
   componentDidUpdate = () => {
@@ -36,15 +46,17 @@ export default class Terminal extends Component {
     this.setState({ logs: [] })
   }
 
-  subscribeLogs = () => {
-    geth.on('log', this.addNewLog)
+  subscribeLogs = client => {
+    client = client || this.props.client
+    client.on('log', this.addNewLog)
     // Clear old logs on restart
-    geth.on('starting', this.clearLogs)
+    client.on('starting', this.clearLogs)
   }
 
-  unsubscribeLogs = () => {
-    geth.removeListener('log', this.addNewLog)
-    geth.removeListener('started', this.clearLogs)
+  unsubscribeLogs = client => {
+    client = client || this.props.client
+    client.removeListener('log', this.addNewLog)
+    client.removeListener('started', this.clearLogs)
   }
 
   terminalScrollToBottom = () => {
@@ -75,7 +87,6 @@ export default class Terminal extends Component {
             color: '#eee',
             maxHeight: 400,
             width: '100%',
-            maxWidth: '700px',
             overflowY: 'scroll',
             whiteSpace: 'nowrap',
             padding: 10
