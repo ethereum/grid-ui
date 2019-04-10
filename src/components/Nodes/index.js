@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import GethConfig from './GethConfig'
-import { initGeth, toggleGeth } from '../../store/client/actions'
+import ConfigForm from './ClientConfig'
+// import { initGeth, toggleGeth } from '../../store/client/actions'
 import Geth from '../../store/client/gethService'
 import ServicesNav from './ServicesNav'
+
+import Grid from '../../API/Grid'
+
+const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
@@ -15,16 +19,20 @@ class NodesTab extends Component {
   static defaultProps = {}
 
   state = {
-    active: 'geth',
-    services: [
-      { name: 'geth' }
-      // { name: 'remix' }
-    ]
+    clients: [],
+    selectedClient: undefined
   }
 
   componentDidMount() {
-    const { dispatch } = this.props
-    dispatch(initGeth())
+    // const { dispatch } = this.props
+
+    if (!PluginHost) return
+    const plugins = PluginHost.getAllPlugins()
+    const clients = [...plugins]
+
+    this.setState({ clients })
+
+    // dispatch(initGeth())
   }
 
   isChecked = service => {
@@ -63,15 +71,23 @@ class NodesTab extends Component {
     }
   }
 
-  handleToggle = service => {
+  handleSelect = client => {
+    this.setState({
+      selectedClient: client
+    })
+  }
+
+  handleToggle = client => {
+    /*
     const { dispatch } = this.props
     switch (service.name) {
       case 'geth':
-        dispatch(toggleGeth())
+        // dispatch(toggleGeth())
         break
       default:
         break
     }
+    */
   }
 
   tooltipText = service => {
@@ -87,8 +103,8 @@ class NodesTab extends Component {
   }
 
   render() {
-    const { active, services } = this.state
-
+    const { active, clients, selectedClient } = this.state
+    console.log('selected', selectedClient)
     return (
       <ServicesNav
         active={active}
@@ -96,12 +112,13 @@ class NodesTab extends Component {
         isChecked={this.isChecked}
         isDisabled={this.isDisabled}
         handleToggle={this.handleToggle}
+        handleSelect={this.handleSelect}
+        selectedClient={selectedClient}
         tooltipText={this.tooltipText}
         serviceVersion={this.serviceVersion}
-        services={services}
+        services={clients}
       >
-        {active === 'geth' && <GethConfig />}
-        {/* active === 'remix' && <div>Remix</div> */}
+        {selectedClient && <ConfigForm client={selectedClient} />}
       </ServicesNav>
     )
   }
