@@ -14,7 +14,8 @@ export default class VersionListItem extends Component {
   static propTypes = {
     release: PropTypes.object,
     handleDownloadError: PropTypes.func,
-    handleReleaseDownloaded: PropTypes.func
+    handleReleaseDownloaded: PropTypes.func,
+    handleReleaseSelected: PropTypes.func
   }
 
   state = {
@@ -26,17 +27,20 @@ export default class VersionListItem extends Component {
 
   releaseDisplayName = release => {
     const { fileName } = release
-    const nameParts = fileName.split('-')
-    const name = nameParts[0]
-    const os = nameParts[1]
-    let arch = nameParts[2]
-    if (os === 'windows') {
-      arch = arch === '386' ? '32 Bit' : '64 Bit'
+    try {
+      const nameParts = fileName.split('-')
+      const name = nameParts[0]
+      const os = nameParts[1]
+      let arch = nameParts[2]
+      if (os === 'windows') {
+        arch = arch === '386' ? '32 Bit' : '64 Bit'
+      }
+      const version = nameParts[3]
+      // const channel = nameParts[4]
+      return `${name} ${os} ${version} (${arch})`
+    } catch (error) {
+      return fileName
     }
-    const version = nameParts[3]
-    // const channel = nameParts[4]
-    const displayName = `${name} ${os} ${version} (${arch})`
-    return displayName
   }
 
   downloadRelease = async release => {
@@ -62,8 +66,10 @@ export default class VersionListItem extends Component {
 
   handleReleaseSelected = release => {
     // const { dispatch } = this.props
+    const { handleReleaseSelected } = this.props
     if (!release.remote) {
       // FIXME dispatch(setRelease({ release }))
+      handleReleaseSelected(release)
     } else {
       this.downloadRelease(release)
     }
