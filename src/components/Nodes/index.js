@@ -29,8 +29,8 @@ class NodesTab extends Component {
     if (!PluginHost) return
     const plugins = PluginHost.getAllPlugins()
     const clients = [...plugins]
-
-    this.setState({ clients })
+    const selectedClient = clients[0]
+    this.setState({ clients, selectedClient })
 
     // dispatch(initGeth())
   }
@@ -77,7 +77,14 @@ class NodesTab extends Component {
     })
   }
 
-  handleToggle = client => {
+  // turn client on/off here
+  handleToggle = async client => {
+    const isRunning = await client.isRunning()
+    if (isRunning) {
+      client.stop()
+    } else {
+      client.start(/* config */)
+    }
     /*
     const { dispatch } = this.props
     switch (service.name) {
