@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 export default class Terminal extends Component {
+  static propTypes = {
+    client: PropTypes.object
+  }
+
   state = {
     logs: []
   }
@@ -14,18 +19,16 @@ export default class Terminal extends Component {
     this.subscribeLogs()
   }
 
-  componentWillReceiveProps({ client: nextClient }, old) {
-    let { client: oldClient } = this.props
-    let logs = []
-    if (oldClient && nextClient != oldClient) {
-      console.log('unsubscribe')
-      this.unsubscribeLogs(oldClient)
-      logs = nextClient.getLogs()
-      this.subscribeLogs(nextClient)
-    }
+  componentWillReceiveProps({ client: nextClient }) {
+    const { client: oldClient } = this.props
+    const logs = nextClient.getLogs()
     this.setState({
       logs
     })
+    if (oldClient && nextClient !== oldClient) {
+      this.unsubscribeLogs(oldClient)
+      this.subscribeLogs(nextClient)
+    }
   }
 
   componentDidUpdate = () => {
@@ -48,6 +51,7 @@ export default class Terminal extends Component {
   }
 
   subscribeLogs = client => {
+    // eslint-disable-next-line
     client = client || this.props.client
     client.on('log', this.addNewLog)
     // Clear old logs on restart
@@ -55,6 +59,7 @@ export default class Terminal extends Component {
   }
 
   unsubscribeLogs = client => {
+    // eslint-disable-next-line
     client = client || this.props.client
     client.removeListener('log', this.addNewLog)
     client.removeListener('started', this.clearLogs)
