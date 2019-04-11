@@ -64,7 +64,7 @@ class VersionList extends Component {
   }
 
   componentWillReceiveProps({ client: nextClient }) {
-    let { client: oldClient } = this.props
+    const { client: oldClient } = this.props
     if (oldClient && nextClient !== oldClient) {
       // this.loadLocalReleases()
       this.setState({ releases: [] })
@@ -78,16 +78,25 @@ class VersionList extends Component {
   }
 
   loadReleases = async client => {
-    console.log('load releases')
+    // eslint-disable-next-line
     client = client || this.props.client
     this.setState({ loadingReleases: true })
-    console.time('load releases')
-    const releases = await client.getReleases()
-    console.timeEnd('load releases')
-    console.log('releases loaded:', releases.length)
+    const localReleases = {}
+    // console.time('load releases')
+    let releases = await client.getReleases()
+    // console.timeEnd('load releases')
+    // console.time('dedupe')
+    let count = 0
+    releases.forEach(r => {
+      if (!r.remote) {
+        count += 1
+        localReleases[r.fileName] = r
+      }
+    })
+    releases = releases.filter(r => !r.remote || !localReleases[r.fileName])
+    // console.timeEnd('dedupe') // for 132 -> 83 ms
     this.setState({ releases, loadingReleases: false })
-    const localReleases = releases.filter(r => !r.remote)
-    this.setState({ localReleaseCount: localReleases.length })
+    this.setState({ localReleaseCount: count })
   }
 
   isLocalRelease = release => {
@@ -182,10 +191,9 @@ class VersionList extends Component {
   handleReleaseDownloaded = release => {
     const releaseDownloaded = { ...release, remote: false }
     const { releases, localReleaseCount } = this.state
-    const index = releases.findIndex(r =>
-      semver.lte(r.version, releaseDownloaded.version)
-    )
-    releases.splice(index, 0, releaseDownloaded)
+    const index = releases.findIndex(r => r.fileName === release.fileName)
+    // releases.splice(index, 0, releaseDownloaded)
+    releases[index] = releaseDownloaded
     this.setState({
       releases: [...releases],
       localReleaseCount: localReleaseCount + 1
@@ -232,7 +240,6 @@ function mapStateToProps(state) {
     client: state.client
   }
 }
-
 export default connect(mapStateToProps)(withStyles(styles)(VersionList))
 */
 export default withStyles(styles)(VersionList)
