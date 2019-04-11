@@ -51,32 +51,30 @@ const styles = theme => ({
 
 class ServicesTab extends Component {
   static propTypes = {
-    active: PropTypes.string,
+    // active: PropTypes.string,
     classes: PropTypes.object,
-    setActive: PropTypes.func,
+    // setActive: PropTypes.func,
     services: PropTypes.array,
     children: PropTypes.node,
-    serviceVersion: PropTypes.func,
-    handleToggle: PropTypes.func,
-    isChecked: PropTypes.func,
-    isDisabled: PropTypes.func,
-    tooltipText: PropTypes.func
+    // serviceVersion: PropTypes.func,
+    handleToggle: PropTypes.func
+    // isChecked: PropTypes.func,
+    // isDisabled: PropTypes.func,
+    // tooltipText: PropTypes.func
   }
 
   static defaultProps = {}
 
+  handleToggle = () => {}
+
   render() {
     const {
-      active,
-      services,
       classes,
-      children,
-      setActive,
-      serviceVersion,
       handleToggle,
-      isChecked,
-      isDisabled,
-      tooltipText
+      handleSelect,
+      selectedClient,
+      children,
+      services
     } = this.props
 
     return (
@@ -92,8 +90,8 @@ class ServicesTab extends Component {
               <ListItem
                 key={service.name}
                 disabled={service.disabled}
-                selected={service.name === active}
-                onClick={() => setActive(service.name)}
+                selected={service.name === selectedClient}
+                onClick={() => handleSelect(service)}
                 classes={{
                   root: classes.hoverableListItem,
                   selected: classes.selected
@@ -101,8 +99,7 @@ class ServicesTab extends Component {
                 button
               >
                 <ListItemText
-                  primary={service.name}
-                  secondary={serviceVersion(service)}
+                  primary={service.displayName}
                   primaryTypographyProps={{
                     inline: true,
                     classes: { root: classes.serviceName }
@@ -113,32 +110,26 @@ class ServicesTab extends Component {
                   }}
                 />
                 <ListItemSecondaryAction>
-                  <Tooltip title={tooltipText(service)} placement="left">
-                    <span>
-                      <Switch
-                        color="primary"
-                        onChange={() => handleToggle(service)}
-                        checked={isChecked(service)}
-                        disabled={isDisabled(service)}
-                      />
-                    </span>
+                  <Tooltip title={service.tooltipText || ''} placement="left">
+                    <span />
                   </Tooltip>
+                  <span>
+                    <Switch
+                      color="primary"
+                      onChange={() => handleToggle(service)}
+                      checked={service.running}
+                      disabled={service.canBeStarted}
+                    />
+                  </span>
                 </ListItemSecondaryAction>
               </ListItem>
             ))}
           </List>
         </Drawer>
-
         <main className={classes.content}>{children}</main>
       </React.Fragment>
     )
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    client: state.client
-  }
-}
-
-export default connect(mapStateToProps)(withStyles(styles)(ServicesTab))
+export default withStyles(styles)(ServicesTab)
