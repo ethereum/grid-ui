@@ -54,13 +54,14 @@ class VersionList extends Component {
 
   state = {
     releases: [],
+    selectedRelease: undefined,
     localReleaseCount: 0,
     loadingReleases: false,
     downloadError: null
   }
 
   componentDidMount = async () => {
-    // this.loadReleases()
+    this.loadReleases()
   }
 
   componentWillReceiveProps({ client: nextClient }) {
@@ -183,9 +184,17 @@ class VersionList extends Component {
   }
 
   isSelectedRelease = release => {
+    /*
     const { client } = this.props
     if (!client.release) return false
     return release.fileName === client.release.fileName
+    */
+    const { selectedRelease } = this.state
+    return selectedRelease && selectedRelease.fileName === release.fileName
+  }
+
+  handleReleaseSelected = release => {
+    this.setState({ selectedRelease: release })
   }
 
   handleReleaseDownloaded = release => {
@@ -210,6 +219,7 @@ class VersionList extends Component {
             client={client}
             release={release}
             key={i}
+            handleReleaseSelected={this.handleReleaseSelected}
             handleDownloadError={downloadError =>
               this.setState({ downloadError })
             }
