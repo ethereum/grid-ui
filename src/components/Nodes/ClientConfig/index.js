@@ -29,7 +29,8 @@ TabContainer.propTypes = {
 
 class ClientConfig extends Component {
   static propTypes = {
-    client: PropTypes.object
+    client: PropTypes.object,
+    handleSelectRelease: PropTypes.func
   }
 
   state = {
@@ -42,20 +43,21 @@ class ClientConfig extends Component {
     dispatch: PropTypes.func
   }
 
-  constructor(props) {
-    super(props)
-    // geth.on('started', this.handleGethStarted)
+  componentDidMount() {
+    // FIXME const { client } = this.props
+    // client.on('started', this.handleClientStarted)
   }
 
   componentWillUnmount() {
-    // geth.removeListener('started', this.handleGethStarted)
+    // const { client } = this.props
+    // client.removeListener('started', this.handleClientStarted)
   }
 
   handleTabChange = (event, activeTab) => {
     this.setState({ activeTab })
   }
 
-  handleGethStarted = () => {
+  handleClientStarted = () => {
     // Update activeTab to Terminal
     this.setState({ activeTab: 2 })
   }
@@ -86,7 +88,7 @@ class ClientConfig extends Component {
   }
 
   render() {
-    const { client } = this.props
+    const { client, handleSelectRelease } = this.props
     const { activeTab } = this.state
     const { state, displayName: clientName } = client || {}
     return (
@@ -108,13 +110,16 @@ class ClientConfig extends Component {
             <Tab label="Settings" />
             <Tab
               label="Terminal"
-              disabled={client && !client.getLogs().length}
+              disabled={false /* client && !client.getLogs().length */}
             />
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
           <div>
-            <VersionList client={client} />
+            <VersionList
+              client={client}
+              handleSelectRelease={handleSelectRelease}
+            />
           </div>
         </TabContainer>
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>

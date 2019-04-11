@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import ConfigForm from './ClientConfig'
+import ClientConfig from './ClientConfig'
 // import { initGeth, toggleGeth } from '../../store/client/actions'
 import Geth from '../../store/client/gethService'
 import ServicesNav from './ServicesNav'
@@ -20,7 +20,8 @@ class NodesTab extends Component {
 
   state = {
     clients: [],
-    selectedClient: undefined
+    selectedClient: undefined,
+    selectedRelease: undefined
   }
 
   componentDidMount() {
@@ -77,13 +78,26 @@ class NodesTab extends Component {
     })
   }
 
+  handleSelectRelease = release => {
+    this.setState({
+      selectedRelease: release
+    })
+  }
+
   // turn client on/off here
   handleToggle = async client => {
-    const isRunning = await client.isRunning()
+    const { selectedClient, selectedRelease } = this.state
+    const { isRunning } = selectedClient
+    console.log('handle toggle', isRunning)
     if (isRunning) {
-      client.stop()
+      selectedClient.stop()
     } else {
-      client.start(/* config */)
+      try {
+        console.log('start release', selectedRelease)
+        selectedClient.start(selectedRelease /* config */)
+      } catch (error) {
+        console.log('could not start', error)
+      }
     }
     /*
     const { dispatch } = this.props
@@ -125,7 +139,12 @@ class NodesTab extends Component {
         serviceVersion={this.serviceVersion}
         services={clients}
       >
-        {selectedClient && <ConfigForm client={selectedClient} />}
+        {selectedClient && (
+          <ClientConfig
+            client={selectedClient}
+            handleSelectRelease={this.handleSelectRelease}
+          />
+        )}
       </ServicesNav>
     )
   }
