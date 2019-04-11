@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
@@ -57,10 +56,12 @@ class ServicesTab extends Component {
     services: PropTypes.array,
     children: PropTypes.node,
     // serviceVersion: PropTypes.func,
-    handleToggle: PropTypes.func
+    handleToggle: PropTypes.func,
     // isChecked: PropTypes.func,
     // isDisabled: PropTypes.func,
     // tooltipText: PropTypes.func
+    handleSelect: PropTypes.func,
+    selectedClientName: PropTypes.string
   }
 
   static defaultProps = {}
@@ -72,7 +73,7 @@ class ServicesTab extends Component {
       classes,
       handleToggle,
       handleSelect,
-      selectedClient,
+      selectedClientName,
       children,
       services
     } = this.props
@@ -90,7 +91,7 @@ class ServicesTab extends Component {
               <ListItem
                 key={service.name}
                 disabled={service.disabled}
-                selected={service.name === selectedClient}
+                selected={service.name === selectedClientName}
                 onClick={() => handleSelect(service)}
                 classes={{
                   root: classes.hoverableListItem,

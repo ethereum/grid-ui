@@ -12,8 +12,7 @@ const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    dispatch: PropTypes.func
+    client: PropTypes.object
   }
 
   static defaultProps = {}
@@ -25,15 +24,11 @@ class NodesTab extends Component {
   }
 
   componentDidMount() {
-    // const { dispatch } = this.props
-
     if (!PluginHost) return
     const plugins = PluginHost.getAllPlugins()
     const clients = [...plugins]
     const selectedClient = clients[0]
     this.setState({ clients, selectedClient })
-
-    // dispatch(initGeth())
   }
 
   isChecked = service => {
@@ -73,19 +68,15 @@ class NodesTab extends Component {
   }
 
   handleSelect = client => {
-    this.setState({
-      selectedClient: client
-    })
+    this.setState({ selectedClient: client })
   }
 
   handleSelectRelease = release => {
-    this.setState({
-      selectedRelease: release
-    })
+    this.setState({ selectedRelease: release })
   }
 
   // turn client on/off here
-  handleToggle = async client => {
+  handleToggle = async () => {
     const { selectedClient, selectedRelease } = this.state
     const { isRunning } = selectedClient
     console.log('handle toggle', isRunning)
@@ -125,7 +116,8 @@ class NodesTab extends Component {
 
   render() {
     const { active, clients, selectedClient } = this.state
-    console.log('selected', selectedClient)
+    if (!selectedClient) return null
+
     return (
       <ServicesNav
         active={active}
@@ -134,7 +126,7 @@ class NodesTab extends Component {
         isDisabled={this.isDisabled}
         handleToggle={this.handleToggle}
         handleSelect={this.handleSelect}
-        selectedClient={selectedClient}
+        selectedClientName={selectedClient.name}
         tooltipText={this.tooltipText}
         serviceVersion={this.serviceVersion}
         services={clients}
