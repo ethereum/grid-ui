@@ -61,7 +61,7 @@ class ServicesTab extends Component {
     // isDisabled: PropTypes.func,
     // tooltipText: PropTypes.func
     handleSelect: PropTypes.func,
-    selectedClientName: PropTypes.string
+    selectedClient: PropTypes.object
   }
 
   static defaultProps = {}
@@ -73,7 +73,7 @@ class ServicesTab extends Component {
       classes,
       handleToggle,
       handleSelect,
-      selectedClientName,
+      selectedClient,
       children,
       clients
     } = this.props
