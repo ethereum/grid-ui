@@ -74,7 +74,7 @@ class ServicesTab extends Component {
       handleSelect,
       selectedClient,
       children,
-      services
+      clients
     } = this.props
 
     return (
@@ -86,44 +86,49 @@ class ServicesTab extends Component {
         >
           <div className={classes.toolbar} />
           <List>
-            {services.map(service => (
-              <ListItem
-                key={service.name}
-                disabled={service.disabled}
-                selected={service.name === selectedClient}
-                onClick={() => handleSelect(service)}
-                classes={{
-                  root: classes.hoverableListItem,
-                  selected: classes.selected
-                }}
-                button
-              >
-                <ListItemText
-                  primary={service.displayName}
-                  primaryTypographyProps={{
-                    inline: true,
-                    classes: { root: classes.serviceName }
+            {clients.map(client => {
+              const { selectedRelease } = client
+              const { version: selectedVersion } = selectedRelease || {}
+              return (
+                <ListItem
+                  key={client.name}
+                  disabled={!selectedRelease}
+                  selected={client.name === selectedClient.name}
+                  onClick={() => handleSelect(client)}
+                  classes={{
+                    root: classes.hoverableListItem,
+                    selected: classes.selected
                   }}
-                  secondaryTypographyProps={{
-                    inline: true,
-                    classes: { root: classes.versionInfo }
-                  }}
-                />
-                <ListItemSecondaryAction>
-                  <Tooltip title={service.tooltipText || ''} placement="left">
-                    <span />
-                  </Tooltip>
-                  <span>
-                    <Switch
-                      color="primary"
-                      onChange={() => handleToggle(service)}
-                      checked={service.running}
-                      disabled={service.canBeStarted}
-                    />
-                  </span>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
+                  button
+                >
+                  <ListItemText
+                    primary={client.displayName}
+                    secondary={selectedVersion}
+                    primaryTypographyProps={{
+                      inline: true,
+                      classes: { root: classes.serviceName }
+                    }}
+                    secondaryTypographyProps={{
+                      inline: true,
+                      classes: { root: classes.versionInfo }
+                    }}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip title={client.tooltipText || ''} placement="left">
+                      <span />
+                    </Tooltip>
+                    <span>
+                      <Switch
+                        color="primary"
+                        onChange={() => handleToggle(client)}
+                        checked={client.running}
+                        disabled={!selectedRelease}
+                      />
+                    </span>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              )
+            })}
           </List>
         </Drawer>
         <main className={classes.content}>{children}</main>

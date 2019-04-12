@@ -20,8 +20,7 @@ class NodesTab extends Component {
 
   state = {
     clients: [],
-    selectedClient: undefined,
-    selectedRelease: undefined
+    selectedClient: undefined
   }
 
   componentDidMount() {
@@ -47,15 +46,9 @@ class NodesTab extends Component {
     }
   }
 
-  isDisabled = service => {
-    const { client } = this.props
-    const { release } = client
-    switch (service.name) {
-      case 'geth':
-        return !release
-      default:
-        return true
-    }
+  isDisabled = client => {
+    const { selectedRelease } = client
+    return !selectedRelease
   }
 
   serviceVersion = service => {
@@ -79,14 +72,17 @@ class NodesTab extends Component {
   }
 
   handleSelectRelease = release => {
+    const { selectedClient } = this.state
+    selectedClient.selectedRelease = release
     this.setState({
-      selectedRelease: release
+      selectedClient
     })
   }
 
   // turn client on/off here
   handleToggle = async client => {
-    const { selectedClient, selectedRelease } = this.state
+    const { selectedClient } = this.state
+    const { selectedRelease } = selectedClient
     const { isRunning } = selectedClient
     console.log('handle toggle', isRunning)
     if (isRunning) {
@@ -124,7 +120,7 @@ class NodesTab extends Component {
   }
 
   render() {
-    const { active, clients, selectedClient } = this.state
+    const { active, clients, selectedClient, selectedRelease } = this.state
     console.log('selected', selectedClient)
     return (
       <ServicesNav
@@ -135,14 +131,16 @@ class NodesTab extends Component {
         handleToggle={this.handleToggle}
         handleSelect={this.handleSelect}
         selectedClient={selectedClient}
+        selectedRelease={selectedRelease}
         tooltipText={this.tooltipText}
         serviceVersion={this.serviceVersion}
-        services={clients}
+        clients={clients}
       >
         {selectedClient && (
           <ClientConfig
             client={selectedClient}
             handleSelectRelease={this.handleSelectRelease}
+            selectedRelease={selectedRelease}
           />
         )}
       </ServicesNav>

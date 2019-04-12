@@ -62,13 +62,8 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps)(NodeInfo)
 
 const StyledNode = styled.div`
-  position: absolute;
-  top: 2px;
-  left: 55px;
   cursor: default;
-  display: flex;
-  flex-flow: row wrap;
-  flex-shrink: 0;
+  float: left;
   font-size: 0.9em;
   color: #827a7a;
 

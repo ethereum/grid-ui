@@ -195,6 +195,7 @@ class VersionList extends Component {
 
   handleReleaseSelected = release => {
     this.setState({ selectedRelease: release })
+    this.props.handleSelectRelease(release)
   }
 
   handleReleaseDownloaded = release => {
