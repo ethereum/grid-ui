@@ -12,8 +12,7 @@ const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    dispatch: PropTypes.func
+    client: PropTypes.object
   }
 
   static defaultProps = {}
@@ -24,15 +23,11 @@ class NodesTab extends Component {
   }
 
   componentDidMount() {
-    // const { dispatch } = this.props
-
     if (!PluginHost) return
     const plugins = PluginHost.getAllPlugins()
     const clients = [...plugins]
     const selectedClient = clients[0]
     this.setState({ clients, selectedClient })
-
-    // dispatch(initGeth())
   }
 
   isChecked = service => {
@@ -66,9 +61,7 @@ class NodesTab extends Component {
   }
 
   handleSelect = client => {
-    this.setState({
-      selectedClient: client
-    })
+    this.setState({ selectedClient: client })
   }
 
   handleSelectRelease = release => {
