@@ -53,7 +53,7 @@ class ServicesTab extends Component {
     // active: PropTypes.string,
     classes: PropTypes.object,
     // setActive: PropTypes.func,
-    services: PropTypes.array,
+    clients: PropTypes.array,
     children: PropTypes.node,
     // serviceVersion: PropTypes.func,
     handleToggle: PropTypes.func,

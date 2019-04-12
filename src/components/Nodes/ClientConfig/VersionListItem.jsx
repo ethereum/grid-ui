@@ -47,14 +47,10 @@ export default class VersionListItem extends Component {
     const { client, handleDownloadError, handleReleaseDownloaded } = this.props
     const { isDownloading } = this.state
     // Return if already downloading
-    if (isDownloading) {
-      return
-    }
+    if (isDownloading) return
     this.setState({ isDownloading: true })
     try {
-      console.log('download release')
       await client.download(release, downloadProgress => {
-        console.log('download update', downloadProgress)
         this.setState({ downloadProgress })
       })
     } catch (error) {

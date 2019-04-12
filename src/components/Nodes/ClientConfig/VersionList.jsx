@@ -49,7 +49,8 @@ class VersionList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     client: PropTypes.object,
-    classes: PropTypes.object
+    classes: PropTypes.object,
+    handleSelectRelease: PropTypes.func
   }
 
   state = {
@@ -194,8 +195,10 @@ class VersionList extends Component {
   }
 
   handleReleaseSelected = release => {
-    this.setState({ selectedRelease: release })
-    this.props.handleSelectRelease(release)
+    const { handleSelectRelease } = this.props
+    this.setState({ selectedRelease: release }, () => {
+      handleSelectRelease(release)
+    })
   }
 
   handleReleaseDownloaded = release => {

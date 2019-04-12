@@ -73,7 +73,7 @@ class NodesTab extends Component {
   }
 
   // turn client on/off here
-  handleToggle = async client => {
+  handleToggle = async () => {
     const { selectedClient } = this.state
     const { selectedRelease } = selectedClient
     const { isRunning } = selectedClient
