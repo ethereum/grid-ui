@@ -63,12 +63,12 @@ export default connect(mapStateToProps)(NodeInfo)
 
 const StyledNode = styled.div`
   cursor: default;
-  float: left;
+  display: inline-block;
   font-size: 0.9em;
   color: #827a7a;
 
   #node-info {
-    padding: 5px;
+    margin: 0 5px;
     -webkit-app-region: no-drag;
 
     &:focus {

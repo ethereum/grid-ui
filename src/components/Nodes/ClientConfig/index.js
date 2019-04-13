@@ -91,16 +91,14 @@ class ClientConfig extends Component {
     const { client, handleSelectRelease } = this.props
     const { activeTab } = this.state
     const { selectedRelease } = client
-    const { version } = selectedRelease || {}
     const { state, displayName: clientName } = client || {}
     return (
       <StyledMain>
         <Typography variant="h5">
           {clientName}
-          {version ? `- ${version}` : ''}
+          <NodeInfo />
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          <NodeInfo style={{ float: 'left' }} />
           <StyledState>{state}</StyledState>
         </Typography>
         {this.renderErrors()}

@@ -245,8 +245,8 @@ const StyledSubmenuContainer = styled.div`
 
   /* Apply css arrow to topLeft of box */
   position: absolute;
-  left: 40px;
-  top: 3px;
+  left: 85px;
+  top: 6px;
 
   &::before {
     content: '';
