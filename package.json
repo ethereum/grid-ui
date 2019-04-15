@@ -9,9 +9,6 @@
     "url": "https://github.com/ethereum/grid-ui.git"
   },
   "scripts": {
-    "electron:dev": "cross-env PORT=3080 electron .",
-    "tau:dev": "tau .",
-    "start-conflict": "cross-env react-scripts start",
     "analyze-modules": "source-map-explorer build/static/js/1.*",
     "analyze": "source-map-explorer build/static/js/main.*",
     "start": "cross-env PORT=3080 CI='false' react-scripts start",
