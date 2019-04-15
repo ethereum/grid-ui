@@ -256,8 +256,12 @@ class Accounts extends Component {
       send({
         id,
         jsonrpc,
-        method: 'account_new',
-        params
+        method: 'account_signData',
+        params: [
+          'text/plain',
+          '0x00a839de7922491683f547a67795204763ff8237',
+          '0xdeadbeef'
+        ]
       })
     }
 
@@ -265,8 +269,19 @@ class Accounts extends Component {
       send({
         id,
         jsonrpc,
-        method: 'account_new',
-        params
+        method: 'account_signTransaction',
+        params: [
+          {
+            from: '0x00a839de7922491683f547a67795204763ff8237',
+            gas: '0x333',
+            gasPrice: '0x123',
+            nonce: '0x0',
+            to: '0x07a565b7ed7d7a678680a4c162885bedbb695fe0',
+            value: '0x10',
+            data:
+              '0x4401a6e40000000000000000000000000000000000000000000000000000000000000012'
+          }
+        ]
       })
     }
 
@@ -292,7 +307,6 @@ class Accounts extends Component {
           onClick={() => {
             signData()
           }}
-          disabled={accounts.length === 0}
         >
           Sign Data
         </Button>
@@ -300,13 +314,13 @@ class Accounts extends Component {
           onClick={() => {
             signTx()
           }}
-          disabled={accounts.length === 0}
         >
           Sign Tx
         </Button>
       </div>
     )
   }
+
   render() {
     const { classes } = this.props
     const { activeTab, release } = this.state

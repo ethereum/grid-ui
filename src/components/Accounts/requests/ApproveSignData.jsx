@@ -52,12 +52,52 @@ class ApproveListing extends Component {
     )
   }
 
+  renderDetails() {
+    const { request } = this.props
+    const {
+      content_type: contentType,
+      address,
+      raw_data: rawData,
+      message,
+      hash
+    } = request.params[0]
+    const { name, type, value } = message
+    const showMessage = name || type || value
+    return (
+      <div>
+        <div>
+          Content Type: <strong>{contentType}</strong>
+        </div>
+        <div>
+          Address: <strong>{address}</strong>
+        </div>
+        {showMessage && (
+          <div>
+            Message:
+            <div style={{ paddingLeft: 15 }}>
+              Name: <strong>{message.name}</strong>
+              Type: <strong>{message.type}</strong>
+              Value: <strong>{message.value}</strong>
+            </div>
+          </div>
+        )}
+        <div>
+          Raw Data: <strong>{rawData}</strong>
+        </div>
+        <div>
+          Hash: <strong>{hash}</strong>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const { request } = this.props
     return (
       <div>
-        <Typography variant="h2">Approve New Account</Typography>
+        <Typography variant="h2">Approve Sign Data</Typography>
         <RequestInfo request={request} />
+        {this.renderDetails()}
         {this.renderControls()}
       </div>
     )

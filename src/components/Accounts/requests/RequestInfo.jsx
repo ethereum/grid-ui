@@ -8,7 +8,10 @@ class RequestInfo extends Component {
 
   render() {
     const { request } = this.props
-    const { meta } = request
+    if (!request.params[0]) {
+      return null
+    }
+    const { meta } = request.params[0]
     if (!meta) {
       return null
     }

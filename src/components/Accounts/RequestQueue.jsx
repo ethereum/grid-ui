@@ -9,6 +9,8 @@ import IconButton from '@material-ui/core/IconButton'
 import InputRequired from './requests/InputRequired'
 import ApproveListing from './requests/ApproveListing'
 import ApproveNewAccount from './requests/ApproveNewAccount'
+import ApproveTx from './requests/ApproveTx'
+import ApproveSignData from './requests/ApproveSignData'
 import { selectRequest } from '../../store/signer/actions'
 
 const styles = () => ({})
@@ -94,6 +96,10 @@ class RequestQueue extends Component {
         return <ApproveListing key={id} request={request} />
       case 'ui_approveNewAccount':
         return <ApproveNewAccount key={id} request={request} />
+      case 'ui_approveTx':
+        return <ApproveTx key={id} request={request} />
+      case 'ui_approveSignData':
+        return <ApproveSignData key={id} request={request} />
       default:
         console.error('No handler for clef method: ', method)
         return null

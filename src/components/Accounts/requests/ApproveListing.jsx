@@ -129,10 +129,8 @@ class ApproveListing extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    signer: state.signer
-  }
+function mapStateToProps() {
+  return {}
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(ApproveListing))
