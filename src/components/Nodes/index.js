@@ -1,58 +1,54 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import GethConfig from './GethConfig'
-import { initGeth, toggleGeth } from '../../store/client/actions'
+import ClientConfig from './ClientConfig'
+// import { initGeth, toggleGeth } from '../../store/client/actions'
 import Geth from '../../store/client/gethService'
 import ServicesNav from './ServicesNav'
 
+import Grid from '../../API/Grid'
+
+const { PluginHost } = Grid
+
 class NodesTab extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    dispatch: PropTypes.func
+    clientStatus: PropTypes.string,
+    release: PropTypes.object
   }
 
   static defaultProps = {}
 
   state = {
-    active: 'geth',
-    services: [
-      { name: 'geth' }
-      // { name: 'remix' }
-    ]
+    clients: [],
+    selectedClient: undefined
   }
 
   componentDidMount() {
-    const { dispatch } = this.props
-    dispatch(initGeth())
+    if (!PluginHost) return
+    const plugins = PluginHost.getAllPlugins()
+    const clients = [...plugins]
+    const selectedClient = clients[0]
+    this.setState({ clients, selectedClient })
   }
 
   isChecked = service => {
-    const { client } = this.props
-    const { state } = client
+    const { clientStatus } = this.props
     switch (service.name) {
       case 'geth':
-        return Geth.isRunning(state)
+        return Geth.isRunning(clientStatus)
       default:
         return false
     }
   }
 
-  isDisabled = service => {
-    const { client } = this.props
-    const { release } = client
-    switch (service.name) {
-      case 'geth':
-        return !release
-      default:
-        return true
-    }
+  isDisabled = client => {
+    const { selectedRelease } = client
+    return !selectedRelease
   }
 
-  serviceVersion = service => {
-    const { client } = this.props
-    const { release } = client
-    switch (service.name) {
+  serviceVersion = serviceName => {
+    const { release } = this.props
+    switch (serviceName) {
       case 'geth':
         if (release) {
           return release.version
@@ -63,14 +59,25 @@ class NodesTab extends Component {
     }
   }
 
-  handleToggle = service => {
-    const { dispatch } = this.props
-    switch (service.name) {
-      case 'geth':
-        dispatch(toggleGeth())
-        break
-      default:
-        break
+  handleSelect = client => {
+    this.setState({ selectedClient: client })
+  }
+
+  // turn client on/off here
+  handleToggle = async () => {
+    const { selectedClient } = this.state
+    const { isRunning } = selectedClient
+    const { release } = this.props
+
+    if (isRunning) {
+      selectedClient.stop()
+    } else {
+      try {
+        console.log('∆∆∆ start release.version', release.version)
+        selectedClient.start(release)
+      } catch (error) {
+        console.log('could not start', error)
+      }
     }
   }
 
@@ -87,7 +94,7 @@ class NodesTab extends Component {
   }
 
   render() {
-    const { active, services } = this.state
+    const { active, clients, selectedClient, selectedRelease } = this.state
 
     return (
       <ServicesNav
@@ -96,12 +103,19 @@ class NodesTab extends Component {
         isChecked={this.isChecked}
         isDisabled={this.isDisabled}
         handleToggle={this.handleToggle}
+        handleSelect={this.handleSelect}
+        selectedClientName={selectedClient && selectedClient.name}
+        selectedRelease={selectedRelease}
         tooltipText={this.tooltipText}
         serviceVersion={this.serviceVersion}
-        services={services}
+        clients={clients}
       >
-        {active === 'geth' && <GethConfig />}
-        {/* active === 'remix' && <div>Remix</div> */}
+        {selectedClient && (
+          <ClientConfig
+            client={selectedClient}
+            selectedRelease={selectedRelease}
+          />
+        )}
       </ServicesNav>
     )
   }
@@ -109,7 +123,8 @@ class NodesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    client: state.client
+    release: state.client.release,
+    clientStatus: state.client.state
   }
 }
 

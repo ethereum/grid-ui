@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
@@ -51,32 +50,33 @@ const styles = theme => ({
 
 class ServicesTab extends Component {
   static propTypes = {
-    active: PropTypes.string,
+    // active: PropTypes.string,
     classes: PropTypes.object,
-    setActive: PropTypes.func,
-    services: PropTypes.array,
+    // setActive: PropTypes.func,
+    clients: PropTypes.array,
     children: PropTypes.node,
     serviceVersion: PropTypes.func,
     handleToggle: PropTypes.func,
-    isChecked: PropTypes.func,
-    isDisabled: PropTypes.func,
-    tooltipText: PropTypes.func
+    // isChecked: PropTypes.func,
+    // isDisabled: PropTypes.func,
+    // tooltipText: PropTypes.func
+    handleSelect: PropTypes.func,
+    selectedClientName: PropTypes.string
   }
 
   static defaultProps = {}
 
+  handleToggle = () => {}
+
   render() {
     const {
-      active,
-      services,
       classes,
-      children,
-      setActive,
-      serviceVersion,
       handleToggle,
-      isChecked,
-      isDisabled,
-      tooltipText
+      handleSelect,
+      selectedClientName,
+      children,
+      clients,
+      serviceVersion
     } = this.props
 
     return (
@@ -88,57 +88,52 @@ class ServicesTab extends Component {
         >
           <div className={classes.toolbar} />
           <List>
-            {services.map(service => (
-              <ListItem
-                key={service.name}
-                disabled={service.disabled}
-                selected={service.name === active}
-                onClick={() => setActive(service.name)}
-                classes={{
-                  root: classes.hoverableListItem,
-                  selected: classes.selected
-                }}
-                button
-              >
-                <ListItemText
-                  primary={service.name}
-                  secondary={serviceVersion(service)}
-                  primaryTypographyProps={{
-                    inline: true,
-                    classes: { root: classes.serviceName }
+            {clients.map(client => {
+              return (
+                <ListItem
+                  key={client.name}
+                  selected={client.name === selectedClientName}
+                  onClick={() => handleSelect(client)}
+                  classes={{
+                    root: classes.hoverableListItem,
+                    selected: classes.selected
                   }}
-                  secondaryTypographyProps={{
-                    inline: true,
-                    classes: { root: classes.versionInfo }
-                  }}
-                />
-                <ListItemSecondaryAction>
-                  <Tooltip title={tooltipText(service)} placement="left">
+                  button
+                >
+                  <ListItemText
+                    primary={client.displayName}
+                    secondary={serviceVersion(client.name)}
+                    primaryTypographyProps={{
+                      inline: true,
+                      classes: { root: classes.serviceName }
+                    }}
+                    secondaryTypographyProps={{
+                      inline: true,
+                      classes: { root: classes.versionInfo }
+                    }}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip title={client.tooltipText || ''} placement="left">
+                      <span />
+                    </Tooltip>
                     <span>
                       <Switch
                         color="primary"
-                        onChange={() => handleToggle(service)}
-                        checked={isChecked(service)}
-                        disabled={isDisabled(service)}
+                        onChange={() => handleToggle(client)}
+                        checked={client.running}
+                        disabled={!serviceVersion(client.name)}
                       />
                     </span>
-                  </Tooltip>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
+                  </ListItemSecondaryAction>
+                </ListItem>
+              )
+            })}
           </List>
         </Drawer>
-
         <main className={classes.content}>{children}</main>
       </React.Fragment>
     )
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    client: state.client
-  }
-}
-
-export default connect(mapStateToProps)(withStyles(styles)(ServicesTab))
+export default withStyles(styles)(ServicesTab)

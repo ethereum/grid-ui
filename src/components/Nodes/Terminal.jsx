@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Mist } from '../../API'
-
-const { geth } = Mist
+import PropTypes from 'prop-types'
 
 export default class Terminal extends Component {
+  static propTypes = {
+    client: PropTypes.object
+  }
+
   state = {
     logs: []
   }
@@ -15,6 +17,16 @@ export default class Terminal extends Component {
 
   componentDidMount = async () => {
     this.subscribeLogs()
+  }
+
+  componentWillReceiveProps({ client: nextClient }) {
+    const { client: oldClient } = this.props
+    const logs = nextClient.getLogs()
+    this.setState({ logs })
+    if (oldClient && nextClient !== oldClient) {
+      this.unsubscribeLogs(oldClient)
+      this.subscribeLogs(nextClient)
+    }
   }
 
   componentDidUpdate = () => {
@@ -36,15 +48,19 @@ export default class Terminal extends Component {
     this.setState({ logs: [] })
   }
 
-  subscribeLogs = () => {
-    geth.on('log', this.addNewLog)
+  subscribeLogs = client => {
+    // eslint-disable-next-line
+    client = client || this.props.client
+    client.on('log', this.addNewLog)
     // Clear old logs on restart
-    geth.on('starting', this.clearLogs)
+    client.on('starting', this.clearLogs)
   }
 
-  unsubscribeLogs = () => {
-    geth.removeListener('log', this.addNewLog)
-    geth.removeListener('started', this.clearLogs)
+  unsubscribeLogs = client => {
+    // eslint-disable-next-line
+    client = client || this.props.client
+    client.removeListener('log', this.addNewLog)
+    client.removeListener('started', this.clearLogs)
   }
 
   terminalScrollToBottom = () => {
@@ -75,7 +91,6 @@ export default class Terminal extends Component {
             color: '#eee',
             maxHeight: 400,
             width: '100%',
-            maxWidth: '700px',
             overflowY: 'scroll',
             whiteSpace: 'nowrap',
             padding: 10
