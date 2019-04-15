@@ -59,3 +59,11 @@ switch (urlParams.app) {
     )
     break
 }
+
+if (module.hot) {
+  module.hot.accept('./components/App', () => {
+    // eslint-disable-next-line
+    const App = require('./components/App').default
+    ReactDOM.render(<App />, root)
+  })
+}

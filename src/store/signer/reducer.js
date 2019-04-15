@@ -3,12 +3,15 @@ export const initialState = {
   activeAccount: null,
   error: null,
   state: 'STOPPED',
+  requests: [],
+  selectedRequest: null,
   config: {
     name: null,
     keystoreDir: null,
     rpcHost: null,
     rpcPort: null
-  }
+  },
+  notifications: []
 }
 
 const signer = (state = initialState, action) => {
@@ -77,6 +80,52 @@ const signer = (state = initialState, action) => {
       const newState = {
         ...state,
         config
+      }
+      return newState
+    }
+    case '[SIGNER]:CLEF:ADD_REQUEST': {
+      const { request } = action.payload
+      const requests = [...state.requests, request]
+      const newState = {
+        ...state,
+        requests
+      }
+      return newState
+    }
+    case '[SIGNER]:CLEF:SELECT_REQUEST': {
+      const { index } = action.payload
+      const newState = {
+        ...state,
+        selectedRequest: index
+      }
+      return newState
+    }
+    case '[SIGNER]:CLEF:REQUEST_DONE': {
+      const { doneId, nextSelected } = action.payload
+      const newState = {
+        ...state,
+        selectedRequest: nextSelected,
+        requests: state.requests.filter(request => request.id !== doneId)
+      }
+      return newState
+    }
+    case '[SIGNER]:CLEF:ADD_NOTIFICATION': {
+      const { type, text } = action.payload
+      const notification = { type, text }
+      const notifications = [...state.notifications, notification]
+      const newState = {
+        ...state,
+        notifications
+      }
+      return newState
+    }
+    case '[SIGNER]:CLEF:CLEAR_NOTIFICATION': {
+      const { index } = action.payload
+      const newState = {
+        ...state,
+        notifications: state.notifications.filter(
+          (n, nIndex) => nIndex !== index
+        )
       }
       return newState
     }

@@ -12,9 +12,10 @@ import Switch from '@material-ui/core/Switch'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord'
 import ConfigForm from './ConfigForm'
+import RequestQueue from './RequestQueue'
 import Terminal from '../shared/Terminal'
 import { Grid } from '../../API'
-import { clearError } from '../../store/signer/actions'
+import { clearError, clearNotification } from '../../store/signer/actions'
 import Notification from '../shared/Notification'
 import Clef from '../../store/signer/clefService'
 
@@ -83,8 +84,6 @@ class Accounts extends Component {
   }
 
   handleClefStarted = () => {
-    // Update activeTab to Terminal
-    this.setState({ activeTab: 2 })
     // Set release
     this.setClefRelease()
   }
@@ -96,6 +95,11 @@ class Accounts extends Component {
   onDismissError = () => {
     const { dispatch } = this.props
     dispatch(clearError())
+  }
+
+  clearNotification = index => {
+    const { dispatch } = this.props
+    dispatch(clearNotification({ index }))
   }
 
   clefIsRunning() {
@@ -194,6 +198,115 @@ class Accounts extends Component {
     )
   }
 
+  renderNotifications() {
+    const { signer } = this.props
+    const { notifications } = signer
+    const renderNotifications = []
+    notifications.forEach((notification, index) => {
+      renderNotifications.push(
+        <Notification
+          key={index}
+          type={notification.type}
+          message={notification.text}
+          onDismiss={() => {
+            this.clearNotification(index)
+          }}
+        />
+      )
+    })
+    return renderNotifications
+  }
+
+  renderButtons() {
+    const { signer } = this.props
+    const { state, accounts, config } = signer
+
+    if (!Clef.isRunning(state)) {
+      return null
+    }
+
+    let id = 0
+    const jsonrpc = '2.0'
+    const params = []
+
+    const send = message => {
+      Clef.sendSigner(message, config)
+      id += 1
+    }
+
+    const sendList = () => {
+      send({
+        id,
+        jsonrpc,
+        method: 'account_list',
+        params
+      })
+    }
+
+    const newAccount = () => {
+      send({
+        id,
+        jsonrpc,
+        method: 'account_new',
+        params
+      })
+    }
+
+    const signData = () => {
+      send({
+        id,
+        jsonrpc,
+        method: 'account_new',
+        params
+      })
+    }
+
+    const signTx = () => {
+      send({
+        id,
+        jsonrpc,
+        method: 'account_new',
+        params
+      })
+    }
+
+    return (
+      <div>
+        <Button
+          onClick={() => {
+            sendList()
+          }}
+        >
+          {' '}
+          List Accounts{' '}
+        </Button>{' '}
+        <Button
+          onClick={() => {
+            newAccount()
+          }}
+        >
+          {' '}
+          New Account{' '}
+        </Button>{' '}
+        <Button
+          onClick={() => {
+            signData()
+          }}
+          disabled={accounts.length === 0}
+        >
+          Sign Data
+        </Button>
+        <Button
+          onClick={() => {
+            signTx()
+          }}
+          disabled={accounts.length === 0}
+        >
+          Sign Tx
+        </Button>
+      </div>
+    )
+  }
   render() {
     const { classes } = this.props
     const { activeTab, release } = this.state
@@ -204,6 +317,8 @@ class Accounts extends Component {
         {this.renderDownloadProgress()}
         {this.renderSwitch()}
         {this.renderErrors()}
+        {this.renderNotifications()}
+        {this.renderButtons()}
         <AppBar position="static" classes={{ root: classes.appBar }}>
           <Tabs
             value={activeTab}
@@ -217,7 +332,9 @@ class Accounts extends Component {
           </Tabs>
         </AppBar>
         {activeTab === 0 && (
-          <TabContainer>No actions needed at this time</TabContainer>
+          <TabContainer>
+            <RequestQueue />
+          </TabContainer>
         )}
         {activeTab === 1 && (
           <TabContainer>

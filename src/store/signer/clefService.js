@@ -6,7 +6,11 @@ import {
   clefDisconnected,
   clefStopping,
   clefStopped,
-  clefError
+  clefError,
+  addRequest,
+  selectRequest,
+  requestDone,
+  addNotification
 } from './actions'
 
 const { clef } = Grid
@@ -42,6 +46,10 @@ const networkToChainId = network => {
 }
 
 class ClefService {
+  constructor() {
+    this.nextRpcId = 0
+  }
+
   setConfig(config, network) {
     const newConfig = config
     // Set chainId
@@ -75,6 +83,38 @@ class ClefService {
     return clef.state
   }
 
+  sendClef(message, dispatch) {
+    const { result, method, params, id } = message
+    const jsonrpcMessage = { jsonrpc: '2.0', id }
+    if (!id) {
+      jsonrpcMessage.id = this.nextRpcId
+      this.nextRpcId += 1
+    }
+    if (result) {
+      jsonrpcMessage.result = result
+    } else if (method) {
+      jsonrpcMessage.method = method
+      jsonrpcMessage.params = params || []
+    }
+    clef.send(jsonrpcMessage)
+    dispatch(requestDone({ id: jsonrpcMessage.id }))
+  }
+
+  sendSigner(data, config) {
+    const { rpcHost, rpcPort } = config
+    const address = `http://${rpcHost}:${rpcPort}`
+    const body = JSON.stringify(data)
+    fetch(address, {
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      method: 'POST',
+      body
+    })
+  }
+
+  updateChainId(chainId) {
+    this.sendClef({ method: 'clef_setChainId', params: [chainId] })
+  }
+
   createListeners(dispatch) {
     // State
     clef.on('starting', () => this.onStarting(dispatch))
@@ -85,15 +125,15 @@ class ClefService {
     clef.on('disconnect', () => this.onDisconnect(dispatch))
     clef.on('error', e => this.onError(e, dispatch))
     // Signer events
-    clef.on('approveTx', this.approveTx.bind(this))
-    clef.on('approveSignData', this.approveSignData.bind(this))
-    clef.on('approveListing', this.approveListing.bind(this))
-    clef.on('approveNewAccount', this.approveNewAccount.bind(this))
-    clef.on('showInfo', this.showInfo.bind(this))
-    clef.on('showError', this.showError.bind(this))
-    clef.on('onApprovedTx', this.onApprovedTx.bind(this))
-    clef.on('onSignerStartup', this.onSignerStartup.bind(this))
-    clef.on('onInputRequired', this.onInputRequired.bind(this))
+    clef.on('approveTx', data => this.approveTx(data, dispatch))
+    clef.on('approveSignData', data => this.approveSignData(data, dispatch))
+    clef.on('approveListing', data => this.approveListing(data, dispatch))
+    clef.on('approveNewAccount', data => this.approveNewAccount(data, dispatch))
+    clef.on('showInfo', data => this.showInfo(data, dispatch))
+    clef.on('showError', data => this.showError(data, dispatch))
+    clef.on('onApprovedTx', data => this.onApprovedTx(data, dispatch))
+    clef.on('onSignerStartup', data => this.onSignerStartup(data, dispatch))
+    clef.on('onInputRequired', data => this.onInputRequired(data, dispatch))
   }
 
   removeListeners() {
@@ -126,7 +166,7 @@ class ClefService {
   }
 
   onConnect(dispatch) {
-    dispatch(clefConnected())
+    // dispatch(clefConnected())
   }
 
   onDisconnect(dispatch) {
@@ -145,23 +185,53 @@ class ClefService {
     dispatch(clefError({ error }))
   }
 
-  approveTx() {}
+  approveTx(data, dispatch) {
+    dispatch(addRequest({ data }))
+    console.log('Transaction Signing is awaiting review.')
+  }
 
-  approveSignData() {}
+  approveSignData(data, dispatch) {
+    dispatch(addRequest({ data }))
+    console.log('Message signing is awaiting review.')
+  }
 
-  approveListing() {}
+  approveListing(data, dispatch) {
+    dispatch(addRequest({ data }))
+    console.log('Account listing is awaiting review.')
+  }
 
-  approveNewAccount() {}
+  approveNewAccount(data, dispatch) {
+    dispatch(addRequest({ data }))
+    console.log('New account request is awaiting review.')
+  }
 
-  showInfo() {}
+  showInfo(data, dispatch) {
+    const { text } = data.params[0]
+    dispatch(addNotification({ type: 'info', text }))
+  }
 
-  showError() {}
+  showError(data, dispatch) {
+    const { text } = data.params[0]
+    dispatch(addNotification({ type: 'error', text }))
+  }
 
-  onApprovedTx() {}
+  onApprovedTx(data, dispatch) {
+    console.log('Signed: ', data)
+  }
 
-  onSignerStartup() {}
+  onSignerStartup(data, dispatch) {
+    dispatch(clefConnected())
+    console.log(
+      `Clef is up.\n
+      Web: ${data.params[0].info.extapi_http}\n
+      IPC: ${data.params[0].info.extapi_ipc}`
+    )
+  }
 
-  onInputRequired() {}
+  onInputRequired(data, dispatch) {
+    dispatch(addRequest({ data }))
+    console.log('Input required: ', data.params[0].title, data.params[0].prompt)
+  }
 }
 
 export default new ClefService()
