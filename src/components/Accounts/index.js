@@ -99,7 +99,7 @@ class Accounts extends Component {
 
   clearNotification = index => {
     const { dispatch } = this.props
-    dispatch(clearNotification({ index }))
+    dispatch(clearNotification(index))
   }
 
   clefIsRunning() {

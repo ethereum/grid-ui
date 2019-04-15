@@ -97,7 +97,7 @@ class ClefService {
       jsonrpcMessage.params = params || []
     }
     clef.send(jsonrpcMessage)
-    dispatch(requestDone({ id: jsonrpcMessage.id }))
+    dispatch(requestDone(jsonrpcMessage.id))
   }
 
   sendSigner(data, config) {
@@ -182,7 +182,7 @@ class ClefService {
   }
 
   onError(error, dispatch) {
-    dispatch(clefError({ error }))
+    dispatch(clefError(error))
   }
 
   approveTx(data, dispatch) {
@@ -207,12 +207,12 @@ class ClefService {
 
   showInfo(data, dispatch) {
     const { text } = data.params[0]
-    dispatch(addNotification({ type: 'info', text }))
+    dispatch(addNotification('info', text))
   }
 
   showError(data, dispatch) {
     const { text } = data.params[0]
-    dispatch(addNotification({ type: 'error', text }))
+    dispatch(addNotification('error', text))
   }
 
   onApprovedTx(data, dispatch) {

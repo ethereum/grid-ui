@@ -101,11 +101,11 @@ const signer = (state = initialState, action) => {
       return newState
     }
     case '[SIGNER]:CLEF:REQUEST_DONE': {
-      const { doneId, nextSelected } = action.payload
+      const { id, nextSelected } = action.payload
       const newState = {
         ...state,
         selectedRequest: nextSelected,
-        requests: state.requests.filter(request => request.id !== doneId)
+        requests: state.requests.filter(request => request.id !== id)
       }
       return newState
     }

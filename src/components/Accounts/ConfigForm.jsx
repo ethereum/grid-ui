@@ -37,7 +37,7 @@ class ConfigForm extends Component {
       return
     }
     const defaultConfig = clef.getConfig()
-    dispatch(setConfig({ config: defaultConfig }))
+    dispatch(setConfig(defaultConfig))
   }
 
   handleChangeKeystoreDir = event => {
@@ -48,7 +48,7 @@ class ConfigForm extends Component {
       keystoreDir = event.target.files
     }
     const newConfig = { ...config, keystoreDir }
-    dispatch(setConfig({ config: newConfig }))
+    dispatch(setConfig(newConfig))
   }
 
   handleChangeHost = event => {
@@ -56,7 +56,7 @@ class ConfigForm extends Component {
     const { config } = signer
     const host = event.target.value
     const newConfig = { ...config, host }
-    dispatch(setConfig({ config: newConfig }))
+    dispatch(setConfig(newConfig))
   }
 
   handleChangePort = event => {
@@ -64,7 +64,7 @@ class ConfigForm extends Component {
     const { config } = signer
     const port = Number(event.target.value)
     const newConfig = { ...config, port }
-    dispatch(setConfig({ config: newConfig }))
+    dispatch(setConfig(newConfig))
   }
 
   capitalizeLabel = label => label.charAt(0).toUpperCase() + label.slice(1)

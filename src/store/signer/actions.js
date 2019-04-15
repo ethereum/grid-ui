@@ -24,7 +24,7 @@ export const clefStopped = () => {
   return { type: '[SIGNER]:CLEF:STOPPED' }
 }
 
-export const clefError = ({ error }) => {
+export const clefError = error => {
   return {
     type: '[SIGNER]:CLEF:ERROR',
     payload: { error }
@@ -37,7 +37,7 @@ export const clearError = () => {
   }
 }
 
-export const setConfig = ({ config }) => {
+export const setConfig = config => {
   return async (dispatch, getState) => {
     const { client } = getState()
     const { config: clientConfig } = client
@@ -51,7 +51,7 @@ export const setConfig = ({ config }) => {
   }
 }
 
-export const selectRequest = ({ index }) => {
+export const selectRequest = index => {
   return {
     type: '[SIGNER]:CLEF:SELECT_REQUEST',
     payload: { index }
@@ -71,12 +71,12 @@ export const addRequest = ({ data }) => {
     })
     const { selectedRequest } = getState().signer
     if (!selectedRequest) {
-      dispatch(selectRequest({ index: 0 }))
+      dispatch(selectRequest(0))
     }
   }
 }
 
-export const requestDone = ({ id }) => {
+export const requestDone = id => {
   return async (dispatch, getState) => {
     const { signer } = getState()
     const { requests, selectedRequest } = signer
@@ -86,19 +86,19 @@ export const requestDone = ({ id }) => {
     }
     dispatch({
       type: '[SIGNER]:CLEF:REQUEST_DONE',
-      payload: { doneId: id, nextSelected }
+      payload: { id, nextSelected }
     })
   }
 }
 
-export const addNotification = ({ type, text }) => {
+export const addNotification = (type, text) => {
   return {
     type: '[SIGNER]:CLEF:ADD_NOTIFICATION',
     payload: { type, text }
   }
 }
 
-export const clearNotification = ({ index }) => {
+export const clearNotification = index => {
   return {
     type: '[SIGNER]:CLEF:CLEAR_NOTIFICATION',
     payload: { index }

@@ -29,7 +29,7 @@ class RequestQueue extends Component {
       // To beginning of queue
       next = 0
     }
-    dispatch(selectRequest({ index: next }))
+    dispatch(selectRequest(next))
   }
 
   navigatePrevious = () => {
@@ -40,7 +40,7 @@ class RequestQueue extends Component {
       // To end of queue
       previous = requests.length - 1
     }
-    dispatch(selectRequest({ index: previous }))
+    dispatch(selectRequest(previous))
   }
 
   renderControls() {
