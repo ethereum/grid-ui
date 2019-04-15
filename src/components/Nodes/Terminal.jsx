@@ -22,9 +22,7 @@ export default class Terminal extends Component {
   componentWillReceiveProps({ client: nextClient }) {
     const { client: oldClient } = this.props
     const logs = nextClient.getLogs()
-    this.setState({
-      logs
-    })
+    this.setState({ logs })
     if (oldClient && nextClient !== oldClient) {
       this.unsubscribeLogs(oldClient)
       this.subscribeLogs(nextClient)

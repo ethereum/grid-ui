@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import semver from 'semver'
@@ -50,12 +51,11 @@ class VersionList extends Component {
     dispatch: PropTypes.func,
     client: PropTypes.object,
     classes: PropTypes.object,
-    handleSelectRelease: PropTypes.func
+    release: PropTypes.object
   }
 
   state = {
     releases: [],
-    selectedRelease: undefined,
     localReleaseCount: 0,
     loadingReleases: false,
     downloadError: null
@@ -76,7 +76,7 @@ class VersionList extends Component {
 
   setSelectedRelease = release => {
     const { dispatch } = this.props
-    dispatch(setRelease({ release }))
+    dispatch(setRelease(release))
   }
 
   loadReleases = async client => {
@@ -145,13 +145,13 @@ class VersionList extends Component {
   }
 
   renderWarnings = () => {
-    return <div>{this.renderLatestVersionWarning()}</div>
+    // TODO:
+    // return <div>{this.renderLatestVersionWarning()}</div>
   }
 
   renderLatestVersionWarning = () => {
-    const { classes, client } = this.props
+    const { classes, release } = this.props
     const { releases } = this.state
-    const { release } = client
     if (!release || !releases.length) {
       return null
     }
@@ -184,21 +184,15 @@ class VersionList extends Component {
     return null
   }
 
-  isSelectedRelease = release => {
-    /*
-    const { client } = this.props
-    if (!client.release) return false
-    return release.fileName === client.release.fileName
-    */
-    const { selectedRelease } = this.state
-    return selectedRelease && selectedRelease.fileName === release.fileName
+  isSelectedRelease = selectedRelease => {
+    const { release } = this.props
+    if (!selectedRelease) return false
+    return release.fileName === selectedRelease.fileName
   }
 
   handleReleaseSelected = release => {
-    const { handleSelectRelease } = this.props
-    this.setState({ selectedRelease: release }, () => {
-      handleSelectRelease(release)
-    })
+    const { dispatch } = this.props
+    dispatch(setRelease(release))
   }
 
   handleReleaseDownloaded = release => {
@@ -223,6 +217,7 @@ class VersionList extends Component {
             client={client}
             release={release}
             key={i}
+            isSelectedRelease={this.isSelectedRelease}
             handleReleaseSelected={this.handleReleaseSelected}
             handleDownloadError={downloadError =>
               this.setState({ downloadError })
@@ -248,15 +243,13 @@ class VersionList extends Component {
     )
   }
 }
-/*
+
 function mapStateToProps(state) {
   return {
-    client: state.client
+    release: state.client.release
   }
 }
 export default connect(mapStateToProps)(withStyles(styles)(VersionList))
-*/
-export default withStyles(styles)(VersionList)
 
 const StyledList = styled(List)`
   min-height: 200px;

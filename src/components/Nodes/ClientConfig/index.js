@@ -29,8 +29,7 @@ TabContainer.propTypes = {
 
 class ClientConfig extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    handleSelectRelease: PropTypes.func
+    client: PropTypes.object
   }
 
   state = {
@@ -88,9 +87,8 @@ class ClientConfig extends Component {
   }
 
   render() {
-    const { client, handleSelectRelease } = this.props
+    const { client } = this.props
     const { activeTab } = this.state
-    const { selectedRelease } = client
     const { state, displayName: clientName } = client || {}
     return (
       <StyledMain>
@@ -118,12 +116,7 @@ class ClientConfig extends Component {
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
-          <div>
-            <VersionList
-              client={client}
-              handleSelectRelease={handleSelectRelease}
-            />
-          </div>
+          <VersionList client={client} />
         </TabContainer>
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />

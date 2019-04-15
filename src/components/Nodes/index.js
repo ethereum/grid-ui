@@ -12,7 +12,8 @@ const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
-    client: PropTypes.object
+    clientStatus: PropTypes.string,
+    release: PropTypes.object
   }
 
   static defaultProps = {}
@@ -31,11 +32,10 @@ class NodesTab extends Component {
   }
 
   isChecked = service => {
-    const { client } = this.props
-    const { state } = client
+    const { clientStatus } = this.props
     switch (service.name) {
       case 'geth':
-        return Geth.isRunning(state)
+        return Geth.isRunning(clientStatus)
       default:
         return false
     }
@@ -46,10 +46,9 @@ class NodesTab extends Component {
     return !selectedRelease
   }
 
-  serviceVersion = service => {
-    const { client } = this.props
-    const { release } = client
-    switch (service.name) {
+  serviceVersion = serviceName => {
+    const { release } = this.props
+    switch (serviceName) {
       case 'geth':
         if (release) {
           return release.version
@@ -64,40 +63,22 @@ class NodesTab extends Component {
     this.setState({ selectedClient: client })
   }
 
-  handleSelectRelease = release => {
-    const { selectedClient } = this.state
-    selectedClient.selectedRelease = release
-    this.setState({
-      selectedClient
-    })
-  }
-
   // turn client on/off here
   handleToggle = async () => {
     const { selectedClient } = this.state
-    const { selectedRelease } = selectedClient
     const { isRunning } = selectedClient
-    console.log('handle toggle', isRunning)
+    const { release } = this.props
+
     if (isRunning) {
       selectedClient.stop()
     } else {
       try {
-        console.log('start release', selectedRelease)
-        selectedClient.start(selectedRelease /* config */)
+        console.log('∆∆∆ start release.version', release.version)
+        selectedClient.start(release)
       } catch (error) {
         console.log('could not start', error)
       }
     }
-    /*
-    const { dispatch } = this.props
-    switch (service.name) {
-      case 'geth':
-        // dispatch(toggleGeth())
-        break
-      default:
-        break
-    }
-    */
   }
 
   tooltipText = service => {
@@ -114,7 +95,7 @@ class NodesTab extends Component {
 
   render() {
     const { active, clients, selectedClient, selectedRelease } = this.state
-    console.log('selected', selectedClient)
+
     return (
       <ServicesNav
         active={active}
@@ -123,7 +104,7 @@ class NodesTab extends Component {
         isDisabled={this.isDisabled}
         handleToggle={this.handleToggle}
         handleSelect={this.handleSelect}
-        selectedClient={selectedClient}
+        selectedClientName={selectedClient && selectedClient.name}
         selectedRelease={selectedRelease}
         tooltipText={this.tooltipText}
         serviceVersion={this.serviceVersion}
@@ -132,7 +113,6 @@ class NodesTab extends Component {
         {selectedClient && (
           <ClientConfig
             client={selectedClient}
-            handleSelectRelease={this.handleSelectRelease}
             selectedRelease={selectedRelease}
           />
         )}
@@ -143,7 +123,8 @@ class NodesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    client: state.client
+    release: state.client.release,
+    clientStatus: state.client.state
   }
 }
 

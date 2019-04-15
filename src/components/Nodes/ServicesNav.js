@@ -55,13 +55,13 @@ class ServicesTab extends Component {
     // setActive: PropTypes.func,
     clients: PropTypes.array,
     children: PropTypes.node,
-    // serviceVersion: PropTypes.func,
+    serviceVersion: PropTypes.func,
     handleToggle: PropTypes.func,
     // isChecked: PropTypes.func,
     // isDisabled: PropTypes.func,
     // tooltipText: PropTypes.func
     handleSelect: PropTypes.func,
-    selectedClient: PropTypes.object
+    selectedClientName: PropTypes.string
   }
 
   static defaultProps = {}
@@ -73,9 +73,10 @@ class ServicesTab extends Component {
       classes,
       handleToggle,
       handleSelect,
-      selectedClient,
+      selectedClientName,
       children,
-      clients
+      clients,
+      serviceVersion
     } = this.props
 
     return (
@@ -88,13 +89,10 @@ class ServicesTab extends Component {
           <div className={classes.toolbar} />
           <List>
             {clients.map(client => {
-              const { selectedRelease } = client
-              const { version: selectedVersion } = selectedRelease || {}
               return (
                 <ListItem
                   key={client.name}
-                  disabled={!selectedRelease}
-                  selected={client.name === selectedClient.name}
+                  selected={client.name === selectedClientName}
                   onClick={() => handleSelect(client)}
                   classes={{
                     root: classes.hoverableListItem,
@@ -104,7 +102,7 @@ class ServicesTab extends Component {
                 >
                   <ListItemText
                     primary={client.displayName}
-                    secondary={selectedVersion}
+                    secondary={serviceVersion(client.name)}
                     primaryTypographyProps={{
                       inline: true,
                       classes: { root: classes.serviceName }
@@ -123,7 +121,7 @@ class ServicesTab extends Component {
                         color="primary"
                         onChange={() => handleToggle(client)}
                         checked={client.running}
-                        disabled={!selectedRelease}
+                        disabled={!serviceVersion(client.name)}
                       />
                     </span>
                   </ListItemSecondaryAction>

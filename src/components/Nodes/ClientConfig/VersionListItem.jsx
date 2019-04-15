@@ -12,18 +12,18 @@ import { without } from '../../../lib/utils'
 
 export default class VersionListItem extends Component {
   static propTypes = {
+    client: PropTypes.object,
     release: PropTypes.object,
     handleDownloadError: PropTypes.func,
     handleReleaseDownloaded: PropTypes.func,
-    handleReleaseSelected: PropTypes.func
+    handleReleaseSelected: PropTypes.func,
+    isSelectedRelease: PropTypes.func
   }
 
   state = {
     isDownloading: false,
     downloadProgress: 0
   }
-
-  isSelectedRelease = () => false
 
   releaseDisplayName = release => {
     const { fileName } = release
@@ -43,28 +43,27 @@ export default class VersionListItem extends Component {
     }
   }
 
-  downloadRelease = async release => {
+  downloadRelease = release => {
     const { client, handleDownloadError, handleReleaseDownloaded } = this.props
     const { isDownloading } = this.state
     // Return if already downloading
     if (isDownloading) return
-    this.setState({ isDownloading: true })
-    try {
-      await client.download(release, downloadProgress => {
-        this.setState({ downloadProgress })
-      })
-    } catch (error) {
-      handleDownloadError(error)
-    }
-    this.setState({ isDownloading: false, downloadProgress: 0 })
-    handleReleaseDownloaded(release)
+    this.setState({ isDownloading: true }, async () => {
+      try {
+        await client.download(release, downloadProgress => {
+          this.setState({ downloadProgress })
+        })
+      } catch (error) {
+        handleDownloadError(error)
+      }
+      this.setState({ isDownloading: false, downloadProgress: 0 })
+      handleReleaseDownloaded(release)
+    })
   }
 
   handleReleaseSelected = release => {
-    // const { dispatch } = this.props
     const { handleReleaseSelected } = this.props
     if (!release.remote) {
-      // FIXME dispatch(setRelease({ release }))
       handleReleaseSelected(release)
     } else {
       this.downloadRelease(release)
@@ -72,6 +71,7 @@ export default class VersionListItem extends Component {
   }
 
   renderIcon = release => {
+    const { isSelectedRelease } = this.props
     const { downloadProgress, isDownloading } = this.state
     let icon = <BlankIconPlaceholder />
     if (isDownloading) {
@@ -80,7 +80,7 @@ export default class VersionListItem extends Component {
       )
     } else if (release.remote) {
       icon = <CloudDownloadIcon color="primary" />
-    } else if (this.isSelectedRelease(release)) {
+    } else if (isSelectedRelease(release)) {
       icon = <CheckBoxIcon color="primary" />
     } else if (!release.remote) {
       icon = <HiddenCheckBoxIcon color="primary" />
@@ -89,13 +89,13 @@ export default class VersionListItem extends Component {
   }
 
   render() {
-    const { release } = this.props
+    const { isSelectedRelease, release } = this.props
     const { downloadProgress, isDownloading } = this.state
 
     let actionLabel = 'Use'
     if (!release.remote) {
       actionLabel = 'Use'
-      if (this.isSelectedRelease(release)) {
+      if (isSelectedRelease(release)) {
         actionLabel = 'Selected'
       }
     } else {
@@ -111,7 +111,7 @@ export default class VersionListItem extends Component {
         onClick={() => {
           this.handleReleaseSelected(release)
         }}
-        selected={this.isSelectedRelease(release)}
+        selected={isSelectedRelease(release)}
         isDownloading={isDownloading}
         alt={release.name}
       >
