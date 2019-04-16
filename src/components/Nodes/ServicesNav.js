@@ -126,7 +126,7 @@ class ServicesTab extends Component {
                         color="primary"
                         onChange={() => handleToggle(client)}
                         checked={client.running}
-                        disabled={!selectedRelease}
+                        disabled={client.name !== selectedClientName}
                       />
                     </span>
                   </ListItemSecondaryAction>
