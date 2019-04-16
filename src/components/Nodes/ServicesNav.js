@@ -103,7 +103,9 @@ class ServicesTab extends Component {
                 >
                   <ListItemText
                     primary={client.displayName}
-                    secondary={version}
+                    secondary={
+                      client.name === selectedClientName ? version : ''
+                    }
                     primaryTypographyProps={{
                       inline: true,
                       classes: { root: classes.serviceName }
