@@ -66,8 +66,6 @@ class ServicesTab extends Component {
 
   static defaultProps = {}
 
-  handleToggle = () => {}
-
   render() {
     const {
       classes,
