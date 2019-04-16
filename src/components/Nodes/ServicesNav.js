@@ -55,13 +55,13 @@ class ServicesTab extends Component {
     // setActive: PropTypes.func,
     clients: PropTypes.array,
     children: PropTypes.node,
-    serviceVersion: PropTypes.func,
     handleToggle: PropTypes.func,
     // isChecked: PropTypes.func,
     // isDisabled: PropTypes.func,
     // tooltipText: PropTypes.func
     handleSelect: PropTypes.func,
-    selectedClientName: PropTypes.string
+    selectedClientName: PropTypes.string,
+    selectedClient: PropTypes.object
   }
 
   static defaultProps = {}
@@ -72,10 +72,13 @@ class ServicesTab extends Component {
       handleToggle,
       handleSelect,
       selectedClientName,
+      selectedClient,
       children,
-      clients,
-      serviceVersion
+      clients
     } = this.props
+
+    const { selectedRelease } = selectedClient || {}
+    const { version } = selectedRelease || {}
 
     return (
       <React.Fragment>
@@ -100,7 +103,7 @@ class ServicesTab extends Component {
                 >
                   <ListItemText
                     primary={client.displayName}
-                    secondary={serviceVersion(client.name)}
+                    secondary={version}
                     primaryTypographyProps={{
                       inline: true,
                       classes: { root: classes.serviceName }
@@ -119,7 +122,7 @@ class ServicesTab extends Component {
                         color="primary"
                         onChange={() => handleToggle(client)}
                         checked={client.running}
-                        disabled={!serviceVersion(client.name)}
+                        disabled={!selectedRelease}
                       />
                     </span>
                   </ListItemSecondaryAction>

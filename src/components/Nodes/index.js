@@ -46,20 +46,8 @@ class NodesTab extends Component {
     return !selectedRelease
   }
 
-  serviceVersion = serviceName => {
-    const { release } = this.props
-    switch (serviceName) {
-      case 'geth':
-        if (release) {
-          return release.version
-        }
-        return false
-      default:
-        return false
-    }
-  }
-
   handleSelect = client => {
+    console.log('handle select', client)
     this.setState({ selectedClient: client })
   }
 
@@ -81,6 +69,16 @@ class NodesTab extends Component {
     })
   }
 
+  handleSelectedReleaseChanged = release => {
+    console.log('handle selected release changed', release)
+    const { selectedClient } = this.state
+    selectedClient.selectedRelease = release
+    this.setState({
+      selectedClient,
+      selectedRelease: release
+    })
+  }
+
   // turn client on/off here
   handleToggle = async () => {
     const { selectedClient } = this.state
@@ -92,7 +90,11 @@ class NodesTab extends Component {
       selectedClient.stop()
     } else {
       try {
-        console.log('∆∆∆ start release.version', release.version)
+        console.log(
+          '∆∆∆ start release.version',
+          release.version,
+          selectedConfig
+        )
         selectedClient.start(release, selectedConfig)
       } catch (error) {
         console.log('could not start', error)
@@ -115,6 +117,8 @@ class NodesTab extends Component {
   render() {
     const { active, clients, selectedClient, selectedRelease } = this.state
 
+    console.log('selected release', selectedRelease)
+
     return (
       <ServicesNav
         active={active}
@@ -124,9 +128,9 @@ class NodesTab extends Component {
         handleToggle={this.handleToggle}
         handleSelect={this.handleSelect}
         selectedClientName={selectedClient && selectedClient.name}
+        selectedClient={selectedClient}
         selectedRelease={selectedRelease}
         tooltipText={this.tooltipText}
-        serviceVersion={this.serviceVersion}
         clients={clients}
       >
         {selectedClient && (
@@ -134,6 +138,7 @@ class NodesTab extends Component {
             client={selectedClient}
             selectedRelease={selectedRelease}
             clientConfigChanged={this.handleClientConfigChanged}
+            selectedReleaseChanged={this.handleSelectedReleaseChanged}
           />
         )}
       </ServicesNav>

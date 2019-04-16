@@ -87,7 +87,7 @@ class ClientConfig extends Component {
   }
 
   render() {
-    const { client, clientConfigChanged } = this.props
+    const { client, clientConfigChanged, selectedReleaseChanged } = this.props
     const { activeTab } = this.state
     const { state, displayName: clientName } = client || {}
     const isRunning = true // ['STARTING', 'STARTED', 'CONNECTED'].includes(client.state)
@@ -117,7 +117,10 @@ class ClientConfig extends Component {
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
-          <VersionList client={client} />
+          <VersionList
+            client={client}
+            selectedReleaseChanged={selectedReleaseChanged}
+          />
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>

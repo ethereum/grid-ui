@@ -49,6 +49,7 @@ const styles = () => ({
 class VersionList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
+    selectedReleaseChanged: PropTypes.func,
     client: PropTypes.object,
     classes: PropTypes.object,
     release: PropTypes.object
@@ -72,11 +73,6 @@ class VersionList extends Component {
       this.setState({ releases: [] })
       this.loadReleases(nextClient)
     }
-  }
-
-  setSelectedRelease = release => {
-    const { dispatch } = this.props
-    dispatch(setRelease(release))
   }
 
   loadReleases = async client => {
@@ -191,8 +187,10 @@ class VersionList extends Component {
   }
 
   handleReleaseSelected = release => {
-    const { dispatch } = this.props
+    // FIXME duplicated state change: dispatch was not working for client other than geth
+    const { dispatch, selectedReleaseChanged } = this.props
     dispatch(setRelease(release))
+    selectedReleaseChanged(release)
   }
 
   handleReleaseDownloaded = release => {
