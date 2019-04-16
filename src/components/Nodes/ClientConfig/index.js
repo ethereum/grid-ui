@@ -87,9 +87,10 @@ class ClientConfig extends Component {
   }
 
   render() {
-    const { client } = this.props
+    const { client, clientConfigChanged } = this.props
     const { activeTab } = this.state
     const { state, displayName: clientName } = client || {}
+    const isRunning = true // ['STARTING', 'STARTED', 'CONNECTED'].includes(client.state)
     return (
       <StyledMain>
         <Typography variant="h5">
@@ -118,14 +119,17 @@ class ClientConfig extends Component {
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
           <VersionList client={client} />
         </TabContainer>
+        {activeTab === 1 && (
+          <TabContainer>
+            <ConfigForm
+              clientRunning={isRunning}
+              clientConfigChanged={clientConfigChanged}
+            />
+          </TabContainer>
+        )}
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />
         </TabContainer>
-        {activeTab === 1 && (
-          <TabContainer>
-            <ConfigForm />
-          </TabContainer>
-        )}
       </StyledMain>
     )
   }

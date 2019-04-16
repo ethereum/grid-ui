@@ -63,18 +63,37 @@ class NodesTab extends Component {
     this.setState({ selectedClient: client })
   }
 
+  handleClientConfigChanged = config => {
+    const { selectedClient } = this.state
+    // we need to store the config per client
+    // for now we just use a nested data model where the selected client
+    // has a property with the latest user selected config
+    // WARNING: if selected client is destructured
+    /**
+     * newSelectedClient = {
+     *  ...selectedClient
+     * }
+     * the reference to the remote object in main is killed in this process
+     */
+    selectedClient.selectedConfig = config
+    this.setState({
+      selectedClient
+    })
+  }
+
   // turn client on/off here
   handleToggle = async () => {
     const { selectedClient } = this.state
     const { isRunning } = selectedClient
     const { release } = this.props
+    const { selectedConfig } = selectedClient
 
     if (isRunning) {
       selectedClient.stop()
     } else {
       try {
         console.log('∆∆∆ start release.version', release.version)
-        selectedClient.start(release)
+        selectedClient.start(release, selectedConfig)
       } catch (error) {
         console.log('could not start', error)
       }
@@ -114,6 +133,7 @@ class NodesTab extends Component {
           <ClientConfig
             client={selectedClient}
             selectedRelease={selectedRelease}
+            clientConfigChanged={this.handleClientConfigChanged}
           />
         )}
       </ServicesNav>
