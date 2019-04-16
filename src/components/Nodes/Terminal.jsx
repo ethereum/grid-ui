@@ -84,16 +84,21 @@ export default class Terminal extends Component {
           key="terminalWrapper"
           ref={this.terminalScrollViewRef}
           style={{
+            background: '#111',
+            color: '#eee',
             fontFamily:
               'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
             fontSize: '11px',
-            background: '#111',
-            color: '#eee',
-            maxHeight: 400,
-            width: '100%',
+            padding: 10,
+
+            // Fluid width and height with support to scrolling
+            width: 'calc(100vw - 310px)',
+            maxHeight: 'calc(100vh - 225px)',
+
+            // Scroll config
+            overflowX: 'auto',
             overflowY: 'scroll',
-            whiteSpace: 'nowrap',
-            padding: 10
+            whiteSpace: 'nowrap'
           }}
         >
           {logs.map((l, index) => (
