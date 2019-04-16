@@ -38,7 +38,7 @@ class ConfigForm extends Component {
 
   setDefaultConfig() {
     // Set default config if no config set
-    const { client } = this.props
+    // const { client } = this.props
     // const { config } = client
     // FIXME const defaultConfig = geth.getConfig()
     // this.setConfig({ config: defaultConfig })
@@ -270,6 +270,7 @@ class ConfigForm extends Component {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
+                  disabled={this.isRunning()}
                   aria-label="Open folder browser"
                   onClick={() => {
                     if (

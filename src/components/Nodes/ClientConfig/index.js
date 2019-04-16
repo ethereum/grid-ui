@@ -29,7 +29,8 @@ TabContainer.propTypes = {
 
 class ClientConfig extends Component {
   static propTypes = {
-    client: PropTypes.object
+    client: PropTypes.object,
+    clientConfigChanged: PropTypes.func
   }
 
   state = {
@@ -90,7 +91,10 @@ class ClientConfig extends Component {
     const { client, clientConfigChanged, selectedReleaseChanged } = this.props
     const { activeTab } = this.state
     const { state, displayName: clientName } = client || {}
-    const isRunning = true // ['STARTING', 'STARTED', 'CONNECTED'].includes(client.state)
+    const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
+      client.state
+    )
+
     return (
       <StyledMain>
         <Typography variant="h5">
@@ -110,10 +114,7 @@ class ClientConfig extends Component {
           >
             <Tab label="Version" />
             <Tab label="Settings" />
-            <Tab
-              label="Terminal"
-              disabled={false /* client && !client.getLogs().length */}
-            />
+            <Tab label="Terminal" />
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
@@ -125,7 +126,7 @@ class ClientConfig extends Component {
         {activeTab === 1 && (
           <TabContainer>
             <ConfigForm
-              clientRunning={isRunning}
+              isClientRunning={isRunning}
               clientConfigChanged={clientConfigChanged}
             />
           </TabContainer>

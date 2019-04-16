@@ -251,7 +251,7 @@ export default connect(mapStateToProps)(withStyles(styles)(VersionList))
 
 const StyledList = styled(List)`
   min-height: 200px;
-  max-height: 300px;
+  max-height: calc(100vh - 295px);
   overflow-y: scroll;
 `
 
