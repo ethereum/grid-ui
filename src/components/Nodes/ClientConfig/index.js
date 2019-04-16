@@ -30,17 +30,14 @@ TabContainer.propTypes = {
 class ClientConfig extends Component {
   static propTypes = {
     client: PropTypes.object,
-    clientConfigChanged: PropTypes.func
+    clientConfigChanged: PropTypes.func,
+    dispatch: PropTypes.func,
+    selectedReleaseChanged: PropTypes.func
   }
 
   state = {
     activeTab: 0,
     downloadError: null
-  }
-
-  static propTypes = {
-    client: PropTypes.object,
-    dispatch: PropTypes.func
   }
 
   componentDidMount() {
