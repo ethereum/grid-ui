@@ -126,10 +126,10 @@ export const selectClient = clientData => {
 export const startClient = (client, release, config) => {
   return dispatch => {
     try {
-      client.start(release, config /* dispatch */)
+      client.start(release, config)
       return dispatch({
         type: 'CLIENT:START',
-        payload: { name: client.name, config }
+        payload: { name: client.name, version: release.version, config }
       })
     } catch (e) {
       return dispatch({ type: 'CLIENT:START:ERROR', error: e.toString() })

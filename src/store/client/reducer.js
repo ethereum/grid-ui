@@ -1,6 +1,7 @@
 export const initialState = {
   active: {
     name: null,
+    version: null,
     status: 'STOPPED'
   },
   blockNumber: null,
@@ -53,11 +54,11 @@ const client = (state = initialState, action) => {
       return { ...state, release }
     }
     case 'CLIENT:START': {
-      const { name } = action.payload
-      return { ...state, state: 'STARTED', active: { name } }
+      const { name, version } = action.payload
+      return { ...state, active: { name, version, status: 'STARTED' } }
     }
     case 'CLIENT:STOP': {
-      return { ...state, state: 'STOPPED', active: { name: null } }
+      return { ...state, active: { ...initialState.active } }
     }
     case '[CLIENT]:GETH:INIT': {
       const { status } = action.payload
