@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import NodesTab from './Nodes'
+import WebviewTab from './Webview'
 
 const styles = theme => ({
   root: {
@@ -70,6 +71,7 @@ class NavTabs extends React.Component {
             <Tab label="Network" disabled />
             <Tab label="Transactions" disabled />
             <Tab label="Tools" disabled />
+            <Tab label="Webview" />
           </Tabs>
         </AppBar>
 
@@ -94,6 +96,18 @@ class NavTabs extends React.Component {
         <TabContainer style={{ display: activeTab === 3 ? 'block' : 'none' }}>
           <Typography component="h6">Tools</Typography>
         </TabContainer>
+
+        <Typography
+          component="div"
+          classes={{ root: classes.fullWidth }}
+          style={{
+            display: activeTab === 4 ? 'inherit' : 'none'
+          }}
+        >
+          <div style={{ marginTop: 50, width: '100%' }}>
+            <WebviewTab />
+          </div>
+        </Typography>
       </div>
     )
   }

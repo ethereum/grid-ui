@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { connect } from 'react-redux'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -10,11 +10,8 @@ import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
-import { Mist } from '../../../API'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
-
-const { geth } = Mist
 
 function TabContainer(props) {
   const { children, style } = props
@@ -30,9 +27,14 @@ TabContainer.propTypes = {
   style: PropTypes.object
 }
 
-class GethConfig extends Component {
+class ClientConfig extends Component {
   static propTypes = {
-    client: PropTypes.object
+    client: PropTypes.object,
+    clientConfigChanged: PropTypes.func,
+    clientStatus: PropTypes.string,
+    dispatch: PropTypes.func,
+    isActiveClient: PropTypes.bool,
+    handleReleaseSelect: PropTypes.func
   }
 
   state = {
@@ -40,27 +42,22 @@ class GethConfig extends Component {
     downloadError: null
   }
 
-  static propTypes = {
-    client: PropTypes.object,
-    dispatch: PropTypes.func
-  }
+  componentDidUpdate(prevProps) {
+    const { client, clientStatus } = this.props
 
-  constructor(props) {
-    super(props)
-    geth.on('started', this.handleGethStarted)
-  }
+    // On client start, show Terminal
+    if (prevProps.clientStatus === 'STOPPED' && clientStatus !== 'STOPPED') {
+      this.handleTabChange(null, 2)
+    }
 
-  componentWillUnmount() {
-    geth.removeListener('started', this.handleGethStarted)
+    // If switching clients, reset tab to VersionList
+    if (prevProps.client.name !== client.name) {
+      this.handleTabChange(null, 0)
+    }
   }
 
   handleTabChange = (event, activeTab) => {
     this.setState({ activeTab })
-  }
-
-  handleGethStarted = () => {
-    // Update activeTab to Terminal
-    this.setState({ activeTab: 2 })
   }
 
   onDismissError = () => {
@@ -89,16 +86,27 @@ class GethConfig extends Component {
   }
 
   render() {
-    const { client } = this.props
+    const {
+      client,
+      clientConfigChanged,
+      clientStatus,
+      isActiveClient,
+      handleReleaseSelect
+    } = this.props
     const { activeTab } = this.state
-    const { state } = client
+    const { displayName: clientName } = client || {}
+    const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
+      client.state
+    )
 
     return (
       <StyledMain>
-        <Typography variant="h5">Geth</Typography>
-        <NodeInfo />
+        <Typography variant="h5">
+          {clientName}
+          <NodeInfo />
+        </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          <StyledState>{state}</StyledState>
+          <StyledState>{isActiveClient ? clientStatus : 'STOPPED'}</StyledState>
         </Typography>
         {this.renderErrors()}
         <StyledAppBar position="static">
@@ -110,34 +118,39 @@ class GethConfig extends Component {
           >
             <Tab label="Version" />
             <Tab label="Settings" />
-            <Tab label="Terminal" disabled={!geth.getLogs().length} />
+            <Tab label="Terminal" />
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
-          <div>
-            <VersionList />
-          </div>
-        </TabContainer>
-        <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
-          <Terminal />
+          <VersionList
+            client={client}
+            handleReleaseSelect={handleReleaseSelect}
+          />
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>
-            <ConfigForm />
+            <ConfigForm
+              isClientRunning={isRunning}
+              clientConfigChanged={clientConfigChanged}
+            />
           </TabContainer>
         )}
+        <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
+          <Terminal client={client} />
+        </TabContainer>
       </StyledMain>
     )
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
-    client: state.client
+    clientStatus: state.client.active.status,
+    isActiveClient: state.client.active.name === ownProps.client.name
   }
 }
 
-export default connect(mapStateToProps)(GethConfig)
+export default connect(mapStateToProps)(ClientConfig)
 
 const StyledMain = styled.main`
   position: relative;

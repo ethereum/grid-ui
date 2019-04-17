@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Mist } from '../../API'
-
-const { geth } = Mist
+import PropTypes from 'prop-types'
 
 export default class Terminal extends Component {
+  static propTypes = {
+    client: PropTypes.object
+  }
+
   state = {
     logs: []
   }
@@ -15,6 +17,16 @@ export default class Terminal extends Component {
 
   componentDidMount = async () => {
     this.subscribeLogs()
+  }
+
+  componentWillReceiveProps({ client: nextClient }) {
+    const { client: oldClient } = this.props
+    const logs = nextClient.getLogs()
+    this.setState({ logs })
+    if (oldClient && nextClient !== oldClient) {
+      this.unsubscribeLogs(oldClient)
+      this.subscribeLogs(nextClient)
+    }
   }
 
   componentDidUpdate = () => {
@@ -36,15 +48,19 @@ export default class Terminal extends Component {
     this.setState({ logs: [] })
   }
 
-  subscribeLogs = () => {
-    geth.on('log', this.addNewLog)
+  subscribeLogs = client => {
+    // eslint-disable-next-line
+    client = client || this.props.client
+    client.on('log', this.addNewLog)
     // Clear old logs on restart
-    geth.on('starting', this.clearLogs)
+    client.on('starting', this.clearLogs)
   }
 
-  unsubscribeLogs = () => {
-    geth.removeListener('log', this.addNewLog)
-    geth.removeListener('started', this.clearLogs)
+  unsubscribeLogs = client => {
+    // eslint-disable-next-line
+    client = client || this.props.client
+    client.removeListener('log', this.addNewLog)
+    client.removeListener('started', this.clearLogs)
   }
 
   terminalScrollToBottom = () => {
@@ -68,17 +84,21 @@ export default class Terminal extends Component {
           key="terminalWrapper"
           ref={this.terminalScrollViewRef}
           style={{
+            background: '#111',
+            color: '#eee',
             fontFamily:
               'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
             fontSize: '11px',
-            background: '#111',
-            color: '#eee',
-            maxHeight: 400,
-            width: '100%',
-            maxWidth: '700px',
+            padding: 10,
+
+            // Fluid width and height with support to scrolling
+            width: 'calc(100vw - 310px)',
+            maxHeight: 'calc(100vh - 238px)',
+
+            // Scroll config
+            overflowX: 'auto',
             overflowY: 'scroll',
-            whiteSpace: 'nowrap',
-            padding: 10
+            whiteSpace: 'nowrap'
           }}
         >
           {logs.map((l, index) => (

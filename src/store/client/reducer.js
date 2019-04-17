@@ -1,9 +1,17 @@
 export const initialState = {
+  active: {
+    name: null,
+    version: null,
+    status: 'STOPPED'
+  },
   blockNumber: null,
   changingNetwork: false,
-  name: 'geth',
+  name: '',
+  displayName: '',
+  binaryName: '',
+  repository: '',
+  prefix: '',
   peerCount: 0,
-  state: 'STOPPED',
   sync: {
     currentBlock: 0,
     highestBlock: 0,
@@ -21,7 +29,8 @@ export const initialState = {
     size: null,
     location: null,
     checksums: null,
-    signature: null
+    signature: null,
+    remote: false
   },
   config: {
     name: null,
@@ -36,6 +45,21 @@ export const initialState = {
 
 const client = (state = initialState, action) => {
   switch (action.type) {
+    case 'CLIENT:SELECT': {
+      const { clientData } = action.payload
+      return { ...state, ...clientData, release: { ...initialState.release } }
+    }
+    case 'CLIENT:SET_RELEASE': {
+      const { release } = action.payload
+      return { ...state, release }
+    }
+    case 'CLIENT:START': {
+      const { name, version } = action.payload
+      return { ...state, active: { name, version, status: 'STARTED' } }
+    }
+    case 'CLIENT:STOP': {
+      return { ...state, active: { ...initialState.active } }
+    }
     case '[CLIENT]:GETH:INIT': {
       const { status } = action.payload
       return { ...state, state: status }
@@ -65,10 +89,6 @@ const client = (state = initialState, action) => {
     case '[CLIENT]:GETH:ERROR': {
       const { error } = action
       return { ...state, state: 'ERROR', error }
-    }
-    case '[CLIENT]:GETH:SET_RELEASE': {
-      const { release } = action.payload
-      return { ...state, release }
     }
     case '[CLIENT]:GETH:UPDATE_NEW_BLOCK': {
       const { blockNumber, timestamp } = action.payload

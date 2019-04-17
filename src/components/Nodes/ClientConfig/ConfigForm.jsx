@@ -8,15 +8,16 @@ import IconButton from '@material-ui/core/IconButton'
 import FolderOpenIcon from '@material-ui/icons/FolderOpen'
 import styled from 'styled-components'
 import Select from '../../shared/Select'
-import { Mist } from '../../../API'
-import { setConfig } from '../../../store/client/actions'
+import { Grid as GridAPI } from '../../../API'
+// import { setConfig } from '../../../store/client/actions'
 
-const { geth, openFolderDialog } = Mist
+const { openFolderDialog } = GridAPI
 
 class ConfigForm extends Component {
   static propTypes = {
-    dispatch: PropTypes.func,
-    client: PropTypes.object
+    client: PropTypes.object,
+    clientConfigChanged: PropTypes.func,
+    isClientRunning: PropTypes.bool
   }
 
   constructor(props) {
@@ -37,62 +38,107 @@ class ConfigForm extends Component {
 
   setDefaultConfig() {
     // Set default config if no config set
-    const { client, dispatch } = this.props
-    const { config } = client
-    if (config.name) {
-      // Config already set
-      return
+    // const { client } = this.props
+    // const { config } = client
+    // FIXME const defaultConfig = geth.getConfig()
+    // this.setConfig({ config: defaultConfig })
+  }
+
+  setConfig({ config }) {
+    const { clientConfigChanged } = this.props
+    // don't let the main process handle the fieldname flag conversion
+    // instead let's assume that the client expects a valid config object
+    const { dataDir, network, host, port, syncMode, ipc } = config
+
+    const flagConfig = {}
+
+    if (dataDir) {
+      flagConfig['--datadir'] = dataDir
     }
-    const defaultConfig = geth.getConfig()
-    dispatch(setConfig({ config: defaultConfig }))
+
+    if (syncMode) {
+      flagConfig['--syncmode'] = syncMode
+    }
+
+    if (network) {
+      switch (network) {
+        case 'main':
+          flagConfig['--networkid'] = 1
+          break
+        case 'ropsten':
+          flagConfig['--testnet'] = ''
+          break
+        case 'rinkeby':
+          flagConfig['--rinkeby'] = ''
+          break
+        default:
+          throw new Error('Geth: Unsupported Network')
+      }
+    }
+
+    if (ipc) {
+      switch (ipc.toLowerCase()) {
+        case 'websockets':
+          flagConfig['--ws --wsaddr'] = host
+          flagConfig['--wsport'] = port
+          // ToDo: set --wsorigins for security
+          break
+        case 'http':
+          throw new Error('Geth: HTTP is deprecated')
+        default:
+          break
+      }
+    }
+
+    clientConfigChanged(flagConfig)
   }
 
   handleChangeDataDir = event => {
-    const { dispatch, client } = this.props
+    const { client } = this.props
     const { config } = client
     let dataDir = event.target.value
     if (event.target.files) {
       dataDir = event.target.files
     }
     const newConfig = { ...config, dataDir }
-    dispatch(setConfig({ config: newConfig }))
+    this.setConfig({ config: newConfig })
   }
 
   handleChangeSyncMode = syncMode => {
-    const { client, dispatch } = this.props
+    const { client } = this.props
     const { config } = client
     const newConfig = { ...config, syncMode }
-    dispatch(setConfig({ config: newConfig }))
+    this.setConfig({ config: newConfig })
   }
 
   handleChangeIpc = ipc => {
-    const { client, dispatch } = this.props
+    const { client } = this.props
     const { config } = client
     const newConfig = { ...config, ipc }
-    dispatch(setConfig({ config: newConfig }))
+    this.setConfig({ config: newConfig })
   }
 
   handleChangeNetwork = network => {
-    const { client, dispatch } = this.props
+    const { client } = this.props
     const { config } = client
     const newConfig = { ...config, network }
-    dispatch(setConfig({ config: newConfig }))
+    this.setConfig({ config: newConfig })
   }
 
   handleChangeHost = event => {
-    const { client, dispatch } = this.props
+    const { client } = this.props
     const { config } = client
     const host = event.target.value
     const newConfig = { ...config, host }
-    dispatch(setConfig({ config: newConfig }))
+    this.setConfig({ config: newConfig })
   }
 
   handleChangePort = event => {
-    const { client, dispatch } = this.props
+    const { client } = this.props
     const { config } = client
     const port = Number(event.target.value)
     const newConfig = { ...config, port }
-    dispatch(setConfig({ config: newConfig }))
+    this.setConfig({ config: newConfig })
   }
 
   capitalizeLabel = label => label.charAt(0).toUpperCase() + label.slice(1)
@@ -101,15 +147,12 @@ class ConfigForm extends Component {
     const { client } = this.props
     const { config } = client
     const { ipc } = config
-    if (!ipc || ipc === 'ipc') {
-      return false
-    }
-    return true
+    return ipc === 'ipc'
   }
 
   isRunning = () => {
-    const { client } = this.props
-    return ['STARTING', 'STARTED', 'CONNECTED'].includes(client.state)
+    const { isClientRunning } = this.props
+    return isClientRunning
   }
 
   browseDataDir = async event => {
@@ -134,17 +177,16 @@ class ConfigForm extends Component {
     const { config } = client
     const { syncMode } = config
     const { syncModes } = options
-    if (!syncMode) {
-      return null
-    }
+
     const availableSyncModes = syncModes.map(node => ({
       label: this.capitalizeLabel(node),
       value: node
     }))
+
     return (
       <Select
         name="Sync Mode"
-        defaultValue={syncMode}
+        defaultValue={syncMode || 'light'}
         options={availableSyncModes}
         onChange={this.handleChangeSyncMode}
         disabled={this.isRunning()}
@@ -158,17 +200,16 @@ class ConfigForm extends Component {
     const { config } = client
     const { network } = config
     const { networks } = options
-    if (!network) {
-      return null
-    }
+
     const availableNetworks = networks.map(node => ({
       label: this.capitalizeLabel(node),
       value: node
     }))
+
     return (
       <Select
         name="Network"
-        defaultValue={network}
+        defaultValue={network || 'main'}
         options={availableNetworks}
         onChange={this.handleChangeNetwork}
         disabled={this.isRunning()}
@@ -184,7 +225,7 @@ class ConfigForm extends Component {
       <TextField
         variant="outlined"
         label="RPC Host"
-        value={host}
+        value={host || ''}
         onChange={this.handleChangeHost}
         disabled={this.isRunning()}
         fullWidth
@@ -200,7 +241,7 @@ class ConfigForm extends Component {
       <TextField
         variant="outlined"
         label="RPC Port"
-        value={port}
+        value={port || ''}
         onChange={this.handleChangePort}
         disabled={this.isRunning()}
         fullWidth
@@ -217,13 +258,14 @@ class ConfigForm extends Component {
         <TextField
           variant="outlined"
           label="Data Directory"
-          value={dataDir}
+          value={dataDir || ''}
           onChange={this.handleChangeDataDir}
           disabled={this.isRunning()}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
+                  disabled={this.isRunning()}
                   aria-label="Open folder browser"
                   onClick={() => {
                     if (
@@ -248,8 +290,8 @@ class ConfigForm extends Component {
           onClick={this.browseDataDir}
           ref={this.inputOpenFileRef}
           style={{ display: 'none' }}
-          webkitdirectory
-          directory
+          webkitdirectory="true"
+          directory="true"
         />
       </div>
     )
@@ -261,9 +303,7 @@ class ConfigForm extends Component {
     const { config } = client
     const { ipc } = config
     const { ipcModes } = options
-    if (!ipc) {
-      return null
-    }
+
     const capitalizeIpcLabel = ipcLabel => {
       let capitalizedLabel
       if (ipcLabel === 'ipc') {
@@ -277,6 +317,7 @@ class ConfigForm extends Component {
       label: capitalizeIpcLabel(node),
       value: node
     }))
+
     return (
       <div>
         <Select
@@ -330,7 +371,9 @@ class ConfigForm extends Component {
 }
 
 function mapStateToProps(state) {
-  return { client: state.client }
+  return {
+    client: state.client
+  }
 }
 
 export default connect(mapStateToProps)(ConfigForm)

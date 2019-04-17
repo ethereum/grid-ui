@@ -1,107 +1,98 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import GethConfig from './GethConfig'
-import { initGeth, toggleGeth } from '../../store/client/actions'
-import Geth from '../../store/client/gethService'
+import ClientConfig from './ClientConfig'
 import ServicesNav from './ServicesNav'
+import { selectClient, toggleClient } from '../../store/client/actions'
+
+import Grid from '../../API/Grid'
+
+const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    dispatch: PropTypes.func
+    dispatch: PropTypes.func,
+    release: PropTypes.object
   }
 
   static defaultProps = {}
 
   state = {
-    active: 'geth',
-    services: [
-      { name: 'geth' }
-      // { name: 'remix' }
-    ]
+    clients: [],
+    selectedClient: undefined
   }
 
   componentDidMount() {
     const { dispatch } = this.props
-    dispatch(initGeth())
+    if (!PluginHost) return
+    const plugins = PluginHost.getAllPlugins()
+    const clients = [...plugins]
+    const selectedClient = clients[0]
+    dispatch(selectClient(selectedClient.plugin.config))
+    this.setState({ clients, selectedClient })
   }
 
-  isChecked = service => {
-    const { client } = this.props
-    const { state } = client
-    switch (service.name) {
-      case 'geth':
-        return Geth.isRunning(state)
-      default:
-        return false
-    }
+  isDisabled = client => {
+    const { selectedRelease } = client
+    return !selectedRelease
   }
 
-  isDisabled = service => {
-    const { client } = this.props
-    const { release } = client
-    switch (service.name) {
-      case 'geth':
-        return !release
-      default:
-        return true
-    }
-  }
-
-  serviceVersion = service => {
-    const { client } = this.props
-    const { release } = client
-    switch (service.name) {
-      case 'geth':
-        if (release) {
-          return release.version
-        }
-        return false
-      default:
-        return false
-    }
-  }
-
-  handleToggle = service => {
+  handleSelect = client => {
     const { dispatch } = this.props
-    switch (service.name) {
-      case 'geth':
-        dispatch(toggleGeth())
-        break
-      default:
-        break
-    }
+    console.log('handle select', client)
+    dispatch(selectClient(client.plugin.config))
+    this.setState({ selectedClient: client })
   }
 
-  tooltipText = service => {
-    switch (service.name) {
-      case 'geth':
-        if (this.isDisabled(service)) {
-          return 'Please select a version first'
-        }
-        return ''
-      default:
-        return ''
-    }
+  handleClientConfigChanged = config => {
+    const { selectedClient } = this.state
+    // we need to store the config per client
+    // for now we just use a nested data model where the selected client
+    // has a property with the latest user selected config
+    // WARNING: if selected client is destructured
+    /**
+     * newSelectedClient = {
+     *  ...selectedClient
+     * }
+     * the reference to the remote object in main is killed in this process
+     */
+    selectedClient.selectedConfig = config
+    this.setState({ selectedClient })
+  }
+
+  handleReleaseSelect = release => {
+    const { selectedClient } = this.state
+    selectedClient.selectedRelease = release
+    this.setState({ selectedClient, selectedRelease: release })
+  }
+
+  handleToggle = async () => {
+    const { dispatch, release } = this.props
+    const { selectedClient } = this.state
+    const { selectedConfig } = selectedClient
+
+    dispatch(toggleClient(selectedClient, release, selectedConfig))
   }
 
   render() {
-    const { active, services } = this.state
+    const { active, clients, selectedClient, selectedRelease } = this.state
 
     return (
       <ServicesNav
         active={active}
         setActive={service => this.setState({ active: service })}
-        isChecked={this.isChecked}
-        isDisabled={this.isDisabled}
         handleToggle={this.handleToggle}
-        tooltipText={this.tooltipText}
-        serviceVersion={this.serviceVersion}
-        services={services}
+        handleSelect={this.handleSelect}
+        clients={clients}
       >
-        {active === 'geth' && <GethConfig />}
-        {/* active === 'remix' && <div>Remix</div> */}
+        {selectedClient && (
+          <ClientConfig
+            client={selectedClient}
+            selectedRelease={selectedRelease}
+            clientConfigChanged={this.handleClientConfigChanged}
+            handleReleaseSelect={this.handleReleaseSelect}
+          />
+        )}
       </ServicesNav>
     )
   }
@@ -109,7 +100,7 @@ class NodesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    client: state.client
+    release: state.client.release
   }
 }
 

@@ -51,33 +51,70 @@ const styles = theme => ({
 
 class ServicesTab extends Component {
   static propTypes = {
-    active: PropTypes.string,
+    activeClientName: PropTypes.string,
+    activeClientVersion: PropTypes.string,
     classes: PropTypes.object,
-    setActive: PropTypes.func,
-    services: PropTypes.array,
+    clients: PropTypes.array,
     children: PropTypes.node,
-    serviceVersion: PropTypes.func,
     handleToggle: PropTypes.func,
-    isChecked: PropTypes.func,
-    isDisabled: PropTypes.func,
-    tooltipText: PropTypes.func
+    handleSelect: PropTypes.func,
+    selectedClientName: PropTypes.string,
+    releaseVersion: PropTypes.string
   }
 
   static defaultProps = {}
 
+  isDisabled = (/* client */) => {
+    // TODO:
+    return false
+    // const { activeClientName, releaseName } = this.props
+
+    // return (
+    // // toggle disabled if:
+    // // 1) no release selected
+    // !releaseName ||
+    // // 2) wrong client selected
+    // client.name !== releaseName.split('-')[0].toLowerCase() ||
+    // // 3) there is already a client running
+    // (activeClientName && client.name !== activeClientName)
+    // )
+  }
+
+  parseTooltipText = (/* client */) => {
+    // TODO:
+    return ''
+  }
+
+  parseSecondaryText = client => {
+    const {
+      activeClientName,
+      activeClientVersion,
+      releaseVersion,
+      selectedClientName
+    } = this.props
+
+    if (client.name === selectedClientName) {
+      return releaseVersion || ''
+    }
+
+    if (client.name === activeClientName) {
+      return activeClientVersion || ''
+    }
+
+    return ''
+  }
+
   render() {
     const {
-      active,
-      services,
       classes,
-      children,
-      setActive,
-      serviceVersion,
       handleToggle,
-      isChecked,
-      isDisabled,
-      tooltipText
+      handleSelect,
+      selectedClientName,
+      children,
+      clients
     } = this.props
+
+    const clientsSorted = clients.sort((a, b) => a.order - b.order)
 
     return (
       <React.Fragment>
@@ -88,47 +125,50 @@ class ServicesTab extends Component {
         >
           <div className={classes.toolbar} />
           <List>
-            {services.map(service => (
-              <ListItem
-                key={service.name}
-                disabled={service.disabled}
-                selected={service.name === active}
-                onClick={() => setActive(service.name)}
-                classes={{
-                  root: classes.hoverableListItem,
-                  selected: classes.selected
-                }}
-                button
-              >
-                <ListItemText
-                  primary={service.name}
-                  secondary={serviceVersion(service)}
-                  primaryTypographyProps={{
-                    inline: true,
-                    classes: { root: classes.serviceName }
+            {clientsSorted.map(client => {
+              return (
+                <ListItem
+                  key={client.name}
+                  selected={client.name === selectedClientName}
+                  onClick={() => handleSelect(client)}
+                  classes={{
+                    root: classes.hoverableListItem,
+                    selected: classes.selected
                   }}
-                  secondaryTypographyProps={{
-                    inline: true,
-                    classes: { root: classes.versionInfo }
-                  }}
-                />
-                <ListItemSecondaryAction>
-                  <Tooltip title={tooltipText(service)} placement="left">
-                    <span>
-                      <Switch
-                        color="primary"
-                        onChange={() => handleToggle(service)}
-                        checked={isChecked(service)}
-                        disabled={isDisabled(service)}
-                      />
-                    </span>
-                  </Tooltip>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
+                  button
+                >
+                  <ListItemText
+                    primary={client.displayName}
+                    secondary={this.parseSecondaryText(client)}
+                    primaryTypographyProps={{
+                      inline: true,
+                      classes: { root: classes.serviceName }
+                    }}
+                    secondaryTypographyProps={{
+                      inline: true,
+                      classes: { root: classes.versionInfo }
+                    }}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip
+                      title={this.parseTooltipText(client)}
+                      placement="left"
+                    >
+                      <span>
+                        <Switch
+                          color="primary"
+                          onChange={() => handleToggle(client)}
+                          checked={client.running}
+                          disabled={this.isDisabled(client)}
+                        />
+                      </span>
+                    </Tooltip>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              )
+            })}
           </List>
         </Drawer>
-
         <main className={classes.content}>{children}</main>
       </React.Fragment>
     )
@@ -137,7 +177,10 @@ class ServicesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    client: state.client
+    releaseVersion: state.client.release.version,
+    activeClientName: state.client.active.name,
+    activeClientVersion: state.client.active.version,
+    selectedClientName: state.client.name
   }
 }
 

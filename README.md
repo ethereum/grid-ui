@@ -8,6 +8,8 @@
 
 ## Grid UI
 
+[![ethpkg status](http://api.ethpkg.org/badge/gh/ethereum/grid-ui)](http://ethpkg.org/gh/ethereum/grid-ui)
+
 ### Project Goals
 
 - improved security and easier maintenance than former Mist
