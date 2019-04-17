@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ClientConfig from './ClientConfig'
-import Geth from '../../store/client/gethService'
 import ServicesNav from './ServicesNav'
 import { selectClient, toggleClient } from '../../store/client/actions'
 
@@ -12,7 +11,6 @@ const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
-    clientStatus: PropTypes.string,
     dispatch: PropTypes.func,
     release: PropTypes.object
   }
@@ -25,21 +23,13 @@ class NodesTab extends Component {
   }
 
   componentDidMount() {
+    const { dispatch } = this.props
     if (!PluginHost) return
     const plugins = PluginHost.getAllPlugins()
     const clients = [...plugins]
     const selectedClient = clients[0]
+    dispatch(selectClient(selectedClient.plugin.config))
     this.setState({ clients, selectedClient })
-  }
-
-  isChecked = service => {
-    const { clientStatus } = this.props
-    switch (service.name) {
-      case 'geth':
-        return Geth.isRunning(clientStatus)
-      default:
-        return false
-    }
   }
 
   isDisabled = client => {
@@ -84,18 +74,6 @@ class NodesTab extends Component {
     dispatch(toggleClient(selectedClient, release, selectedConfig))
   }
 
-  tooltipText = service => {
-    switch (service.name) {
-      case 'geth':
-        if (this.isDisabled(service)) {
-          return 'Please select a version first'
-        }
-        return ''
-      default:
-        return ''
-    }
-  }
-
   render() {
     const { active, clients, selectedClient, selectedRelease } = this.state
 
@@ -103,13 +81,8 @@ class NodesTab extends Component {
       <ServicesNav
         active={active}
         setActive={service => this.setState({ active: service })}
-        isChecked={this.isChecked}
         handleToggle={this.handleToggle}
         handleSelect={this.handleSelect}
-        selectedClientName={selectedClient && selectedClient.name}
-        selectedClient={selectedClient}
-        selectedRelease={selectedRelease}
-        tooltipText={this.tooltipText}
         clients={clients}
       >
         {selectedClient && (
@@ -127,8 +100,7 @@ class NodesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    release: state.client.release,
-    clientStatus: state.client.active.status
+    release: state.client.release
   }
 }
 

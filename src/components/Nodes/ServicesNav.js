@@ -54,21 +54,18 @@ class ServicesTab extends Component {
     activeClientName: PropTypes.string,
     activeClientVersion: PropTypes.string,
     classes: PropTypes.object,
-    // setActive: PropTypes.func,
     clients: PropTypes.array,
     children: PropTypes.node,
     handleToggle: PropTypes.func,
-    // isChecked: PropTypes.func,
-    // tooltipText: PropTypes.func
     handleSelect: PropTypes.func,
     selectedClientName: PropTypes.string,
-    selectedClient: PropTypes.object,
-    releaseName: PropTypes.string
+    releaseVersion: PropTypes.string
   }
 
   static defaultProps = {}
 
   isDisabled = (/* client */) => {
+    // TODO:
     return false
     // const { activeClientName, releaseName } = this.props
 
@@ -88,20 +85,34 @@ class ServicesTab extends Component {
     return ''
   }
 
+  parseSecondaryText = client => {
+    const {
+      activeClientName,
+      activeClientVersion,
+      releaseVersion,
+      selectedClientName
+    } = this.props
+
+    if (client.name === selectedClientName) {
+      return releaseVersion || ''
+    }
+
+    if (client.name === activeClientName) {
+      return activeClientVersion || ''
+    }
+
+    return ''
+  }
+
   render() {
     const {
-      activeClientVersion,
       classes,
       handleToggle,
       handleSelect,
       selectedClientName,
-      selectedClient,
       children,
       clients
     } = this.props
-
-    const { selectedRelease } = selectedClient || {}
-    const { version } = selectedRelease || {}
 
     const clientsSorted = clients.sort((a, b) => a.order - b.order)
 
@@ -128,11 +139,7 @@ class ServicesTab extends Component {
                 >
                   <ListItemText
                     primary={client.displayName}
-                    secondary={
-                      client.name === selectedClientName
-                        ? version
-                        : activeClientVersion
-                    }
+                    secondary={this.parseSecondaryText(client)}
                     primaryTypographyProps={{
                       inline: true,
                       classes: { root: classes.serviceName }
@@ -170,9 +177,10 @@ class ServicesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    releaseName: state.client.release.name,
+    releaseVersion: state.client.release.version,
     activeClientName: state.client.active.name,
-    activeClientVersion: state.client.active.version
+    activeClientVersion: state.client.active.version,
+    selectedClientName: state.client.name
   }
 }
 
