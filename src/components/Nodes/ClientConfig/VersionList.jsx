@@ -49,7 +49,7 @@ const styles = () => ({
 class VersionList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
-    selectedReleaseChanged: PropTypes.func,
+    handleReleaseSelect: PropTypes.func,
     client: PropTypes.object,
     classes: PropTypes.object,
     release: PropTypes.object
@@ -168,7 +168,7 @@ class VersionList extends Component {
           action={
             <Button
               onClick={() => {
-                this.handleReleaseSelected(latestRelease)
+                this.handleReleaseSelect(latestRelease)
               }}
             >
               Use {latestVersion}
@@ -186,11 +186,11 @@ class VersionList extends Component {
     return release.fileName === selectedRelease.fileName
   }
 
-  handleReleaseSelected = release => {
+  handleReleaseSelect = release => {
     // FIXME duplicated state change: dispatch was not working for client other than geth
-    const { dispatch, selectedReleaseChanged } = this.props
+    const { dispatch, handleReleaseSelect } = this.props
     dispatch(setRelease(release))
-    selectedReleaseChanged(release)
+    handleReleaseSelect(release)
   }
 
   handleReleaseDownloaded = release => {
@@ -216,7 +216,7 @@ class VersionList extends Component {
             release={release}
             key={i}
             isSelectedRelease={this.isSelectedRelease}
-            handleReleaseSelected={this.handleReleaseSelected}
+            handleReleaseSelect={this.handleReleaseSelect}
             handleDownloadError={downloadError =>
               this.setState({ downloadError })
             }

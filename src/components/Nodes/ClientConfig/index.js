@@ -34,7 +34,7 @@ class ClientConfig extends Component {
     clientStatus: PropTypes.string,
     dispatch: PropTypes.func,
     isActiveClient: PropTypes.bool,
-    selectedReleaseChanged: PropTypes.func
+    handleReleaseSelect: PropTypes.func
   }
 
   state = {
@@ -92,7 +92,7 @@ class ClientConfig extends Component {
       clientConfigChanged,
       clientStatus,
       isActiveClient,
-      selectedReleaseChanged
+      handleReleaseSelect
     } = this.props
     const { activeTab } = this.state
     const { displayName: clientName } = client || {}
@@ -125,7 +125,7 @@ class ClientConfig extends Component {
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
           <VersionList
             client={client}
-            selectedReleaseChanged={selectedReleaseChanged}
+            handleReleaseSelect={handleReleaseSelect}
           />
         </TabContainer>
         {activeTab === 1 && (
