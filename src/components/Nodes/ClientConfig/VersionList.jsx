@@ -96,7 +96,7 @@ class VersionList extends Component {
     this.setState(
       { releases, loadingReleases: false, localReleaseCount: count },
       () => {
-        // Set first local download as active
+        // Set first local release as active
         // TODO: revisit after redux-persist reintroduced
         const firstLocalRelease = releases.find(release => {
           return !release.remote
@@ -208,10 +208,15 @@ class VersionList extends Component {
     const index = releases.findIndex(r => r.fileName === release.fileName)
     // releases.splice(index, 0, releaseDownloaded)
     releases[index] = releaseDownloaded
-    this.setState({
-      releases: [...releases],
-      localReleaseCount: localReleaseCount + 1
-    })
+    this.setState(
+      {
+        releases: [...releases],
+        localReleaseCount: localReleaseCount + 1
+      },
+      () => {
+        this.handleReleaseSelect(release)
+      }
+    )
   }
 
   renderVersionList = () => {
