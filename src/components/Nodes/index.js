@@ -39,7 +39,6 @@ class NodesTab extends Component {
 
   handleSelect = client => {
     const { dispatch } = this.props
-    console.log('handle select', client)
     dispatch(selectClient(client.plugin.config))
     this.setState({ selectedClient: client })
   }
