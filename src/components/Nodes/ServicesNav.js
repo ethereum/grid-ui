@@ -80,6 +80,8 @@ class ServicesTab extends Component {
     const { selectedRelease } = selectedClient || {}
     const { version } = selectedRelease || {}
 
+    const clientsSorted = clients.sort((a, b) => a.order - b.order)
+
     return (
       <React.Fragment>
         <Drawer
@@ -89,7 +91,7 @@ class ServicesTab extends Component {
         >
           <div className={classes.toolbar} />
           <List>
-            {clients.map(client => {
+            {clientsSorted.map(client => {
               return (
                 <ListItem
                   key={client.name}
