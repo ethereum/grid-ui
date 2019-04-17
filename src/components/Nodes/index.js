@@ -5,6 +5,7 @@ import ClientConfig from './ClientConfig'
 // import { initGeth, toggleGeth } from '../../store/client/actions'
 import Geth from '../../store/client/gethService'
 import ServicesNav from './ServicesNav'
+import { selectClient } from '../../store/client/actions'
 
 import Grid from '../../API/Grid'
 
@@ -13,6 +14,7 @@ const { PluginHost } = Grid
 class NodesTab extends Component {
   static propTypes = {
     clientStatus: PropTypes.string,
+    dispatch: PropTypes.func,
     release: PropTypes.object
   }
 
@@ -47,7 +49,9 @@ class NodesTab extends Component {
   }
 
   handleSelect = client => {
+    const { dispatch } = this.props
     console.log('handle select', client)
+    dispatch(selectClient(client.plugin.config))
     this.setState({ selectedClient: client })
   }
 

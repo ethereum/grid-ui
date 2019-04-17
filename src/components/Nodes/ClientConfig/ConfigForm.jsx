@@ -147,10 +147,7 @@ class ConfigForm extends Component {
     const { client } = this.props
     const { config } = client
     const { ipc } = config
-    if (!ipc || ipc === 'ipc') {
-      return false
-    }
-    return true
+    return ipc === 'ipc'
   }
 
   isRunning = () => {
@@ -180,17 +177,16 @@ class ConfigForm extends Component {
     const { config } = client
     const { syncMode } = config
     const { syncModes } = options
-    if (!syncMode) {
-      return null
-    }
+
     const availableSyncModes = syncModes.map(node => ({
       label: this.capitalizeLabel(node),
       value: node
     }))
+
     return (
       <Select
         name="Sync Mode"
-        defaultValue={syncMode}
+        defaultValue={syncMode || 'light'}
         options={availableSyncModes}
         onChange={this.handleChangeSyncMode}
         disabled={this.isRunning()}
@@ -204,17 +200,16 @@ class ConfigForm extends Component {
     const { config } = client
     const { network } = config
     const { networks } = options
-    if (!network) {
-      return null
-    }
+
     const availableNetworks = networks.map(node => ({
       label: this.capitalizeLabel(node),
       value: node
     }))
+
     return (
       <Select
         name="Network"
-        defaultValue={network}
+        defaultValue={network || 'main'}
         options={availableNetworks}
         onChange={this.handleChangeNetwork}
         disabled={this.isRunning()}
@@ -230,7 +225,7 @@ class ConfigForm extends Component {
       <TextField
         variant="outlined"
         label="RPC Host"
-        value={host}
+        value={host || ''}
         onChange={this.handleChangeHost}
         disabled={this.isRunning()}
         fullWidth
@@ -246,7 +241,7 @@ class ConfigForm extends Component {
       <TextField
         variant="outlined"
         label="RPC Port"
-        value={port}
+        value={port || ''}
         onChange={this.handleChangePort}
         disabled={this.isRunning()}
         fullWidth
@@ -263,7 +258,7 @@ class ConfigForm extends Component {
         <TextField
           variant="outlined"
           label="Data Directory"
-          value={dataDir}
+          value={dataDir || ''}
           onChange={this.handleChangeDataDir}
           disabled={this.isRunning()}
           InputProps={{
@@ -308,9 +303,7 @@ class ConfigForm extends Component {
     const { config } = client
     const { ipc } = config
     const { ipcModes } = options
-    if (!ipc) {
-      return null
-    }
+
     const capitalizeIpcLabel = ipcLabel => {
       let capitalizedLabel
       if (ipcLabel === 'ipc') {
@@ -324,6 +317,7 @@ class ConfigForm extends Component {
       label: capitalizeIpcLabel(node),
       value: node
     }))
+
     return (
       <div>
         <Select
@@ -377,7 +371,9 @@ class ConfigForm extends Component {
 }
 
 function mapStateToProps(state) {
-  return { client: state.client }
+  return {
+    client: state.client
+  }
 }
 
 export default connect(mapStateToProps)(ConfigForm)

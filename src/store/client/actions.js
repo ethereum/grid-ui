@@ -97,7 +97,7 @@ export const gethError = ({ error }) => {
 
 export const setRelease = release => {
   return {
-    type: '[CLIENT]:GETH:SET_RELEASE',
+    type: 'CLIENT:SET_RELEASE',
     payload: { release }
   }
 }
@@ -156,4 +156,8 @@ export const clearError = () => {
   return {
     type: '[CLIENT]:GETH:CLEAR_ERROR'
   }
+}
+
+export const selectClient = clientData => {
+  return { type: 'CLIENT:SELECT', payload: { clientData } }
 }
