@@ -16,7 +16,7 @@ export default class VersionListItem extends Component {
     release: PropTypes.object,
     handleDownloadError: PropTypes.func,
     handleReleaseDownloaded: PropTypes.func,
-    handleReleaseSelected: PropTypes.func,
+    handleReleaseSelect: PropTypes.func,
     isSelectedRelease: PropTypes.func
   }
 
@@ -68,10 +68,10 @@ export default class VersionListItem extends Component {
     })
   }
 
-  handleReleaseSelected = release => {
-    const { handleReleaseSelected } = this.props
+  handleReleaseSelect = release => {
+    const { handleReleaseSelect } = this.props
     if (!release.remote) {
-      handleReleaseSelected(release)
+      handleReleaseSelect(release)
     } else {
       this.downloadRelease(release)
     }
@@ -116,7 +116,7 @@ export default class VersionListItem extends Component {
       <StyledListItem
         button
         onClick={() => {
-          this.handleReleaseSelected(release)
+          this.handleReleaseSelect(release)
         }}
         selected={isSelectedRelease(release)}
         isDownloading={isDownloading}

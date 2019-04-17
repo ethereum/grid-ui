@@ -67,19 +67,14 @@ class NodesTab extends Component {
      * the reference to the remote object in main is killed in this process
      */
     selectedClient.selectedConfig = config
-    this.setState({
-      selectedClient
-    })
+    this.setState({ selectedClient })
   }
 
-  handleSelectedReleaseChanged = release => {
+  handleReleaseSelect = release => {
     console.log('handle selected release changed', release)
     const { selectedClient } = this.state
     selectedClient.selectedRelease = release
-    this.setState({
-      selectedClient,
-      selectedRelease: release
-    })
+    this.setState({ selectedClient, selectedRelease: release })
   }
 
   // turn client on/off here
@@ -140,7 +135,7 @@ class NodesTab extends Component {
             client={selectedClient}
             selectedRelease={selectedRelease}
             clientConfigChanged={this.handleClientConfigChanged}
-            selectedReleaseChanged={this.handleSelectedReleaseChanged}
+            handleReleaseSelect={this.handleReleaseSelect}
           />
         )}
       </ServicesNav>
