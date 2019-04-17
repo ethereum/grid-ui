@@ -93,7 +93,7 @@ export default class Terminal extends Component {
 
             // Fluid width and height with support to scrolling
             width: 'calc(100vw - 310px)',
-            maxHeight: 'calc(100vh - 225px)',
+            maxHeight: 'calc(100vh - 238px)',
 
             // Scroll config
             overflowX: 'auto',
