@@ -52,6 +52,7 @@ const styles = theme => ({
 class ServicesTab extends Component {
   static propTypes = {
     activeClientName: PropTypes.string,
+    activeClientVersion: PropTypes.string,
     classes: PropTypes.object,
     // setActive: PropTypes.func,
     clients: PropTypes.array,
@@ -83,6 +84,7 @@ class ServicesTab extends Component {
 
   render() {
     const {
+      activeClientVersion,
       classes,
       handleToggle,
       handleSelect,
@@ -121,7 +123,9 @@ class ServicesTab extends Component {
                   <ListItemText
                     primary={client.displayName}
                     secondary={
-                      client.name === selectedClientName ? version : ''
+                      client.name === selectedClientName
+                        ? version
+                        : activeClientVersion
                     }
                     primaryTypographyProps={{
                       inline: true,
@@ -159,7 +163,8 @@ class ServicesTab extends Component {
 function mapStateToProps(state) {
   return {
     releaseName: state.client.release.name,
-    activeClientName: state.client.active.name
+    activeClientName: state.client.active.name,
+    activeClientVersion: state.client.active.version
   }
 }
 
