@@ -68,18 +68,24 @@ class ServicesTab extends Component {
 
   static defaultProps = {}
 
-  isDisabled = client => {
-    const { activeClientName, releaseName } = this.props
+  isDisabled = (/* client */) => {
+    return false
+    // const { activeClientName, releaseName } = this.props
 
-    return (
-      // toggle disabled if:
-      // 1) no release selected
-      !releaseName ||
-      // 2) wrong client selected
-      client.name !== releaseName.split('-')[0].toLowerCase() ||
-      // 3) there is already a client running
-      (activeClientName && client.name !== activeClientName)
-    )
+    // return (
+    // // toggle disabled if:
+    // // 1) no release selected
+    // !releaseName ||
+    // // 2) wrong client selected
+    // client.name !== releaseName.split('-')[0].toLowerCase() ||
+    // // 3) there is already a client running
+    // (activeClientName && client.name !== activeClientName)
+    // )
+  }
+
+  parseTooltipText = (/* client */) => {
+    // TODO:
+    return ''
   }
 
   render() {
@@ -137,17 +143,19 @@ class ServicesTab extends Component {
                     }}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip title={client.tooltipText || ''} placement="left">
-                      <span />
+                    <Tooltip
+                      title={this.parseTooltipText(client)}
+                      placement="left"
+                    >
+                      <span>
+                        <Switch
+                          color="primary"
+                          onChange={() => handleToggle(client)}
+                          checked={client.running}
+                          disabled={this.isDisabled(client)}
+                        />
+                      </span>
                     </Tooltip>
-                    <span>
-                      <Switch
-                        color="primary"
-                        onChange={() => handleToggle(client)}
-                        checked={client.running}
-                        disabled={this.isDisabled(client)}
-                      />
-                    </span>
                   </ListItemSecondaryAction>
                 </ListItem>
               )
