@@ -120,7 +120,7 @@ function removeListeners(client) {
   client.removeAllListeners('stopping')
   client.removeAllListeners('stopped')
   client.removeAllListeners('disconnect')
-  client.removeAllListener('error')
+  client.removeAllListeners('error')
 }
 
 export const startClient = (client, release, config) => {

@@ -55,7 +55,7 @@ const client = (state = initialState, action) => {
     }
     case 'CLIENT:START': {
       const { name, version } = action.payload
-      return { ...state, active: { name, version, status: 'STARTED' } }
+      return { ...state, active: { name, version } }
     }
     case 'CLIENT:STATUS_UPDATE': {
       const { status } = action.payload
