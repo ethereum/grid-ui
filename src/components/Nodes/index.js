@@ -71,34 +71,17 @@ class NodesTab extends Component {
   }
 
   handleReleaseSelect = release => {
-    console.log('handle selected release changed', release)
     const { selectedClient } = this.state
     selectedClient.selectedRelease = release
     this.setState({ selectedClient, selectedRelease: release })
   }
 
-  // turn client on/off here
   handleToggle = async () => {
     const { dispatch, release } = this.props
     const { selectedClient } = this.state
-    // const { isRunning } = selectedClient
     const { selectedConfig } = selectedClient
 
     dispatch(toggleClient(selectedClient, release, selectedConfig))
-    // if (isRunning) {
-    // selectedClient.stop()
-    // } else {
-    // try {
-    // console.log(
-    // '∆∆∆ start release.version',
-    // release.version,
-    // selectedConfig
-    // )
-    // selectedClient.start(release, selectedConfig)
-    // } catch (error) {
-    // console.log('could not start', error)
-    // }
-    // }
   }
 
   tooltipText = service => {

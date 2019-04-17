@@ -42,23 +42,22 @@ class ClientConfig extends Component {
     downloadError: null
   }
 
-  componentDidMount() {
-    // FIXME const { client } = this.props
-    // client.on('started', this.handleClientStarted)
-  }
+  componentDidUpdate(prevProps) {
+    const { client, clientStatus } = this.props
 
-  componentWillUnmount() {
-    // const { client } = this.props
-    // client.removeListener('started', this.handleClientStarted)
+    // On client start, show Terminal
+    if (prevProps.clientStatus === 'STOPPED' && clientStatus !== 'STOPPED') {
+      this.handleTabChange(null, 2)
+    }
+
+    // If switching clients, reset tab to VersionList
+    if (prevProps.client.name !== client.name) {
+      this.handleTabChange(null, 0)
+    }
   }
 
   handleTabChange = (event, activeTab) => {
     this.setState({ activeTab })
-  }
-
-  handleClientStarted = () => {
-    // Update activeTab to Terminal
-    this.setState({ activeTab: 2 })
   }
 
   onDismissError = () => {
