@@ -1,4 +1,8 @@
 export const initialState = {
+  active: {
+    name: null,
+    status: 'STOPPED'
+  },
   blockNumber: null,
   changingNetwork: false,
   name: '',
@@ -7,7 +11,6 @@ export const initialState = {
   repository: '',
   prefix: '',
   peerCount: 0,
-  state: 'STOPPED',
   sync: {
     currentBlock: 0,
     highestBlock: 0,
@@ -48,6 +51,13 @@ const client = (state = initialState, action) => {
     case 'CLIENT:SET_RELEASE': {
       const { release } = action.payload
       return { ...state, release }
+    }
+    case 'CLIENT:START': {
+      const { name } = action.payload
+      return { ...state, state: 'STARTED', active: { name } }
+    }
+    case 'CLIENT:STOP': {
+      return { ...state, state: 'STOPPED', active: { name: null } }
     }
     case '[CLIENT]:GETH:INIT': {
       const { status } = action.payload
