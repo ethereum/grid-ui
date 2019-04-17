@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-// import { connect } from 'react-redux'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -31,7 +31,9 @@ class ClientConfig extends Component {
   static propTypes = {
     client: PropTypes.object,
     clientConfigChanged: PropTypes.func,
+    clientStatus: PropTypes.string,
     dispatch: PropTypes.func,
+    isActiveClient: PropTypes.bool,
     selectedReleaseChanged: PropTypes.func
   }
 
@@ -85,9 +87,15 @@ class ClientConfig extends Component {
   }
 
   render() {
-    const { client, clientConfigChanged, selectedReleaseChanged } = this.props
+    const {
+      client,
+      clientConfigChanged,
+      clientStatus,
+      isActiveClient,
+      selectedReleaseChanged
+    } = this.props
     const { activeTab } = this.state
-    const { state, displayName: clientName } = client || {}
+    const { displayName: clientName } = client || {}
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
       client.state
     )
@@ -99,7 +107,7 @@ class ClientConfig extends Component {
           <NodeInfo />
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          <StyledState>{state}</StyledState>
+          <StyledState>{isActiveClient ? clientStatus : 'STOPPED'}</StyledState>
         </Typography>
         {this.renderErrors()}
         <StyledAppBar position="static">
@@ -136,16 +144,14 @@ class ClientConfig extends Component {
   }
 }
 
-/*
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
-    client: state.client
+    clientStatus: state.client.active.status,
+    isActiveClient: state.client.active.name === ownProps.client.name
   }
 }
-*/
 
-// export default connect(mapStateToProps)(ClientConfig)
-export default ClientConfig
+export default connect(mapStateToProps)(ClientConfig)
 
 const StyledMain = styled.main`
   position: relative;

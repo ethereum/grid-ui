@@ -102,47 +102,6 @@ export const setRelease = release => {
   }
 }
 
-export const startGeth = () => {
-  return (dispatch, getState) => {
-    const { client } = getState()
-    const { config } = client
-
-    try {
-      Geth.start(config, dispatch)
-      return { type: '[CLIENT]:GETH:START', payload: { config } }
-    } catch (e) {
-      return { type: '[CLIENT]:GETH:START:ERROR', error: e.toString() }
-    }
-  }
-}
-
-export const stopGeth = () => {
-  return dispatch => {
-    try {
-      Geth.stop()
-      dispatch({ type: '[CLIENT]:GETH:STOP' })
-    } catch (e) {
-      dispatch({ type: '[CLIENT]:GETH:STOP:ERROR', error: e.toString() })
-    }
-  }
-}
-
-export const toggleGeth = () => {
-  return async (dispatch, getState) => {
-    const { client } = getState()
-    const isRunning = await Geth.isRunning(client.state)
-
-    try {
-      if (isRunning) {
-        return dispatch(stopGeth())
-      }
-      return dispatch(startGeth())
-    } catch (e) {
-      return { type: '[CLIENT]:GETH:TOGGLE:ERROR', error: e.toString() }
-    }
-  }
-}
-
 export const setConfig = ({ config }) => {
   Geth.setConfig(config)
 
@@ -158,6 +117,46 @@ export const clearError = () => {
   }
 }
 
+// TODO: refactor to generic client:
+
 export const selectClient = clientData => {
   return { type: 'CLIENT:SELECT', payload: { clientData } }
+}
+
+export const startClient = (client, release, config) => {
+  return dispatch => {
+    try {
+      client.start(release, config /* dispatch */)
+      return dispatch({
+        type: 'CLIENT:START',
+        payload: { name: client.name, config }
+      })
+    } catch (e) {
+      return dispatch({ type: 'CLIENT:START:ERROR', error: e.toString() })
+    }
+  }
+}
+
+export const stopClient = client => {
+  return dispatch => {
+    try {
+      client.stop()
+      dispatch({ type: 'CLIENT:STOP' })
+    } catch (e) {
+      dispatch({ type: 'CLIENT:STOP:ERROR', error: e.toString() })
+    }
+  }
+}
+
+export const toggleClient = (client, release, config) => {
+  return async dispatch => {
+    try {
+      if (client.isRunning) {
+        return dispatch(stopClient(client))
+      }
+      return dispatch(startClient(client, release, config))
+    } catch (e) {
+      return { type: 'CLIENT:TOGGLE:ERROR', error: e.toString() }
+    }
+  }
 }

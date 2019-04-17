@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ClientConfig from './ClientConfig'
-// import { initGeth, toggleGeth } from '../../store/client/actions'
 import Geth from '../../store/client/gethService'
 import ServicesNav from './ServicesNav'
-import { selectClient } from '../../store/client/actions'
+import { selectClient, toggleClient } from '../../store/client/actions'
 
 import Grid from '../../API/Grid'
 
@@ -85,25 +84,26 @@ class NodesTab extends Component {
 
   // turn client on/off here
   handleToggle = async () => {
+    const { dispatch, release } = this.props
     const { selectedClient } = this.state
-    const { isRunning } = selectedClient
-    const { release } = this.props
+    // const { isRunning } = selectedClient
     const { selectedConfig } = selectedClient
 
-    if (isRunning) {
-      selectedClient.stop()
-    } else {
-      try {
-        console.log(
-          '∆∆∆ start release.version',
-          release.version,
-          selectedConfig
-        )
-        selectedClient.start(release, selectedConfig)
-      } catch (error) {
-        console.log('could not start', error)
-      }
-    }
+    dispatch(toggleClient(selectedClient, release, selectedConfig))
+    // if (isRunning) {
+    // selectedClient.stop()
+    // } else {
+    // try {
+    // console.log(
+    // '∆∆∆ start release.version',
+    // release.version,
+    // selectedConfig
+    // )
+    // selectedClient.start(release, selectedConfig)
+    // } catch (error) {
+    // console.log('could not start', error)
+    // }
+    // }
   }
 
   tooltipText = service => {
@@ -120,8 +120,6 @@ class NodesTab extends Component {
 
   render() {
     const { active, clients, selectedClient, selectedRelease } = this.state
-
-    console.log('selected release', selectedRelease)
 
     return (
       <ServicesNav
@@ -153,7 +151,7 @@ class NodesTab extends Component {
 function mapStateToProps(state) {
   return {
     release: state.client.release,
-    clientStatus: state.client.state
+    clientStatus: state.client.active.status
   }
 }
 
