@@ -31,6 +31,7 @@ const styles = {
 
 class CustomizedInputBase extends React.Component {
   static propTypes = {
+    onOpenDevTools: PropTypes.func,
     onNavigate: PropTypes.func.isRequired
   }
 
