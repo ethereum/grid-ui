@@ -101,7 +101,9 @@ class VersionList extends Component {
         const firstLocalRelease = releases.find(release => {
           return !release.remote
         })
-        this.handleReleaseSelect(firstLocalRelease)
+        if (firstLocalRelease) {
+          this.handleReleaseSelect(firstLocalRelease)
+        }
       }
     )
   }
