@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
@@ -50,21 +51,35 @@ const styles = theme => ({
 
 class ServicesTab extends Component {
   static propTypes = {
-    // active: PropTypes.string,
+    activeClientName: PropTypes.string,
     classes: PropTypes.object,
     // setActive: PropTypes.func,
     clients: PropTypes.array,
     children: PropTypes.node,
     handleToggle: PropTypes.func,
     // isChecked: PropTypes.func,
-    // isDisabled: PropTypes.func,
     // tooltipText: PropTypes.func
     handleSelect: PropTypes.func,
     selectedClientName: PropTypes.string,
-    selectedClient: PropTypes.object
+    selectedClient: PropTypes.object,
+    releaseName: PropTypes.string
   }
 
   static defaultProps = {}
+
+  isDisabled = client => {
+    const { activeClientName, releaseName } = this.props
+
+    return (
+      // toggle disabled if:
+      // 1) no release selected
+      !releaseName ||
+      // 2) wrong client selected
+      client.name !== releaseName.split('-')[0].toLowerCase() ||
+      // 3) there is already a client running
+      (activeClientName && client.name !== activeClientName)
+    )
+  }
 
   render() {
     const {
@@ -126,7 +141,7 @@ class ServicesTab extends Component {
                         color="primary"
                         onChange={() => handleToggle(client)}
                         checked={client.running}
-                        disabled={client.name !== selectedClientName}
+                        disabled={this.isDisabled(client)}
                       />
                     </span>
                   </ListItemSecondaryAction>
@@ -141,4 +156,11 @@ class ServicesTab extends Component {
   }
 }
 
-export default withStyles(styles)(ServicesTab)
+function mapStateToProps(state) {
+  return {
+    releaseName: state.client.release.name,
+    activeClientName: state.client.active.name
+  }
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(ServicesTab))
