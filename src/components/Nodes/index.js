@@ -104,7 +104,6 @@ class NodesTab extends Component {
         active={active}
         setActive={service => this.setState({ active: service })}
         isChecked={this.isChecked}
-        isDisabled={this.isDisabled}
         handleToggle={this.handleToggle}
         handleSelect={this.handleSelect}
         selectedClientName={selectedClient && selectedClient.name}

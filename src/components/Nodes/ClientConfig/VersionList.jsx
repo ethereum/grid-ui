@@ -93,8 +93,17 @@ class VersionList extends Component {
     })
     releases = releases.filter(r => !r.remote || !localReleases[r.fileName])
     // console.timeEnd('dedupe') // for 132 -> 83 ms
-    this.setState({ releases, loadingReleases: false })
-    this.setState({ localReleaseCount: count })
+    this.setState(
+      { releases, loadingReleases: false, localReleaseCount: count },
+      () => {
+        // Set first local download as active
+        // TODO: revisit after redux-persist reintroduced
+        const firstLocalRelease = releases.find(release => {
+          return !release.remote
+        })
+        this.handleReleaseSelect(firstLocalRelease)
+      }
+    )
   }
 
   isLocalRelease = release => {

@@ -70,10 +70,10 @@ export default class VersionListItem extends Component {
 
   handleReleaseSelect = release => {
     const { handleReleaseSelect } = this.props
-    if (!release.remote) {
-      handleReleaseSelect(release)
-    } else {
+    if (release.remote) {
       this.downloadRelease(release)
+    } else {
+      handleReleaseSelect(release)
     }
   }
 
