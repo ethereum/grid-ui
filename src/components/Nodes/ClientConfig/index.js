@@ -86,6 +86,10 @@ class ClientConfig extends Component {
     )
   }
 
+  getClientSettings = client => {
+    return ((client.plugin || {}).config || {}).settings
+  }
+
   render() {
     const {
       client,
@@ -99,6 +103,7 @@ class ClientConfig extends Component {
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
       client.state
     )
+    const settings = this.getClientSettings(client)
 
     return (
       <StyledMain>
@@ -130,7 +135,7 @@ class ClientConfig extends Component {
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>
-            <DynamicConfigForm />
+            <DynamicConfigForm settings={settings} />
           </TabContainer>
         )}
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
