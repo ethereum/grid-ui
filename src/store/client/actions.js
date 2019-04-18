@@ -67,41 +67,6 @@ export const updateSyncMode = ({ syncMode }) => {
   }
 }
 
-export const gethStarting = () => {
-  return { type: '[CLIENT]:GETH:STARTING' }
-}
-
-export const gethStarted = () => {
-  return { type: '[CLIENT]:GETH:STARTED' }
-}
-
-export const gethConnected = () => {
-  return { type: '[CLIENT]:GETH:CONNECTED' }
-}
-
-export const gethDisconnected = () => {
-  return { type: '[CLIENT]:GETH:DISCONNECTED' }
-}
-
-export const gethStopping = () => {
-  return { type: '[CLIENT]:GETH:STOPPING' }
-}
-
-export const gethStopped = () => {
-  return { type: '[CLIENT]:GETH:STOPPED' }
-}
-
-export const gethError = ({ error }) => {
-  return { type: '[CLIENT]:GETH:ERROR', error }
-}
-
-export const setRelease = release => {
-  return {
-    type: 'CLIENT:SET_RELEASE',
-    payload: { release }
-  }
-}
-
 export const setConfig = ({ config }) => {
   Geth.setConfig(config)
 
@@ -123,9 +88,45 @@ export const selectClient = clientData => {
   return { type: 'CLIENT:SELECT', payload: { clientData } }
 }
 
+export const setRelease = release => {
+  return {
+    type: 'CLIENT:SET_RELEASE',
+    payload: { release }
+  }
+}
+
+function onConnectionUpdate(status) {
+  return { type: 'CLIENT:STATUS_UPDATE', payload: { status } }
+}
+
+export const clientError = error => {
+  return { type: 'CLIENT:ERROR', error }
+}
+
+function createListeners(client, dispatch) {
+  client.on('starting', () => dispatch(onConnectionUpdate('STARTING')))
+  client.on('started', () => dispatch(onConnectionUpdate('STARTED')))
+  client.on('connected', () => dispatch(onConnectionUpdate('CONNECTED')))
+  client.on('stopping', () => dispatch(onConnectionUpdate('STOPPING')))
+  client.on('stopped', () => dispatch(onConnectionUpdate('STOPPED')))
+  client.on('disconnect', () => dispatch(onConnectionUpdate('DISCONNETED')))
+  client.on('error', e => dispatch(clientError(e)))
+}
+
+function removeListeners(client) {
+  client.removeAllListeners('starting')
+  client.removeAllListeners('started')
+  client.removeAllListeners('connected')
+  client.removeAllListeners('stopping')
+  client.removeAllListeners('stopped')
+  client.removeAllListeners('disconnect')
+  client.removeAllListeners('error')
+}
+
 export const startClient = (client, release, config) => {
   return dispatch => {
     try {
+      createListeners(client, dispatch)
       client.start(release, config)
       return dispatch({
         type: 'CLIENT:START',
@@ -141,6 +142,7 @@ export const stopClient = client => {
   return dispatch => {
     try {
       client.stop()
+      removeListeners(client)
       dispatch({ type: 'CLIENT:STOP' })
     } catch (e) {
       dispatch({ type: 'CLIENT:STOP:ERROR', error: e.toString() })

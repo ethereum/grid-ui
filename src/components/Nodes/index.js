@@ -27,7 +27,8 @@ class NodesTab extends Component {
     if (!PluginHost) return
     const plugins = PluginHost.getAllPlugins()
     const clients = [...plugins]
-    const selectedClient = clients[0]
+    const selectedClient =
+      clients.find(client => client.order === 1) || clients[0]
     dispatch(selectClient(selectedClient.plugin.config))
     this.setState({ clients, selectedClient })
   }
@@ -39,7 +40,6 @@ class NodesTab extends Component {
 
   handleSelect = client => {
     const { dispatch } = this.props
-    console.log('handle select', client)
     dispatch(selectClient(client.plugin.config))
     this.setState({ selectedClient: client })
   }
@@ -75,12 +75,10 @@ class NodesTab extends Component {
   }
 
   render() {
-    const { active, clients, selectedClient, selectedRelease } = this.state
+    const { clients, selectedClient, selectedRelease } = this.state
 
     return (
       <ServicesNav
-        active={active}
-        setActive={service => this.setState({ active: service })}
         handleToggle={this.handleToggle}
         handleSelect={this.handleSelect}
         clients={clients}

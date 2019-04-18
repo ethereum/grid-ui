@@ -55,7 +55,11 @@ const client = (state = initialState, action) => {
     }
     case 'CLIENT:START': {
       const { name, version } = action.payload
-      return { ...state, active: { name, version, status: 'STARTED' } }
+      return { ...state, active: { name, version } }
+    }
+    case 'CLIENT:STATUS_UPDATE': {
+      const { status } = action.payload
+      return { ...state, active: { ...state.active, status } }
     }
     case 'CLIENT:STOP': {
       return { ...state, active: { ...initialState.active } }
@@ -67,24 +71,6 @@ const client = (state = initialState, action) => {
     case '[CLIENT]:GETH:SET_CONFIG': {
       const { config } = action.payload
       return { ...state, config }
-    }
-    case '[CLIENT]:GETH:STARTED': {
-      return { ...state, state: 'STARTED' }
-    }
-    case '[CLIENT]:GETH:STARTING': {
-      return { ...state, state: 'STARTING' }
-    }
-    case '[CLIENT]:GETH:STOPPING': {
-      return { ...state, state: 'STOPPING' }
-    }
-    case '[CLIENT]:GETH:STOPPED': {
-      return { ...state, state: 'STOPPED' }
-    }
-    case '[CLIENT]:GETH:CONNECTED': {
-      return { ...state, state: 'CONNECTED' }
-    }
-    case '[CLIENT]:GETH:DISCONNECTED': {
-      return { ...state, state: 'STARTED' }
     }
     case '[CLIENT]:GETH:ERROR': {
       const { error } = action

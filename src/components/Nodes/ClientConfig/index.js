@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
 import Terminal from '../Terminal'
-import NodeInfo from '../NodeInfo'
+// import NodeInfo from '../NodeInfo'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
 
@@ -103,7 +103,7 @@ class ClientConfig extends Component {
       <StyledMain>
         <Typography variant="h5">
           {clientName}
-          <NodeInfo />
+          {/* <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           <StyledState>{isActiveClient ? clientStatus : 'STOPPED'}</StyledState>

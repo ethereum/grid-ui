@@ -21,15 +21,15 @@ class Webview extends React.Component {
   }
 
   handleDomReady = () => {
-    console.log('dom ready')
+    console.log('Webview: DOM ready')
   }
 
   handleWillNavigate = () => {
-    console.log('will navigate')
+    console.log('Webview: will navigate')
   }
 
   handleIpcMessage = () => {
-    console.log('handle ipc')
+    console.log('Webview: handle ipc')
   }
 
   handleNavigate = newUrl => {
