@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import Select from '../../shared/Select'
 
 class DynamicConfigForm extends Component {
+  static propTypes = {
+    settings: PropTypes.object
+  }
+
   constructor(props) {
     super(props)
     const { settings } = props
@@ -14,22 +19,43 @@ class DynamicConfigForm extends Component {
 
   noop = event => console.log('event', event)
 
+  wrapGridItem(el, index) {
+    return (
+      <Grid item xs={6} key={index}>
+        {el}
+      </Grid>
+    )
+  }
+
   renderFormItem(entry) {
     const [key, item] = entry
 
     const label = item.label || key
     const type = item.options ? 'select' : 'text'
+    let options
 
     switch (type) {
       case 'select':
-        const options = item.options.map(el => {
-          // eg: [{label: 'Ropsten test network', value: 'Ropsten', flag: '--testnet'}]
-          let { label, value } = el
+        options = item.options.map(el => {
+          let optionLabel
+          let optionValue
 
-          // eg: ['light', 'full', 'fast']
-          if (typeof el === 'string') label = value = el
+          if (typeof el === 'string') {
+            // eg: ['light', 'full', 'fast']
+            optionLabel = el
+            optionValue = el
+          } else if (typeof el === 'object') {
+            // eg: [{label: 'Ropsten test network', value: 'Ropsten', flag: '--testnet'}]
+            optionLabel = el.label
+            optionValue = el.value
+          } else {
+            throw Error(`el was not properly set: ${el}`)
+          }
 
-          return { label, value }
+          return {
+            label: optionLabel,
+            value: optionValue
+          }
         })
 
         return (
@@ -45,14 +71,6 @@ class DynamicConfigForm extends Component {
           />
         )
     }
-  }
-
-  wrapGridItem(el, index) {
-    return (
-      <Grid item xs={6} key={index}>
-        {el}
-      </Grid>
-    )
   }
 
   renderForm() {

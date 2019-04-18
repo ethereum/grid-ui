@@ -7,7 +7,7 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
-import ConfigForm from './ConfigForm'
+// import ConfigForm from './ConfigForm'
 import DynamicConfigForm from './DynamicConfigForm'
 import Terminal from '../Terminal'
 // import NodeInfo from '../NodeInfo'
@@ -35,7 +35,8 @@ class ClientConfig extends Component {
     clientStatus: PropTypes.string,
     dispatch: PropTypes.func,
     isActiveClient: PropTypes.bool,
-    handleReleaseSelect: PropTypes.func
+    handleReleaseSelect: PropTypes.func,
+    handleConfigSubmit: PropTypes.func
   }
 
   state = {
@@ -61,9 +62,17 @@ class ClientConfig extends Component {
     this.setState({ activeTab })
   }
 
+  handleConfigSubmit = (event, arg2) => {
+    console.log('handleConfigSubmit', event, arg2)
+  }
+
   onDismissError = () => {
     const { dispatch } = this.props
     dispatch(clearError())
+  }
+
+  getClientSettings = client => {
+    return ((client.plugin || {}).config || {}).settings
   }
 
   renderErrors() {
@@ -84,10 +93,6 @@ class ClientConfig extends Component {
         onDismiss={this.onDismissError}
       />
     )
-  }
-
-  getClientSettings = client => {
-    return ((client.plugin || {}).config || {}).settings
   }
 
   render() {
@@ -135,7 +140,12 @@ class ClientConfig extends Component {
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>
-            <DynamicConfigForm settings={settings} />
+            <DynamicConfigForm
+              settings={settings}
+              handleConfigSubmit={this.handleConfigSubmit}
+              isRunning={isRunning}
+              clientConfigChanged={clientConfigChanged}
+            />
           </TabContainer>
         )}
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
