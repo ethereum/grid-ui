@@ -8,6 +8,7 @@ import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
 import ConfigForm from './ConfigForm'
+import DynamicConfigForm from './DynamicConfigForm'
 import Terminal from '../Terminal'
 // import NodeInfo from '../NodeInfo'
 import { clearError } from '../../../store/client/actions'
@@ -133,6 +134,7 @@ class ClientConfig extends Component {
               isClientRunning={isRunning}
               clientConfigChanged={clientConfigChanged}
             />
+            <DynamicConfigForm />
           </TabContainer>
         )}
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
