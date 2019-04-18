@@ -36,7 +36,7 @@ class ClientConfig extends Component {
     dispatch: PropTypes.func,
     isActiveClient: PropTypes.bool,
     handleReleaseSelect: PropTypes.func,
-    handleConfigSubmit: PropTypes.func
+    handleClientConfigChanged: PropTypes.func
   }
 
   state = {
@@ -62,8 +62,9 @@ class ClientConfig extends Component {
     this.setState({ activeTab })
   }
 
-  handleConfigSubmit = (event, arg2) => {
-    console.log('handleConfigSubmit', event, arg2)
+  handleClientConfigChanged = (key, value) => {
+    const { handleClientConfigChanged } = this.props
+    handleClientConfigChanged(key, value)
   }
 
   onDismissError = () => {
@@ -142,7 +143,7 @@ class ClientConfig extends Component {
           <TabContainer>
             <DynamicConfigForm
               settings={settings}
-              handleConfigSubmit={this.handleConfigSubmit}
+              handleClientConfigChanged={this.handleClientConfigChanged}
               isClientRunning={isRunning}
               clientConfigChanged={clientConfigChanged}
             />
