@@ -11,7 +11,7 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:SET_CONFIG', () => {
+  it('should handle CLIENT:SET_CONFIG', () => {
     const config = {
       name: 'default',
       dataDir: '/example',
@@ -22,7 +22,7 @@ describe('the client reducer', () => {
       ipc: 'websockets'
     }
     const action = {
-      type: '[CLIENT]:GETH:SET_CONFIG',
+      type: 'CLIENT:SET_CONFIG',
       payload: { config }
     }
     const expectedState = { ...initialState, config }
@@ -83,7 +83,7 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:SET_RELEASE', () => {
+  it('should handle CLIENT:SET_RELEASE', () => {
     const release = {
       name: 'example',
       fileName: 'example',
@@ -95,7 +95,7 @@ describe('the client reducer', () => {
       signature: 'example'
     }
     const action = {
-      type: '[CLIENT]:GETH:SET_RELEASE',
+      type: 'CLIENT:SET_RELEASE',
       payload: { release }
     }
     const expectedState = { ...initialState, release }

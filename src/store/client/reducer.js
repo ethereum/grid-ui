@@ -33,7 +33,6 @@ export const initialState = {
     remote: false
   },
   config: {
-    name: null,
     dataDir: null,
     host: null,
     port: null,
@@ -47,11 +46,22 @@ const client = (state = initialState, action) => {
   switch (action.type) {
     case 'CLIENT:SELECT': {
       const { clientData } = action.payload
-      return { ...state, ...clientData, release: { ...initialState.release } }
+      return {
+        ...state,
+        ...clientData,
+        config: clientData.config
+          ? clientData.config.default
+          : initialState.config,
+        release: { ...initialState.release }
+      }
     }
     case 'CLIENT:SET_RELEASE': {
       const { release } = action.payload
       return { ...state, release }
+    }
+    case 'CLIENT:SET_CONFIG': {
+      const { config } = action.payload
+      return { ...state, config }
     }
     case 'CLIENT:START': {
       const { name, version } = action.payload
@@ -67,10 +77,6 @@ const client = (state = initialState, action) => {
     case '[CLIENT]:GETH:INIT': {
       const { status } = action.payload
       return { ...state, state: status }
-    }
-    case '[CLIENT]:GETH:SET_CONFIG': {
-      const { config } = action.payload
-      return { ...state, config }
     }
     case '[CLIENT]:GETH:ERROR': {
       const { error } = action

@@ -67,22 +67,13 @@ export const updateSyncMode = ({ syncMode }) => {
   }
 }
 
-export const setConfig = ({ config }) => {
-  Geth.setConfig(config)
-
-  return {
-    type: '[CLIENT]:GETH:SET_CONFIG',
-    payload: { config }
-  }
-}
-
 export const clearError = () => {
   return {
     type: '[CLIENT]:GETH:CLEAR_ERROR'
   }
 }
 
-// TODO: refactor to generic client:
+// TODO: finish refactor to generic client:
 
 export const selectClient = clientData => {
   return { type: 'CLIENT:SELECT', payload: { clientData } }
@@ -95,7 +86,11 @@ export const setRelease = release => {
   }
 }
 
-function onConnectionUpdate(status) {
+export const setConfig = config => {
+  return { type: 'CLIENT:SET_CONFIG', payload: { config } }
+}
+
+export function onConnectionUpdate(status) {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { status } }
 }
 

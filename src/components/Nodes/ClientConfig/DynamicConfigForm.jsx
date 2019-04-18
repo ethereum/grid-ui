@@ -6,21 +6,13 @@ import Select from '../../shared/Select'
 
 class DynamicConfigForm extends Component {
   static propTypes = {
-    isClientRunning: PropTypes.bool,
+    handleClientConfigChanged: PropTypes.func,
     settings: PropTypes.object
   }
 
-  constructor(props) {
-    super(props)
-    const { settings } = props
-    this.state = { settings }
-  }
-
-  componentDidMount() {}
-
   noop = event => console.log('event', event)
 
-  wrapGridItem(el, index) {
+  wrapGridItem = (el, index) => {
     return (
       <Grid item xs={6} key={index}>
         {el}
@@ -28,7 +20,12 @@ class DynamicConfigForm extends Component {
     )
   }
 
-  renderFormItem(entry, props) {
+  handleChange = (key, value) => {
+    const { handleClientConfigChanged } = this.props
+    handleClientConfigChanged(key, value)
+  }
+
+  renderFormItem = (entry, props) => {
     const { isClientRunning } = props
     const [key, item] = entry
     const label = item.label || key
@@ -65,6 +62,7 @@ class DynamicConfigForm extends Component {
             defaultValue={item.default}
             options={options}
             disabled={isClientRunning}
+            onChange={value => this.handleChange(key, value)}
           />
         )
       default:
@@ -72,21 +70,21 @@ class DynamicConfigForm extends Component {
           <TextField
             variant="outlined"
             label={label}
-            value={item.default}
+            defaultValue={item.default}
             disabled={isClientRunning}
             fullWidth
+            onChange={e => this.handleChange(key, e.target.value)}
           />
         )
     }
   }
 
-  renderForm() {
-    const { settings } = this.state
-    const props = this.props
-    if (!settings) return <h4>Empty settings pane</h4>
+  render() {
+    const { settings } = this.props
+    if (!settings) return <h4>No configuration settings found</h4>
 
     const formItems = Object.entries(settings)
-      .map(entry => this.renderFormItem(entry, props))
+      .map(entry => this.renderFormItem(entry, this.props))
       .map(this.wrapGridItem)
 
     return (
@@ -94,10 +92,6 @@ class DynamicConfigForm extends Component {
         {formItems}
       </Grid>
     )
-  }
-
-  render() {
-    return <div>{this.renderForm()}</div>
   }
 }
 
