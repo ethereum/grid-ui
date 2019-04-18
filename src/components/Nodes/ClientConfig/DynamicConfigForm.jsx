@@ -6,42 +6,8 @@ import Select from '../../shared/Select'
 class DynamicConfigForm extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      settings: {
-        dataDir: {
-          default: '~/Library/Ethereum/',
-          label: 'Data Directory',
-          flag: '--datadir %s',
-          type: 'path'
-        },
-        ipc: {
-          default: 'ipc',
-          label: 'IPC',
-          options: [
-            {
-              value: 'websockets',
-              label: 'WebSockets',
-              flag: '--ws --wsaddr %s --wsport 8586'
-            },
-            { value: 'ipc', label: 'IPC', flag: '--rpc' }
-          ]
-        },
-        network: {
-          default: 'main',
-          options: [
-            { value: 'main', label: 'Main', flag: '' },
-            { value: 'ropsten', label: 'Ropsten (testnet)', flag: '--testnet' },
-            { value: 'rinkeby', label: 'Rinkeby (testnet)', flag: '--rinkeby' }
-          ]
-        },
-        syncMode: {
-          default: 'light',
-          label: 'Sync Mode',
-          options: ['fast', 'full', 'light'],
-          flag: '--syncmode "%s"'
-        }
-      }
-    }
+    const { settings } = props
+    this.state = { settings }
   }
 
   componentDidMount() {}
@@ -69,7 +35,6 @@ class DynamicConfigForm extends Component {
         return (
           <Select name={label} defaultValue={item.default} options={options} />
         )
-        break
       default:
         return (
           <TextField
@@ -92,6 +57,8 @@ class DynamicConfigForm extends Component {
 
   renderForm() {
     const { settings } = this.state
+    if (!settings) return <h4>Empty settings pane</h4>
+
     const formItems = Object.entries(settings)
       .map(this.renderFormItem)
       .map(this.wrapGridItem)
