@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import TextField from '@material-ui/core/TextField'
+import Grid from '@material-ui/core/Grid'
+import Select from '../../shared/Select'
 
 class DynamicConfigForm extends Component {
   constructor(props) {
@@ -8,10 +11,12 @@ class DynamicConfigForm extends Component {
         dataDir: {
           default: '~/Library/Ethereum/',
           label: 'Data Directory',
-          flag: '--datadir %s'
+          flag: '--datadir %s',
+          type: 'path'
         },
         ipc: {
           default: 'ipc',
+          label: 'IPC',
           options: [
             {
               value: 'websockets',
@@ -22,7 +27,7 @@ class DynamicConfigForm extends Component {
           ]
         },
         network: {
-          default: '',
+          default: 'main',
           options: [
             { value: 'main', label: 'Main', flag: '' },
             { value: 'ropsten', label: 'Ropsten (testnet)', flag: '--testnet' },
@@ -31,6 +36,7 @@ class DynamicConfigForm extends Component {
         },
         syncMode: {
           default: 'light',
+          label: 'Sync Mode',
           options: ['fast', 'full', 'light'],
           flag: '--syncmode "%s"'
         }
@@ -40,7 +46,7 @@ class DynamicConfigForm extends Component {
 
   componentDidMount() {}
 
-  renderOptions(el) {}
+  noop = event => console.log('event', event)
 
   renderFormItem(entry) {
     const [key, item] = entry
@@ -48,43 +54,57 @@ class DynamicConfigForm extends Component {
     const label = item.label || key
     const type = item.options ? 'select' : 'text'
 
-    if (type === 'select') {
-      const options = item.options.map(el => {
-        let { label, value } = el
+    switch (type) {
+      case 'select':
+        const options = item.options.map(el => {
+          // eg: [{label: 'Ropsten test network', value: 'Ropsten', flag: '--testnet'}]
+          let { label, value } = el
 
-        if (typeof el === 'string') {
-          label = value = el
-        }
+          // eg: ['light', 'full', 'fast']
+          if (typeof el === 'string') label = value = el
 
-        return <option value={value}>{label}</option>
-      })
+          return { label, value }
+        })
 
-      return <select name={key}> {options} </select>
+        return (
+          <Select name={label} defaultValue={item.default} options={options} />
+        )
+        break
+      default:
+        return (
+          <TextField
+            variant="outlined"
+            label={label}
+            value={item.default}
+            fullWidth
+          />
+        )
     }
+  }
+
+  wrapGridItem(el, index) {
+    return (
+      <Grid item xs={6} key={index}>
+        {el}
+      </Grid>
+    )
+  }
+
+  renderForm() {
+    const { settings } = this.state
+    const formItems = Object.entries(settings)
+      .map(this.renderFormItem)
+      .map(this.wrapGridItem)
 
     return (
-      <input
-        type="text"
-        name={key}
-        key={key}
-        placeholder={item.label}
-        alt={item.label}
-        value={item.default}
-      />
+      <Grid container style={{ paddingTop: 15 }} spacing={24}>
+        {formItems}
+      </Grid>
     )
   }
 
   render() {
-    const { settings } = this.state
-    console.log('settings', settings)
-    const formItems = Object.entries(settings).map(this.renderFormItem)
-
-    return (
-      <div>
-        <h3>Dynamic form</h3>
-        <div>{formItems}</div>
-      </div>
-    )
+    return <div>{this.renderForm()}</div>
   }
 }
 

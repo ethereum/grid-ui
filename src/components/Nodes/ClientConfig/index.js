@@ -130,10 +130,6 @@ class ClientConfig extends Component {
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>
-            <ConfigForm
-              isClientRunning={isRunning}
-              clientConfigChanged={clientConfigChanged}
-            />
             <DynamicConfigForm />
           </TabContainer>
         )}
