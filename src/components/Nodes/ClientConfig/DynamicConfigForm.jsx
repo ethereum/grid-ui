@@ -6,6 +6,7 @@ import Select from '../../shared/Select'
 
 class DynamicConfigForm extends Component {
   static propTypes = {
+    isClientRunning: PropTypes.bool,
     settings: PropTypes.object
   }
 
@@ -27,9 +28,9 @@ class DynamicConfigForm extends Component {
     )
   }
 
-  renderFormItem(entry) {
+  renderFormItem(entry, props) {
+    const { isClientRunning } = props
     const [key, item] = entry
-
     const label = item.label || key
     const type = item.options ? 'select' : 'text'
     let options
@@ -59,7 +60,12 @@ class DynamicConfigForm extends Component {
         })
 
         return (
-          <Select name={label} defaultValue={item.default} options={options} />
+          <Select
+            name={label}
+            defaultValue={item.default}
+            options={options}
+            disabled={isClientRunning}
+          />
         )
       default:
         return (
@@ -67,6 +73,7 @@ class DynamicConfigForm extends Component {
             variant="outlined"
             label={label}
             value={item.default}
+            disabled={isClientRunning}
             fullWidth
           />
         )
@@ -75,10 +82,11 @@ class DynamicConfigForm extends Component {
 
   renderForm() {
     const { settings } = this.state
+    const props = this.props
     if (!settings) return <h4>Empty settings pane</h4>
 
     const formItems = Object.entries(settings)
-      .map(this.renderFormItem)
+      .map(entry => this.renderFormItem(entry, props))
       .map(this.wrapGridItem)
 
     return (
