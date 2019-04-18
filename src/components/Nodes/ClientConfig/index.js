@@ -143,7 +143,7 @@ class ClientConfig extends Component {
             <DynamicConfigForm
               settings={settings}
               handleConfigSubmit={this.handleConfigSubmit}
-              isRunning={isRunning}
+              isClientRunning={isRunning}
               clientConfigChanged={clientConfigChanged}
             />
           </TabContainer>
