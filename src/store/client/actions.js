@@ -106,7 +106,7 @@ export const clientError = error => {
 function createListeners(client, dispatch) {
   client.on('starting', () => dispatch(onConnectionUpdate('STARTING')))
   client.on('started', () => dispatch(onConnectionUpdate('STARTED')))
-  client.on('connect', () => dispatch(onConnectionUpdate('CONNECTED')))
+  client.on('connected', () => dispatch(onConnectionUpdate('CONNECTED')))
   client.on('stopping', () => dispatch(onConnectionUpdate('STOPPING')))
   client.on('stopped', () => dispatch(onConnectionUpdate('STOPPED')))
   client.on('disconnect', () => dispatch(onConnectionUpdate('DISCONNETED')))
@@ -116,7 +116,7 @@ function createListeners(client, dispatch) {
 function removeListeners(client) {
   client.removeAllListeners('starting')
   client.removeAllListeners('started')
-  client.removeAllListeners('connect')
+  client.removeAllListeners('connected')
   client.removeAllListeners('stopping')
   client.removeAllListeners('stopped')
   client.removeAllListeners('disconnect')
