@@ -32,14 +32,7 @@ export const initialState = {
     signature: null,
     remote: false
   },
-  config: {
-    dataDir: null,
-    host: null,
-    port: null,
-    network: null,
-    syncMode: null,
-    ipc: null
-  }
+  config: {}
 }
 
 const client = (state = initialState, action) => {
