@@ -32,30 +32,37 @@ export const initialState = {
     signature: null,
     remote: false
   },
-  config: {
-    name: null,
-    dataDir: null,
-    host: null,
-    port: null,
-    network: null,
-    syncMode: null,
-    ipc: null
-  }
+  config: {}
 }
 
 const client = (state = initialState, action) => {
   switch (action.type) {
     case 'CLIENT:SELECT': {
       const { clientData } = action.payload
-      return { ...state, ...clientData, release: { ...initialState.release } }
+      return {
+        ...state,
+        ...clientData,
+        config: clientData.config
+          ? clientData.config.default
+          : initialState.config,
+        release: { ...initialState.release }
+      }
     }
     case 'CLIENT:SET_RELEASE': {
       const { release } = action.payload
       return { ...state, release }
     }
+    case 'CLIENT:SET_CONFIG': {
+      const { config } = action.payload
+      return { ...state, config }
+    }
     case 'CLIENT:START': {
       const { name, version } = action.payload
-      return { ...state, active: { name, version, status: 'STARTED' } }
+      return { ...state, active: { name, version } }
+    }
+    case 'CLIENT:STATUS_UPDATE': {
+      const { status } = action.payload
+      return { ...state, active: { ...state.active, status } }
     }
     case 'CLIENT:STOP': {
       return { ...state, active: { ...initialState.active } }
@@ -63,28 +70,6 @@ const client = (state = initialState, action) => {
     case '[CLIENT]:GETH:INIT': {
       const { status } = action.payload
       return { ...state, state: status }
-    }
-    case '[CLIENT]:GETH:SET_CONFIG': {
-      const { config } = action.payload
-      return { ...state, config }
-    }
-    case '[CLIENT]:GETH:STARTED': {
-      return { ...state, state: 'STARTED' }
-    }
-    case '[CLIENT]:GETH:STARTING': {
-      return { ...state, state: 'STARTING' }
-    }
-    case '[CLIENT]:GETH:STOPPING': {
-      return { ...state, state: 'STOPPING' }
-    }
-    case '[CLIENT]:GETH:STOPPED': {
-      return { ...state, state: 'STOPPED' }
-    }
-    case '[CLIENT]:GETH:CONNECTED': {
-      return { ...state, state: 'CONNECTED' }
-    }
-    case '[CLIENT]:GETH:DISCONNECTED': {
-      return { ...state, state: 'STARTED' }
     }
     case '[CLIENT]:GETH:ERROR': {
       const { error } = action

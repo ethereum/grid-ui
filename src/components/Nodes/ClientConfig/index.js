@@ -7,9 +7,10 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
-import ConfigForm from './ConfigForm'
+// import ConfigForm from './ConfigForm'
+import DynamicConfigForm from './DynamicConfigForm'
 import Terminal from '../Terminal'
-import NodeInfo from '../NodeInfo'
+// import NodeInfo from '../NodeInfo'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
 
@@ -34,7 +35,8 @@ class ClientConfig extends Component {
     clientStatus: PropTypes.string,
     dispatch: PropTypes.func,
     isActiveClient: PropTypes.bool,
-    handleReleaseSelect: PropTypes.func
+    handleReleaseSelect: PropTypes.func,
+    handleClientConfigChanged: PropTypes.func
   }
 
   state = {
@@ -60,9 +62,18 @@ class ClientConfig extends Component {
     this.setState({ activeTab })
   }
 
+  handleClientConfigChanged = (key, value) => {
+    const { handleClientConfigChanged } = this.props
+    handleClientConfigChanged(key, value)
+  }
+
   onDismissError = () => {
     const { dispatch } = this.props
     dispatch(clearError())
+  }
+
+  getClientSettings = client => {
+    return ((client.plugin || {}).config || {}).settings
   }
 
   renderErrors() {
@@ -98,12 +109,13 @@ class ClientConfig extends Component {
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
       client.state
     )
+    const settings = this.getClientSettings(client)
 
     return (
       <StyledMain>
         <Typography variant="h5">
           {clientName}
-          <NodeInfo />
+          {/* <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           <StyledState>{isActiveClient ? clientStatus : 'STOPPED'}</StyledState>
@@ -129,7 +141,9 @@ class ClientConfig extends Component {
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>
-            <ConfigForm
+            <DynamicConfigForm
+              settings={settings}
+              handleClientConfigChanged={this.handleClientConfigChanged}
               isClientRunning={isRunning}
               clientConfigChanged={clientConfigChanged}
             />

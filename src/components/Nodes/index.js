@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ClientConfig from './ClientConfig'
 import ServicesNav from './ServicesNav'
-import { selectClient, toggleClient } from '../../store/client/actions'
+import {
+  selectClient,
+  setConfig,
+  toggleClient
+} from '../../store/client/actions'
 
 import Grid from '../../API/Grid'
 
@@ -11,11 +15,10 @@ const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
+    config: PropTypes.object,
     dispatch: PropTypes.func,
     release: PropTypes.object
   }
-
-  static defaultProps = {}
 
   state = {
     clients: [],
@@ -27,7 +30,8 @@ class NodesTab extends Component {
     if (!PluginHost) return
     const plugins = PluginHost.getAllPlugins()
     const clients = [...plugins]
-    const selectedClient = clients[0]
+    const selectedClient =
+      clients.find(client => client.order === 1) || clients[0]
     dispatch(selectClient(selectedClient.plugin.config))
     this.setState({ clients, selectedClient })
   }
@@ -39,13 +43,14 @@ class NodesTab extends Component {
 
   handleSelect = client => {
     const { dispatch } = this.props
-    console.log('handle select', client)
     dispatch(selectClient(client.plugin.config))
     this.setState({ selectedClient: client })
   }
 
-  handleClientConfigChanged = config => {
+  handleClientConfigChanged = (key, value) => {
+    const { config, dispatch } = this.props
     const { selectedClient } = this.state
+
     // we need to store the config per client
     // for now we just use a nested data model where the selected client
     // has a property with the latest user selected config
@@ -56,8 +61,14 @@ class NodesTab extends Component {
      * }
      * the reference to the remote object in main is killed in this process
      */
-    selectedClient.selectedConfig = config
-    this.setState({ selectedClient })
+
+    const newConfig = { ...config }
+    newConfig[key] = value
+
+    selectedClient.selectedConfig = newConfig
+    this.setState({ selectedClient }, () => {
+      dispatch(setConfig(newConfig))
+    })
   }
 
   handleReleaseSelect = release => {
@@ -67,20 +78,16 @@ class NodesTab extends Component {
   }
 
   handleToggle = async () => {
-    const { dispatch, release } = this.props
+    const { dispatch, release, config } = this.props
     const { selectedClient } = this.state
-    const { selectedConfig } = selectedClient
-
-    dispatch(toggleClient(selectedClient, release, selectedConfig))
+    dispatch(toggleClient(selectedClient, release, config))
   }
 
   render() {
-    const { active, clients, selectedClient, selectedRelease } = this.state
+    const { clients, selectedClient, selectedRelease } = this.state
 
     return (
       <ServicesNav
-        active={active}
-        setActive={service => this.setState({ active: service })}
         handleToggle={this.handleToggle}
         handleSelect={this.handleSelect}
         clients={clients}
@@ -89,7 +96,7 @@ class NodesTab extends Component {
           <ClientConfig
             client={selectedClient}
             selectedRelease={selectedRelease}
-            clientConfigChanged={this.handleClientConfigChanged}
+            handleClientConfigChanged={this.handleClientConfigChanged}
             handleReleaseSelect={this.handleReleaseSelect}
           />
         )}
@@ -100,6 +107,7 @@ class NodesTab extends Component {
 
 function mapStateToProps(state) {
   return {
+    config: state.client.config,
     release: state.client.release
   }
 }
