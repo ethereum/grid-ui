@@ -59,25 +59,28 @@ class ServicesTab extends Component {
     handleToggle: PropTypes.func,
     handleSelect: PropTypes.func,
     selectedClientName: PropTypes.string,
+    releaseName: PropTypes.string,
     releaseVersion: PropTypes.string
   }
 
-  static defaultProps = {}
+  isDisabled = client => {
+    const { activeClientName, releaseName, releaseVersion } = this.props
 
-  isDisabled = (/* client */) => {
     // TODO:
-    return false
-    // const { activeClientName, releaseName } = this.props
+    // for now, can only toggle selected client.
+    // Redux only storing selectedClient data.
 
-    // return (
-    // // toggle disabled if:
-    // // 1) no release selected
-    // !releaseName ||
-    // // 2) wrong client selected
-    // client.name !== releaseName.split('-')[0].toLowerCase() ||
-    // // 3) there is already a client running
-    // (activeClientName && client.name !== activeClientName)
-    // )
+    // 0) if active, always allow toggling
+    // if (client.name === activeClientName) return false
+
+    return (
+      // 1) no release selected
+      !releaseVersion ||
+      // 2) wrong client selected
+      client.name !== releaseName.split('-')[0].toLowerCase() ||
+      // 3) there is already a client running
+      (activeClientName && client.name !== activeClientName)
+    )
   }
 
   parseTooltipText = (/* client */) => {
@@ -177,6 +180,7 @@ class ServicesTab extends Component {
 
 function mapStateToProps(state) {
   return {
+    releaseName: state.client.release.name,
     releaseVersion: state.client.release.version,
     activeClientName: state.client.active.name,
     activeClientVersion: state.client.active.version,
