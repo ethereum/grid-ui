@@ -22,3 +22,45 @@ const rootReducer = combineReducers({
 
 // export default persistReducer(rootPersistConfig, rootReducer)
 export default rootReducer
+
+/*
+
+spitballing:
+
+{
+  ui: {
+    selectedTab: 'nodes',
+    selectedService: 'geth'
+  },
+  client: {
+    selected: '',
+    active: {
+      name: 'geth',
+      sync: {...},
+      peers: 0,
+      status: 'STOPPED'
+    },
+    geth: {
+      config: {},
+      release: {}
+    },
+    parity: {
+      config: {},
+      release: {}
+    },
+  },
+  signer: {
+    active: 'clef',
+    clef: {}
+  },
+  storage: {
+    active: 'swarm',
+    swarm: {},
+    ipfs: {}
+  },
+  services: {
+    raiden: {}
+  }
+}
+
+*/

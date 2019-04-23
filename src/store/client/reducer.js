@@ -1,25 +1,31 @@
 export const initialState = {
+  selected: '',
   active: {
     name: null,
     version: null,
-    status: 'STOPPED'
-  },
-  blockNumber: null,
-  changingNetwork: false,
+    status: 'STOPPED',
+    blockNumber: null,
+    timestamp: null,
+    sync: {
+      currentBlock: 0,
+      highestBlock: 0,
+      knownStates: 0,
+      pulledStates: 0,
+      startingBlock: 0
+    },
+    peerCount: 0
+  }
+  // Clients dynamically populate within this object, e.g.
+  // geth: { config: {}, release: {}, ... },
+  // parity: { config: {}, release: {}, ... },
+}
+
+export const initialClientState = {
   name: '',
   displayName: '',
   binaryName: '',
   repository: '',
   prefix: '',
-  peerCount: 0,
-  sync: {
-    currentBlock: 0,
-    highestBlock: 0,
-    knownStates: 0,
-    pulledStates: 0,
-    startingBlock: 0
-  },
-  timestamp: null,
   error: null,
   release: {
     name: null,
@@ -37,6 +43,13 @@ export const initialState = {
 
 const client = (state = initialState, action) => {
   switch (action.type) {
+    case 'CLIENT:INIT': {
+      const { clientName, clientData } = action.payload
+      return {
+        ...state,
+        [clientName]: { ...initialClientState, ...clientData }
+      }
+    }
     case 'CLIENT:SELECT': {
       const { clientData } = action.payload
       return {

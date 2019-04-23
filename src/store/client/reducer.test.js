@@ -1,12 +1,18 @@
-import reducer, { initialState } from './reducer'
+import reducer, { initialState, initialClientState } from './reducer'
 
 describe('the client reducer', () => {
-  it('should handle [CLIENT]:GETH:INIT', () => {
+  it('should handle CLIENT:INIT', () => {
     const action = {
-      type: '[CLIENT]:GETH:INIT',
-      payload: { status: 'STARTING' }
+      type: 'CLIENT:INIT',
+      payload: {
+        clientName: 'parity',
+        clientData: { name: 'parity', displayName: 'Parity' }
+      }
     }
-    const expectedState = { ...initialState, state: 'STARTING' }
+    const expectedState = {
+      ...initialState,
+      parity: { ...initialClientState, name: 'parity', displayName: 'Parity' }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
