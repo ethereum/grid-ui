@@ -1,18 +1,7 @@
-import Geth from './gethService'
-
-export const initGeth = () => {
-  return async dispatch => {
-    const status = await Geth.getState()
-    const isRunning = await Geth.isRunning(status)
-
-    if (isRunning) {
-      Geth.resume(dispatch)
-    }
-
-    return dispatch({
-      type: '[CLIENT]:GETH:INIT',
-      payload: { status }
-    })
+export const initClient = clientData => {
+  return {
+    type: 'CLIENT:INIT',
+    payload: { clientName: clientData.name, clientData }
   }
 }
 
