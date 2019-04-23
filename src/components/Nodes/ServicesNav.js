@@ -55,16 +55,15 @@ class ServicesTab extends Component {
     activeClientVersion: PropTypes.string,
     classes: PropTypes.object,
     clients: PropTypes.array,
+    clientState: PropTypes.object,
     children: PropTypes.node,
     handleToggle: PropTypes.func,
-    handleSelect: PropTypes.func,
-    selectedClientName: PropTypes.string,
-    releaseName: PropTypes.string,
-    releaseVersion: PropTypes.string
+    handleSelectClient: PropTypes.func,
+    selectedClientName: PropTypes.string
   }
 
   isDisabled = client => {
-    const { activeClientName, releaseName, releaseVersion } = this.props
+    const { clientState } = this.props
 
     // TODO:
     // for now, can only toggle selected client.
@@ -76,11 +75,11 @@ class ServicesTab extends Component {
 
     return (
       // 1) no release selected
-      !releaseVersion //||
+      !clientState[client.name].release.version
       // 2) wrong client selected
       // client.name !== releaseName.split('-')[0].toLowerCase() ||
       // 3) there is already a client running
-      // FIXME wrong for raiden + geth : (activeClientName && client.name !== activeClientName)
+      // (activeClientName && client.name !== activeClientName)
     )
   }
 
@@ -93,11 +92,12 @@ class ServicesTab extends Component {
     const {
       activeClientName,
       activeClientVersion,
-      releaseVersion,
+      clientState,
       selectedClientName
     } = this.props
 
     if (client.name === selectedClientName) {
+      const releaseVersion = clientState[client.name].release.version
       return releaseVersion || ''
     }
 
@@ -112,7 +112,7 @@ class ServicesTab extends Component {
     const {
       classes,
       handleToggle,
-      handleSelect,
+      handleSelectClient,
       selectedClientName,
       children,
       clients
@@ -134,7 +134,7 @@ class ServicesTab extends Component {
                 <ListItem
                   key={client.name}
                   selected={client.name === selectedClientName}
-                  onClick={() => handleSelect(client)}
+                  onClick={() => handleSelectClient(client)}
                   classes={{
                     root: classes.hoverableListItem,
                     selected: classes.selected
@@ -182,9 +182,8 @@ class ServicesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    client: state.client,
+    clientState: state.client,
     releaseName: '', // (state.client.active.name),
-    releaseVersion: '', // state.client.release.version,
     activeClientName: '', // state.client.active.name,
     activeClientVersion: '', // state.client.active.version,
     selectedClientName: 'geth' // state.client.name

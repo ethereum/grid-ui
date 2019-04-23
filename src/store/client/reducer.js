@@ -1,5 +1,5 @@
 export const initialState = {
-  selected: ''
+  selected: 'geth'
   // Clients dynamically populate within this object, e.g.
   // geth: { config: {}, release: {}, ... },
   // parity: { config: {}, release: {}, ... },
