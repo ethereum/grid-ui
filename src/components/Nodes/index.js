@@ -43,10 +43,10 @@ class NodesTab extends Component {
     // Set the selected client
     const selectedClient =
       clients.find(client => client.order === 1) || clients[0]
-    dispatch(selectClient(selectedClient.name))
+    this.handleSelectClient(selectedClient)
 
     // TODO: two sources of truth - local and redux state
-    this.setState({ clients, selectedClient })
+    this.setState({ clients })
   }
 
   isDisabled = client => {
@@ -54,10 +54,12 @@ class NodesTab extends Component {
     return !selectedRelease
   }
 
-  handleSelect = client => {
+  handleSelectClient = client => {
     const { dispatch } = this.props
-    dispatch(selectClient(client.plugin.config))
-    this.setState({ selectedClient: client })
+
+    this.setState({ selectedClient: client }, () => {
+      dispatch(selectClient(client.name))
+    })
   }
 
   handleClientConfigChanged = (key, value) => {
@@ -102,7 +104,7 @@ class NodesTab extends Component {
     return (
       <ServicesNav
         handleToggle={this.handleToggle}
-        handleSelect={this.handleSelect}
+        handleSelectClient={this.handleSelectClient}
         clients={clients}
       >
         {selectedClient && (

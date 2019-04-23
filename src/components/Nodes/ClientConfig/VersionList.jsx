@@ -259,9 +259,9 @@ class VersionList extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
-    release: state.client[ownProps.client.plugin.config.name].release
+    release: state.client[state.client.selected].release
   }
 }
 export default connect(mapStateToProps)(withStyles(styles)(VersionList))
