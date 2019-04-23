@@ -17,6 +17,16 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
+  it('should handle CLIENT:SELECT', () => {
+    const action = {
+      type: 'CLIENT:SELECT',
+      payload: { clientName: 'parity' }
+    }
+    const expectedState = { ...initialState, selected: 'parity' }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
   it('should handle CLIENT:SET_CONFIG', () => {
     const config = {
       name: 'default',
@@ -102,9 +112,12 @@ describe('the client reducer', () => {
     }
     const action = {
       type: 'CLIENT:SET_RELEASE',
-      payload: { release }
+      payload: { clientName: 'geth', release }
     }
-    const expectedState = { ...initialState, release }
+    const expectedState = {
+      ...initialState,
+      geth: { ...initialClientState, release }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })

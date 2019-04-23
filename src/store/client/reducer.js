@@ -1,11 +1,15 @@
 export const initialState = {
-  selected: '',
+  selected: ''
+  // Clients dynamically populate within this object, e.g.
+  // geth: { config: {}, release: {}, ... },
+  // parity: { config: {}, release: {}, ... },
+}
+
+export const initialClientState = {
   active: {
-    name: null,
-    version: null,
-    status: 'STOPPED',
     blockNumber: null,
-    timestamp: null,
+    peerCount: 0,
+    status: 'STOPPED',
     sync: {
       currentBlock: 0,
       highestBlock: 0,
@@ -13,20 +17,15 @@ export const initialState = {
       pulledStates: 0,
       startingBlock: 0
     },
-    peerCount: 0
-  }
-  // Clients dynamically populate within this object, e.g.
-  // geth: { config: {}, release: {}, ... },
-  // parity: { config: {}, release: {}, ... },
-}
-
-export const initialClientState = {
-  name: '',
-  displayName: '',
+    timestamp: null,
+    version: null
+  },
   binaryName: '',
-  repository: '',
-  prefix: '',
+  config: {},
+  displayName: '',
   error: null,
+  name: '',
+  prefix: '',
   release: {
     name: null,
     fileName: null,
@@ -38,7 +37,7 @@ export const initialClientState = {
     signature: null,
     remote: false
   },
-  config: {}
+  repository: ''
 }
 
 const client = (state = initialState, action) => {
@@ -51,19 +50,15 @@ const client = (state = initialState, action) => {
       }
     }
     case 'CLIENT:SELECT': {
-      const { clientData } = action.payload
-      return {
-        ...state,
-        ...clientData,
-        config: clientData.config
-          ? clientData.config.default
-          : initialState.config,
-        release: { ...initialState.release }
-      }
+      const { clientName } = action.payload
+      return { ...state, selected: clientName }
     }
     case 'CLIENT:SET_RELEASE': {
-      const { release } = action.payload
-      return { ...state, release }
+      const { clientName, release } = action.payload
+      return {
+        ...state,
+        [clientName]: { ...initialClientState, ...state[clientName], release }
+      }
     }
     case 'CLIENT:SET_CONFIG': {
       const { config } = action.payload

@@ -64,14 +64,14 @@ export const clearError = () => {
 
 // TODO: finish refactor to generic client:
 
-export const selectClient = clientData => {
-  return { type: 'CLIENT:SELECT', payload: { clientData } }
+export const selectClient = clientName => {
+  return { type: 'CLIENT:SELECT', payload: { clientName } }
 }
 
-export const setRelease = release => {
+export const setRelease = (clientName, release) => {
   return {
     type: 'CLIENT:SET_RELEASE',
-    payload: { release }
+    payload: { clientName, release }
   }
 }
 
