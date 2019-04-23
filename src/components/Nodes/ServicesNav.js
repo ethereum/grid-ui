@@ -72,14 +72,15 @@ class ServicesTab extends Component {
 
     // 0) if active, always allow toggling
     // if (client.name === activeClientName) return false
+    // console.log(activeClientName, client.name, releaseName, releaseVersion)
 
     return (
       // 1) no release selected
-      !releaseVersion ||
+      !releaseVersion //||
       // 2) wrong client selected
-      client.name !== releaseName.split('-')[0].toLowerCase() ||
+      // client.name !== releaseName.split('-')[0].toLowerCase() ||
       // 3) there is already a client running
-      (activeClientName && client.name !== activeClientName)
+      // FIXME wrong for raiden + geth : (activeClientName && client.name !== activeClientName)
     )
   }
 
