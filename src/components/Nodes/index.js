@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import ClientConfig from './ClientConfig'
 import ServicesNav from './ServicesNav'
 import {
+  initClient,
   selectClient,
   setConfig,
   toggleClient
@@ -26,13 +27,25 @@ class NodesTab extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props
     if (!PluginHost) return
+    this.initClients()
+  }
+
+  initClients = () => {
+    const { dispatch } = this.props
+
     const plugins = PluginHost.getAllPlugins()
-    const clients = [...plugins]
+
+    // Sync clients with redux
+    const clients = [...plugins].filter(plugin => plugin.type === 'client')
+    clients.map(client => dispatch(initClient(client.plugin.config)))
+
+    // Set the selected client
     const selectedClient =
       clients.find(client => client.order === 1) || clients[0]
-    dispatch(selectClient(selectedClient.plugin.config))
+    dispatch(selectClient(selectedClient.name))
+
+    // TODO: two sources of truth - local and redux state
     this.setState({ clients, selectedClient })
   }
 

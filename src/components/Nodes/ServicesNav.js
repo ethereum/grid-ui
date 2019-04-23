@@ -182,11 +182,12 @@ class ServicesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    releaseName: state.client.release.name,
-    releaseVersion: state.client.release.version,
-    activeClientName: state.client.active.name,
-    activeClientVersion: state.client.active.version,
-    selectedClientName: state.client.name
+    client: state.client,
+    releaseName: '', // (state.client.active.name),
+    releaseVersion: '', // state.client.release.version,
+    activeClientName: '', // state.client.active.name,
+    activeClientVersion: '', // state.client.active.version,
+    selectedClientName: 'geth' // state.client.name
   }
 }
 

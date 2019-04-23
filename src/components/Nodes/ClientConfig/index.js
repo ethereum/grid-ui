@@ -159,10 +159,12 @@ class ClientConfig extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
+  const selectedClient = state.client.selected
+
   return {
-    clientStatus: state.client.active.status,
-    isActiveClient: state.client.active.name === ownProps.client.name
+    clientStatus: state.client[selectedClient].active.status,
+    isActiveClient: state.client[selectedClient].active.name !== 'STOPPED'
   }
 }
 
