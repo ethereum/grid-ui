@@ -65,15 +65,45 @@ const client = (state = initialState, action) => {
       return { ...state, config }
     }
     case 'CLIENT:START': {
-      const { name, version } = action.payload
-      return { ...state, active: { name, version } }
+      const { clientName, version } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...activeState, version }
+        }
+      }
     }
     case 'CLIENT:STATUS_UPDATE': {
-      const { status } = action.payload
-      return { ...state, active: { ...state.active, status } }
+      const { clientName, status } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...activeState, status }
+        }
+      }
     }
     case 'CLIENT:STOP': {
-      return { ...state, active: { ...initialState.active } }
+      const { clientName } = action.payload
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...initialClientState.active }
+        }
+      }
     }
     case '[CLIENT]:GETH:INIT': {
       const { status } = action.payload

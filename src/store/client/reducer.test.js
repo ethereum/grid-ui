@@ -46,6 +46,57 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
+  it('should handle CLIENT:START', () => {
+    const action = {
+      type: 'CLIENT:START',
+      payload: {
+        clientName: 'geth',
+        version: '1.X.X'
+      }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, version: '1.X.X' }
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle CLIENT:STATUS_UPDATE', () => {
+    const action = {
+      type: 'CLIENT:STATUS_UPDATE',
+      payload: {
+        clientName: 'geth',
+        status: 'STARTED'
+      }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, status: 'STARTED' }
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle CLIENT:STOP', () => {
+    const action = {
+      type: 'CLIENT:STOP',
+      payload: { clientName: 'geth' }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: { ...initialClientState }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
   it('should handle [CLIENT]:GETH:ERROR', () => {
     const action = {
       type: '[CLIENT]:GETH:ERROR',
