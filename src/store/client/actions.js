@@ -1,7 +1,8 @@
 export const initClient = clientData => {
+  const config = clientData.config ? clientData.config.default : {}
   return {
     type: 'CLIENT:INIT',
-    payload: { clientName: clientData.name, clientData }
+    payload: { clientName: clientData.name, clientData, config }
   }
 }
 
@@ -75,8 +76,8 @@ export const setRelease = (clientName, release) => {
   }
 }
 
-export const setConfig = config => {
-  return { type: 'CLIENT:SET_CONFIG', payload: { config } }
+export const setConfig = (clientName, config) => {
+  return { type: 'CLIENT:SET_CONFIG', payload: { clientName, config } }
 }
 
 export function onConnectionUpdate(clientName, status) {
@@ -107,9 +108,10 @@ function removeListeners(client) {
   client.removeAllListeners('error')
 }
 
-export const startClient = (client, release, config) => {
-  return dispatch => {
+export const startClient = (client, release) => {
+  return (dispatch, getState) => {
     try {
+      const { config } = getState().client[client.name]
       createListeners(client, dispatch)
       client.start(release, config)
       return dispatch({
@@ -127,20 +129,20 @@ export const stopClient = client => {
     try {
       client.stop()
       removeListeners(client)
-      dispatch({ type: 'CLIENT:STOP' })
+      dispatch({ type: 'CLIENT:STOP', payload: { clientName: client.name } })
     } catch (e) {
       dispatch({ type: 'CLIENT:STOP:ERROR', error: e.toString() })
     }
   }
 }
 
-export const toggleClient = (client, release, config) => {
+export const toggleClient = (client, release) => {
   return async dispatch => {
     try {
       if (client.isRunning) {
         return dispatch(stopClient(client))
       }
-      return dispatch(startClient(client, release, config))
+      return dispatch(startClient(client, release))
     } catch (e) {
       return { type: 'CLIENT:TOGGLE:ERROR', error: e.toString() }
     }
