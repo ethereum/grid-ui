@@ -79,8 +79,8 @@ export const setConfig = config => {
   return { type: 'CLIENT:SET_CONFIG', payload: { config } }
 }
 
-export function onConnectionUpdate(status) {
-  return { type: 'CLIENT:STATUS_UPDATE', payload: { status } }
+export function onConnectionUpdate(clientName, status) {
+  return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
 }
 
 export const clientError = error => {
@@ -114,7 +114,7 @@ export const startClient = (client, release, config) => {
       client.start(release, config)
       return dispatch({
         type: 'CLIENT:START',
-        payload: { name: client.name, version: release.version, config }
+        payload: { clientName: client.name, version: release.version, config }
       })
     } catch (e) {
       return dispatch({ type: 'CLIENT:START:ERROR', error: e.toString() })
