@@ -13,6 +13,7 @@ import Terminal from '../Terminal'
 // import NodeInfo from '../NodeInfo'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
+import Requests from './Requests'
 
 function TabContainer(props) {
   const { children, style } = props
@@ -131,6 +132,7 @@ class ClientConfig extends Component {
             <Tab label="Version" />
             <Tab label="Settings" />
             <Tab label="Terminal" />
+            {clientName === 'Clef' && <Tab label="Requests" />}
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
@@ -152,6 +154,7 @@ class ClientConfig extends Component {
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />
         </TabContainer>
+        {activeTab === 3 && <Requests clientName="Clef" />}
       </StyledMain>
     )
   }

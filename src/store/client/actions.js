@@ -1,4 +1,8 @@
 import Geth from './gethService'
+import {
+  createListeners as clefCreateListeners,
+  removeListeners as clefRemoveListeners
+} from '../requests/actions'
 
 export const initGeth = () => {
   return async dispatch => {
@@ -106,6 +110,9 @@ function createListeners(client, dispatch) {
   client.on('stopped', () => dispatch(onConnectionUpdate('STOPPED')))
   client.on('disconnect', () => dispatch(onConnectionUpdate('DISCONNETED')))
   client.on('error', e => dispatch(clientError(e)))
+  if (client.name === 'clef') {
+    clefCreateListeners(client, dispatch)
+  }
 }
 
 function removeListeners(client) {
@@ -116,6 +123,9 @@ function removeListeners(client) {
   client.removeAllListeners('stopped')
   client.removeAllListeners('disconnect')
   client.removeAllListeners('error')
+  if (client.name === 'clef') {
+    clefRemoveListeners(client)
+  }
 }
 
 export const startClient = (client, release, config) => {
