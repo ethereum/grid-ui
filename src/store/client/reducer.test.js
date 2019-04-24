@@ -6,12 +6,22 @@ describe('the client reducer', () => {
       type: 'CLIENT:INIT',
       payload: {
         clientName: 'parity',
-        clientData: { name: 'parity', displayName: 'Parity' }
+        clientData: {
+          name: 'parity',
+          displayName: 'Parity',
+          config: { default: { sync: 'warp' } }
+        },
+        config: { sync: 'warp' }
       }
     }
     const expectedState = {
       ...initialState,
-      parity: { ...initialClientState, name: 'parity', displayName: 'Parity' }
+      parity: {
+        ...initialClientState,
+        name: 'parity',
+        displayName: 'Parity',
+        config: { sync: 'warp' }
+      }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
@@ -39,9 +49,12 @@ describe('the client reducer', () => {
     }
     const action = {
       type: 'CLIENT:SET_CONFIG',
-      payload: { config }
+      payload: { clientName: 'geth', config }
     }
-    const expectedState = { ...initialState, config }
+    const expectedState = {
+      ...initialState,
+      geth: { ...initialClientState, config }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })

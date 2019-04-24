@@ -43,10 +43,10 @@ export const initialClientState = {
 const client = (state = initialState, action) => {
   switch (action.type) {
     case 'CLIENT:INIT': {
-      const { clientName, clientData } = action.payload
+      const { clientName, clientData, config } = action.payload
       return {
         ...state,
-        [clientName]: { ...initialClientState, ...clientData }
+        [clientName]: { ...initialClientState, ...clientData, config }
       }
     }
     case 'CLIENT:SELECT': {
@@ -61,8 +61,15 @@ const client = (state = initialState, action) => {
       }
     }
     case 'CLIENT:SET_CONFIG': {
-      const { config } = action.payload
-      return { ...state, config }
+      const { clientName, config } = action.payload
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          config
+        }
+      }
     }
     case 'CLIENT:START': {
       const { clientName, version } = action.payload
