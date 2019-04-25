@@ -1,8 +1,56 @@
-export const initClient = clientData => {
-  const config = clientData.config ? clientData.config.default : {}
-  return {
-    type: 'CLIENT:INIT',
-    payload: { clientName: clientData.name, clientData, config }
+export const clientError = error => {
+  return { type: 'CLIENT:ERROR', error }
+}
+
+export function onConnectionUpdate(clientName, status) {
+  return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
+}
+
+function createListeners(client, dispatch) {
+  client.on('starting', () =>
+    dispatch(onConnectionUpdate(client.name, 'STARTING'))
+  )
+  client.on('started', () =>
+    dispatch(onConnectionUpdate(client.name, 'STARTED'))
+  )
+  client.on('connected', () =>
+    dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
+  )
+  client.on('stopping', () =>
+    dispatch(onConnectionUpdate(client.name, 'STOPPING'))
+  )
+  client.on('stopped', () =>
+    dispatch(onConnectionUpdate(client.name, 'STOPPED'))
+  )
+  client.on('disconnect', () =>
+    dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
+  )
+  client.on('error', e => dispatch(clientError(e)))
+}
+
+function removeListeners(client) {
+  client.removeAllListeners('starting')
+  client.removeAllListeners('started')
+  client.removeAllListeners('connected')
+  client.removeAllListeners('stopping')
+  client.removeAllListeners('stopped')
+  client.removeAllListeners('disconnect')
+  client.removeAllListeners('error')
+}
+
+export const initClient = client => {
+  return dispatch => {
+    const clientData = client.plugin.config
+    const config = clientData.config ? clientData.config.default : {}
+    dispatch({
+      type: 'CLIENT:INIT',
+      payload: { clientName: clientData.name, clientData, config }
+    })
+
+    if (client.isRunning) {
+      createListeners(client, dispatch)
+      dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
+    }
   }
 }
 
@@ -78,46 +126,6 @@ export const setRelease = (clientName, release) => {
 
 export const setConfig = (clientName, config) => {
   return { type: 'CLIENT:SET_CONFIG', payload: { clientName, config } }
-}
-
-export function onConnectionUpdate(clientName, status) {
-  return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
-}
-
-export const clientError = error => {
-  return { type: 'CLIENT:ERROR', error }
-}
-
-function createListeners(client, dispatch) {
-  client.on('starting', () =>
-    dispatch(onConnectionUpdate(client.name, 'STARTING'))
-  )
-  client.on('started', () =>
-    dispatch(onConnectionUpdate(client.name, 'STARTED'))
-  )
-  client.on('connected', () =>
-    dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
-  )
-  client.on('stopping', () =>
-    dispatch(onConnectionUpdate(client.name, 'STOPPING'))
-  )
-  client.on('stopped', () =>
-    dispatch(onConnectionUpdate(client.name, 'STOPPED'))
-  )
-  client.on('disconnect', () =>
-    dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
-  )
-  client.on('error', e => dispatch(clientError(e)))
-}
-
-function removeListeners(client) {
-  client.removeAllListeners('starting')
-  client.removeAllListeners('started')
-  client.removeAllListeners('connected')
-  client.removeAllListeners('stopping')
-  client.removeAllListeners('stopped')
-  client.removeAllListeners('disconnect')
-  client.removeAllListeners('error')
 }
 
 export const startClient = (client, release) => {

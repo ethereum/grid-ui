@@ -37,7 +37,7 @@ class NodesTab extends Component {
 
     // Sync clients with redux
     const clients = [...plugins].filter(plugin => plugin.type === 'client')
-    clients.map(client => dispatch(initClient(client.plugin.config)))
+    clients.map(client => dispatch(initClient(client)))
 
     // Set the selected client
     const selectedClient =

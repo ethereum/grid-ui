@@ -91,6 +91,13 @@ class ServicesTab extends Component {
     return clientState[client.name].release.version || ''
   }
 
+  isRunning = client => {
+    const { clientState } = this.props
+    return ['STARTING', 'STARTED', 'CONNECTED'].includes(
+      clientState[client.name].active.status
+    )
+  }
+
   render() {
     const {
       classes,
@@ -145,7 +152,7 @@ class ServicesTab extends Component {
                         <Switch
                           color="primary"
                           onChange={() => handleToggle(client)}
-                          checked={client.running}
+                          checked={this.isRunning(client)}
                           disabled={this.isDisabled(client)}
                           data-test-id={`switch-${client.name}`}
                         />
