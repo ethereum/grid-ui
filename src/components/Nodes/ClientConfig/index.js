@@ -118,7 +118,9 @@ class ClientConfig extends Component {
           {/* <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          <StyledState>{isActiveClient ? clientStatus : 'STOPPED'}</StyledState>
+          <StyledState data-test-id="node-state">
+            {isActiveClient ? clientStatus : 'STOPPED'}
+          </StyledState>
         </Typography>
         {this.renderErrors()}
         <StyledAppBar position="static">
