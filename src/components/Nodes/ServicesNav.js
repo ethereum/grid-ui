@@ -51,8 +51,6 @@ const styles = theme => ({
 
 class ServicesTab extends Component {
   static propTypes = {
-    activeClientName: PropTypes.string,
-    activeClientVersion: PropTypes.string,
     classes: PropTypes.object,
     clients: PropTypes.array,
     clientState: PropTypes.object,
@@ -89,23 +87,8 @@ class ServicesTab extends Component {
   }
 
   parseSecondaryText = client => {
-    const {
-      activeClientName,
-      activeClientVersion,
-      clientState,
-      selectedClientName
-    } = this.props
-
-    if (client.name === selectedClientName) {
-      const releaseVersion = clientState[client.name].release.version
-      return releaseVersion || ''
-    }
-
-    if (client.name === activeClientName) {
-      return activeClientVersion || ''
-    }
-
-    return ''
+    const { clientState } = this.props
+    return clientState[client.name].release.version || ''
   }
 
   render() {
@@ -183,10 +166,7 @@ class ServicesTab extends Component {
 function mapStateToProps(state) {
   return {
     clientState: state.client,
-    releaseName: '', // (state.client.active.name),
-    activeClientName: '', // state.client.active.name,
-    activeClientVersion: '', // state.client.active.version,
-    selectedClientName: 'geth' // state.client.name
+    selectedClientName: state.client.selected
   }
 }
 
