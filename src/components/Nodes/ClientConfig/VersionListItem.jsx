@@ -121,6 +121,8 @@ export default class VersionListItem extends Component {
         selected={isSelectedRelease(release)}
         isDownloading={isDownloading}
         alt={release.name}
+        data-test-is-selected={isSelectedRelease(release)}
+        data-test-is-downloaded={!release.remote}
       >
         <ListItemIcon>{this.renderIcon(release)}</ListItemIcon>
         <ListItemTextVersion

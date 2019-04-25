@@ -242,7 +242,9 @@ class VersionList extends Component {
       })
       return list
     }
-    return <StyledList>{renderListItems()}</StyledList>
+    return (
+      <StyledList data-test-id="version-list">{renderListItems()}</StyledList>
+    )
   }
 
   render() {

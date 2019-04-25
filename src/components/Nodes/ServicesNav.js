@@ -164,6 +164,7 @@ class ServicesTab extends Component {
                           onChange={() => handleToggle(client)}
                           checked={client.running}
                           disabled={this.isDisabled(client)}
+                          data-test-id={`switch-${client.name}`}
                         />
                       </span>
                     </Tooltip>
