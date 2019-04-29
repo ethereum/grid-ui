@@ -27,16 +27,14 @@ class NodesTab extends Component {
 
   componentDidMount() {
     if (!PluginHost) return
-    this.initClients()
+    const plugins = PluginHost.getAllPlugins()
+    this.initClients(plugins)
   }
 
-  initClients = () => {
+  initClients = clients => {
     const { dispatch } = this.props
 
-    const plugins = PluginHost.getAllPlugins()
-
     // Sync clients with redux
-    const clients = [...plugins].filter(plugin => plugin.type === 'client')
     clients.map(client => dispatch(initClient(client)))
 
     // Set the selected client

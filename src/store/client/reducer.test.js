@@ -11,7 +11,8 @@ describe('the client reducer', () => {
           displayName: 'Parity',
           config: { default: { sync: 'warp' } }
         },
-        config: { sync: 'warp' }
+        config: { sync: 'warp' },
+        type: 'client'
       }
     }
     const expectedState = {
@@ -20,7 +21,8 @@ describe('the client reducer', () => {
         ...initialClientState,
         name: 'parity',
         displayName: 'Parity',
-        config: { sync: 'warp' }
+        config: { sync: 'warp' },
+        type: 'client'
       }
     }
 

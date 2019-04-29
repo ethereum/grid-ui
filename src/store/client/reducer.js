@@ -37,16 +37,17 @@ export const initialClientState = {
     signature: null,
     remote: false
   },
-  repository: ''
+  repository: '',
+  type: ''
 }
 
 const client = (state = initialState, action) => {
   switch (action.type) {
     case 'CLIENT:INIT': {
-      const { clientName, clientData, config } = action.payload
+      const { clientName, clientData, config, type } = action.payload
       return {
         ...state,
-        [clientName]: { ...initialClientState, ...clientData, config }
+        [clientName]: { ...initialClientState, ...clientData, config, type }
       }
     }
     case 'CLIENT:SELECT': {

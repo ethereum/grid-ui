@@ -41,10 +41,16 @@ function removeListeners(client) {
 export const initClient = client => {
   return dispatch => {
     const clientData = client.plugin.config
+    // TODO: finalize pattern for default configs
     const config = clientData.config ? clientData.config.default : {}
     dispatch({
       type: 'CLIENT:INIT',
-      payload: { clientName: clientData.name, clientData, config }
+      payload: {
+        clientName: clientData.name,
+        type: client.type,
+        clientData,
+        config
+      }
     })
 
     if (client.isRunning) {
