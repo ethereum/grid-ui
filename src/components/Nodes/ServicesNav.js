@@ -4,11 +4,8 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import Switch from '@material-ui/core/Switch'
-import Tooltip from '@material-ui/core/Tooltip'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import ServicesNavListItem from './ServicesNavListItem'
 
 const drawerWidth = 240
 
@@ -25,28 +22,7 @@ const styles = theme => ({
     padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
   },
-  toolbar: theme.mixins.toolbar,
-  selected: {
-    '&$selected': {
-      backgroundColor: '#ffffff',
-      '&:hover': {
-        backgroundColor: '#ffffff'
-      }
-    }
-  },
-  serviceName: {
-    marginRight: 5,
-    textTransform: 'capitalize'
-  },
-  hoverableListItem: {
-    '&:hover $versionInfo': {
-      visibility: 'visible'
-    }
-  },
-  versionInfo: {
-    fontSize: '80%',
-    visibility: 'hidden'
-  }
+  toolbar: theme.mixins.toolbar
 })
 
 class ServicesTab extends Component {
@@ -62,33 +38,7 @@ class ServicesTab extends Component {
 
   isDisabled = client => {
     const { clientState } = this.props
-
-    // TODO:
-    // for now, can only toggle selected client.
-    // Redux only storing selectedClient data.
-
-    // 0) if active, always allow toggling
-    // if (client.name === activeClientName) return false
-    // console.log(activeClientName, client.name, releaseName, releaseVersion)
-
-    return (
-      // 1) no release selected
-      !clientState[client.name].release.version
-      // 2) wrong client selected
-      // client.name !== releaseName.split('-')[0].toLowerCase() ||
-      // 3) there is already a client running
-      // (activeClientName && client.name !== activeClientName)
-    )
-  }
-
-  parseTooltipText = (/* client */) => {
-    // TODO:
-    return ''
-  }
-
-  parseSecondaryText = client => {
-    const { clientState } = this.props
-    return clientState[client.name].release.version || ''
+    return !clientState[client.name].release.version
   }
 
   isRunning = client => {
@@ -98,17 +48,54 @@ class ServicesTab extends Component {
     )
   }
 
-  render() {
+  buildListItem = client => {
     const {
       classes,
+      clientState,
       handleToggle,
       handleSelectClient,
-      selectedClientName,
-      children,
-      clients
+      selectedClientName
     } = this.props
 
-    const clientsSorted = clients.sort((a, b) => a.order - b.order)
+    return (
+      <ServicesNavListItem
+        key={client.name}
+        client={client}
+        classes={classes}
+        handleToggle={handleToggle}
+        handleSelectClient={handleSelectClient}
+        isRunning={this.isRunning(client)}
+        isDisabled={this.isDisabled(client)}
+        isSelected={client.name === selectedClientName}
+        secondaryText={clientState[client.name].release.version || ''}
+      />
+    )
+  }
+
+  renderServiceListItems = () => {
+    const { clients } = this.props
+    const servicesSorted = clients.sort((a, b) => a.order - b.order)
+
+    // Build client list items
+    const clientsSorted = servicesSorted.filter(s => s.type === 'client')
+    const clientListItems = clientsSorted.map(c => this.buildListItem(c))
+
+    // Build other service list items
+    const otherServices = servicesSorted.filter(s => s.type !== 'client')
+    const serviceListItems = otherServices.map(s => this.buildListItem(s))
+
+    return (
+      <React.Fragment>
+        <ListSubheader>clients</ListSubheader>
+        {clientListItems}
+        <ListSubheader>services</ListSubheader>
+        {serviceListItems}
+      </React.Fragment>
+    )
+  }
+
+  render() {
+    const { classes, children } = this.props
 
     return (
       <React.Fragment>
@@ -118,51 +105,7 @@ class ServicesTab extends Component {
           classes={{ paper: classes.drawerPaper }}
         >
           <div className={classes.toolbar} />
-          <List>
-            {clientsSorted.map(client => {
-              return (
-                <ListItem
-                  key={client.name}
-                  selected={client.name === selectedClientName}
-                  onClick={() => handleSelectClient(client)}
-                  classes={{
-                    root: classes.hoverableListItem,
-                    selected: classes.selected
-                  }}
-                  button
-                >
-                  <ListItemText
-                    primary={client.displayName}
-                    secondary={this.parseSecondaryText(client)}
-                    primaryTypographyProps={{
-                      inline: true,
-                      classes: { root: classes.serviceName }
-                    }}
-                    secondaryTypographyProps={{
-                      inline: true,
-                      classes: { root: classes.versionInfo }
-                    }}
-                  />
-                  <ListItemSecondaryAction>
-                    <Tooltip
-                      title={this.parseTooltipText(client)}
-                      placement="left"
-                    >
-                      <span>
-                        <Switch
-                          color="primary"
-                          onChange={() => handleToggle(client)}
-                          checked={this.isRunning(client)}
-                          disabled={this.isDisabled(client)}
-                          data-test-id={`switch-${client.name}`}
-                        />
-                      </span>
-                    </Tooltip>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              )
-            })}
-          </List>
+          <List>{this.renderServiceListItems()}</List>
         </Drawer>
         <main className={classes.content}>{children}</main>
       </React.Fragment>
