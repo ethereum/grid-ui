@@ -86,9 +86,7 @@ class ServicesTab extends Component {
 
     return (
       <React.Fragment>
-        <ListSubheader>clients</ListSubheader>
         {clientListItems}
-        <ListSubheader>services</ListSubheader>
         {serviceListItems}
       </React.Fragment>
     )
