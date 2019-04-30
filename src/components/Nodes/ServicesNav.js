@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import ServicesNavListItem from './ServicesNavListItem'
 
 const drawerWidth = 240
