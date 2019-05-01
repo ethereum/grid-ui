@@ -8,6 +8,7 @@ import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import NodesTab from './Nodes'
 import WebviewTab from './Webview'
+import HelpFab from './shared/HelpFab'
 
 const styles = theme => ({
   root: {
@@ -112,6 +113,7 @@ class NavTabs extends React.Component {
             <WebviewTab />
           </div>
         </Typography>
+        <HelpFab />
       </div>
     )
   }
