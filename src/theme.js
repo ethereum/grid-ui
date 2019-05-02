@@ -8,7 +8,7 @@ const theme = createMuiTheme({
   },
   palette: {
     background: {
-      default: '#ffffff'
+      default: '#282932'
     },
     primary: {
       // light: will be calculated from palette.primary.main,
@@ -28,13 +28,13 @@ const theme = createMuiTheme({
   overrides: {
     MuiAppBar: {
       colorPrimary: {
-        backgroundColor: '#ffffff'
+        backgroundColor: '#282932'
       }
     },
     MuiTab: {
       textColorPrimary: {
         '&$disabled': {
-          color: 'rgba(0, 0, 0, 0.2)'
+          color: 'rgba(255, 255, 255, 0.2)'
         }
       }
     },
