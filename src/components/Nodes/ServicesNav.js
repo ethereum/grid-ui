@@ -18,7 +18,7 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
   },
   toolbar: theme.mixins.toolbar
@@ -101,7 +101,6 @@ class ServicesTab extends Component {
           variant="permanent"
           classes={{ paper: classes.drawerPaper }}
         >
-          <div className={classes.toolbar} />
           <List>{this.renderServiceListItems()}</List>
         </Drawer>
         <main className={classes.content}>{children}</main>

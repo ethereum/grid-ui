@@ -53,6 +53,25 @@ class NavTabs extends React.Component {
     this.setState({ activeTab })
   }
 
+  renderAppBar() {
+    const { classes } = this.props
+    const { activeTab } = this.state
+
+    return (
+      <AppBar position="fixed" className={classes.appBar}>
+        <Tabs
+          value={activeTab}
+          onChange={this.handleTabChange}
+          textColor="primary"
+          indicatorColor="primary"
+        >
+          <Tab label="Nodes" data-test-id="navbar-item-nodes" />
+          <Tab label="Webview" data-test-id="navbar-item-webview" />
+        </Tabs>
+      </AppBar>
+    )
+  }
+
   render() {
     const { classes } = this.props
     const { activeTab } = this.state
@@ -60,24 +79,6 @@ class NavTabs extends React.Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Tabs
-            value={activeTab}
-            onChange={this.handleTabChange}
-            textColor="primary"
-            indicatorColor="primary"
-          >
-            <Tab label="Nodes" data-test-id="navbar-item-nodes" />
-            <Tab label="Network" data-test-id="navbar-item-network" disabled />
-            <Tab
-              label="Transactions"
-              data-test-id="navbar-item-transactions"
-              disabled
-            />
-            <Tab label="Tools" data-test-id="navbar-item-tools" disabled />
-            <Tab label="Webview" data-test-id="navbar-item-webview" />
-          </Tabs>
-        </AppBar>
 
         <Typography
           component="div"
@@ -89,18 +90,6 @@ class NavTabs extends React.Component {
           <NodesTab />
         </Typography>
 
-        <TabContainer style={{ display: activeTab === 1 ? 'block' : 'none' }}>
-          <Typography component="h6">Network</Typography>
-        </TabContainer>
-
-        <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
-          <Typography component="h6">Transactions</Typography>
-        </TabContainer>
-
-        <TabContainer style={{ display: activeTab === 3 ? 'block' : 'none' }}>
-          <Typography component="h6">Tools</Typography>
-        </TabContainer>
-
         <Typography
           component="div"
           classes={{ root: classes.fullWidth }}
@@ -108,7 +97,7 @@ class NavTabs extends React.Component {
             display: activeTab === 4 ? 'inherit' : 'none'
           }}
         >
-          <div style={{ marginTop: 50, width: '100%' }}>
+          <div style={{ width: '100%' }}>
             <WebviewTab />
           </div>
         </Typography>
