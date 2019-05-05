@@ -26,12 +26,12 @@ const styles = theme => ({
 
 class ServicesTab extends Component {
   static propTypes = {
-    classes: PropTypes.object,
-    clients: PropTypes.array,
-    clientState: PropTypes.object,
+    classes: PropTypes.object.isRequired,
+    clients: PropTypes.array.isRequired,
+    clientState: PropTypes.object.isRequired,
     children: PropTypes.node,
-    handleToggle: PropTypes.func,
-    handleSelectClient: PropTypes.func,
+    handleToggle: PropTypes.func.isRequired,
+    handleSelectClient: PropTypes.func.isRequired,
     selectedClientName: PropTypes.string
   }
 

@@ -15,8 +15,8 @@ const { openFolderDialog } = GridAPI
 
 class ConfigForm extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    clientConfigChanged: PropTypes.func,
+    client: PropTypes.object.isRequired,
+    clientConfigChanged: PropTypes.func.isRequired,
     isClientRunning: PropTypes.bool
   }
 

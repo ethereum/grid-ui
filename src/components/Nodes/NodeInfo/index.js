@@ -11,7 +11,7 @@ class NodeInfo extends Component {
   static displayName = 'NodeInfo'
 
   static propTypes = {
-    client: PropTypes.object
+    client: PropTypes.object.isRequired
   }
 
   constructor(props) {

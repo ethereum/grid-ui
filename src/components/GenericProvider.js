@@ -8,7 +8,7 @@ const store = configureStore()
 // that allows to use different approaches for renderer-main sync
 class Provider extends Component {
   static propTypes = {
-    children: PropTypes.any
+    children: PropTypes.node
   }
 
   render() {

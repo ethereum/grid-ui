@@ -7,7 +7,7 @@ import PieChart from 'react-minimal-pie-chart'
 
 class NodeInfoDot extends Component {
   static propTypes = {
-    client: PropTypes.object,
+    client: PropTypes.object.isRequired,
     /** If component is stickied to apply drop shadow on dot */
     sticky: PropTypes.bool
   }
