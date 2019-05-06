@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import moment from 'moment'
 import styled, { css } from 'styled-components'
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna'
@@ -19,9 +18,8 @@ const defaultIconProps = {
 }
 
 class NodeInfoBox extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { diffTimestamp: moment().unix() }
+  state = {
+    diffTimestamp: moment().unix()
   }
 
   componentDidMount() {
@@ -151,8 +149,9 @@ class NodeInfoBox extends Component {
 
   renderStats() {
     const { client } = this.props
-    const { sync, blockNumber, config, peerCount, state } = client
+    const { active, blockNumber, config, peerCount, state } = client
     const { syncMode, network } = config
+    const { sync } = active
     const { highestBlock, startingBlock } = sync
 
     let stats
@@ -216,13 +215,7 @@ class NodeInfoBox extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    client: state.client
-  }
-}
-
-export default connect(mapStateToProps)(NodeInfoBox)
+export default NodeInfoBox
 
 const StyledSubmenuContainer = styled.div`
   width: 220px;

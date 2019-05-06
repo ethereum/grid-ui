@@ -11,19 +11,19 @@ class NodeInfo extends Component {
   static displayName = 'NodeInfo'
 
   static propTypes = {
-    client: PropTypes.object.isRequired
+    clientState: PropTypes.object,
+    selectedClient: PropTypes.string
   }
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      showSubmenu: false
-    }
+  state = {
+    showSubmenu: false
   }
 
   render() {
-    const { client } = this.props
+    const { clientState, selectedClient } = this.props
+    const client = clientState[selectedClient]
+    if (!client) return null
+
     const { showSubmenu, sticky } = this.state
     const { network } = client
 
@@ -44,9 +44,8 @@ class NodeInfo extends Component {
           role="button"
           tabIndex={0}
         >
-          <NodeInfoDot sticky={sticky} />
-
-          {showSubmenu && <NodeInfoBox />}
+          <NodeInfoDot client={client} sticky={sticky} />
+          {showSubmenu && <NodeInfoBox client={client} />}
         </div>
       </StyledNode>
     )
@@ -55,7 +54,8 @@ class NodeInfo extends Component {
 
 function mapStateToProps(state) {
   return {
-    client: state.client
+    clientState: state.client,
+    selectedClient: state.client.selected
   }
 }
 

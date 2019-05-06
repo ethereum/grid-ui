@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import PropTypes from 'prop-types'
 import moment from 'moment'
@@ -7,17 +6,14 @@ import PieChart from 'react-minimal-pie-chart'
 
 class NodeInfoDot extends Component {
   static propTypes = {
-    client: PropTypes.object.isRequired,
-    /** If component is stickied to apply drop shadow on dot */
+    client: PropTypes.object,
+    /** If component is stickied, apply drop shadow on dot */
     sticky: PropTypes.bool
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      pulseColor: '',
-      diffTimestamp: moment().unix()
-    }
+  state = {
+    pulseColor: '',
+    diffTimestamp: moment().unix()
   }
 
   componentDidMount() {
@@ -64,7 +60,7 @@ class NodeInfoDot extends Component {
   render() {
     const { sticky, client } = this.props
     const { pulseColor } = this.state
-    const { config, blockNumber, sync, state } = client
+    const { config, blockNumber, active, state } = client
     const { network } = config
 
     let dotColor
@@ -86,6 +82,7 @@ class NodeInfoDot extends Component {
       dotColor = colorRed
     }
 
+    const { sync } = active
     const { highestBlock, currentBlock, startingBlock } = sync
     const progress =
       ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100
@@ -122,13 +119,7 @@ class NodeInfoDot extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    client: state.client
-  }
-}
-
-export default connect(mapStateToProps)(NodeInfoDot)
+export default NodeInfoDot
 
 const beaconOrange = keyframes`
   0% {
