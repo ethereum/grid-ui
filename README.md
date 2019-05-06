@@ -29,23 +29,18 @@ There are many ways to get involved with this project. Get started [here](/docs/
 
 ### Development
 
+Clone, install dependencies, and start the application:
+
 ```
 git clone https://github.com/ethereum/grid-ui.git
 cd grid-ui
-yarn
-
-Start in 2 terminals:
-yarn run start -> start dev server for react with hot reloading
-yarn run electron:dev -> load the app from the dev server into an electron window
+yarn && yarn start
 ```
 
-#### Using local ethereum-react-components
+This will serve the application at `localhost:3080`, but little can be done without the [Grid](https://github.com/ethereum/grid) electron wrapper:
 
-To develop in `grid-ui` using your local copy of `ethereum-react-components`:
-
-1. cd `ethereum-react-components`
-1. `npm link`
-1. cd `grid-ui`
-1. `npm link ethereum-react-components`
-
-After making changes in `ethereum-react-components`, run `yarn` for a fresh build to be picked up by `grid-ui`.
+```
+git clone https://github.com/ethereum/grid.git
+cd grid
+yarn && yarn start:dev
+```
