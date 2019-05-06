@@ -1,6 +1,6 @@
 export const initialState = {
   queue: [],
-  selectedIndex: null,
+  selectedIndex: 0,
   notifications: []
 }
 
@@ -28,7 +28,7 @@ const requests = (state = initialState, action) => {
       const newState = {
         ...state,
         selectedIndex: nextSelected,
-        requests: state.requests.filter(request => request.id !== id)
+        queue: state.queue.filter(request => request.id !== id)
       }
       return newState
     }

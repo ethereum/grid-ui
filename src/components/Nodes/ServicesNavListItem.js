@@ -5,6 +5,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Switch from '@material-ui/core/Switch'
+import Badge from '@material-ui/core/Badge'
 import Tooltip from '@material-ui/core/Tooltip'
 
 const styles = () => ({
@@ -42,8 +43,11 @@ class ServicesNavListItem extends Component {
     isDisabled: PropTypes.bool,
     isRunning: PropTypes.bool,
     isSelected: PropTypes.bool,
-    secondaryText: PropTypes.string
+    secondaryText: PropTypes.string,
+    badgeContent: PropTypes.string
   }
+
+  pendingR
 
   render() {
     const {
@@ -54,7 +58,8 @@ class ServicesNavListItem extends Component {
       isRunning,
       isSelected,
       secondaryText,
-      client
+      client,
+      badgeContent
     } = this.props
 
     return (
@@ -69,7 +74,9 @@ class ServicesNavListItem extends Component {
         button
       >
         <ListItemText
-          primary={client.displayName}
+          primary=<Badge badgeContent={badgeContent} color="primary">
+            {client.displayName}
+          </Badge>
           secondary={secondaryText}
           primaryTypographyProps={{
             inline: true,

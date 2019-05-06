@@ -66,14 +66,13 @@ class Requests extends Component {
     if (queue.length > 1) {
       const currentRequest = selectedIndex + 1
       queueLocation = (
-        <Typography>
+        <Typography inline>
           {currentRequest} of {queue.length}
         </Typography>
       )
     }
     return (
       <div>
-        {queueLocation}
         <div>
           <IconButton
             onClick={() => {
@@ -82,6 +81,7 @@ class Requests extends Component {
           >
             <NavigateBeforeIcon />
           </IconButton>
+          {queueLocation}
           <IconButton
             onClick={() => {
               this.navigateNext()

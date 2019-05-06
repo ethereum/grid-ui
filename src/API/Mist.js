@@ -44,6 +44,7 @@ const MistApi = {
       return args
     }
   },
+  notify: () => {},
   requestAccount: () => {
     // window.mist.requestAccount
   },

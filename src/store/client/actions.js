@@ -1,3 +1,8 @@
+import {
+  createListeners as clefCreateListeners,
+  removeListeners as clefRemoveListeners
+} from '../requests/actions'
+
 export const clientError = error => {
   return { type: 'CLIENT:ERROR', error }
 }
@@ -26,6 +31,9 @@ function createListeners(client, dispatch) {
     dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
   )
   client.on('error', e => dispatch(clientError(e)))
+  if (client.name === 'clef') {
+    clefCreateListeners(client, dispatch)
+  }
 }
 
 function removeListeners(client) {
@@ -36,6 +44,9 @@ function removeListeners(client) {
   client.removeAllListeners('stopped')
   client.removeAllListeners('disconnect')
   client.removeAllListeners('error')
+  if (client.name === 'clef') {
+    clefRemoveListeners(client)
+  }
 }
 
 export const initClient = client => {

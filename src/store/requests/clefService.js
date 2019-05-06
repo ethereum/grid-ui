@@ -1,7 +1,7 @@
-import { Grid } from '../../API'
-import { addRequest, requestDone, addNotification } from './actions'
+import { Mist } from '../../API'
+import { requestDone } from './actions'
 
-const { clef } = Grid
+const clef = Mist.PluginHost.plugins.filter(plugin => plugin.name === 'clef')[0]
 
 // Helpers
 const networkToChainId = network => {
@@ -25,7 +25,14 @@ const networkToChainId = network => {
 
 class ClefService {
   send(dispatch, method, params = [], id, result) {
-    clef.rpc(method, params, id, result)
+    const payload = { jsonrpc: '2.0', id }
+    if (result) {
+      payload.result = result
+    } else {
+      payload.method = method
+      payload.params = params
+    }
+    clef.write(payload)
     if (id) {
       dispatch(requestDone(id))
     }
@@ -46,29 +53,71 @@ class ClefService {
     this.sendClef({ method: 'clef_setChainId', params: [chainId] })
   }
 
-  // createListeners(dispatch) {
-  //   clef.on('approvalRequired', data => this.approvalRequired(data, dispatch))
-  //   clef.on('inputRequired', data => this.inputRequired(data, dispatch))
-  // }
-  //
-  // removeListeners() {
-  //   clef.removeAllListeners('approvalRequired')
-  //   clef.removeAllListeners('inputRequired')
-  // }
-  //
-  // approvalRequired(data, dispatch) {
-  //   dispatch(addRequest({ data }))
-  // }
-  //
-  // showInfo(data, dispatch) {
-  //   const { text } = data.params[0]
-  //   dispatch(addNotification('info', text))
-  // }
-  //
-  // showError(data, dispatch) {
-  //   const { text } = data.params[0]
-  //   dispatch(addNotification('error', text))
-  // }
+  notifyRequest(request) {
+    let title = 'New Clef Request'
+    let body
+    switch (request.method) {
+      case 'ui_onInputRequired': {
+        const { title: requestTitle, prompt: requestPrompt } = request.params[0]
+        title = requestTitle
+        body = requestPrompt
+        break
+      }
+      case 'ui_approveTx':
+        title = 'New Transaction Request'
+        body = 'Click to review'
+        break
+      case 'ui_approveSignData':
+        title = 'New Sign Data Request'
+        body = 'Click to review'
+        break
+      case 'ui_approveNewAccount':
+        title = 'New Account Request'
+        body = 'Click to review'
+        break
+      case 'ui_approveListing':
+        title = 'Account Listing Request'
+        break
+      default:
+        break
+    }
+    Mist.notify(title, body)
+  }
+
+  notifyNotification(notification) {
+    let title = 'New Clef Notification'
+    let body
+    switch (notification.method) {
+      case 'ui_showInfo':
+        title = 'Clef Notification'
+        body = notification.params[0].text
+        break
+      case 'ui_showError':
+        title = 'Clef Error'
+        body = notification.params[0].text
+        break
+      case 'ui_onApprovedTx':
+        title = 'Transaction Approved'
+        break
+      case 'ui_onSignerStartup': {
+        title = 'Clef Started'
+        const { info } = notification.params[0]
+        const httpAddress = info.extapi_http
+        const ipcAddress = info.extapi_ipc
+        body = 'Started on'
+        if (httpAddress !== 'n/a') {
+          body += ` ${httpAddress}`
+        }
+        if (ipcAddress !== 'n/a') {
+          body += ` ${ipcAddress}`
+        }
+        break
+      }
+      default:
+        break
+    }
+    Mist.notify(title, body)
+  }
 }
 
 export default new ClefService()

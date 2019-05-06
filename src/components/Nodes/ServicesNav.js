@@ -32,7 +32,8 @@ class ServicesTab extends Component {
     children: PropTypes.node,
     handleToggle: PropTypes.func,
     handleSelectClient: PropTypes.func,
-    selectedClientName: PropTypes.string
+    selectedClientName: PropTypes.string,
+    clefRequests: PropTypes.array
   }
 
   isDisabled = client => {
@@ -45,6 +46,14 @@ class ServicesTab extends Component {
     return ['STARTING', 'STARTED', 'CONNECTED'].includes(
       clientState[client.name].active.status
     )
+  }
+
+  badgeContent = client => {
+    const { clefRequests } = this.props
+    if (client.name === 'clef') {
+      return clefRequests.length.toString()
+    }
+    return null
   }
 
   buildListItem = client => {
@@ -67,6 +76,7 @@ class ServicesTab extends Component {
         isDisabled={this.isDisabled(client)}
         isSelected={client.name === selectedClientName}
         secondaryText={clientState[client.name].release.version || ''}
+        badgeContent={this.badgeContent(client)}
       />
     )
   }
@@ -113,7 +123,8 @@ class ServicesTab extends Component {
 function mapStateToProps(state) {
   return {
     clientState: state.client,
-    selectedClientName: state.client.selected
+    selectedClientName: state.client.selected,
+    clefRequests: state.requests.queue
   }
 }
 

@@ -15,6 +15,7 @@ import Terminal from '../Terminal'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
 import Requests from './Requests'
+import Notifications from './Requests/Notifications'
 
 function TabContainer(props) {
   const { children, style } = props
@@ -38,7 +39,8 @@ class ClientConfig extends Component {
     dispatch: PropTypes.func,
     isActiveClient: PropTypes.bool,
     handleReleaseSelect: PropTypes.func,
-    handleClientConfigChanged: PropTypes.func
+    handleClientConfigChanged: PropTypes.func,
+    clefRequests: PropTypes.array
   }
 
   state = {
@@ -126,6 +128,7 @@ class ClientConfig extends Component {
           </StyledState>
         </Typography>
         {this.renderErrors()}
+        {clientName === 'Clef' && <Notifications client="clef" />}
         <StyledAppBar position="static">
           <Tabs
             value={activeTab}

@@ -1,4 +1,5 @@
 import Clef from './clefService'
+import { Mist } from '../../API'
 
 export const selectRequest = index => {
   return {
@@ -10,6 +11,7 @@ export const selectRequest = index => {
 export const addRequest = (data, client) => {
   return async (dispatch, getState) => {
     const request = { ...data, client }
+    Clef.notifyRequest(request)
     // Remove unneeded jsonrpc value
     // if (request.jsonrpc) {
     //   delete request.jsonrpc
@@ -18,9 +20,10 @@ export const addRequest = (data, client) => {
       type: '[REQUESTS]:QUEUE:ADD_REQUEST',
       payload: { request }
     })
-    const { selectedRequest } = getState().requests
-    if (!selectedRequest) {
-      dispatch(selectRequest(0))
+    const { queue } = getState().requests
+    // If request is ui_onInputRequired, priortize its selection
+    if (request.method === 'ui_onInputRequired') {
+      dispatch(selectRequest(queue.length - 1))
     }
   }
 }
@@ -28,10 +31,10 @@ export const addRequest = (data, client) => {
 export const requestDone = id => {
   return async (dispatch, getState) => {
     const { requests } = getState()
-    const { queue, selectedRequest } = requests
-    let nextSelected = selectedRequest
-    if (nextSelected > queue.length - 2) {
-      nextSelected = queue.length - 3
+    const { selectedIndex } = requests
+    let nextSelected = selectedIndex - 1
+    if (nextSelected < 0) {
+      nextSelected = 0
     }
     dispatch({
       type: '[REQUESTS]:QUEUE:REQUEST_DONE',
@@ -41,6 +44,7 @@ export const requestDone = id => {
 }
 
 export const addNotification = notification => {
+  Clef.notifyNotification(notification)
   return {
     type: '[REQUESTS]:NOTIFICATIONS:ADD',
     payload: { notification }
@@ -54,14 +58,34 @@ export const clearNotification = index => {
   }
 }
 
+const onClientRequest = (data, client, dispatch) => {
+  dispatch(addRequest(data, client.name))
+}
+
+const onClientNotification = (data, client, dispatch) => {
+  const type = data.method === 'ui_showError' ? 'error' : 'info'
+  let { text } = data.params[0]
+  const { info } = data.params[0]
+  if (data.method === 'ui_onSignerStartup') {
+    const httpAddress = info.extapi_http
+    const ipcAddress = info.extapi_ipc
+    text = 'Clef signer started on '
+    if (httpAddress !== 'n/a') {
+      text += ` ${httpAddress}`
+    }
+    if (ipcAddress !== 'n/a') {
+      text += ` ${ipcAddress}`
+    }
+  }
+  const notification = { type, text, info, client: client.name }
+  dispatch(addNotification(notification))
+}
+
 export function createListeners(client, dispatch) {
-  client.on('request', data => dispatch(addRequest(data, client.name)))
-  client.on('notification', data => {
-    const type = data.method === 'ui_showError' ? 'error' : 'info'
-    const { text, info } = data.params[0]
-    const notification = { type, text, info, client: client.name }
-    dispatch(addNotification(notification))
-  })
+  client.on('request', data => onClientRequest(data, client, dispatch))
+  client.on('notification', data =>
+    onClientNotification(data, client, dispatch)
+  )
 }
 
 export function removeListeners(client) {
