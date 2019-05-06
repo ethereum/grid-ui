@@ -56,11 +56,13 @@ class ServicesTab extends Component {
       selectedClientName
     } = this.props
 
+    const { content, drawer, drawerPaper, toolbar, ...restClasses } = classes
+
     return (
       <ServicesNavListItem
         key={client.name}
         client={client}
-        classes={classes}
+        classes={restClasses}
         handleToggle={handleToggle}
         handleSelectClient={handleSelectClient}
         isRunning={this.isRunning(client)}
