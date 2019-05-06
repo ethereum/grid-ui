@@ -1,12 +1,40 @@
-import reducer, { initialState } from './reducer'
+import reducer, { initialState, initialClientState } from './reducer'
 
 describe('the client reducer', () => {
-  it('should handle [CLIENT]:GETH:INIT', () => {
+  it('should handle CLIENT:INIT', () => {
     const action = {
-      type: '[CLIENT]:GETH:INIT',
-      payload: { status: 'STARTING' }
+      type: 'CLIENT:INIT',
+      payload: {
+        clientName: 'parity',
+        clientData: {
+          name: 'parity',
+          displayName: 'Parity',
+          config: { default: { sync: 'warp' } }
+        },
+        config: { sync: 'warp' },
+        type: 'client'
+      }
     }
-    const expectedState = { ...initialState, state: 'STARTING' }
+    const expectedState = {
+      ...initialState,
+      parity: {
+        ...initialClientState,
+        name: 'parity',
+        displayName: 'Parity',
+        config: { sync: 'warp' },
+        type: 'client'
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle CLIENT:SELECT', () => {
+    const action = {
+      type: 'CLIENT:SELECT',
+      payload: { clientName: 'parity' }
+    }
+    const expectedState = { ...initialState, selected: 'parity' }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
@@ -23,9 +51,63 @@ describe('the client reducer', () => {
     }
     const action = {
       type: 'CLIENT:SET_CONFIG',
-      payload: { config }
+      payload: { clientName: 'geth', config }
     }
-    const expectedState = { ...initialState, config }
+    const expectedState = {
+      ...initialState,
+      geth: { ...initialClientState, config }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle CLIENT:START', () => {
+    const action = {
+      type: 'CLIENT:START',
+      payload: {
+        clientName: 'geth',
+        version: '1.X.X'
+      }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, version: '1.X.X' }
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle CLIENT:STATUS_UPDATE', () => {
+    const action = {
+      type: 'CLIENT:STATUS_UPDATE',
+      payload: {
+        clientName: 'geth',
+        status: 'STARTED'
+      }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, status: 'STARTED' }
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle CLIENT:STOP', () => {
+    const action = {
+      type: 'CLIENT:STOP',
+      payload: { clientName: 'geth' }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: { ...initialClientState }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
@@ -96,9 +178,12 @@ describe('the client reducer', () => {
     }
     const action = {
       type: 'CLIENT:SET_RELEASE',
-      payload: { release }
+      payload: { clientName: 'geth', release }
     }
-    const expectedState = { ...initialState, release }
+    const expectedState = {
+      ...initialState,
+      geth: { ...initialClientState, release }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })

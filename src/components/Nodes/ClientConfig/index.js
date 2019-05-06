@@ -121,7 +121,9 @@ class ClientConfig extends Component {
           {/* <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          <StyledState>{isActiveClient ? clientStatus : 'STOPPED'}</StyledState>
+          <StyledState data-test-id="node-state">
+            {isActiveClient ? clientStatus : 'STOPPED'}
+          </StyledState>
         </Typography>
         {this.renderErrors()}
         <StyledAppBar position="static">
@@ -168,10 +170,12 @@ class ClientConfig extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
+  const selectedClient = state.client.selected
+
   return {
-    clientStatus: state.client.active.status,
-    isActiveClient: state.client.active.name === ownProps.client.name,
+    clientStatus: state.client[selectedClient].active.status,
+    isActiveClient: state.client[selectedClient].active.name !== 'STOPPED',
     clefRequests: state.requests.queue
   }
 }

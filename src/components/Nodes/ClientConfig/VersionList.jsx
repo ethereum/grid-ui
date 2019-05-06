@@ -198,9 +198,8 @@ class VersionList extends Component {
   }
 
   handleReleaseSelect = release => {
-    // FIXME duplicated state change: dispatch was not working for client other than geth
-    const { dispatch, handleReleaseSelect } = this.props
-    dispatch(setRelease(release))
+    const { client, dispatch, handleReleaseSelect } = this.props
+    dispatch(setRelease(client.name, release))
     handleReleaseSelect(release)
   }
 
@@ -242,7 +241,9 @@ class VersionList extends Component {
       })
       return list
     }
-    return <StyledList>{renderListItems()}</StyledList>
+    return (
+      <StyledList data-test-id="version-list">{renderListItems()}</StyledList>
+    )
   }
 
   render() {
@@ -260,7 +261,7 @@ class VersionList extends Component {
 
 function mapStateToProps(state) {
   return {
-    release: state.client.release
+    release: state.client[state.client.selected].release
   }
 }
 export default connect(mapStateToProps)(withStyles(styles)(VersionList))
