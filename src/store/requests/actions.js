@@ -7,9 +7,9 @@ export const selectRequest = index => {
   }
 }
 
-export const addRequest = (data, clientName) => {
+export const addRequest = (data, client) => {
   return async (dispatch, getState) => {
-    const request = { ...data, clientName }
+    const request = { ...data, client }
     // Remove unneeded jsonrpc value
     // if (request.jsonrpc) {
     //   delete request.jsonrpc
@@ -40,10 +40,10 @@ export const requestDone = id => {
   }
 }
 
-export const addNotification = (type, text) => {
+export const addNotification = notification => {
   return {
     type: '[REQUESTS]:NOTIFICATIONS:ADD',
-    payload: { type, text }
+    payload: { notification }
   }
 }
 
@@ -58,7 +58,9 @@ export function createListeners(client, dispatch) {
   client.on('request', data => dispatch(addRequest(data, client.name)))
   client.on('notification', data => {
     const type = data.method === 'ui_showError' ? 'error' : 'info'
-    dispatch(addNotification(type, data, client.name))
+    const { text, info } = data.params[0]
+    const notification = { type, text, info, client: client.name }
+    dispatch(addNotification(notification))
   })
 }
 

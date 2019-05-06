@@ -33,8 +33,7 @@ const requests = (state = initialState, action) => {
       return newState
     }
     case '[REQUESTS]:NOTIFICATIONS:ADD': {
-      const { type, text } = action.payload
-      const notification = { type, text }
+      const { notification } = action.payload
       const notifications = [...state.notifications, notification]
       const newState = {
         ...state,

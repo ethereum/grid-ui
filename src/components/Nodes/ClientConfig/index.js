@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
+import Badge from '@material-ui/core/Badge'
 import VersionList from './VersionList'
 // import ConfigForm from './ConfigForm'
 import DynamicConfigForm from './DynamicConfigForm'
@@ -103,7 +104,8 @@ class ClientConfig extends Component {
       clientConfigChanged,
       clientStatus,
       isActiveClient,
-      handleReleaseSelect
+      handleReleaseSelect,
+      clefRequests
     } = this.props
     const { activeTab } = this.state
     const { displayName: clientName } = client || {}
@@ -132,7 +134,13 @@ class ClientConfig extends Component {
             <Tab label="Version" />
             <Tab label="Settings" />
             <Tab label="Terminal" />
-            {clientName === 'Clef' && <Tab label="Requests" />}
+            {clientName === 'Clef' && (
+              <Tab
+                label=<Badge badgeContent={clefRequests.length} color="primary">
+                  Requests
+                </Badge>
+              />
+            )}
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
@@ -154,7 +162,7 @@ class ClientConfig extends Component {
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />
         </TabContainer>
-        {activeTab === 3 && <Requests clientName="Clef" />}
+        {activeTab === 3 && <Requests client="clef" />}
       </StyledMain>
     )
   }
@@ -163,7 +171,8 @@ class ClientConfig extends Component {
 function mapStateToProps(state, ownProps) {
   return {
     clientStatus: state.client.active.status,
-    isActiveClient: state.client.active.name === ownProps.client.name
+    isActiveClient: state.client.active.name === ownProps.client.name,
+    clefRequests: state.requests.queue
   }
 }
 
