@@ -16,8 +16,8 @@ const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
-    clientState: PropTypes.object,
-    dispatch: PropTypes.func
+    clientState: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
   }
 
   state = {

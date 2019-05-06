@@ -12,10 +12,10 @@ import { without } from '../../../lib/utils'
 
 export default class VersionListItem extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    release: PropTypes.object,
-    handleDownloadError: PropTypes.func,
-    handleReleaseDownloaded: PropTypes.func,
+    client: PropTypes.object.isRequired,
+    release: PropTypes.object.isRequired,
+    handleDownloadError: PropTypes.func.isRequired,
+    handleReleaseDownloaded: PropTypes.func.isRequired,
     handleReleaseSelect: PropTypes.func,
     isSelectedRelease: PropTypes.func
   }

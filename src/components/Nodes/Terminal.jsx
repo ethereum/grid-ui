@@ -4,7 +4,7 @@ import Ansi from 'ansi-to-react'
 
 export default class Terminal extends Component {
   static propTypes = {
-    client: PropTypes.object
+    client: PropTypes.object.isRequired
   }
 
   state = {

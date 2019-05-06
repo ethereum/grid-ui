@@ -48,10 +48,10 @@ const styles = () => ({
 
 class VersionList extends Component {
   static propTypes = {
-    dispatch: PropTypes.func,
-    handleReleaseSelect: PropTypes.func,
-    client: PropTypes.object,
-    classes: PropTypes.object,
+    dispatch: PropTypes.func.isRequired,
+    handleReleaseSelect: PropTypes.func.isRequired,
+    client: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
     release: PropTypes.object
   }
 

@@ -8,8 +8,8 @@ const selectedAccounts = []
 
 class ConnectAccount extends Component {
   static propTypes = {
-    accounts: PropTypes.any,
-    popup: PropTypes.any
+    accounts: PropTypes.array,
+    popup: PropTypes.object
   }
 
   constructor(props) {

@@ -6,7 +6,7 @@ import Select from '../../shared/Select'
 
 class DynamicConfigForm extends Component {
   static propTypes = {
-    handleClientConfigChanged: PropTypes.func,
+    handleClientConfigChanged: PropTypes.func.isRequired,
     settings: PropTypes.object
   }
 

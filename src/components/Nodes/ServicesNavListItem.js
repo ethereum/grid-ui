@@ -35,10 +35,10 @@ class ServicesNavListItem extends Component {
   static displayName = 'ServicesNavListItem'
 
   static propTypes = {
-    classes: PropTypes.object,
-    client: PropTypes.object,
-    handleToggle: PropTypes.func,
-    handleSelectClient: PropTypes.func,
+    classes: PropTypes.object.isRequired,
+    client: PropTypes.object.isRequired,
+    handleToggle: PropTypes.func.isRequired,
+    handleSelectClient: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool,
     isRunning: PropTypes.bool,
     isSelected: PropTypes.bool,
