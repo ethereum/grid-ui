@@ -8,14 +8,15 @@ import TextField from '@material-ui/core/TextField'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
-import { Identicon } from 'ethereum-react-components'
+import { AddressInput } from 'ethereum-react-components'
 import RequestInfo from './RequestInfo'
 import Notification from '../../../shared/Notification'
 
 const styles = () => ({
   controls: { marginTop: 15 },
   approve: { backgroundColor: 'green' },
-  reject: { backgroundColor: 'red', marginRight: 10 }
+  reject: { backgroundColor: 'red', marginRight: 10 },
+  formGroup: { marginBottom: 15 }
 })
 
 class ApproveListing extends Component {
@@ -46,6 +47,14 @@ class ApproveListing extends Component {
   handleChange = field => event => {
     const { tx: oldTx } = this.state
     const tx = { ...oldTx, [field]: event.target.value }
+    this.setState({ tx })
+  }
+
+  handleAddressInputChange = field => value => {
+    // ethereum-react-components passes `value` instead of `event`
+    // TODO: fix in ethereum-react-components to be consistent with MUI TextField
+    const { tx: oldTx } = this.state
+    const tx = { ...oldTx, [field]: value }
     this.setState({ tx })
   }
 
@@ -112,16 +121,15 @@ class ApproveListing extends Component {
   }
 
   renderFrom() {
+    const { classes } = this.props
     const { tx, edit } = this.state
     const { from } = tx
     return (
-      <FormGroup row>
-        <Identicon address={from} />
-        <TextField
-          variant="outlined"
+      <FormGroup classes={{ root: classes.formGroup }} row>
+        <AddressInput
           label="From"
           value={from}
-          onChange={this.handleChange('from')}
+          onChange={this.handleAddressInputChange('from')}
           disabled={!edit.from}
         />
         <FormControlLabel
@@ -139,16 +147,15 @@ class ApproveListing extends Component {
   }
 
   renderTo() {
+    const { classes } = this.props
     const { tx, edit } = this.state
     const { to } = tx
     return (
-      <FormGroup row>
-        <Identicon address={to} />
-        <TextField
-          variant="outlined"
+      <FormGroup classes={{ root: classes.formGroup }} row>
+        <AddressInput
           label="To"
           value={to}
-          onChange={this.handleChange('from')}
+          onChange={this.handleAddressInputChange('from')}
           disabled={!edit.to}
         />
         <FormControlLabel
@@ -166,10 +173,11 @@ class ApproveListing extends Component {
   }
 
   renderGas() {
+    const { classes } = this.props
     const { tx, edit } = this.state
     const { gas } = tx
     return (
-      <FormGroup row>
+      <FormGroup classes={{ root: classes.formGroup }} row>
         <TextField
           variant="outlined"
           label="Gas"
@@ -192,10 +200,11 @@ class ApproveListing extends Component {
   }
 
   renderGasPrice() {
+    const { classes } = this.props
     const { tx, edit } = this.state
     const { gasPrice } = tx
     return (
-      <FormGroup row>
+      <FormGroup classes={{ root: classes.formGroup }} row>
         <TextField
           variant="outlined"
           label="Gas Price"
@@ -218,10 +227,11 @@ class ApproveListing extends Component {
   }
 
   renderValue() {
+    const { classes } = this.props
     const { tx, edit } = this.state
     const { value } = tx
     return (
-      <FormGroup row>
+      <FormGroup classes={{ root: classes.formGroup }} row>
         <TextField
           variant="outlined"
           label="Value"
@@ -244,10 +254,11 @@ class ApproveListing extends Component {
   }
 
   renderNonce() {
+    const { classes } = this.props
     const { tx, edit } = this.state
     const { nonce } = tx
     return (
-      <FormGroup row>
+      <FormGroup classes={{ root: classes.formGroup }} row>
         <TextField
           variant="outlined"
           label="Nonce"
@@ -270,16 +281,18 @@ class ApproveListing extends Component {
   }
 
   renderData() {
+    const { classes } = this.props
     const { tx, edit } = this.state
     const { data } = tx
     return (
-      <FormGroup row>
+      <FormGroup classes={{ root: classes.formGroup }} row>
         <TextField
           variant="outlined"
           label="Data"
           value={data}
           onChange={this.handleChange('data')}
           disabled={!edit.data}
+          rowsMax={10}
           multiline
         />
         <FormControlLabel
