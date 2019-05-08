@@ -1,63 +1,11 @@
+import ClientService from './clientService'
+
 export const clientError = error => {
   return { type: 'CLIENT:ERROR', error }
 }
 
 export function onConnectionUpdate(clientName, status) {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
-}
-
-function createListeners(client, dispatch) {
-  client.on('starting', () =>
-    dispatch(onConnectionUpdate(client.name, 'STARTING'))
-  )
-  client.on('started', () =>
-    dispatch(onConnectionUpdate(client.name, 'STARTED'))
-  )
-  client.on('connected', () =>
-    dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
-  )
-  client.on('stopping', () =>
-    dispatch(onConnectionUpdate(client.name, 'STOPPING'))
-  )
-  client.on('stopped', () =>
-    dispatch(onConnectionUpdate(client.name, 'STOPPED'))
-  )
-  client.on('disconnect', () =>
-    dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
-  )
-  client.on('error', e => dispatch(clientError(e)))
-}
-
-function removeListeners(client) {
-  client.removeAllListeners('starting')
-  client.removeAllListeners('started')
-  client.removeAllListeners('connected')
-  client.removeAllListeners('stopping')
-  client.removeAllListeners('stopped')
-  client.removeAllListeners('disconnect')
-  client.removeAllListeners('error')
-}
-
-const getPluginSettings = c => {
-  try {
-    const settings = c.plugin.config.settings // eslint-disable-line
-    return Array.isArray(settings) ? settings : []
-  } catch (e) {
-    return []
-  }
-}
-
-const getClientDefaults = client => {
-  const pluginDefaults = {}
-
-  const clientSettings = getPluginSettings(client)
-
-  clientSettings.forEach(i => {
-    if ('default' in i) {
-      pluginDefaults[i.id] = i.default
-    }
-  })
-  return pluginDefaults
 }
 
 export const initClient = client => {
@@ -76,8 +24,7 @@ export const initClient = client => {
     })
 
     if (client.isRunning) {
-      createListeners(client, dispatch)
-      dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
+      ClientService.resume(client, dispatch)
     }
   }
 }
@@ -108,12 +55,12 @@ export const updateSyncing = ({
   }
 }
 
-export const updatePeerCount = ({ peerCount }) => {
+export const updatePeerCount = (clientName, peerCount) => {
   return (dispatch, getState) => {
-    if (peerCount !== getState().client.peerCount) {
+    if (peerCount !== getState().client[clientName].active.peerCount) {
       dispatch({
-        type: '[CLIENT]:GETH:UPDATE_PEER_COUNT',
-        payload: { peerCount }
+        type: 'CLIENT:UPDATE_PEER_COUNT',
+        payload: { clientName, peerCount }
       })
     }
   }
@@ -160,8 +107,7 @@ export const startClient = (client, release) => {
   return (dispatch, getState) => {
     try {
       const { config } = getState().client[client.name]
-      createListeners(client, dispatch)
-      client.start(release, config)
+      ClientService.start(client, release, config, dispatch)
       return dispatch({
         type: 'CLIENT:START',
         payload: { clientName: client.name, version: release.version, config }
@@ -175,8 +121,7 @@ export const startClient = (client, release) => {
 export const stopClient = client => {
   return dispatch => {
     try {
-      client.stop()
-      removeListeners(client)
+      ClientService.stop(client)
       dispatch({ type: 'CLIENT:STOP', payload: { clientName: client.name } })
     } catch (e) {
       dispatch({ type: 'CLIENT:STOP:ERROR', error: e.toString() })

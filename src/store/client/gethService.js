@@ -20,56 +20,56 @@ const hexToNumberString = str => new BigNumber(str).toString(10)
 const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
 
 class GethService {
-  setConfig(config) {
-    geth.setConfig(config)
-  }
+  // setConfig(config) {
+  // geth.setConfig(config)
+  // }
 
-  start(config, dispatch) {
-    this.setConfig(config)
-    geth.start()
-    this.watchForPeers(dispatch)
-    this.createListeners(dispatch)
-  }
+  // start(config, dispatch) {
+  // this.setConfig(config)
+  // geth.start()
+  // this.watchForPeers(dispatch)
+  // this.createListeners(dispatch)
+  // }
 
-  resume(dispatch) {
-    this.watchForPeers(dispatch)
-    this.createListeners(dispatch)
-  }
+  // resume(dispatch) {
+  // this.watchForPeers(dispatch)
+  // this.createListeners(dispatch)
+  // }
 
   stop() {
-    geth.stop()
-    clearInterval(this.peerCountInterval)
+    // geth.stop()
+    // clearInterval(this.peerCountInterval)
     this.unsubscribeSyncingSubscription(this.syncingSubscriptionId)
     this.unsubscribeNewHeadsSubscription(this.newHeadsSubscriptionId)
-    this.removeListeners()
+    // this.removeListeners()
   }
 
-  watchForPeers(dispatch) {
-    this.peerCountInterval = setInterval(
-      () => this.updatePeerCount(dispatch),
-      3000
-    )
-  }
+  // watchForPeers(dispatch) {
+  // this.peerCountInterval = setInterval(
+  // () => this.updatePeerCount(dispatch),
+  // 3000
+  // )
+  // }
 
-  createListeners(dispatch) {
-    geth.on('starting', () => this.onStarting(dispatch))
-    geth.on('started', () => this.onStarted(dispatch))
-    geth.on('connect', () => this.onConnect(dispatch))
-    geth.on('stopping', () => this.onStopping(dispatch))
-    geth.on('stopped', () => this.onStopped(dispatch))
-    geth.on('disconnect', () => this.onDisconnect(dispatch))
-    geth.on('error', e => this.onError(e, dispatch))
-  }
+  // createListeners(dispatch) {
+  // geth.on('starting', () => this.onStarting(dispatch))
+  // geth.on('started', () => this.onStarted(dispatch))
+  // geth.on('connect', () => this.onConnect(dispatch))
+  // geth.on('stopping', () => this.onStopping(dispatch))
+  // geth.on('stopped', () => this.onStopped(dispatch))
+  // geth.on('disconnect', () => this.onDisconnect(dispatch))
+  // geth.on('error', e => this.onError(e, dispatch))
+  // }
 
-  removeListeners() {
-    geth.removeListener('starting', this.onStarting)
-    geth.removeListener('started', this.onStarted)
-    geth.removeListener('connect', this.onConnect)
-    geth.removeListener('stopping', this.onStopping)
-    geth.removeListener('stopped', this.onStopped)
-    geth.removeListener('disconnect', this.onDisconnect)
-    geth.removeListener('error', this.onError)
-  }
+  // removeListeners() {
+  // geth.removeListener('starting', this.onStarting)
+  // geth.removeListener('started', this.onStarted)
+  // geth.removeListener('connect', this.onConnect)
+  // geth.removeListener('stopping', this.onStopping)
+  // geth.removeListener('stopped', this.onStopped)
+  // geth.removeListener('disconnect', this.onDisconnect)
+  // geth.removeListener('error', this.onError)
+  // }
 
   isRunning(state) {
     return [STATES.STARTING, STATES.STARTED, STATES.CONNECTED].includes(state)

@@ -62,7 +62,8 @@ class NodeInfoBox extends Component {
 
   renderSyncStarting = () => {
     const { client } = this.props
-    const { peerCount } = client
+    const { active } = client
+    const { peerCount } = active
 
     return (
       <div>
@@ -80,7 +81,8 @@ class NodeInfoBox extends Component {
 
   renderSyncProgress() {
     const { client } = this.props
-    const { sync, config, peerCount } = client
+    const { config, active } = client
+    const { peerCount, sync } = active
     const { network } = config
     const { highestBlock, currentBlock, startingBlock } = sync
 
@@ -114,7 +116,8 @@ class NodeInfoBox extends Component {
   renderSynced() {
     const { client } = this.props
     const { diffTimestamp } = this.state
-    const { blockNumber, timestamp, peerCount, config } = client
+    const { blockNumber, timestamp, active, config } = client
+    const { peerCount } = active
     const { network } = config
 
     const formattedBlockNumber = numberWithCommas(blockNumber)
@@ -149,9 +152,9 @@ class NodeInfoBox extends Component {
 
   renderStats() {
     const { client } = this.props
-    const { active, blockNumber, config, peerCount, state } = client
+    const { active, blockNumber, config, state } = client
     const { syncMode, network } = config
-    const { sync } = active
+    const { peerCount, sync } = active
     const { highestBlock, startingBlock } = sync
 
     let stats

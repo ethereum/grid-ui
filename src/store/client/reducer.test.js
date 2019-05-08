@@ -129,37 +129,17 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:UPDATE_PEER_COUNT', () => {
+  it('should handle CLIENT:UPDATE_PEER_COUNT', () => {
     const action = {
-      type: '[CLIENT]:GETH:UPDATE_PEER_COUNT',
-      payload: { peerCount: '3' }
-    }
-    const expectedState = { ...initialState, peerCount: '3' }
-
-    expect(reducer(initialState, action)).toEqual(expectedState)
-  })
-
-  it('should handle [CLIENT]:GETH:UPDATE_NETWORK', () => {
-    const action = {
-      type: '[CLIENT]:GETH:UPDATE_NETWORK',
-      payload: { network: 'rinkeby' }
+      type: 'CLIENT:UPDATE_PEER_COUNT',
+      payload: { clientName: 'geth', peerCount: '3' }
     }
     const expectedState = {
       ...initialState,
-      config: { ...initialState.config, network: 'rinkeby' }
-    }
-
-    expect(reducer(initialState, action)).toEqual(expectedState)
-  })
-
-  it('should handle [CLIENT]:GETH:UPDATE_SYNC_MODE', () => {
-    const action = {
-      type: '[CLIENT]:GETH:UPDATE_SYNC_MODE',
-      payload: { syncMode: 'light' }
-    }
-    const expectedState = {
-      ...initialState,
-      config: { ...initialState.config, syncMode: 'light' }
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, peerCount: '3' }
+      }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)

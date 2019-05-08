@@ -113,10 +113,6 @@ const client = (state = initialState, action) => {
         }
       }
     }
-    case '[CLIENT]:GETH:INIT': {
-      const { status } = action.payload
-      return { ...state, state: status }
-    }
     case '[CLIENT]:GETH:ERROR': {
       const { error } = action
       return { ...state, state: 'ERROR', error }
@@ -145,29 +141,20 @@ const client = (state = initialState, action) => {
         }
       }
     }
-    case '[CLIENT]:GETH:UPDATE_NETWORK': {
-      const { network } = action.payload
+    case 'CLIENT:UPDATE_PEER_COUNT': {
+      const { clientName, peerCount } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
       return {
         ...state,
-        config: {
-          ...state.config,
-          network
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...activeState, peerCount }
         }
       }
-    }
-    case '[CLIENT]:GETH:UPDATE_SYNC_MODE': {
-      const { syncMode } = action.payload
-      return {
-        ...state,
-        config: {
-          ...state.config,
-          syncMode
-        }
-      }
-    }
-    case '[CLIENT]:GETH:UPDATE_PEER_COUNT': {
-      const { peerCount } = action.payload
-      return { ...state, peerCount }
     }
     case '[CLIENT]:GETH:CLEAR_ERROR': {
       return { ...state, error: null }
