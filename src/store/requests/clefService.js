@@ -54,29 +54,25 @@ class ClefService {
   }
 
   notifyRequest(request) {
-    let title = 'New Clef Request'
-    let body
+    const title = 'Clef Signer'
+    let body = 'New Request'
     switch (request.method) {
       case 'ui_onInputRequired': {
         const { title: requestTitle, prompt: requestPrompt } = request.params[0]
-        title = requestTitle
-        body = requestPrompt
+        body = `${requestTitle}: ${requestPrompt}`
         break
       }
       case 'ui_approveTx':
-        title = 'New Transaction Request'
-        body = 'Click to review'
+        body = 'New Transaction Request'
         break
       case 'ui_approveSignData':
-        title = 'New Sign Data Request'
-        body = 'Click to review'
+        body = 'New Sign Data Request'
         break
       case 'ui_approveNewAccount':
-        title = 'New Account Request'
-        body = 'Click to review'
+        body = 'New Account Request'
         break
       case 'ui_approveListing':
-        title = 'Account Listing Request'
+        body = 'New Account Listing Request'
         break
       default:
         break
@@ -85,22 +81,19 @@ class ClefService {
   }
 
   notifyNotification(notification) {
-    let title = 'New Clef Notification'
+    const title = 'Clef Signer'
     let body
     switch (notification.method) {
       case 'ui_showInfo':
-        title = 'Clef Notification'
-        body = notification.params[0].text
+        body = `Info: ${notification.params[0].text}`
         break
       case 'ui_showError':
-        title = 'Clef Error'
-        body = notification.params[0].text
+        body = `Error: ${notification.params[0].text}`
         break
       case 'ui_onApprovedTx':
-        title = 'Transaction Approved'
+        body = 'Transaction Approved'
         break
       case 'ui_onSignerStartup': {
-        title = 'Clef Started'
         const { info } = notification.params[0]
         const httpAddress = info.extapi_http
         const ipcAddress = info.extapi_ipc

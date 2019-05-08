@@ -15,7 +15,7 @@ class RequestInfo extends Component {
     if (!meta) {
       return null
     }
-    const { remote, scheme, local } = meta
+    const { remote, scheme, local, 'User-Agent': userAgent, Origin } = meta
     return (
       <div style={{ background: '#efefef', padding: 20, margin: 20 }}>
         <div>
@@ -27,6 +27,16 @@ class RequestInfo extends Component {
         <div>
           Local Endpoint: <strong>{local}</strong>
         </div>
+        {userAgent && (
+          <div>
+            User Agent: <strong>{userAgent}</strong>
+          </div>
+        )}
+        {Origin && (
+          <div>
+            Origin: <strong>{Origin}</strong>
+          </div>
+        )}
       </div>
     )
   }

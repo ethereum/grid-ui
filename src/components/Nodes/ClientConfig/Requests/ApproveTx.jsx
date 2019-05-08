@@ -8,7 +8,9 @@ import TextField from '@material-ui/core/TextField'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
+import { Identicon } from 'ethereum-react-components'
 import RequestInfo from './RequestInfo'
+import Notification from '../../../shared/Notification'
 
 const styles = () => ({
   controls: { marginTop: 15 },
@@ -93,11 +95,28 @@ class ApproveListing extends Component {
     )
   }
 
+  renderCallInfo() {
+    const { request } = this.props
+    const { call_info: callInfo } = request.params[0]
+    if (!callInfo) {
+      return null
+    }
+    const render = []
+    callInfo.forEach((call, index) => {
+      const thisRender = (
+        <Notification key={index} type={call.type} message={call.message} />
+      )
+      render.push(thisRender)
+    })
+    return render
+  }
+
   renderFrom() {
     const { tx, edit } = this.state
     const { from } = tx
     return (
       <FormGroup row>
+        <Identicon address={from} />
         <TextField
           variant="outlined"
           label="From"
@@ -124,6 +143,7 @@ class ApproveListing extends Component {
     const { to } = tx
     return (
       <FormGroup row>
+        <Identicon address={to} />
         <TextField
           variant="outlined"
           label="To"
@@ -282,6 +302,7 @@ class ApproveListing extends Component {
       <div>
         <Typography variant="h2">Approve Transaction</Typography>
         <RequestInfo request={request} />
+        {this.renderCallInfo()}
         {this.renderFrom()}
         {this.renderTo()}
         {this.renderGas()}

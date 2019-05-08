@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
+import { Identicon } from 'ethereum-react-components'
 import RequestInfo from './RequestInfo'
 
 const styles = () => ({
@@ -72,6 +73,7 @@ class ApproveListing extends Component {
     accounts.forEach(account => {
       const thisRender = (
         <FormControlLabel
+          key={account.address}
           control={
             <Checkbox
               color="primary"
@@ -80,7 +82,9 @@ class ApproveListing extends Component {
               value={account.address}
             />
           }
-          label={account.address}
+          label=<div>
+            <Identicon address={account.address} /> {account.address}
+          </div>
         />
       )
       renderAccounts.push(thisRender)

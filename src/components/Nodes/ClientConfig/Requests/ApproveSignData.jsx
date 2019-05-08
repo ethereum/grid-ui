@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import { Identicon } from 'ethereum-react-components'
 import RequestInfo from './RequestInfo'
 
 const styles = () => ({
@@ -23,7 +25,6 @@ class ApproveListing extends Component {
     const { request, send } = this.props
     const { id } = request
     const result = { approved }
-    const message = { id, result }
     send(null, [], id, result)
   }
 
@@ -60,7 +61,7 @@ class ApproveListing extends Component {
       message,
       hash
     } = request.params[0]
-    const { name, type, value } = message
+    const { name, type, value } = message[0]
     const showMessage = name || type || value
     return (
       <div>
@@ -68,20 +69,29 @@ class ApproveListing extends Component {
           Content Type: <strong>{contentType}</strong>
         </div>
         <div>
-          Address: <strong>{address}</strong>
+          Address:
+          <Identicon address="0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D" />
+          <strong>{address}</strong>
         </div>
         {showMessage && (
           <div>
             Message:
             <div style={{ paddingLeft: 15 }}>
-              Name: <strong>{message.name}</strong>
-              Type: <strong>{message.type}</strong>
-              Value: <strong>{message.value}</strong>
+              <div>
+                Name: <strong>{name}</strong>
+              </div>
+              <div>
+                Type: <strong>{type}</strong>
+              </div>
+              <div>
+                Value: <strong>{value}</strong>
+              </div>
             </div>
           </div>
         )}
         <div>
-          Raw Data: <strong>{rawData}</strong>
+          Raw Data:{' '}
+          <TextField value={rawData} rowsMax={10} multiline disabled />
         </div>
         <div>
           Hash: <strong>{hash}</strong>
