@@ -117,27 +117,50 @@ const client = (state = initialState, action) => {
       const { error } = action
       return { ...state, state: 'ERROR', error }
     }
-    case '[CLIENT]:GETH:UPDATE_NEW_BLOCK': {
-      const { blockNumber, timestamp } = action.payload
-      return { ...state, blockNumber, timestamp }
+    case 'CLIENT:UPDATE_NEW_BLOCK': {
+      const { clientName, blockNumber, timestamp } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...activeState, blockNumber, timestamp }
+        }
+      }
     }
-    case '[CLIENT]:GETH:UPDATE_SYNCING': {
+    case 'CLIENT:UPDATE_SYNCING': {
       const {
+        clientName,
         startingBlock,
         currentBlock,
         highestBlock,
         knownStates,
         pulledStates
       } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
       return {
         ...state,
-        sync: {
-          ...state.sync,
-          startingBlock,
-          currentBlock,
-          highestBlock,
-          knownStates,
-          pulledStates
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: {
+            ...activeState,
+            sync: {
+              ...state.sync,
+              startingBlock,
+              currentBlock,
+              highestBlock,
+              knownStates,
+              pulledStates
+            }
+          }
         }
       }
     }

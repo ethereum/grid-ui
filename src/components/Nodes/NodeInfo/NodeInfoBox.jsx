@@ -9,7 +9,7 @@ import LayersIcon from '@material-ui/icons/Layers'
 import PeopleIcon from '@material-ui/icons/People'
 import LinearScaleIcon from '@material-ui/icons/LinearScale'
 
-const numberWithCommas = val => {
+const numberWithCommas = (val = 0) => {
   return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
@@ -116,8 +116,8 @@ class NodeInfoBox extends Component {
   renderSynced() {
     const { client } = this.props
     const { diffTimestamp } = this.state
-    const { blockNumber, timestamp, active, config } = client
-    const { peerCount } = active
+    const { active, config } = client
+    const { blockNumber, peerCount, timestamp } = active
     const { network } = config
 
     const formattedBlockNumber = numberWithCommas(blockNumber)
@@ -152,18 +152,18 @@ class NodeInfoBox extends Component {
 
   renderStats() {
     const { client } = this.props
-    const { active, blockNumber, config, state } = client
+    const { active, config } = client
     const { syncMode, network } = config
-    const { peerCount, sync } = active
+    const { blockNumber, peerCount, status, sync } = active
     const { highestBlock, startingBlock } = sync
 
     let stats
 
-    if (state === 'STARTED') {
+    if (status === 'STARTED') {
       // Case: connecting
       stats = this.renderConnecting()
     }
-    if (state === 'CONNECTED') {
+    if (status === 'CONNECTED') {
       if (peerCount === 0) {
         // Case: no peers yet
         stats = this.renderFindingPeers()
@@ -179,7 +179,7 @@ class NodeInfoBox extends Component {
       // Case: show progress
       stats = this.renderSyncProgress()
     }
-    if (state === 'STOPPED') {
+    if (status === 'STOPPED') {
       // Case: node stopped
       stats = this.renderStopped()
     }

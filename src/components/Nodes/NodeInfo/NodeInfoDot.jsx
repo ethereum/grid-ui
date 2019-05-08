@@ -7,6 +7,7 @@ import PieChart from 'react-minimal-pie-chart'
 class NodeInfoDot extends Component {
   static propTypes = {
     client: PropTypes.object,
+    isStopped: PropTypes.bool,
     /** If component is stickied, apply drop shadow on dot */
     sticky: PropTypes.bool
   }
@@ -17,7 +18,7 @@ class NodeInfoDot extends Component {
   }
 
   componentDidMount() {
-    // NOTE: This component should update diff every second
+    // diffTimestamp used to caluculate time since last block
     this.diffInterval = setInterval(() => {
       this.setState({ diffTimestamp: moment().unix() })
     }, 1000)
@@ -58,9 +59,10 @@ class NodeInfoDot extends Component {
   }
 
   render() {
-    const { sticky, client } = this.props
+    const { client, isStopped, sticky } = this.props
     const { pulseColor } = this.state
-    const { config, blockNumber, active, state } = client
+    const { config, active } = client
+    const { blockNumber } = active
     const { network } = config
 
     let dotColor
@@ -70,15 +72,11 @@ class NodeInfoDot extends Component {
     const colorRed = '#e81e1e'
     const colorOrange = 'orange'
 
-    if (network === 'main') {
-      dotColor = colorMainnet
-    } else {
-      dotColor = colorTestnet
-    }
+    dotColor = network === 'main' ? colorMainnet : colorTestnet
     if (this.secondsSinceLastBlock() > 60 || !blockNumber) {
       dotColor = colorOrange
     }
-    if (state === 'STOPPED') {
+    if (isStopped) {
       dotColor = colorRed
     }
 

@@ -44,7 +44,11 @@ class NodeInfo extends Component {
           role="button"
           tabIndex={0}
         >
-          <NodeInfoDot client={client} sticky={sticky} />
+          <NodeInfoDot
+            client={client}
+            isStopped={client.active.status === 'STOPPED'}
+            sticky={sticky}
+          />
           {showSubmenu && <NodeInfoBox client={client} />}
         </div>
       </StyledNode>

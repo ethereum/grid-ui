@@ -1,7 +1,7 @@
 import ClientService from './clientService'
 
-export const clientError = error => {
-  return { type: 'CLIENT:ERROR', error }
+export const clientError = (clientName, error) => {
+  return { type: 'CLIENT:ERROR', error, payload: { clientName } }
 }
 
 export function onConnectionUpdate(clientName, status) {
@@ -29,23 +29,21 @@ export const initClient = client => {
   }
 }
 
-export const newBlock = ({ blockNumber, timestamp }) => {
+export const newBlock = (clientName, blockNumber, timestamp) => {
   return {
-    type: '[CLIENT]:GETH:UPDATE_NEW_BLOCK',
-    payload: { blockNumber, timestamp }
+    type: 'CLIENT:UPDATE_NEW_BLOCK',
+    payload: { clientName, blockNumber, timestamp }
   }
 }
 
-export const updateSyncing = ({
-  startingBlock,
-  currentBlock,
-  highestBlock,
-  knownStates,
-  pulledStates
-}) => {
+export const updateSyncing = (
+  clientName,
+  { startingBlock, currentBlock, highestBlock, knownStates, pulledStates }
+) => {
   return {
-    type: '[CLIENT]:GETH:UPDATE_SYNCING',
+    type: 'CLIENT:UPDATE_SYNCING',
     payload: {
+      clientName,
       startingBlock,
       currentBlock,
       highestBlock,

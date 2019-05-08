@@ -168,23 +168,25 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:UPDATE_NEW_BLOCK', () => {
+  it('should handle CLIENT:UPDATE_NEW_BLOCK', () => {
     const blockNumber = '123123'
     const timestamp = '321321321'
     const action = {
-      type: '[CLIENT]:GETH:UPDATE_NEW_BLOCK',
-      payload: { blockNumber, timestamp }
+      type: 'CLIENT:UPDATE_NEW_BLOCK',
+      payload: { clientName: 'geth', blockNumber, timestamp }
     }
     const expectedState = {
       ...initialState,
-      blockNumber,
-      timestamp
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, blockNumber, timestamp }
+      }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:UPDATE_SYNCING', () => {
+  it('should handle CLIENT:UPDATE_SYNCING', () => {
     const sync = {
       currentBlock: 123,
       highestBlock: 124,
@@ -193,10 +195,16 @@ describe('the client reducer', () => {
       startingBlock: 0
     }
     const action = {
-      type: '[CLIENT]:GETH:UPDATE_SYNCING',
-      payload: { ...sync }
+      type: 'CLIENT:UPDATE_SYNCING',
+      payload: { clientName: 'geth', ...sync }
     }
-    const expectedState = { ...initialState, sync }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, sync }
+      }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })

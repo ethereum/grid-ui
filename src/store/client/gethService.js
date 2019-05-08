@@ -153,32 +153,32 @@ class GethService {
     this.syncingSubscriptionId = null
   }
 
-  // onConnect(dispatch) {
-  // dispatch(gethConnected())
+  onConnect(dispatch) {
+    // dispatch(gethConnected())
 
-  // const startSubscriptions = async () => {
-  // const result = await geth.rpc('eth_syncing')
-  // if (result === false) {
-  // // Not syncing, start newHeads subscription
-  // this.startNewHeadsSubscription(dispatch)
-  // } else {
-  // // Subscribe to syncing
-  // this.startSyncingSubscription(dispatch)
-  // }
-  // }
-  // const setLastBlock = () => {
-  // geth.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
-  // const { number: hexBlockNumber, timestamp: hexTimestamp } = block
-  // const blockNumber = Number(toNumberString(hexBlockNumber))
-  // const timestamp = Number(toNumberString(hexTimestamp))
-  // dispatch(newBlock({ blockNumber, timestamp }))
-  // })
-  // }
-  // setTimeout(() => {
-  // setLastBlock()
-  // startSubscriptions()
-  // }, 2000)
-  // }
+    const startSubscriptions = async () => {
+      const result = await geth.rpc('eth_syncing')
+      if (result === false) {
+        // Not syncing, start newHeads subscription
+        this.startNewHeadsSubscription(dispatch)
+      } else {
+        // Subscribe to syncing
+        this.startSyncingSubscription(dispatch)
+      }
+    }
+    const setLastBlock = () => {
+      geth.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
+        const { number: hexBlockNumber, timestamp: hexTimestamp } = block
+        const blockNumber = Number(toNumberString(hexBlockNumber))
+        const timestamp = Number(toNumberString(hexTimestamp))
+        dispatch(newBlock({ blockNumber, timestamp }))
+      })
+    }
+    setTimeout(() => {
+      setLastBlock()
+      startSubscriptions()
+    }, 2000)
+  }
 
   async startNewHeadsSubscription(dispatch) {
     geth.rpc('eth_subscribe', ['newHeads']).then(subscriptionId => {
