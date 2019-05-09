@@ -112,19 +112,33 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:ERROR', () => {
+  it('should handle CLIENT:ERROR', () => {
     const action = {
-      type: '[CLIENT]:GETH:ERROR',
-      error: 'Boom'
+      type: 'CLIENT:ERROR',
+      error: 'Boom',
+      payload: { clientName: 'geth' }
     }
-    const expectedState = { ...initialState, state: 'ERROR', error: 'Boom' }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialClientState,
+        error: 'Boom',
+        active: { ...initialClientState.active, status: 'ERROR' }
+      }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:CLEAR_ERROR', () => {
-    const action = { type: '[CLIENT]:GETH:CLEAR_ERROR' }
-    const expectedState = { ...initialState, error: null }
+  it('should handle CLIENT:CLEAR_ERROR', () => {
+    const action = {
+      type: 'CLIENT:CLEAR_ERROR',
+      payload: { clientName: 'geth' }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: { ...initialClientState, error: null }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })

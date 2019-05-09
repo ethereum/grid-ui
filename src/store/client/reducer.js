@@ -113,9 +113,18 @@ const client = (state = initialState, action) => {
         }
       }
     }
-    case '[CLIENT]:GETH:ERROR': {
-      const { error } = action
-      return { ...state, state: 'ERROR', error }
+    case 'CLIENT:ERROR': {
+      const { payload, error } = action
+      const { clientName } = payload
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          error,
+          active: { ...initialClientState.active, status: 'ERROR' }
+        }
+      }
     }
     case 'CLIENT:UPDATE_NEW_BLOCK': {
       const { clientName, blockNumber, timestamp } = action.payload
@@ -179,8 +188,16 @@ const client = (state = initialState, action) => {
         }
       }
     }
-    case '[CLIENT]:GETH:CLEAR_ERROR': {
-      return { ...state, error: null }
+    case 'CLIENT:CLEAR_ERROR': {
+      const { clientName } = action.payload
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          error: null
+        }
+      }
     }
     default:
       return state

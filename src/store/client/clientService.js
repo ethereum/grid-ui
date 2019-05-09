@@ -175,6 +175,7 @@ class ClientService {
   }
 
   async startNewHeadsSubscription(client, dispatch) {
+    // TODO - why arent subscriptions coming through?
     client.rpc('eth_subscribe', ['newHeads']).then(subscriptionId => {
       this.newHeadsSubscriptionId = subscriptionId
       client.on(subscriptionId, result =>

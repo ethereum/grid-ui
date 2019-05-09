@@ -64,23 +64,10 @@ export const updatePeerCount = (clientName, peerCount) => {
   }
 }
 
-export const updateNetwork = ({ network }) => {
+export const clearError = clientName => {
   return {
-    type: '[CLIENT]:GETH:UPDATE_NETWORK',
-    payload: { network }
-  }
-}
-
-export const updateSyncMode = ({ syncMode }) => {
-  return {
-    type: '[CLIENT]:GETH:UPDATE_SYNC_MODE',
-    payload: { syncMode }
-  }
-}
-
-export const clearError = () => {
-  return {
-    type: '[CLIENT]:GETH:CLEAR_ERROR'
+    type: 'CLIENT:CLEAR_ERROR',
+    payload: { clientName }
   }
 }
 
