@@ -116,9 +116,11 @@ class VersionList extends Component {
     const { classes } = this.props
     const { loadingReleases, releases, localReleaseCount } = this.state
 
+    /*
     if (releases.length === 0) {
       return <Spinner style={{ margin: '20px 0' }} />
     }
+    */
 
     return (
       <div>
