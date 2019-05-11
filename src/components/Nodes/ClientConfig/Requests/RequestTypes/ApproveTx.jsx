@@ -3,19 +3,16 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import { AddressInput } from 'ethereum-react-components'
+import Notification from '../../../../shared/Notification'
 import RequestInfo from './RequestInfo'
-import Notification from '../../../shared/Notification'
+import RequestActions from './RequestActions'
 
 const styles = () => ({
-  controls: { marginTop: 15 },
-  approve: { backgroundColor: 'green' },
-  reject: { backgroundColor: 'red', marginRight: 10 },
   formGroup: { marginBottom: 15 }
 })
 
@@ -78,30 +75,6 @@ class ApproveListing extends Component {
     const { id } = request
     const result = { approved, transaction: tx }
     send(null, [], id, result)
-  }
-
-  renderControls() {
-    const { classes } = this.props
-    return (
-      <div classes={{ root: classes.controls }}>
-        <Button
-          onClick={() => {
-            this.submit(false)
-          }}
-          classes={{ root: classes.reject }}
-        >
-          Reject
-        </Button>
-        <Button
-          onClick={() => {
-            this.submit(true)
-          }}
-          classes={{ root: classes.approve }}
-        >
-          Approve
-        </Button>
-      </div>
-    )
   }
 
   renderCallInfo() {
@@ -323,7 +296,10 @@ class ApproveListing extends Component {
         {this.renderValue()}
         {this.renderNonce()}
         {this.renderData()}
-        {this.renderControls()}
+        <RequestActions
+          approve={() => this.submit(true)}
+          reject={() => this.submit(false)}
+        />
       </div>
     )
   }

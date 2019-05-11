@@ -6,13 +6,9 @@ import Typography from '@material-ui/core/Typography'
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
 import NavigateNextIcon from '@material-ui/icons/NavigateNext'
 import IconButton from '@material-ui/core/IconButton'
-import InputRequired from './InputRequired'
-import ApproveListing from './ApproveListing'
-import ApproveNewAccount from './ApproveNewAccount'
-import ApproveTx from './ApproveTx'
-import ApproveSignData from './ApproveSignData'
 import { selectRequest } from '../../../../store/requests/actions'
 import Clef from '../../../../store/requests/clefService'
+import Request from './Request'
 
 const styles = () => ({})
 
@@ -101,22 +97,7 @@ class Requests extends Component {
     if (!request) {
       return null
     }
-    const { id, method } = request
-    switch (method) {
-      case 'ui_onInputRequired':
-        return <InputRequired key={id} request={request} send={this.send} />
-      case 'ui_approveListing':
-        return <ApproveListing key={id} request={request} send={this.send} />
-      case 'ui_approveNewAccount':
-        return <ApproveNewAccount key={id} request={request} send={this.send} />
-      case 'ui_approveTx':
-        return <ApproveTx key={id} request={request} send={this.send} />
-      case 'ui_approveSignData':
-        return <ApproveSignData key={id} request={request} send={this.send} />
-      default:
-        console.error('No handler for clef method: ', method)
-        return null
-    }
+    return <Request request={request} send={this.send} />
   }
 
   render() {

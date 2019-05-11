@@ -3,19 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import RequestInfo from './RequestInfo'
+import RequestActions from './RequestActions'
 
-const styles = () => ({
-  controls: { marginTop: 15 },
-  approve: { backgroundColor: 'green' },
-  reject: { backgroundColor: 'red', marginRight: 10 }
-})
+const styles = () => ({})
 
 class ApproveListing extends Component {
   static propTypes = {
     request: PropTypes.object,
-    classes: PropTypes.object,
     send: PropTypes.func
   }
 
@@ -26,37 +21,16 @@ class ApproveListing extends Component {
     send(null, [], id, result)
   }
 
-  renderControls() {
-    const { classes } = this.props
-    return (
-      <div classes={{ root: classes.controls }}>
-        <Button
-          onClick={() => {
-            this.submit(false)
-          }}
-          classes={{ root: classes.reject }}
-        >
-          Reject
-        </Button>
-        <Button
-          onClick={() => {
-            this.submit(true)
-          }}
-          classes={{ root: classes.approve }}
-        >
-          Approve
-        </Button>
-      </div>
-    )
-  }
-
   render() {
     const { request } = this.props
     return (
       <div>
         <Typography variant="h2">Approve New Account</Typography>
         <RequestInfo request={request} />
-        {this.renderControls()}
+        <RequestActions
+          approve={() => this.submit(true)}
+          reject={() => this.submit(false)}
+        />
       </div>
     )
   }

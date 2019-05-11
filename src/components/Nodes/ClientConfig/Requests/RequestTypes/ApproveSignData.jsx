@@ -3,22 +3,17 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import { Identicon } from 'ethereum-react-components'
 import RequestInfo from './RequestInfo'
+import RequestActions from './RequestActions'
 
-const styles = () => ({
-  controls: { marginTop: 15 },
-  approve: { backgroundColor: 'green' },
-  reject: { backgroundColor: 'red', marginRight: 10 }
-})
+const styles = () => ({})
 
 class ApproveListing extends Component {
   static propTypes = {
     request: PropTypes.object,
-    send: PropTypes.func,
-    classes: PropTypes.object
+    send: PropTypes.func
   }
 
   submit(approved) {
@@ -26,30 +21,6 @@ class ApproveListing extends Component {
     const { id } = request
     const result = { approved }
     send(null, [], id, result)
-  }
-
-  renderControls() {
-    const { classes } = this.props
-    return (
-      <div classes={{ root: classes.controls }}>
-        <Button
-          onClick={() => {
-            this.submit(false)
-          }}
-          classes={{ root: classes.reject }}
-        >
-          Reject
-        </Button>
-        <Button
-          onClick={() => {
-            this.submit(true)
-          }}
-          classes={{ root: classes.approve }}
-        >
-          Approve
-        </Button>
-      </div>
-    )
   }
 
   renderDetails() {
@@ -107,7 +78,10 @@ class ApproveListing extends Component {
         <Typography variant="h2">Approve Sign Data</Typography>
         <RequestInfo request={request} />
         {this.renderDetails()}
-        {this.renderControls()}
+        <RequestActions
+          approve={() => this.submit(true)}
+          reject={() => this.submit(false)}
+        />
       </div>
     )
   }
