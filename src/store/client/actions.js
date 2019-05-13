@@ -64,6 +64,14 @@ export const updatePeerCount = (clientName, peerCount) => {
   }
 }
 
+export const updatePeerCountError = (clientName, message) => {
+  return {
+    type: 'CLIENT:UPDATE_PEER_COUNT:ERROR',
+    error: true,
+    payload: { clientName, message }
+  }
+}
+
 export const clearError = clientName => {
   return {
     type: 'CLIENT:CLEAR_ERROR',

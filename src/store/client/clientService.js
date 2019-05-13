@@ -4,7 +4,8 @@ import {
   updateSyncing,
   clientError,
   onConnectionUpdate,
-  updatePeerCount
+  updatePeerCount,
+  updatePeerCountError
 } from './actions'
 
 // Utils
@@ -44,8 +45,12 @@ class ClientService {
 
   async updatePeerCount(client, dispatch) {
     const hexPeerCount = await client.rpc('net_peerCount')
-    const peerCount = toNumberString(hexPeerCount)
-    dispatch(updatePeerCount(client.name, peerCount))
+    if (hexPeerCount.message) {
+      dispatch(updatePeerCountError(client.name, hexPeerCount.message))
+    } else {
+      const peerCount = toNumberString(hexPeerCount)
+      dispatch(updatePeerCount(client.name, peerCount))
+    }
   }
 
   createListeners(client, dispatch) {
@@ -80,7 +85,6 @@ class ClientService {
 
   onNewHeadsSubscriptionResult(client, result, dispatch) {
     const { result: subscriptionResult } = result
-    console.log('∆∆∆ subscriptionResult', subscriptionResult)
     if (!subscriptionResult) return
 
     const {
@@ -176,14 +180,13 @@ class ClientService {
   }
 
   async startNewHeadsSubscription(client, dispatch) {
-    console.log('∆∆∆ startNewHeadsSubscription')
     client.rpc('eth_subscribe', ['newHeads']).then(subscriptionId => {
-      console.log('∆∆∆ subscriptionId newHeads', subscriptionId)
       this.newHeadsSubscriptionId = subscriptionId
       client.on('notification', result => {
-        console.log('∆∆∆ newHeads result', result)
-        // filter for subId
-        this.onNewHeadsSubscriptionResult(client, result, dispatch)
+        const { subscription } = result
+        if (subscription === this.newHeadsSubscriptionId) {
+          this.onNewHeadsSubscriptionResult(client, result, dispatch)
+        }
       })
     })
   }
@@ -193,9 +196,11 @@ class ClientService {
     const subscriptionId = await client.rpc('eth_subscribe', ['syncing'])
     this.syncingSubscriptionId = subscriptionId
     client.on('notification', result => {
-      console.log('∆∆∆ subscriptionId syncing', subscriptionId, result)
-      // filter for subId
-      this.onSyncingSubscriptionResult(client, result, dispatch)
+      const { subscription } = result
+      if (subscription === this.newHeadsSubscriptionId) {
+        console.log('∆∆∆ subscriptionId syncing', subscriptionId, result)
+        this.onSyncingSubscriptionResult(client, result, dispatch)
+      }
     })
   }
 }
