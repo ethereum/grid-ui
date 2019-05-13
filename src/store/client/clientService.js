@@ -80,6 +80,7 @@ class ClientService {
 
   onNewHeadsSubscriptionResult(client, result, dispatch) {
     const { result: subscriptionResult } = result
+    console.log('∆∆∆ subscriptionResult', subscriptionResult)
     if (!subscriptionResult) return
 
     const {
@@ -175,21 +176,27 @@ class ClientService {
   }
 
   async startNewHeadsSubscription(client, dispatch) {
-    // TODO - why arent subscriptions coming through?
+    console.log('∆∆∆ startNewHeadsSubscription')
     client.rpc('eth_subscribe', ['newHeads']).then(subscriptionId => {
+      console.log('∆∆∆ subscriptionId newHeads', subscriptionId)
       this.newHeadsSubscriptionId = subscriptionId
-      client.on(subscriptionId, result =>
+      client.on('notification', result => {
+        console.log('∆∆∆ newHeads result', result)
+        // filter for subId
         this.onNewHeadsSubscriptionResult(client, result, dispatch)
-      )
+      })
     })
   }
 
   async startSyncingSubscription(client, dispatch) {
+    console.log('∆∆∆ startSyncingSubscription')
     const subscriptionId = await client.rpc('eth_subscribe', ['syncing'])
     this.syncingSubscriptionId = subscriptionId
-    client.on(subscriptionId, result =>
+    client.on('notification', result => {
+      console.log('∆∆∆ subscriptionId syncing', subscriptionId, result)
+      // filter for subId
       this.onSyncingSubscriptionResult(client, result, dispatch)
-    )
+    })
   }
 }
 
