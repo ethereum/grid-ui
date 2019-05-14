@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import FormGroup from '@material-ui/core/FormGroup'
+import Grid from '@material-ui/core/Grid'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import { AddressInput } from 'ethereum-react-components'
@@ -15,7 +16,7 @@ import RequestActions from './RequestActions'
 import { ethValidators, validateTx } from '../../../../../lib/validators'
 
 const styles = () => ({
-  formGroup: { marginBottom: 25 }
+  formGroup: {}
 })
 
 class ApproveListing extends Component {
@@ -57,54 +58,52 @@ class ApproveListing extends Component {
     const isChecksummed = value => {
       return ethValidators.isChecksummed(value) ? null : 'Incorrect checksum.'
     }
+    let validators = []
     switch (field) {
       case 'from': {
         const value = tx.from
-        const validators = [
+        validators = [
           isRequired(value),
           isHex(value),
           isAddress(value),
           isChecksummed(value)
         ]
-        return validators.find(v => v != null) || null
+        break
       }
       case 'to': {
         const value = tx.to
-        const validators = [
-          isHex(value),
-          isAddress(value),
-          isChecksummed(value)
-        ]
-        return validators.find(v => v != null) || null
+        validators = [isHex(value), isAddress(value), isChecksummed(value)]
+        break
       }
       case 'value': {
         const { value } = tx
-        const validators = [isRequired(value), isHex(value)]
-        return validators.find(v => v != null) || null
+        validators = [isRequired(value), isHex(value)]
+        break
       }
       case 'gas': {
         const value = tx.gas
-        const validators = [isRequired(value), isHex(value)]
-        return validators.find(v => v != null) || null
+        validators = [isRequired(value), isHex(value)]
+        break
       }
       case 'gasPrice': {
         const value = tx.gasPrice
-        const validators = [isRequired(value), isHex(value)]
-        return validators.find(v => v != null) || null
+        validators = [isRequired(value), isHex(value)]
+        break
       }
       case 'nonce': {
         const value = tx.nonce
-        const validators = [isRequired(value), isHex(value)]
-        return validators.find(v => v != null) || null
+        validators = [isRequired(value), isHex(value)]
+        break
       }
       case 'data': {
         const value = tx.data
-        const validators = [isHex(value)]
-        return validators.find(v => v != null) || null
+        validators = [isHex(value)]
+        break
       }
       default:
-        return null
+        break
     }
+    return validators.find(v => v != null) || null
   }
 
   hexHelperText = field => {
@@ -135,7 +134,7 @@ class ApproveListing extends Component {
         break
     }
 
-    return `Hex Value: ${output}`
+    return `Value: ${output}`
   }
 
   handleChange = field => event => {
@@ -208,6 +207,7 @@ class ApproveListing extends Component {
           helperText={this.validateField('from')}
           onChange={this.handleAddressInputChange('from')}
           disabled={!edit.from}
+          fullWidth
         />
         <FormControlLabel
           control={
@@ -215,6 +215,7 @@ class ApproveListing extends Component {
               color="primary"
               checked={edit.from}
               onChange={this.toggleEdit('from')}
+              style={{ marginLeft: 10 }}
             />
           }
           label="Edit"
@@ -234,8 +235,9 @@ class ApproveListing extends Component {
           value={to}
           error={!!this.validateField('to')}
           helperText={this.validateField('to')}
-          onChange={this.handleAddressInputChange('from')}
+          onChange={this.handleAddressInputChange('to')}
           disabled={!edit.to}
+          fullWidth
         />
         <FormControlLabel
           control={
@@ -243,6 +245,7 @@ class ApproveListing extends Component {
               color="primary"
               checked={edit.to}
               onChange={this.toggleEdit('to')}
+              style={{ marginLeft: 10 }}
             />
           }
           label="Edit"
@@ -265,6 +268,7 @@ class ApproveListing extends Component {
           helperText={this.validateField('gas') || this.hexHelperText('gas')}
           onChange={this.handleChange('gas')}
           disabled={!edit.gas}
+          fullWidth
         />
         <FormControlLabel
           control={
@@ -272,6 +276,7 @@ class ApproveListing extends Component {
               color="primary"
               checked={edit.gas}
               onChange={this.toggleEdit('gas')}
+              style={{ marginLeft: 10 }}
             />
           }
           label="Edit"
@@ -296,6 +301,7 @@ class ApproveListing extends Component {
           }
           onChange={this.handleChange('gasPrice')}
           disabled={!edit.gasPrice}
+          fullWidth
         />
         <FormControlLabel
           control={
@@ -303,6 +309,7 @@ class ApproveListing extends Component {
               color="primary"
               checked={edit.gasPrice}
               onChange={this.toggleEdit('gasPrice')}
+              style={{ marginLeft: 10 }}
             />
           }
           label="Edit"
@@ -327,6 +334,7 @@ class ApproveListing extends Component {
           }
           onChange={this.handleChange('value')}
           disabled={!edit.value}
+          fullWidth
         />
         <FormControlLabel
           control={
@@ -334,6 +342,7 @@ class ApproveListing extends Component {
               color="primary"
               checked={edit.value}
               onChange={this.toggleEdit('value')}
+              style={{ marginLeft: 10 }}
             />
           }
           label="Edit"
@@ -358,6 +367,7 @@ class ApproveListing extends Component {
           }
           onChange={this.handleChange('nonce')}
           disabled={!edit.nonce}
+          fullWidth
         />
         <FormControlLabel
           control={
@@ -365,6 +375,7 @@ class ApproveListing extends Component {
               color="primary"
               checked={edit.nonce}
               onChange={this.toggleEdit('nonce')}
+              style={{ marginLeft: 10 }}
             />
           }
           label="Edit"
@@ -388,6 +399,7 @@ class ApproveListing extends Component {
           onChange={this.handleChange('data')}
           disabled={!edit.data}
           rowsMax={10}
+          fullWidth
           multiline
         />
         <FormControlLabel
@@ -396,6 +408,7 @@ class ApproveListing extends Component {
               color="primary"
               checked={edit.data}
               onChange={this.toggleEdit('data')}
+              style={{ marginLeft: 10 }}
             />
           }
           label="Edit"
@@ -408,16 +421,38 @@ class ApproveListing extends Component {
     const { request } = this.props
     return (
       <div>
-        <Typography variant="h2">Approve Transaction</Typography>
+        <Typography variant="h5" style={{ marginTop: 20 }}>
+          Approve Transaction
+        </Typography>
         <RequestInfo request={request} />
         {this.renderCallInfo()}
-        {this.renderFrom()}
-        {this.renderTo()}
-        {this.renderGas()}
-        {this.renderGasPrice()}
-        {this.renderValue()}
-        {this.renderNonce()}
-        {this.renderData()}
+        <Grid
+          container
+          spacing={24}
+          style={{ margin: '10px 0', paddingRight: 20 }}
+        >
+          <Grid item xs={6}>
+            {this.renderFrom()}
+          </Grid>
+          <Grid item xs={6}>
+            {this.renderTo()}
+          </Grid>
+          <Grid item xs={6}>
+            {this.renderGas()}
+          </Grid>
+          <Grid item xs={6}>
+            {this.renderGasPrice()}
+          </Grid>
+          <Grid item xs={6}>
+            {this.renderValue()}
+          </Grid>
+          <Grid item xs={6}>
+            {this.renderNonce()}
+          </Grid>
+          <Grid item xs={12}>
+            {this.renderData()}
+          </Grid>
+        </Grid>
         <RequestActions
           approve={() => this.submit(true)}
           approveDisabled={!this.isTxValid()}

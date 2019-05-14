@@ -37,35 +37,47 @@ class ApproveListing extends Component {
     return (
       <div>
         <div>
-          Content Type: <strong>{contentType}</strong>
+          <strong>Address:</strong>
+          <Identicon
+            address="0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D"
+            size="small"
+            style={{ verticalAlign: 'middle', margin: '5px 10px' }}
+          />
+          {address}
         </div>
-        <div>
-          Address:
-          <Identicon address="0xF5A5d5c30BfAC14bf207b6396861aA471F9A711D" />
-          <strong>{address}</strong>
+        <div style={{ marginBottom: 10 }}>
+          <strong>Content Type</strong>: {contentType}
         </div>
         {showMessage && (
           <div>
-            Message:
-            <div style={{ paddingLeft: 15 }}>
-              <div>
-                Name: <strong>{name}</strong>
+            <strong>Message:</strong>
+            <div style={{ margin: '5px 0 15px 0', paddingLeft: 15 }}>
+              <div style={{ marginBottom: 5 }}>
+                <strong>Name:</strong> {name}
               </div>
-              <div>
-                Type: <strong>{type}</strong>
+              <div style={{ marginBottom: 5 }}>
+                <strong>Type:</strong> {type}
               </div>
-              <div>
-                Value: <strong>{value}</strong>
+              <div style={{ marginBottom: 5 }}>
+                <strong>Value:</strong> {value}
               </div>
             </div>
           </div>
         )}
         <div>
-          Raw Data:{' '}
-          <TextField value={rawData} rowsMax={10} multiline disabled />
+          <strong>Raw Data:</strong>
+          <div>
+            <TextField
+              value={rawData}
+              rowsMax={10}
+              multiline
+              disabled
+              fullWidth
+            />
+          </div>
         </div>
-        <div>
-          Hash: <strong>{hash}</strong>
+        <div style={{ margin: '20px 0' }}>
+          <strong>Hash:</strong> {hash}
         </div>
       </div>
     )
@@ -75,7 +87,9 @@ class ApproveListing extends Component {
     const { request } = this.props
     return (
       <div>
-        <Typography variant="h2">Approve Sign Data</Typography>
+        <Typography variant="h5" style={{ marginTop: 20 }}>
+          Approve Sign Data
+        </Typography>
         <RequestInfo request={request} />
         {this.renderDetails()}
         <RequestActions

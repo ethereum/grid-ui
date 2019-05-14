@@ -129,7 +129,7 @@ class ClientConfig extends Component {
         </Typography>
         {this.renderErrors()}
         {clientName === 'Clef' && <Notifications client="clef" />}
-        <StyledAppBar position="static">
+        <AppBar style={{ marginTop: 15, marginBottom: 15 }} position="static">
           <Tabs
             value={activeTab}
             onChange={this.handleTabChange}
@@ -147,7 +147,7 @@ class ClientConfig extends Component {
               />
             )}
           </Tabs>
-        </StyledAppBar>
+        </AppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
           <VersionList
             client={client}
@@ -188,10 +188,6 @@ export default connect(mapStateToProps)(ClientConfig)
 const StyledMain = styled.main`
   position: relative;
   min-width: 500px;
-`
-
-const StyledAppBar = styled(AppBar)`
-  margin: 20px 0;
 `
 
 const StyledState = styled.div`

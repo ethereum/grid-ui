@@ -25,8 +25,13 @@ class ApproveListing extends Component {
     const { request } = this.props
     return (
       <div>
-        <Typography variant="h2">Approve New Account</Typography>
+        <Typography variant="h5" style={{ marginTop: 20 }}>
+          Approve New Account
+        </Typography>
         <RequestInfo request={request} />
+        <Typography variant="body1" style={{ margin: '20px 0' }}>
+          Create new account?
+        </Typography>
         <RequestActions
           approve={() => this.submit(true)}
           reject={() => this.submit(false)}

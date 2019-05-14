@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Typography from '@material-ui/core/Typography'
 
 class RequestInfo extends Component {
   static propTypes = {
@@ -17,26 +18,29 @@ class RequestInfo extends Component {
     }
     const { remote, scheme, local, 'User-Agent': userAgent, Origin } = meta
     return (
-      <div style={{ background: '#efefef', padding: 20, margin: 20 }}>
-        <div>
-          Remote: <strong>{remote}</strong>
-        </div>
-        <div>
-          Transport: <strong>{scheme}</strong>
-        </div>
-        <div>
-          Local Endpoint: <strong>{local}</strong>
-        </div>
-        {userAgent && (
-          <div>
-            User Agent: <strong>{userAgent}</strong>
+      <div style={{ background: '#efefef', padding: 10, margin: 10 }}>
+        <strong>Request Details</strong>
+        <div style={{ paddingTop: 5, paddingLeft: 10 }}>
+          <div style={{ marginBottom: 5 }}>
+            <strong>Remote:</strong> {remote}
           </div>
-        )}
-        {Origin && (
-          <div>
-            Origin: <strong>{Origin}</strong>
+          <div style={{ marginBottom: 5 }}>
+            <strong>Transport:</strong> {scheme}
           </div>
-        )}
+          <div style={{ marginBottom: 5 }}>
+            <strong>Local Endpoint:</strong> {local}
+          </div>
+          {userAgent && (
+            <div style={{ marginBottom: 5 }}>
+              User Agent: <strong>{userAgent}</strong>
+            </div>
+          )}
+          {Origin && (
+            <div style={{ marginBottom: 5 }}>
+              Origin: <strong>{Origin}</strong>
+            </div>
+          )}
+        </div>
       </div>
     )
   }

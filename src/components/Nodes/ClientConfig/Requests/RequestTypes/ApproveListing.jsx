@@ -69,6 +69,7 @@ class ApproveListing extends Component {
       const thisRender = (
         <FormControlLabel
           key={account.address}
+          style={{ marginBottom: 5 }}
           control={
             <Checkbox
               color="primary"
@@ -77,8 +78,13 @@ class ApproveListing extends Component {
               value={account.address}
             />
           }
-          label=<div>
-            <Identicon address={account.address} /> {account.address}
+          label=<div style={{ opacity: account.checked ? 1 : 0.5 }}>
+            <Identicon
+              address={account.address}
+              size="small"
+              style={{ verticalAlign: 'middle' }}
+            />{' '}
+            {account.address}
           </div>
         />
       )
@@ -91,9 +97,11 @@ class ApproveListing extends Component {
     const { request } = this.props
     return (
       <div>
-        <Typography variant="h2">Approve Account Listing</Typography>
+        <Typography variant="h5" style={{ marginTop: 20 }}>
+          Approve Account Listing
+        </Typography>
         <RequestInfo request={request} />
-        {this.renderAccounts()}
+        <div style={{ margin: '10px 0' }}>{this.renderAccounts()}</div>
         <RequestActions
           approve={() => this.approve()}
           reject={() => this.reject()}

@@ -41,13 +41,19 @@ class InputRequired extends Component {
     const { title, prompt, isPassword } = request.params[0]
     return (
       <div>
-        <Typography variant="h2">{title}</Typography>
+        <Typography variant="h5" style={{ marginTop: 20 }}>
+          {title}
+        </Typography>
         <RequestInfo request={request} />
-        <Typography variant="body1">{prompt}</Typography>
+        <Typography variant="body1" style={{ marginTop: 10 }}>
+          {prompt}
+        </Typography>
         <TextField
           value={text}
+          placeholder="Enter your response"
           type={isPassword ? 'password' : 'text'}
           onChange={this.handleChangeText}
+          style={{ marginTop: 10, marginBottom: 10, width: 300 }}
         />
         <div>
           <Button
