@@ -1,5 +1,4 @@
 import Clef from './clefService'
-import { Mist } from '../../API'
 
 export const selectRequest = index => {
   return {
@@ -81,14 +80,44 @@ const onClientNotification = (data, client, dispatch) => {
   dispatch(addNotification(notification))
 }
 
-export function createListeners(client, dispatch) {
+export function createRequestListeners(client, dispatch) {
   client.on('request', data => onClientRequest(data, client, dispatch))
-  client.on('notification', data =>
+  client.on('signerNotification', data =>
     onClientNotification(data, client, dispatch)
   )
 }
 
-export function removeListeners(client) {
+export function removeRequestListeners(client) {
   client.removeAllListeners('request')
-  client.removeAllListeners('notification')
+  client.removeAllListeners('signerNotification')
+}
+
+export function clearRequests(client) {
+  return async (dispatch, getState) => {
+    const queue = getState().requests.queue.filter(
+      r => r.client === client.name
+    )
+    if (queue.length === 0) {
+      return
+    }
+    dispatch({
+      type: '[REQUESTS]:QUEUE:CLEAR',
+      payload: { clientName: client.name }
+    })
+  }
+}
+
+export function clearRequestNotifications(client) {
+  return async (dispatch, getState) => {
+    const notifications = getState().requests.notifications.filter(
+      n => n.client === client.name
+    )
+    if (notifications.length === 0) {
+      return
+    }
+    dispatch({
+      type: '[REQUESTS]:NOTIFICATIONS:CLEAR_ALL',
+      payload: { clientName: client.name }
+    })
+  }
 }

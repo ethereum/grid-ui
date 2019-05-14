@@ -32,6 +32,15 @@ const requests = (state = initialState, action) => {
       }
       return newState
     }
+    case '[REQUESTS]:QUEUE:CLEAR': {
+      const { clientName } = action.payload
+      const newState = {
+        ...state,
+        selectedIndex: 0,
+        queue: state.queue.filter(request => request.client !== clientName)
+      }
+      return newState
+    }
     case '[REQUESTS]:NOTIFICATIONS:ADD': {
       const { notification } = action.payload
       const notifications = [...state.notifications, notification]
@@ -47,6 +56,16 @@ const requests = (state = initialState, action) => {
         ...state,
         notifications: state.notifications.filter(
           (n, nIndex) => nIndex !== index
+        )
+      }
+      return newState
+    }
+    case '[REQUESTS]:NOTIFICATIONS:CLEAR_ALL': {
+      const { clientName } = action.payload
+      const newState = {
+        ...state,
+        notifications: state.notifications.filter(
+          request => request.client !== clientName
         )
       }
       return newState

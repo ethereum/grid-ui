@@ -1,6 +1,8 @@
 import {
-  createListeners as clefCreateListeners,
-  removeListeners as clefRemoveListeners
+  createRequestListeners,
+  removeRequestListeners,
+  clearRequests,
+  clearRequestNotifications
 } from '../requests/actions'
 
 export const clientError = error => {
@@ -9,6 +11,18 @@ export const clientError = error => {
 
 export function onConnectionUpdate(clientName, status) {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
+}
+
+function createPluginListeners(client, dispatch) {
+  if (client.name === 'clef') {
+    createRequestListeners(client, dispatch)
+  }
+}
+
+function removePluginListeners(client) {
+  if (client.name === 'clef') {
+    removeRequestListeners(client)
+  }
 }
 
 function createListeners(client, dispatch) {
@@ -31,9 +45,7 @@ function createListeners(client, dispatch) {
     dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
   )
   client.on('error', e => dispatch(clientError(e)))
-  if (client.name === 'clef') {
-    clefCreateListeners(client, dispatch)
-  }
+  createPluginListeners(client, dispatch)
 }
 
 function removeListeners(client) {
@@ -44,9 +56,7 @@ function removeListeners(client) {
   client.removeAllListeners('stopped')
   client.removeAllListeners('disconnect')
   client.removeAllListeners('error')
-  if (client.name === 'clef') {
-    clefRemoveListeners(client)
-  }
+  removePluginListeners(client)
 }
 
 export const initClient = client => {
@@ -167,6 +177,8 @@ export const stopClient = client => {
       client.stop()
       removeListeners(client)
       dispatch({ type: 'CLIENT:STOP', payload: { clientName: client.name } })
+      dispatch(clearRequests(client))
+      dispatch(clearRequestNotifications(client))
     } catch (e) {
       dispatch({ type: 'CLIENT:STOP:ERROR', error: e.toString() })
     }
