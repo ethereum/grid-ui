@@ -4,24 +4,22 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import PieChart from 'react-minimal-pie-chart'
 
+const colorMainnet = '#7ed321'
+const colorTestnet = '#00aafa'
+const colorRed = '#e81e1e'
+const colorOrange = 'orange'
+
 class NodeInfoDot extends Component {
   static propTypes = {
     client: PropTypes.object,
+    diffTimestamp: PropTypes.number,
     isStopped: PropTypes.bool,
     /** If component is stickied, apply drop shadow on dot */
     sticky: PropTypes.bool
   }
 
   state = {
-    pulseColor: '',
-    diffTimestamp: moment().unix()
-  }
-
-  componentDidMount() {
-    // diffTimestamp used to caluculate time since last block
-    this.diffInterval = setInterval(() => {
-      this.setState({ diffTimestamp: moment().unix() })
-    }, 1000)
+    pulseColor: ''
   }
 
   componentDidUpdate(prevProps) {
@@ -32,16 +30,30 @@ class NodeInfoDot extends Component {
     }
   }
 
-  componentWillUnmount() {
-    clearInterval(this.diffInterval)
+  determineDotColor = () => {
+    const { client, isStopped } = this.props
+    const { config, active } = client
+    const { network } = config
+    const { blockNumber } = active
+
+    let dotColor
+    dotColor = network === 'main' ? colorMainnet : colorTestnet
+    if (this.secondsSinceLastBlock() > 120 || !blockNumber) {
+      dotColor = colorOrange
+    }
+    if (isStopped) {
+      dotColor = colorRed
+    }
+    return dotColor
   }
 
-  pulseForNewBlock() {
+  pulseForNewBlock = () => {
     const { client } = this.props
     const { config } = client
     const { network } = config
 
     const pulseColor = network === 'main' ? 'green' : 'blue'
+    console.log('∆∆∆ pulse!', pulseColor)
 
     this.setState({ pulseColor }, () => {
       setTimeout(() => {
@@ -50,40 +62,26 @@ class NodeInfoDot extends Component {
     })
   }
 
-  secondsSinceLastBlock() {
-    const { diffTimestamp } = this.state
-    const { client } = this.props
+  secondsSinceLastBlock = () => {
+    const { client, diffTimestamp } = this.props
     const { timestamp } = client
     const lastBlock = moment.unix(timestamp) // eslint-disable-line
     return moment.unix(diffTimestamp).diff(lastBlock, 'seconds')
   }
 
   render() {
-    const { client, isStopped, sticky } = this.props
+    const { client, sticky } = this.props
     const { pulseColor } = this.state
-    const { config, active } = client
+    const { active, config } = client
     const { blockNumber } = active
     const { network } = config
-
-    let dotColor
-
-    const colorMainnet = '#7ed321'
-    const colorTestnet = '#00aafa'
-    const colorRed = '#e81e1e'
-    const colorOrange = 'orange'
-
-    dotColor = network === 'main' ? colorMainnet : colorTestnet
-    if (this.secondsSinceLastBlock() > 60 || !blockNumber) {
-      dotColor = colorOrange
-    }
-    if (isStopped) {
-      dotColor = colorRed
-    }
 
     const { sync } = active
     const { highestBlock, currentBlock, startingBlock } = sync
     const progress =
       ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100
+
+    const dotColor = this.determineDotColor()
 
     return (
       <div className="pie-container">

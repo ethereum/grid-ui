@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
+import moment from 'moment'
 
 import NodeInfoDot from './NodeInfoDot'
 import NodeInfoBox from './NodeInfoBox'
@@ -16,7 +17,15 @@ class NodeInfo extends Component {
   }
 
   state = {
-    showSubmenu: false
+    showSubmenu: false,
+    diffTimestamp: moment().unix()
+  }
+
+  componentDidMount() {
+    // diffTimestamp used to calculate time since last block
+    this.diffInterval = setInterval(() => {
+      this.setState({ diffTimestamp: moment().unix() })
+    }, 1000)
   }
 
   render() {
@@ -24,7 +33,7 @@ class NodeInfo extends Component {
     const client = clientState[selectedClient]
     if (!client) return null
 
-    const { showSubmenu, sticky } = this.state
+    const { diffTimestamp, showSubmenu, sticky } = this.state
     const { network } = client
 
     const nodeInfoClass = classNames({
@@ -46,10 +55,13 @@ class NodeInfo extends Component {
         >
           <NodeInfoDot
             client={client}
+            diffTimestamp={diffTimestamp}
             isStopped={client.active.status === 'STOPPED'}
             sticky={sticky}
           />
-          {showSubmenu && <NodeInfoBox client={client} />}
+          {showSubmenu && (
+            <NodeInfoBox diffTimestamp={diffTimestamp} client={client} />
+          )}
         </div>
       </StyledNode>
     )

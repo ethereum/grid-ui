@@ -18,21 +18,6 @@ const defaultIconProps = {
 }
 
 class NodeInfoBox extends Component {
-  state = {
-    diffTimestamp: moment().unix()
-  }
-
-  componentDidMount() {
-    // NOTE: this component should update diff every second
-    this.diffInterval = setInterval(() => {
-      this.setState({ diffTimestamp: moment().unix() })
-    }, 1000)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.diffInterval)
-  }
-
   renderStopped = () => {
     return (
       <StyledIconRow>
@@ -114,8 +99,7 @@ class NodeInfoBox extends Component {
   }
 
   renderSynced() {
-    const { client } = this.props
-    const { diffTimestamp } = this.state
+    const { client, diffTimestamp } = this.props
     const { active, config } = client
     const { blockNumber, peerCount, timestamp } = active
     const { network } = config
