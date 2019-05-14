@@ -13,6 +13,9 @@ import green from '@material-ui/core/colors/green'
 import amber from '@material-ui/core/colors/amber'
 
 const styles = theme => ({
+  defaultSnackbar: {
+    marginBottom: 10
+  },
   success: {
     backgroundColor: green[600]
   },
@@ -80,7 +83,7 @@ class Notification extends Component {
 
     return (
       <SnackbarContent
-        classes={{ root: snackbarClasses }}
+        classes={{ root: classNames(classes.defaultSnackbar, snackbarClasses) }}
         message={
           <span>
             {icon}

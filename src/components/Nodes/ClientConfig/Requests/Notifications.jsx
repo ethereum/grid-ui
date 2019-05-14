@@ -25,6 +25,7 @@ class Notifications extends Component {
     clientNotifications.forEach((notification, index) => {
       const renderNotification = (
         <Notification
+          key={index}
           type={notification.type}
           message={notification.text}
           onDismiss={() => {

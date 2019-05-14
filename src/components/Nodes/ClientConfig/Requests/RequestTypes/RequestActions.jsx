@@ -13,11 +13,12 @@ class RequestActions extends Component {
   static propTypes = {
     approve: PropTypes.func,
     reject: PropTypes.func,
+    approveDisabled: PropTypes.bool,
     classes: PropTypes.object
   }
 
   render() {
-    const { classes, approve, reject } = this.props
+    const { classes, approve, reject, approveDisabled } = this.props
     return (
       <div classes={{ root: classes.controls }}>
         <Button
@@ -33,6 +34,7 @@ class RequestActions extends Component {
             approve()
           }}
           classes={{ root: classes.approve }}
+          disabled={approveDisabled}
         >
           Approve
         </Button>

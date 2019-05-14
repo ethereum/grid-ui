@@ -8,12 +8,14 @@ import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import { AddressInput } from 'ethereum-react-components'
+import web3 from 'web3'
 import Notification from '../../../../shared/Notification'
 import RequestInfo from './RequestInfo'
 import RequestActions from './RequestActions'
+import { ethValidators, validateTx } from '../../../../../lib/validators'
 
 const styles = () => ({
-  formGroup: { marginBottom: 15 }
+  formGroup: { marginBottom: 25 }
 })
 
 class ApproveListing extends Component {
@@ -39,6 +41,101 @@ class ApproveListing extends Component {
         data: false
       }
     }
+  }
+
+  validateField = field => {
+    const { tx } = this.state
+    const isRequired = value => {
+      return value ? null : 'Required.'
+    }
+    const isHex = value => {
+      return ethValidators.isHex(value) ? null : 'Not valid hex.'
+    }
+    const isAddress = value => {
+      return ethValidators.isAddr(value) ? null : 'Not an ethereum address.'
+    }
+    const isChecksummed = value => {
+      return ethValidators.isChecksummed(value) ? null : 'Incorrect checksum.'
+    }
+    switch (field) {
+      case 'from': {
+        const value = tx.from
+        const validators = [
+          isRequired(value),
+          isHex(value),
+          isAddress(value),
+          isChecksummed(value)
+        ]
+        return validators.find(v => v != null) || null
+      }
+      case 'to': {
+        const value = tx.to
+        const validators = [
+          isHex(value),
+          isAddress(value),
+          isChecksummed(value)
+        ]
+        return validators.find(v => v != null) || null
+      }
+      case 'value': {
+        const { value } = tx
+        const validators = [isRequired(value), isHex(value)]
+        return validators.find(v => v != null) || null
+      }
+      case 'gas': {
+        const value = tx.gas
+        const validators = [isRequired(value), isHex(value)]
+        return validators.find(v => v != null) || null
+      }
+      case 'gasPrice': {
+        const value = tx.gasPrice
+        const validators = [isRequired(value), isHex(value)]
+        return validators.find(v => v != null) || null
+      }
+      case 'nonce': {
+        const value = tx.nonce
+        const validators = [isRequired(value), isHex(value)]
+        return validators.find(v => v != null) || null
+      }
+      case 'data': {
+        const value = tx.data
+        const validators = [isHex(value)]
+        return validators.find(v => v != null) || null
+      }
+      default:
+        return null
+    }
+  }
+
+  hexHelperText = field => {
+    const { tx } = this.state
+    let output
+    switch (field) {
+      case 'gas': {
+        const value = tx.gas
+        output = web3.utils.hexToNumberString(value)
+        break
+      }
+      case 'gasPrice': {
+        const value = tx.gasPrice
+        output = web3.utils.hexToNumberString(value)
+        break
+      }
+      case 'nonce': {
+        const value = tx.nonce
+        output = web3.utils.hexToNumberString(value)
+        break
+      }
+      case 'value': {
+        const { value } = tx
+        output = web3.utils.hexToNumberString(value)
+        break
+      }
+      default:
+        break
+    }
+
+    return `Hex Value: ${output}`
   }
 
   handleChange = field => event => {
@@ -67,6 +164,11 @@ class ApproveListing extends Component {
       const tx = { ...oldTx, [field]: transaction[field] }
       this.setState({ tx })
     }
+  }
+
+  isTxValid = () => {
+    const { tx } = this.state
+    return validateTx(tx).length === 0
   }
 
   submit(approved) {
@@ -102,6 +204,8 @@ class ApproveListing extends Component {
         <AddressInput
           label="From"
           value={from}
+          error={!!this.validateField('from')}
+          helperText={this.validateField('from')}
           onChange={this.handleAddressInputChange('from')}
           disabled={!edit.from}
         />
@@ -128,6 +232,8 @@ class ApproveListing extends Component {
         <AddressInput
           label="To"
           value={to}
+          error={!!this.validateField('to')}
+          helperText={this.validateField('to')}
           onChange={this.handleAddressInputChange('from')}
           disabled={!edit.to}
         />
@@ -155,6 +261,8 @@ class ApproveListing extends Component {
           variant="outlined"
           label="Gas"
           value={gas}
+          error={!!this.validateField('gas')}
+          helperText={this.validateField('gas') || this.hexHelperText('gas')}
           onChange={this.handleChange('gas')}
           disabled={!edit.gas}
         />
@@ -182,6 +290,10 @@ class ApproveListing extends Component {
           variant="outlined"
           label="Gas Price"
           value={gasPrice}
+          error={!!this.validateField('gasPrice')}
+          helperText={
+            this.validateField('gasPrice') || this.hexHelperText('gasPrice')
+          }
           onChange={this.handleChange('gasPrice')}
           disabled={!edit.gasPrice}
         />
@@ -209,6 +321,10 @@ class ApproveListing extends Component {
           variant="outlined"
           label="Value"
           value={value}
+          error={!!this.validateField('value')}
+          helperText={
+            this.validateField('value') || this.hexHelperText('value')
+          }
           onChange={this.handleChange('value')}
           disabled={!edit.value}
         />
@@ -236,6 +352,10 @@ class ApproveListing extends Component {
           variant="outlined"
           label="Nonce"
           value={nonce}
+          error={!!this.validateField('nonce')}
+          helperText={
+            this.validateField('nonce') || this.hexHelperText('nonce')
+          }
           onChange={this.handleChange('nonce')}
           disabled={!edit.nonce}
         />
@@ -263,6 +383,8 @@ class ApproveListing extends Component {
           variant="outlined"
           label="Data"
           value={data}
+          error={!!this.validateField('data')}
+          helperText={this.validateField('data')}
           onChange={this.handleChange('data')}
           disabled={!edit.data}
           rowsMax={10}
@@ -298,6 +420,7 @@ class ApproveListing extends Component {
         {this.renderData()}
         <RequestActions
           approve={() => this.submit(true)}
+          approveDisabled={!this.isTxValid()}
           reject={() => this.submit(false)}
         />
       </div>
