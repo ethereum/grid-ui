@@ -82,7 +82,7 @@ class ApproveListing extends Component {
             <Identicon
               address={account.address}
               size="small"
-              style={{ verticalAlign: 'middle' }}
+              style={{ verticalAlign: 'middle', marginRight: 5 }}
             />{' '}
             {account.address}
           </div>
