@@ -118,6 +118,8 @@ class ApproveListing extends Component {
       case 'gasPrice': {
         const value = tx.gasPrice
         output = web3.utils.hexToNumberString(value)
+        const gwei = web3.utils.fromWei(output, 'gwei')
+        output += ` (${gwei} gwei)`
         break
       }
       case 'nonce': {
