@@ -82,33 +82,7 @@ class ClefService {
 
   notifyNotification(notification) {
     const title = 'Clef Signer'
-    let body
-    switch (notification.method) {
-      case 'ui_showInfo':
-        body = `Info: ${notification.params[0].text}`
-        break
-      case 'ui_showError':
-        body = `Error: ${notification.params[0].text}`
-        break
-      case 'ui_onApprovedTx':
-        body = 'Transaction Approved'
-        break
-      case 'ui_onSignerStartup': {
-        const { info } = notification.params[0]
-        const httpAddress = info.extapi_http
-        const ipcAddress = info.extapi_ipc
-        body = 'Started on'
-        if (httpAddress !== 'n/a') {
-          body += ` ${httpAddress}`
-        }
-        if (ipcAddress !== 'n/a') {
-          body += ` ${ipcAddress}`
-        }
-        break
-      }
-      default:
-        break
-    }
+    const body = notification.text
     Mist.notify(title, body)
   }
 }

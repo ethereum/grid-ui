@@ -68,7 +68,7 @@ const onClientNotification = (data, client, dispatch) => {
   if (data.method === 'ui_onSignerStartup') {
     const httpAddress = info.extapi_http
     const ipcAddress = info.extapi_ipc
-    text = 'Clef signer started on '
+    text = 'Clef signer started on'
     if (httpAddress !== 'n/a') {
       text += ` ${httpAddress}`
     }
