@@ -4,6 +4,11 @@ import {
   clearRequests,
   clearRequestNotifications
 } from '../requests/actions'
+import {
+  startClientSideEffects,
+  stopClientSideEffects,
+  setConfigSideEffects
+} from './pluginSideEffects'
 
 export const clientError = error => {
   return { type: 'CLIENT:ERROR', error }
@@ -152,7 +157,10 @@ export const setRelease = (clientName, release) => {
 }
 
 export const setConfig = (clientName, config) => {
-  return { type: 'CLIENT:SET_CONFIG', payload: { clientName, config } }
+  return dispatch => {
+    dispatch({ type: 'CLIENT:SET_CONFIG', payload: { clientName, config } })
+    dispatch(setConfigSideEffects(clientName, config))
+  }
 }
 
 export const startClient = (client, release) => {
@@ -161,12 +169,13 @@ export const startClient = (client, release) => {
       const { config } = getState().client[client.name]
       createListeners(client, dispatch)
       client.start(release, config)
-      return dispatch({
+      dispatch({
         type: 'CLIENT:START',
         payload: { clientName: client.name, version: release.version, config }
       })
+      dispatch(startClientSideEffects(client.name))
     } catch (e) {
-      return dispatch({ type: 'CLIENT:START:ERROR', error: e.toString() })
+      dispatch({ type: 'CLIENT:START:ERROR', error: e.toString() })
     }
   }
 }
@@ -177,6 +186,8 @@ export const stopClient = client => {
       client.stop()
       removeListeners(client)
       dispatch({ type: 'CLIENT:STOP', payload: { clientName: client.name } })
+      dispatch(stopClientSideEffects(client.name))
+      // Clear any pending requests and request notifications on stop
       dispatch(clearRequests(client))
       dispatch(clearRequestNotifications(client))
     } catch (e) {

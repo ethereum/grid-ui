@@ -1,5 +1,24 @@
 import React from 'react'
 
+// Network<>chainId Helpers
+const networks = {
+  1: 'main',
+  3: 'ropsten',
+  4: 'rinkeby',
+  5: 'goerli',
+  42: 'kovan',
+  1337: 'private'
+}
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value)
+}
+export const chainIdToNetwork = chainId => {
+  return networks[chainId]
+}
+export const networkToChainId = network => {
+  return getKeyByValue(networks, network)
+}
+
 // calling styled(without('unneededProp')(TheComponent))
 // helps satisfy error of extra StyledComponents props passing into children
 // see: https://github.com/styled-components/styled-components/pull/2093#issuecomment-461510706

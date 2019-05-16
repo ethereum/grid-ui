@@ -1,27 +1,9 @@
 import { Mist } from '../../API'
 import { requestDone } from './actions'
+import { updateConfigValue } from '../client/pluginSideEffects'
+import { chainIdToNetwork } from '../../lib/utils'
 
 const clef = Mist.PluginHost.plugins.filter(plugin => plugin.name === 'clef')[0]
-
-// Helpers
-const networkToChainId = network => {
-  switch (network.toLowerCase()) {
-    case 'main':
-      return 1
-    case 'ropsten':
-      return 3
-    case 'rinkeby':
-      return 4
-    case 'goerli':
-      return 5
-    case 'kovan':
-      return 42
-    case 'private':
-      return 1337
-    default:
-      throw new Error('Unsupported Network: ', network)
-  }
-}
 
 class ClefService {
   send(dispatch, method, params = [], id, result) {
@@ -38,19 +20,16 @@ class ClefService {
     }
   }
 
-  sendSigner(data, config) {
-    const { rpcHost, rpcPort } = config
-    const address = `http://${rpcHost}:${rpcPort}`
-    const body = JSON.stringify(data)
-    fetch(address, {
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      method: 'POST',
-      body
-    })
-  }
-
-  updateChainId(chainId) {
-    this.sendClef({ method: 'clef_setChainId', params: [chainId] })
+  updateChainId(dispatch, getState, chainId) {
+    const method = 'clef_setChainId'
+    const params = [chainId]
+    this.send(dispatch, method, params)
+    dispatch(updateConfigValue('clef', 'chainId', chainId))
+    const networkName = chainIdToNetwork(chainId)
+    Mist.notify(
+      'Clef: Network Updated',
+      `Set to ${networkName} (chain ID: ${chainId})`
+    )
   }
 
   notifyRequest(request) {

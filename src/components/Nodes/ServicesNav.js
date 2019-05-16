@@ -33,7 +33,7 @@ class ServicesTab extends Component {
     handleToggle: PropTypes.func,
     handleSelectClient: PropTypes.func,
     selectedClientName: PropTypes.string,
-    clefRequests: PropTypes.array
+    requestsQueue: PropTypes.array
   }
 
   isDisabled = client => {
@@ -49,11 +49,9 @@ class ServicesTab extends Component {
   }
 
   badgeContent = client => {
-    const { clefRequests } = this.props
-    if (client.name === 'clef') {
-      return clefRequests.length.toString()
-    }
-    return null
+    const { requestsQueue } = this.props
+    const requests = requestsQueue.filter(r => r.client === client.name)
+    return requests.length.toString()
   }
 
   buildListItem = client => {
@@ -124,7 +122,7 @@ function mapStateToProps(state) {
   return {
     clientState: state.client,
     selectedClientName: state.client.selected,
-    clefRequests: state.requests.queue
+    requestsQueue: state.requests.queue
   }
 }
 
