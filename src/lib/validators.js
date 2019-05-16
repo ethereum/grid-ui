@@ -9,7 +9,7 @@ export const ethValidators = {
       return false
     }
     const prefix = v.slice(0, 2).toLowerCase()
-    if (prefix != '0x') {
+    if (prefix !== '0x') {
       return false
     }
     const hex = v.slice(2)

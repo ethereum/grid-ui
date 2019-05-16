@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Typography from '@material-ui/core/Typography'
 
 class RequestInfo extends Component {
   static propTypes = {
