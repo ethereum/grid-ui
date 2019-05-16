@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
 import DynamicConfigForm from './DynamicConfigForm'
 import Terminal from '../Terminal'
-import NodeInfo from '../NodeInfo'
+// import NodeInfo from '../NodeInfo'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
@@ -115,7 +115,7 @@ class ClientConfig extends Component {
       <StyledMain>
         <Typography variant="h5">
           {clientName}
-          {clientName === 'Geth' && <NodeInfo />}
+          {/* clientName === 'Geth' && <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           <StyledState data-test-id="node-state">
