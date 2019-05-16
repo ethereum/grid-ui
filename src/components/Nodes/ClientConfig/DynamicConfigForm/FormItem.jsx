@@ -73,18 +73,21 @@ class DynamicConfigFormItem extends Component {
         })
 
         return (
-          <Select
-            name={label}
-            defaultValue={itemValue}
-            options={options}
-            disabled={isClientRunning}
-            onChange={value => this.handleChange(itemKey, value)}
-          />
+          <div data-test-id={`input-select-${item.id}`}>
+            <Select
+              name={label}
+              defaultValue={itemValue}
+              options={options}
+              disabled={isClientRunning}
+              onChange={value => this.handleChange(itemKey, value)}
+            />
+          </div>
         )
       case 'path':
         return (
           <div>
             <TextField
+              data-test-id={`input-path-${item.id}`}
               variant="outlined"
               label={item.label}
               value={itemValue || ''}
@@ -129,6 +132,7 @@ class DynamicConfigFormItem extends Component {
       default:
         return (
           <TextField
+            data-test-id={`input-text-${item.id}`}
             variant="outlined"
             label={label}
             value={itemValue}
