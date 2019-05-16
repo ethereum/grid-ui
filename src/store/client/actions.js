@@ -48,9 +48,9 @@ const getClientDefaults = client => {
   const clientSettings = getPluginSettings(client)
   if (!clientSettings) return {}
 
-  clientSettings.forEach(function(i) {
+  clientSettings.forEach(i => {
     if ('default' in i) {
-      pluginDefaults[i['id']] = i['default']
+      pluginDefaults[i.id] = i.default
     }
   })
   return pluginDefaults
