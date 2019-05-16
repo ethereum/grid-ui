@@ -1,6 +1,6 @@
 import { Grid } from '../../API'
 import { requestDone } from './actions'
-import { updateConfigValue } from '../client/pluginSideEffects'
+import { updateConfigValue } from '../client/actions'
 import { chainIdToNetwork } from '../../lib/utils'
 
 const clef = Grid.PluginHost.plugins.filter(plugin => plugin.name === 'clef')[0]

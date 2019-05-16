@@ -208,3 +208,21 @@ export const toggleClient = (client, release) => {
     }
   }
 }
+
+export const updateConfigValue = (clientName, key, value) => {
+  return (dispatch, getState) => {
+    const client = getState().client[clientName]
+    if (!client) {
+      return
+    }
+    const { config } = client
+    if (config[key] === value) {
+      return
+    }
+    const newConfig = {
+      ...config,
+      [key]: value
+    }
+    dispatch(setConfig(clientName, newConfig))
+  }
+}
