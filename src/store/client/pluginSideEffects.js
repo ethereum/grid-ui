@@ -39,7 +39,8 @@ export const stopClientSideEffects = clientName => {
 function updateClefChainId(config) {
   return (dispatch, getState) => {
     const newChainId = networkToChainId(config.network)
-    if (newChainId !== getState().client.clef.config.chainId) {
+    const { chainId: clefChainId } = getState().client.clef.config
+    if (newChainId !== clefChainId) {
       Clef.updateChainId(dispatch, getState, newChainId)
     }
   }

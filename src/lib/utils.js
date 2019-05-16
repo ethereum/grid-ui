@@ -16,7 +16,7 @@ export const chainIdToNetwork = chainId => {
   return networks[chainId]
 }
 export const networkToChainId = network => {
-  return getKeyByValue(networks, network)
+  return Number(getKeyByValue(networks, network))
 }
 
 // calling styled(without('unneededProp')(TheComponent))
