@@ -7,10 +7,8 @@ import Select from '../../shared/Select'
 class DynamicConfigForm extends Component {
   static propTypes = {
     handleClientConfigChanged: PropTypes.func.isRequired,
-    settings: PropTypes.object
+    settings: PropTypes.array
   }
-
-  noop = event => console.log('event', event)
 
   wrapGridItem = (el, index) => {
     return (
@@ -27,14 +25,13 @@ class DynamicConfigForm extends Component {
 
   renderFormItem = (entry, props) => {
     const { isClientRunning } = props
-    const [key, item] = entry
-    const label = item.label || key
-    const type = item.options ? 'select' : 'text'
+    const label = entry.label || entry.id
+    const type = entry.options ? 'select' : 'text'
     let options
 
     switch (type) {
       case 'select':
-        options = item.options.map(el => {
+        options = entry.options.map(el => {
           let optionLabel
           let optionValue
 
@@ -57,23 +54,26 @@ class DynamicConfigForm extends Component {
         })
 
         return (
-          <Select
-            name={label}
-            defaultValue={item.default}
-            options={options}
-            disabled={isClientRunning}
-            onChange={value => this.handleChange(key, value)}
-          />
+          <div data-test-id={`input-select-${entry.id}`}>
+            <Select
+              name={label}
+              defaultValue={entry.default}
+              options={options}
+              disabled={isClientRunning}
+              onChange={value => this.handleChange(entry.id, value)}
+            />
+          </div>
         )
       default:
         return (
           <TextField
             variant="outlined"
             label={label}
-            defaultValue={item.default}
+            defaultValue={entry.default}
             disabled={isClientRunning}
             fullWidth
-            onChange={e => this.handleChange(key, e.target.value)}
+            data-test-id={`input-text-${entry.id}`}
+            onChange={e => this.handleChange(entry.id, e.target.value)}
           />
         )
     }
@@ -81,9 +81,9 @@ class DynamicConfigForm extends Component {
 
   render() {
     const { settings } = this.props
-    if (!settings) return <h4>No configuration settings found</h4>
+    if (settings.length === 0) return <h4>No settings found</h4>
 
-    const formItems = Object.entries(settings)
+    const formItems = settings
       .map(entry => this.renderFormItem(entry, this.props))
       .map(this.wrapGridItem)
 
