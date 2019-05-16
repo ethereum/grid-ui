@@ -16,7 +16,7 @@ class Requests extends Component {
   static propTypes = {
     requests: PropTypes.object,
     dispatch: PropTypes.func,
-    client: PropTypes.string
+    clientName: PropTypes.string
   }
 
   navigateNext = () => {
@@ -42,8 +42,8 @@ class Requests extends Component {
   }
 
   send = (method, params, id, result) => {
-    const { client, dispatch } = this.props
-    switch (client) {
+    const { clientName, dispatch } = this.props
+    switch (clientName) {
       case 'clef':
         Clef.send(dispatch, method, params, id, result)
         break

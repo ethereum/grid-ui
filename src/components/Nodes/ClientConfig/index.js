@@ -39,7 +39,7 @@ class ClientConfig extends Component {
     isActiveClient: PropTypes.bool,
     handleReleaseSelect: PropTypes.func,
     handleClientConfigChanged: PropTypes.func,
-    clefRequests: PropTypes.array
+    requestsQueue: PropTypes.array
   }
 
   state = {
@@ -61,6 +61,12 @@ class ClientConfig extends Component {
     }
   }
 
+  badgeContent = client => {
+    const { requestsQueue } = this.props
+    const requests = requestsQueue.filter(r => r.client === client.name)
+    return requests.length.toString()
+  }
+
   handleTabChange = (event, activeTab) => {
     this.setState({ activeTab })
   }
@@ -77,6 +83,11 @@ class ClientConfig extends Component {
 
   getClientSettings = client => {
     return ((client.plugin || {}).config || {}).settings
+  }
+
+  renderPluginNotifications() {
+    const { client } = this.props
+    return <Notifications clientName={client.name} />
   }
 
   renderErrors() {
@@ -105,20 +116,20 @@ class ClientConfig extends Component {
       clientConfigChanged,
       clientStatus,
       isActiveClient,
-      handleReleaseSelect,
-      clefRequests
+      handleReleaseSelect
     } = this.props
     const { activeTab } = this.state
-    const { displayName: clientName } = client || {}
+    const { displayName } = client || {}
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
       client.state
     )
     const settings = this.getClientSettings(client)
+    const clientHasRequestFunctionality = client.plugin.config.requestMethods
 
     return (
       <StyledMain>
         <Typography variant="h5">
-          {clientName}
+          {displayName}
           {/* <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
@@ -127,7 +138,7 @@ class ClientConfig extends Component {
           </StyledState>
         </Typography>
         {this.renderErrors()}
-        {clientName === 'Clef' && <Notifications client="clef" />}
+        {this.renderPluginNotifications()}
         <AppBar style={{ marginTop: 15, marginBottom: 15 }} position="static">
           <Tabs
             value={activeTab}
@@ -138,13 +149,17 @@ class ClientConfig extends Component {
             <Tab label="Version" />
             <Tab label="Settings" />
             <Tab label="Terminal" />
-            {clientName === 'Clef' && (
-              <Tab
-                label=<Badge badgeContent={clefRequests.length} color="primary">
-                  Requests
-                </Badge>
-              />
-            )}
+            <Tab
+              style={{
+                display: clientHasRequestFunctionality ? 'block' : 'none'
+              }}
+              label=<Badge
+                badgeContent={this.badgeContent(client)}
+                color="primary"
+              >
+                Requests
+              </Badge>
+            />
           </Tabs>
         </AppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
@@ -167,7 +182,15 @@ class ClientConfig extends Component {
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />
         </TabContainer>
-        {activeTab === 3 && <Requests client="clef" />}
+        {activeTab === 3 && (
+          <div
+            style={{
+              display: clientHasRequestFunctionality ? 'block' : 'none'
+            }}
+          >
+            <Requests clientName={client.name} />
+          </div>
+        )}
       </StyledMain>
     )
   }
@@ -179,7 +202,7 @@ function mapStateToProps(state) {
   return {
     clientStatus: state.client[selectedClient].active.status,
     isActiveClient: state.client[selectedClient].active.name !== 'STOPPED',
-    clefRequests: state.requests.queue
+    requestsQueue: state.requests.queue
   }
 }
 
