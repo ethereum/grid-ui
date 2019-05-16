@@ -89,7 +89,7 @@ class DynamicConfigFormItem extends Component {
           <div>
             <TextField
               variant="outlined"
-              label="Data Directory"
+              label={item.label}
               value={itemValue || ''}
               onChange={event => this.handleChange(itemKey, event.target.value)}
               disabled={isClientRunning}
