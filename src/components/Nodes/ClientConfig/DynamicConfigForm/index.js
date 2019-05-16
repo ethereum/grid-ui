@@ -36,6 +36,7 @@ class DynamicConfigForm extends Component {
         const [key, item] = entry
         return (
           <FormItem
+            key={key}
             itemKey={key}
             item={item}
             client={client}
