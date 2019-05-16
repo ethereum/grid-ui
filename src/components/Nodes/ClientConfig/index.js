@@ -8,7 +8,6 @@ import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import Badge from '@material-ui/core/Badge'
 import VersionList from './VersionList'
-// import ConfigForm from './ConfigForm'
 import DynamicConfigForm from './DynamicConfigForm'
 import Terminal from '../Terminal'
 // import NodeInfo from '../NodeInfo'
@@ -157,6 +156,7 @@ class ClientConfig extends Component {
         {activeTab === 1 && (
           <TabContainer>
             <DynamicConfigForm
+              clientName={client.name}
               settings={settings}
               handleClientConfigChanged={this.handleClientConfigChanged}
               isClientRunning={isRunning}
