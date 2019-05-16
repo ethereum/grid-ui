@@ -82,14 +82,14 @@ const onClientNotification = (data, client, dispatch) => {
 
 export function createRequestListeners(client, dispatch) {
   client.on('request', data => onClientRequest(data, client, dispatch))
-  client.on('signerNotification', data =>
+  client.on('pluginNotification', data =>
     onClientNotification(data, client, dispatch)
   )
 }
 
 export function removeRequestListeners(client) {
   client.removeAllListeners('request')
-  client.removeAllListeners('signerNotification')
+  client.removeAllListeners('pluginNotification')
 }
 
 export function clearRequests(client) {
