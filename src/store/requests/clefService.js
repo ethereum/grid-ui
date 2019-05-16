@@ -1,9 +1,9 @@
-import { Mist } from '../../API'
+import { Grid } from '../../API'
 import { requestDone } from './actions'
 import { updateConfigValue } from '../client/pluginSideEffects'
 import { chainIdToNetwork } from '../../lib/utils'
 
-const clef = Mist.PluginHost.plugins.filter(plugin => plugin.name === 'clef')[0]
+const clef = Grid.PluginHost.plugins.filter(plugin => plugin.name === 'clef')[0]
 
 class ClefService {
   send(dispatch, method, params = [], id, result) {
@@ -26,7 +26,7 @@ class ClefService {
     this.send(dispatch, method, params)
     dispatch(updateConfigValue('clef', 'chainId', chainId))
     const networkName = chainIdToNetwork(chainId)
-    Mist.notify(
+    Grid.notify(
       'Clef: Network Updated',
       `Set to ${networkName} (chain ID: ${chainId})`
     )
@@ -56,13 +56,13 @@ class ClefService {
       default:
         break
     }
-    Mist.notify(title, body)
+    Grid.notify(title, body)
   }
 
   notifyNotification(notification) {
     const title = 'Clef Signer'
     const body = notification.text
-    Mist.notify(title, body)
+    Grid.notify(title, body)
   }
 }
 
