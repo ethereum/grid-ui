@@ -35,7 +35,8 @@ class ClientConfig extends Component {
     dispatch: PropTypes.func,
     isActiveClient: PropTypes.bool,
     handleReleaseSelect: PropTypes.func,
-    handleClientConfigChanged: PropTypes.func
+    handleClientConfigChanged: PropTypes.func,
+    clientError: PropTypes.string
   }
 
   state = {
@@ -66,9 +67,13 @@ class ClientConfig extends Component {
     handleClientConfigChanged(key, value)
   }
 
-  onDismissError = () => {
-    const { dispatch } = this.props
-    dispatch(clearError())
+  onDismissClientError = () => {
+    const { dispatch, client } = this.props
+    dispatch(clearError(client.name))
+  }
+
+  onDismissDownloadError = () => {
+    this.setState({ downloadError: null })
   }
 
   getClientSettings = client => {
@@ -77,22 +82,33 @@ class ClientConfig extends Component {
 
   renderErrors() {
     const { downloadError } = this.state
-    const { client } = this.props
-    const { error } = client
+    const { clientError } = this.props
 
-    const errorMessage = (error && error.toString()) || downloadError
+    const renderErrors = []
 
-    if (!errorMessage) {
-      return null
+    if (clientError) {
+      renderErrors.push(
+        <Notification
+          key={1}
+          type="error"
+          message={clientError}
+          onDismiss={this.onDismissClientError}
+        />
+      )
     }
 
-    return (
-      <Notification
-        type="error"
-        message={errorMessage}
-        onDismiss={this.onDismissError}
-      />
-    )
+    if (downloadError) {
+      renderErrors.push(
+        <Notification
+          key={2}
+          type="error"
+          message={downloadError}
+          onDismiss={this.onDismissDownloadError}
+        />
+      )
+    }
+
+    return renderErrors
   }
 
   render() {
@@ -164,6 +180,7 @@ function mapStateToProps(state) {
 
   return {
     clientStatus: state.client[selectedClient].active.status,
+    clientError: state.client[selectedClient].error,
     isActiveClient: state.client[selectedClient].active.name !== 'STOPPED'
   }
 }
