@@ -83,7 +83,8 @@ const client = (state = initialState, action) => {
         [clientName]: {
           ...initialClientState,
           ...state[clientName],
-          active: { ...activeState, version }
+          active: { ...activeState, version },
+          error: null
         }
       }
     }
@@ -169,8 +170,15 @@ const client = (state = initialState, action) => {
       const { peerCount } = action.payload
       return { ...state, peerCount }
     }
-    case '[CLIENT]:GETH:CLEAR_ERROR': {
-      return { ...state, error: null }
+    case 'CLIENT:CLEAR_ERROR': {
+      const { clientName } = action.payload
+      return {
+        ...state,
+        [clientName]: {
+          ...state[clientName],
+          error: null
+        }
+      }
     }
     default:
       return state

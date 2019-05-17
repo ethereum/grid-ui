@@ -137,9 +137,10 @@ export const updateSyncMode = ({ syncMode }) => {
   }
 }
 
-export const clearError = () => {
+export const clearError = clientName => {
   return {
-    type: '[CLIENT]:GETH:CLEAR_ERROR'
+    type: 'CLIENT:CLEAR_ERROR',
+    payload: { clientName }
   }
 }
 
