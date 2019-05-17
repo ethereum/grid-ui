@@ -25,6 +25,15 @@ export default class VersionListItem extends Component {
     downloadProgress: 0
   }
 
+  componentDidMount() {
+    // @see https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
+    this._isMounted = true
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
   releaseDisplayName = release => {
     const { client } = this.props
     const { fileName } = release
@@ -58,12 +67,14 @@ export default class VersionListItem extends Component {
       let localRelease
       try {
         localRelease = await client.download(release, downloadProgress => {
-          this.setState({ downloadProgress })
+          if (this._isMounted) this.setState({ downloadProgress })
         })
       } catch (error) {
         handleDownloadError(error)
       }
-      this.setState({ isDownloading: false, downloadProgress: 0 })
+      if (this._isMounted) {
+        this.setState({ isDownloading: false, downloadProgress: 0 })
+      }
       handleReleaseDownloaded(localRelease)
     })
   }
