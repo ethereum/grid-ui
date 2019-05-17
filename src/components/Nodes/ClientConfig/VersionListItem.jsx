@@ -72,8 +72,9 @@ export default class VersionListItem extends Component {
       } catch (error) {
         handleDownloadError(error)
       }
-      if (this._isMounted)
+      if (this._isMounted) {
         this.setState({ isDownloading: false, downloadProgress: 0 })
+      }
       handleReleaseDownloaded(localRelease)
     })
   }
