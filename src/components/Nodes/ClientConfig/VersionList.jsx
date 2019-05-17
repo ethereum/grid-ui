@@ -158,7 +158,7 @@ class VersionList extends Component {
   }
 
   renderLatestVersionWarning = () => {
-    const { classes, release } = this.props
+    const { classes, release, client } = this.props
     const { releases } = this.state
     if (!release.version || releases.length === 0) {
       return null
@@ -173,8 +173,7 @@ class VersionList extends Component {
           message={
             <span>
               <WarningIcon classes={{ root: classes.warningIcon }} /> You are
-              using an older version of Geth ({selectedVersion})<br />
-              New releases contain performance and security enhancements.
+              using an older version of {client.displayName}
             </span>
           }
           action={
@@ -183,7 +182,7 @@ class VersionList extends Component {
                 this.handleReleaseSelect(latestRelease)
               }}
             >
-              Use {latestVersion}
+              Use {latestVersion.split('-')[0]}
             </Button>
           }
         />
