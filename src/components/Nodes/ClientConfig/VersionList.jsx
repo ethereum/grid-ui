@@ -154,17 +154,16 @@ class VersionList extends Component {
   }
 
   renderWarnings = () => {
-    // TODO:
-    // return <div>{this.renderLatestVersionWarning()}</div>
+    return <div>{this.renderLatestVersionWarning()}</div>
   }
 
   renderLatestVersionWarning = () => {
     const { classes, release } = this.props
     const { releases } = this.state
-    if (!release || !releases.length) {
+    if (!release.version || releases.length === 0) {
       return null
     }
-    const latestRelease = this.allReleases()[0]
+    const latestRelease = releases[0]
     const latestVersion = latestRelease.version
     const selectedVersion = release.version
     if (semver.compare(selectedVersion, latestVersion)) {
