@@ -12,6 +12,7 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 import WarningIcon from '@material-ui/icons/Warning'
 import amber from '@material-ui/core/colors/amber'
 import Spinner from '../../shared/Spinner'
+import Notification from '../../shared/Notification'
 import { setRelease } from '../../../store/client/actions'
 import VersionListItem from './VersionListItem'
 
@@ -73,6 +74,10 @@ class VersionList extends Component {
       this.setState({ releases: [] })
       this.loadReleases(nextClient)
     }
+  }
+
+  dismissDownloadError = () => {
+    this.setState({ downloadError: null })
   }
 
   loadReleases = async client => {
@@ -222,6 +227,20 @@ class VersionList extends Component {
     )
   }
 
+  renderDownloadError = () => {
+    const { downloadError } = this.state
+    if (downloadError) {
+      return (
+        <Notification
+          type="error"
+          message={downloadError}
+          onDismiss={this.dismissDownloadError}
+        />
+      )
+    }
+    return null
+  }
+
   renderVersionList = () => {
     const { client } = this.props
     const { releases } = this.state
@@ -254,8 +273,8 @@ class VersionList extends Component {
       <div>
         {this.renderVersionsAvailable()}
         {this.renderWarnings()}
+        {this.renderDownloadError()}
         {this.renderVersionList()}
-        {downloadError && <StyledError>{downloadError.message}</StyledError>}
       </div>
     )
   }

@@ -170,6 +170,16 @@ const client = (state = initialState, action) => {
       const { peerCount } = action.payload
       return { ...state, peerCount }
     }
+    case 'CLIENT:ERROR': {
+      const { clientName, error } = action.payload
+      return {
+        ...state,
+        [clientName]: {
+          ...state[clientName],
+          error
+        }
+      }
+    }
     case 'CLIENT:CLEAR_ERROR': {
       const { clientName } = action.payload
       return {

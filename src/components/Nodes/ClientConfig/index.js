@@ -40,8 +40,7 @@ class ClientConfig extends Component {
   }
 
   state = {
-    activeTab: 0,
-    downloadError: null
+    activeTab: 0
   }
 
   componentDidUpdate(prevProps) {
@@ -67,13 +66,9 @@ class ClientConfig extends Component {
     handleClientConfigChanged(key, value)
   }
 
-  onDismissClientError = () => {
+  dismissClientError = () => {
     const { dispatch, client } = this.props
     dispatch(clearError(client.name))
-  }
-
-  onDismissDownloadError = () => {
-    this.setState({ downloadError: null })
   }
 
   getClientSettings = client => {
@@ -81,34 +76,17 @@ class ClientConfig extends Component {
   }
 
   renderErrors() {
-    const { downloadError } = this.state
     const { clientError } = this.props
-
-    const renderErrors = []
-
     if (clientError) {
-      renderErrors.push(
+      return (
         <Notification
-          key={1}
           type="error"
           message={clientError}
-          onDismiss={this.onDismissClientError}
+          onDismiss={this.dismissClientError}
         />
       )
     }
-
-    if (downloadError) {
-      renderErrors.push(
-        <Notification
-          key={2}
-          type="error"
-          message={downloadError}
-          onDismiss={this.onDismissDownloadError}
-        />
-      )
-    }
-
-    return renderErrors
+    return null
   }
 
   render() {

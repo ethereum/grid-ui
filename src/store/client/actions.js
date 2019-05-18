@@ -1,5 +1,5 @@
-export const clientError = error => {
-  return { type: 'CLIENT:ERROR', error }
+export function clientError(clientName, error) {
+  return { type: 'CLIENT:ERROR', payload: { clientName, error } }
 }
 
 export function onConnectionUpdate(clientName, status) {
@@ -25,7 +25,7 @@ function createListeners(client, dispatch) {
   client.on('disconnect', () =>
     dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
   )
-  client.on('error', e => dispatch(clientError(e)))
+  client.on('error', error => dispatch(clientError(client.name, error)))
 }
 
 function removeListeners(client) {
