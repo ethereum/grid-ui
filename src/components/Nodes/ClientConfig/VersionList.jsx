@@ -268,7 +268,6 @@ class VersionList extends Component {
   }
 
   render() {
-    const { downloadError } = this.state
     return (
       <div>
         {this.renderVersionsAvailable()}
@@ -295,10 +294,6 @@ const StyledList = styled(List)`
 
 const RemoteReleaseLoadingSpinner = styled(Spinner)`
   margin-left: 10px;
-`
-
-const StyledError = styled.div`
-  color: red;
 `
 
 const StyledDownloadedVersions = styled.span`
