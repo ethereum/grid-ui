@@ -39,14 +39,18 @@ function removeListeners(client) {
 }
 
 const getPluginSettings = c => {
-  return ((c.plugin || {}).config || {}).settings || {}
+  try {
+    const settings = c.plugin.config.settings // eslint-disable-line
+    return Array.isArray(settings) ? settings : []
+  } catch (e) {
+    return []
+  }
 }
 
 const getClientDefaults = client => {
   const pluginDefaults = {}
 
   const clientSettings = getPluginSettings(client)
-  if (!clientSettings) return {}
 
   clientSettings.forEach(i => {
     if ('default' in i) {
@@ -59,8 +63,8 @@ const getClientDefaults = client => {
 export const initClient = client => {
   return dispatch => {
     const clientData = client.plugin.config
+    const config = getClientDefaults(client)
 
-    const config = clientData.config ? getClientDefaults(client) : {}
     dispatch({
       type: 'CLIENT:INIT',
       payload: {
