@@ -129,9 +129,9 @@ class ClientConfig extends Component {
             textColor="primary"
             indicatorColor="primary"
           >
-            <Tab label="Version" />
-            <Tab label="Settings" />
-            <Tab label="Terminal" />
+            <Tab label="Version" data-test-id="navbar-item-version" />
+            <Tab label="Settings" data-test-id="navbar-item-settings" />
+            <Tab label="Terminal" data-test-id="navbar-item-terminal" />
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>

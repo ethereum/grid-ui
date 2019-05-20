@@ -6,7 +6,7 @@ import FormItem from './FormItem'
 
 class DynamicConfigForm extends Component {
   static propTypes = {
-    settings: PropTypes.object,
+    settings: PropTypes.array,
     clientName: PropTypes.string,
     client: PropTypes.object,
     isClientRunning: PropTypes.bool,
@@ -31,13 +31,12 @@ class DynamicConfigForm extends Component {
     } = this.props
     if (!settings) return <h4>No configuration settings found</h4>
 
-    const formItems = Object.entries(settings)
-      .map(entry => {
-        const [key, item] = entry
+    const formItems = settings
+      .map(item => {
         return (
           <FormItem
-            key={key}
-            itemKey={key}
+            key={item.id}
+            itemKey={item.id}
             item={item}
             client={client}
             clientName={clientName}

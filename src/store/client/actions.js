@@ -38,11 +38,29 @@ function removeListeners(client) {
   client.removeAllListeners('error')
 }
 
+const getPluginSettings = c => {
+  return ((c.plugin || {}).config || {}).settings || {}
+}
+
+const getClientDefaults = client => {
+  const pluginDefaults = {}
+
+  const clientSettings = getPluginSettings(client)
+  if (!clientSettings) return {}
+
+  clientSettings.forEach(i => {
+    if ('default' in i) {
+      pluginDefaults[i.id] = i.default
+    }
+  })
+  return pluginDefaults
+}
+
 export const initClient = client => {
   return dispatch => {
     const clientData = client.plugin.config
-    // TODO: finalize pattern for default configs
-    const config = clientData.config ? clientData.config.default : {}
+
+    const config = clientData.config ? getClientDefaults(client) : {}
     dispatch({
       type: 'CLIENT:INIT',
       payload: {
