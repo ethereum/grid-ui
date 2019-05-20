@@ -154,17 +154,16 @@ class VersionList extends Component {
   }
 
   renderWarnings = () => {
-    // TODO:
-    // return <div>{this.renderLatestVersionWarning()}</div>
+    return <div>{this.renderLatestVersionWarning()}</div>
   }
 
   renderLatestVersionWarning = () => {
-    const { classes, release } = this.props
+    const { classes, release, client } = this.props
     const { releases } = this.state
-    if (!release || !releases.length) {
+    if (!release.version || releases.length === 0) {
       return null
     }
-    const latestRelease = this.allReleases()[0]
+    const latestRelease = releases[0]
     const latestVersion = latestRelease.version
     const selectedVersion = release.version
     if (semver.compare(selectedVersion, latestVersion)) {
@@ -174,8 +173,7 @@ class VersionList extends Component {
           message={
             <span>
               <WarningIcon classes={{ root: classes.warningIcon }} /> You are
-              using an older version of Geth ({selectedVersion})<br />
-              New releases contain performance and security enhancements.
+              using an older version of {client.displayName}
             </span>
           }
           action={
@@ -184,7 +182,7 @@ class VersionList extends Component {
                 this.handleReleaseSelect(latestRelease)
               }}
             >
-              Use {latestVersion}
+              Use {latestVersion.split('-')[0]}
             </Button>
           }
         />
