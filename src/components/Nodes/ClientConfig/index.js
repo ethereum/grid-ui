@@ -12,6 +12,7 @@ import Terminal from '../Terminal'
 // import NodeInfo from '../NodeInfo'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
+import ErrorBoundary from '../../GenericErrorBoundary'
 
 function TabContainer(props) {
   const { children, style } = props
@@ -142,13 +143,15 @@ class ClientConfig extends Component {
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>
-            <DynamicConfigForm
-              clientName={client.name}
-              settings={settings}
-              handleClientConfigChanged={this.handleClientConfigChanged}
-              isClientRunning={isRunning}
-              clientConfigChanged={clientConfigChanged}
-            />
+            <ErrorBoundary>
+              <DynamicConfigForm
+                clientName={client.name}
+                settings={settings}
+                handleClientConfigChanged={this.handleClientConfigChanged}
+                isClientRunning={isRunning}
+                clientConfigChanged={clientConfigChanged}
+              />
+            </ErrorBoundary>
           </TabContainer>
         )}
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
