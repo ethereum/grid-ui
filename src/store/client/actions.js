@@ -8,6 +8,28 @@ export function onConnectionUpdate(clientName, status) {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
 }
 
+const getPluginSettings = c => {
+  try {
+    const settings = c.plugin.config.settings // eslint-disable-line
+    return Array.isArray(settings) ? settings : []
+  } catch (e) {
+    return []
+  }
+}
+
+const getClientDefaults = client => {
+  const pluginDefaults = {}
+
+  const clientSettings = getPluginSettings(client)
+
+  clientSettings.forEach(i => {
+    if ('default' in i) {
+      pluginDefaults[i.id] = i.default
+    }
+  })
+  return pluginDefaults
+}
+
 export const initClient = client => {
   return dispatch => {
     const clientData = client.plugin.config
