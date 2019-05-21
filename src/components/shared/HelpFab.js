@@ -13,7 +13,12 @@ class HelpFab extends React.Component {
       <Fab
         onClick={this.handleButtonClick}
         color="primary"
-        style={{ position: 'fixed', right: 20, bottom: 20 }}
+        style={{
+          position: 'fixed',
+          right: 20,
+          bottom: 20,
+          transform: 'translate3d(0, 0, 0)'
+        }}
       >
         <FeedbackIcon />
       </Fab>
