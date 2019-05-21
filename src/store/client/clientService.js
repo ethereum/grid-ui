@@ -23,7 +23,7 @@ class ClientService {
   }
 
   resume(client, dispatch) {
-    this.watchForPeers(client, dispatch)
+    if (client.type === 'client') this.watchForPeers(client, dispatch)
     this.createListeners(client, dispatch)
     this.onConnect(client, dispatch)
   }
@@ -153,30 +153,33 @@ class ClientService {
   onConnect(client, dispatch) {
     dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
 
-    const startSubscriptions = async () => {
-      const result = await client.rpc('eth_syncing')
-      if (result === false) {
-        // Not syncing, start newHeads subscription
-        this.startNewHeadsSubscription(client, dispatch)
-      } else {
-        // Subscribe to syncing
-        this.startSyncingSubscription(client, dispatch)
+    // Only start block subscriptions for `client` plugins
+    if (client.type === 'client') {
+      const startSubscriptions = async () => {
+        const result = await client.rpc('eth_syncing')
+        if (result === false) {
+          // Not syncing, start newHeads subscription
+          this.startNewHeadsSubscription(client, dispatch)
+        } else {
+          // Subscribe to syncing
+          this.startSyncingSubscription(client, dispatch)
+        }
       }
-    }
 
-    const setLastBlock = () => {
-      client.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
-        const { number: hexBlockNumber, timestamp: hexTimestamp } = block
-        const blockNumber = Number(toNumberString(hexBlockNumber))
-        const timestamp = Number(toNumberString(hexTimestamp))
-        dispatch(newBlock(client.name, blockNumber, timestamp))
-      })
-    }
+      const setLastBlock = () => {
+        client.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
+          const { number: hexBlockNumber, timestamp: hexTimestamp } = block
+          const blockNumber = Number(toNumberString(hexBlockNumber))
+          const timestamp = Number(toNumberString(hexTimestamp))
+          dispatch(newBlock(client.name, blockNumber, timestamp))
+        })
+      }
 
-    setTimeout(() => {
-      setLastBlock()
-      startSubscriptions()
-    }, 2000)
+      setTimeout(() => {
+        setLastBlock()
+        startSubscriptions()
+      }, 2000)
+    }
   }
 
   async startNewHeadsSubscription(client, dispatch) {
