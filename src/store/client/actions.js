@@ -1,3 +1,5 @@
+import { generateFlags } from '../../lib/flags'
+
 export const clientError = error => {
   return { type: 'CLIENT:ERROR', error }
 }
@@ -38,9 +40,9 @@ function removeListeners(client) {
   client.removeAllListeners('error')
 }
 
-const getPluginSettings = c => {
+const getPluginSettings = client => {
   try {
-    const settings = c.plugin.config.settings // eslint-disable-line
+    const settings = client.plugin.config.settings // eslint-disable-line
     return Array.isArray(settings) ? settings : []
   } catch (e) {
     return []
@@ -161,13 +163,15 @@ export const startClient = (client, release) => {
     try {
       const { config } = getState().client[client.name]
       createListeners(client, dispatch)
-      client.start(release, config)
+      const settings = getPluginSettings(client)
+      const flags = generateFlags(config, settings)
+      client.start(release, flags, config)
       return dispatch({
         type: 'CLIENT:START',
         payload: { clientName: client.name, version: release.version, config }
       })
-    } catch (e) {
-      return dispatch({ type: 'CLIENT:START:ERROR', error: e.toString() })
+    } catch (error) {
+      return dispatch({ type: 'CLIENT:START:ERROR', error: error.toString() })
     }
   }
 }

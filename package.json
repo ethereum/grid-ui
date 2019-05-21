@@ -51,6 +51,7 @@
   "ignore": {},
   "devDependencies": {
     "babel-register": "^6.26.0",
+    "chai": "^4.2.0",
     "colors": "^1.3.0",
     "create-react-app-extensions": "^1.0.5",
     "cross-env": "^5.2.0",
