@@ -1,26 +1,23 @@
-/* eslint-disable */
-import { assert } from 'chai'
 import { generateFlags } from '../lib/flags'
 
-describe('generateFlags', function() {
-  it('should handle an empty settings', function() {
+describe('generateFlags', () => {
+  it('should handle an empty settings', () => {
     const input = {}
     const settings = []
     const flags = generateFlags(input, settings)
 
-    assert.isArray(flags)
-    assert.deepEqual(flags, [])
+    expect(flags).toEqual([])
   })
 
-  it('should parse basic field', function() {
+  it('should parse basic field', () => {
     const input = { network: '' }
     const settings = [{ id: 'network', flag: '--rinkeby' }]
     const flags = generateFlags(input, settings)
 
-    assert.deepEqual(flags, ['--rinkeby'])
+    expect(flags).toEqual(['--rinkeby'])
   })
 
-  it('should parse some basic fields', function() {
+  it('should parse some basic fields', () => {
     const input = {
       network: '',
       debug: '',
@@ -33,12 +30,12 @@ describe('generateFlags', function() {
     ]
     const flags = generateFlags(input, settings)
 
-    assert.include(flags, '--rinkeby')
-    assert.include(flags, '--debug')
-    assert.include(flags, '--no-discovery')
+    expect(flags).toContain('--rinkeby')
+    expect(flags).toContain('--debug')
+    expect(flags).toContain('--no-discovery')
   })
 
-  it('should parse text values', function() {
+  it('should parse text values', () => {
     const input = {
       cache: '1024',
       syncmode: 'light'
@@ -49,10 +46,10 @@ describe('generateFlags', function() {
     ]
     const flags = generateFlags(input, settings)
 
-    assert.deepEqual(flags, ['--cache', '1024', '--syncmode', 'light'])
+    expect(flags).toEqual(['--cache', '1024', '--syncmode', 'light'])
   })
 
-  it('should parse simple options', function() {
+  it('should parse simple options', () => {
     const input = {
       syncmode: 'light'
     }
@@ -65,10 +62,10 @@ describe('generateFlags', function() {
     ]
 
     const flags = generateFlags(input, settings)
-    assert.deepEqual(flags, ['--syncmode', 'light'])
+    expect(flags).toEqual(['--syncmode', 'light'])
   })
 
-  it('should parse full options', function() {
+  it('should parse full options', () => {
     const input = {
       network: 'rinkeby'
     }
@@ -84,10 +81,10 @@ describe('generateFlags', function() {
     ]
 
     const flags = generateFlags(input, settings)
-    assert.deepEqual(flags, ['--rinkeby'])
+    expect(flags).toEqual(['--rinkeby'])
   })
 
-  it('full options should allow empty flags', function() {
+  it('full options should allow empty flags', () => {
     const input = {
       network: 'mainnet'
     }
@@ -102,10 +99,10 @@ describe('generateFlags', function() {
     ]
 
     const flags = generateFlags(input, settings)
-    assert.deepEqual(flags, [])
+    expect(flags).toEqual([])
   })
 
-  it('should parse value with full options', function() {
+  it('should parse value with full options', () => {
     const input = {
       syncmode: 'light'
     }
@@ -120,33 +117,33 @@ describe('generateFlags', function() {
     ]
 
     const flags = generateFlags(input, settings)
-    assert.deepEqual(flags, ['--syncmode', 'light', '--maxpeers=100'])
+    expect(flags).toEqual(['--syncmode', 'light', '--maxpeers=100'])
   })
 })
 
-describe('generateFlags error handling', function() {
-  it('should throw if settings is not an array', function() {
+describe('generateFlags error handling', () => {
+  it('should throw if settings is not an array', () => {
     const input = {}
     const settings = {
       cache: { flag: '--cache %s' },
       syncmode: { flag: '--syncmode %s' }
     }
 
-    assert.throws(function() {
-      generateFlags(input, settings)
-    }, 'Settings must be an Array instance')
+    expect(() => generateFlags(input, settings)).toThrow(
+      'Settings must be an Array instance'
+    )
   })
 
-  it('should throw for basic field without flag', function() {
+  it('should throw for basic field without flag', () => {
     const input = { network: 'main' }
     const settings = [{ id: 'network' }]
 
-    assert.throws(function() {
-      generateFlags(input, settings)
-    }, 'Config entry "network" must have the "flag" key')
+    expect(() => generateFlags(input, settings)).toThrow(
+      'Config entry "network" must have the "flag" key'
+    )
   })
 
-  it('should throw for simple options without flag', function() {
+  it('should throw for simple options without flag', () => {
     const input = { sync: 'fast' }
     const settings = [
       {
@@ -155,12 +152,12 @@ describe('generateFlags error handling', function() {
       }
     ]
 
-    assert.throws(function() {
-      generateFlags(input, settings)
-    }, 'Option "fast" must have the "flag" key')
+    expect(() => generateFlags(input, settings)).toThrow(
+      'Option "fast" must have the "flag" key'
+    )
   })
 
-  it('should throw for full options without flag', function() {
+  it('should throw for full options without flag', () => {
     const input = { network: 'main' }
     const settings = [
       {
@@ -169,8 +166,8 @@ describe('generateFlags error handling', function() {
       }
     ]
 
-    assert.throws(function() {
-      generateFlags(input, settings)
-    }, 'Option "main" must have the "flag" key')
+    expect(() => generateFlags(input, settings)).toThrow(
+      'Option "main" must have the "flag" key'
+    )
   })
 })
