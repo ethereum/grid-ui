@@ -82,13 +82,16 @@ class CustomizedInputBase extends React.Component {
           <ArrowIcon />
         </IconButton>
         <Divider className={classes.divider} />
+        {/*
         <Button
           onClick={() =>
-            this.navigate('package://github.com/ethereum/remix-ide')
+            // this.navigate('package://github.com/ethereum/remix-ide')
+            this.navigate('package://24f0c0e4272ca1bbb7e32fe1d8bf87367b169f74415e48eb9f2ca4552759ef5c')
           }
         >
           Remix IDE
         </Button>
+         */}
         <Divider className={classes.divider} />
         <IconButton onClick={() => onOpenDevTools()}>
           <BuildIcon />

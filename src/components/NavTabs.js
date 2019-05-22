@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import NodesTab from './Nodes'
-import WebviewTab from './Webview'
+import AppsTab from './Apps'
 
 const styles = theme => ({
   root: {
@@ -68,14 +68,7 @@ class NavTabs extends React.Component {
             indicatorColor="primary"
           >
             <Tab label="Nodes" data-test-id="navbar-item-nodes" />
-            <Tab label="Network" data-test-id="navbar-item-network" disabled />
-            <Tab
-              label="Transactions"
-              data-test-id="navbar-item-transactions"
-              disabled
-            />
-            <Tab label="Tools" data-test-id="navbar-item-tools" disabled />
-            <Tab label="Webview" data-test-id="navbar-item-webview" />
+            <Tab label="Apps" data-test-id="navbar-item-apps" />
           </Tabs>
         </AppBar>
 
@@ -90,28 +83,10 @@ class NavTabs extends React.Component {
         </Typography>
 
         <TabContainer style={{ display: activeTab === 1 ? 'block' : 'none' }}>
-          <Typography component="h6">Network</Typography>
-        </TabContainer>
-
-        <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
-          <Typography component="h6">Transactions</Typography>
-        </TabContainer>
-
-        <TabContainer style={{ display: activeTab === 3 ? 'block' : 'none' }}>
-          <Typography component="h6">Tools</Typography>
-        </TabContainer>
-
-        <Typography
-          component="div"
-          classes={{ root: classes.fullWidth }}
-          style={{
-            display: activeTab === 4 ? 'inherit' : 'none'
-          }}
-        >
           <div style={{ marginTop: 50, width: '100%' }}>
-            <WebviewTab />
+            <AppsTab />
           </div>
-        </Typography>
+        </TabContainer>
       </div>
     )
   }
