@@ -5,7 +5,6 @@ import Paper from '@material-ui/core/Paper'
 import InputBase from '@material-ui/core/InputBase'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
 import ArrowIcon from '@material-ui/icons/ArrowForward'
 import BuildIcon from '@material-ui/icons/Build'
 
