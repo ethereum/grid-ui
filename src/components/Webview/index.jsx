@@ -1,16 +1,31 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import UrlBar from './UrlBar'
 
 class Webview extends React.Component {
+  static propTypes = {
+    url: PropTypes.string
+  }
+
   state = {
-    currentUrl: 'http://localhost:3000'
+    currentUrl: 'http://localhost:3000',
+    showUrlBar: true
   }
 
   componentDidMount() {
+    const { url } = this.props
+    const { currentUrl } = this.state
     const { webview } = this
     webview.addEventListener('will-navigate', this.handleWillNavigate)
     webview.addEventListener('ipc-message', this.handleIpcMessage)
     webview.addEventListener('dom-ready', this.handleDomReady)
+    if (url) {
+      this.setState({
+        currentUrl: url,
+        // if url is localhost:3000 -> "dev app" -> show url bar
+        showUrlBar: url === currentUrl
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -50,13 +65,15 @@ class Webview extends React.Component {
   }
 
   render() {
-    const { currentUrl } = this.state
+    const { currentUrl, showUrlBar } = this.state
     return (
       <div style={{ width: '100%' }}>
-        <UrlBar
-          onOpenDevTools={this.openDevTools}
-          onNavigate={this.handleNavigate}
-        />
+        {showUrlBar && (
+          <UrlBar
+            onOpenDevTools={this.openDevTools}
+            onNavigate={this.handleNavigate}
+          />
+        )}
         <div style={{ width: '100%', marginTop: 10 }}>
           <webview
             ref={ref => {

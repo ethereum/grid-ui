@@ -1,16 +1,17 @@
 import ClientService from './clientService'
+import { generateFlags } from '../../lib/flags'
 
 export const clientError = (clientName, error) => {
   return { type: 'CLIENT:ERROR', error, payload: { clientName } }
 }
 
-export function onConnectionUpdate(clientName, status) {
+export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
 }
 
-const getPluginSettings = c => {
+const getPluginSettings = client => {
   try {
-    const settings = c.plugin.config.settings // eslint-disable-line
+    const settings = client.plugin.config.settings // eslint-disable-line
     return Array.isArray(settings) ? settings : []
   } catch (e) {
     return []
@@ -122,13 +123,15 @@ export const startClient = (client, release) => {
   return (dispatch, getState) => {
     try {
       const { config } = getState().client[client.name]
-      ClientService.start(client, release, config, dispatch)
+      const settings = getPluginSettings(client)
+      const flags = generateFlags(config, settings)
+      ClientService.start(client, release, flags, config, dispatch)
       return dispatch({
         type: 'CLIENT:START',
         payload: { clientName: client.name, version: release.version, config }
       })
-    } catch (e) {
-      return dispatch({ type: 'CLIENT:START:ERROR', error: e.toString() })
+    } catch (error) {
+      return dispatch({ type: 'CLIENT:START:ERROR', error: error.toString() })
     }
   }
 }
