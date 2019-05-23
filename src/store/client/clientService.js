@@ -31,9 +31,9 @@ class ClientService {
   stop(client) {
     client.stop()
     clearInterval(this.peerCountInterval)
-    this.unsubscribeSyncingSubscription(this.syncingSubscriptionId)
-    this.unsubscribeNewHeadsSubscription(this.newHeadsSubscriptionId)
-    this.removeListeners()
+    this.unsubscribeSyncingSubscription(client)
+    this.unsubscribeNewHeadsSubscription(client)
+    this.removeListeners(client)
   }
 
   watchForPeers(client, dispatch) {
