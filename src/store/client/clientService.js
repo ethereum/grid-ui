@@ -16,8 +16,8 @@ const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
 // TODO: store 'client' and 'dispatch' on start/resume?
 
 class ClientService {
-  start(client, release, config, dispatch) {
-    client.start(release, config)
+  start(client, release, flags, config, dispatch) {
+    client.start(release, flags, config)
     this.watchForPeers(client, dispatch)
     this.createListeners(client, dispatch)
   }
