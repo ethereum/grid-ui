@@ -1,43 +1,12 @@
+import ClientService from './clientService'
 import { generateFlags } from '../../lib/flags'
 
-export const clientError = error => {
-  return { type: 'CLIENT:ERROR', error }
+export const clientError = (clientName, error) => {
+  return { type: 'CLIENT:ERROR', error, payload: { clientName } }
 }
 
-export function onConnectionUpdate(clientName, status) {
+export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
-}
-
-function createListeners(client, dispatch) {
-  client.on('starting', () =>
-    dispatch(onConnectionUpdate(client.name, 'STARTING'))
-  )
-  client.on('started', () =>
-    dispatch(onConnectionUpdate(client.name, 'STARTED'))
-  )
-  client.on('connected', () =>
-    dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
-  )
-  client.on('stopping', () =>
-    dispatch(onConnectionUpdate(client.name, 'STOPPING'))
-  )
-  client.on('stopped', () =>
-    dispatch(onConnectionUpdate(client.name, 'STOPPED'))
-  )
-  client.on('disconnect', () =>
-    dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
-  )
-  client.on('error', e => dispatch(clientError(e)))
-}
-
-function removeListeners(client) {
-  client.removeAllListeners('starting')
-  client.removeAllListeners('started')
-  client.removeAllListeners('connected')
-  client.removeAllListeners('stopping')
-  client.removeAllListeners('stopped')
-  client.removeAllListeners('disconnect')
-  client.removeAllListeners('error')
 }
 
 const getPluginSettings = client => {
@@ -78,29 +47,26 @@ export const initClient = client => {
     })
 
     if (client.isRunning) {
-      createListeners(client, dispatch)
-      dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
+      ClientService.resume(client, dispatch)
     }
   }
 }
 
-export const newBlock = ({ blockNumber, timestamp }) => {
+export const newBlock = (clientName, blockNumber, timestamp) => {
   return {
-    type: '[CLIENT]:GETH:UPDATE_NEW_BLOCK',
-    payload: { blockNumber, timestamp }
+    type: 'CLIENT:UPDATE_NEW_BLOCK',
+    payload: { clientName, blockNumber, timestamp }
   }
 }
 
-export const updateSyncing = ({
-  startingBlock,
-  currentBlock,
-  highestBlock,
-  knownStates,
-  pulledStates
-}) => {
+export const updateSyncing = (
+  clientName,
+  { startingBlock, currentBlock, highestBlock, knownStates, pulledStates }
+) => {
   return {
-    type: '[CLIENT]:GETH:UPDATE_SYNCING',
+    type: 'CLIENT:UPDATE_SYNCING',
     payload: {
+      clientName,
       startingBlock,
       currentBlock,
       highestBlock,
@@ -110,34 +76,29 @@ export const updateSyncing = ({
   }
 }
 
-export const updatePeerCount = ({ peerCount }) => {
+export const updatePeerCount = (clientName, peerCount) => {
   return (dispatch, getState) => {
-    if (peerCount !== getState().client.peerCount) {
+    if (peerCount !== getState().client[clientName].active.peerCount) {
       dispatch({
-        type: '[CLIENT]:GETH:UPDATE_PEER_COUNT',
-        payload: { peerCount }
+        type: 'CLIENT:UPDATE_PEER_COUNT',
+        payload: { clientName, peerCount }
       })
     }
   }
 }
 
-export const updateNetwork = ({ network }) => {
+export const updatePeerCountError = (clientName, message) => {
   return {
-    type: '[CLIENT]:GETH:UPDATE_NETWORK',
-    payload: { network }
+    type: 'CLIENT:UPDATE_PEER_COUNT:ERROR',
+    error: true,
+    payload: { clientName, message }
   }
 }
 
-export const updateSyncMode = ({ syncMode }) => {
+export const clearError = clientName => {
   return {
-    type: '[CLIENT]:GETH:UPDATE_SYNC_MODE',
-    payload: { syncMode }
-  }
-}
-
-export const clearError = () => {
-  return {
-    type: '[CLIENT]:GETH:CLEAR_ERROR'
+    type: 'CLIENT:CLEAR_ERROR',
+    payload: { clientName }
   }
 }
 
@@ -162,10 +123,9 @@ export const startClient = (client, release) => {
   return (dispatch, getState) => {
     try {
       const { config } = getState().client[client.name]
-      createListeners(client, dispatch)
       const settings = getPluginSettings(client)
       const flags = generateFlags(config, settings)
-      client.start(release, flags, config)
+      ClientService.start(client, release, flags, config, dispatch)
       return dispatch({
         type: 'CLIENT:START',
         payload: { clientName: client.name, version: release.version, config }
@@ -179,8 +139,7 @@ export const startClient = (client, release) => {
 export const stopClient = client => {
   return dispatch => {
     try {
-      client.stop()
-      removeListeners(client)
+      ClientService.stop(client)
       dispatch({ type: 'CLIENT:STOP', payload: { clientName: client.name } })
     } catch (e) {
       dispatch({ type: 'CLIENT:STOP:ERROR', error: e.toString() })

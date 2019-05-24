@@ -115,7 +115,7 @@ class ClientConfig extends Component {
       <StyledMain>
         <Typography variant="h5">
           {clientName}
-          {/* <NodeInfo /> */}
+          {/* clientName === 'Geth' && <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           <StyledState data-test-id="node-state">

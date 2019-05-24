@@ -113,64 +113,91 @@ const client = (state = initialState, action) => {
         }
       }
     }
-    case '[CLIENT]:GETH:INIT': {
-      const { status } = action.payload
-      return { ...state, state: status }
+    case 'CLIENT:ERROR': {
+      const { payload, error } = action
+      const { clientName } = payload
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          error,
+          active: { ...initialClientState.active, status: 'ERROR' }
+        }
+      }
     }
-    case '[CLIENT]:GETH:ERROR': {
-      const { error } = action
-      return { ...state, state: 'ERROR', error }
+    case 'CLIENT:UPDATE_NEW_BLOCK': {
+      const { clientName, blockNumber, timestamp } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...activeState, blockNumber, timestamp }
+        }
+      }
     }
-    case '[CLIENT]:GETH:UPDATE_NEW_BLOCK': {
-      const { blockNumber, timestamp } = action.payload
-      return { ...state, blockNumber, timestamp }
-    }
-    case '[CLIENT]:GETH:UPDATE_SYNCING': {
+    case 'CLIENT:UPDATE_SYNCING': {
       const {
+        clientName,
         startingBlock,
         currentBlock,
         highestBlock,
         knownStates,
         pulledStates
       } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
       return {
         ...state,
-        sync: {
-          ...state.sync,
-          startingBlock,
-          currentBlock,
-          highestBlock,
-          knownStates,
-          pulledStates
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: {
+            ...activeState,
+            sync: {
+              ...state.sync,
+              startingBlock,
+              currentBlock,
+              highestBlock,
+              knownStates,
+              pulledStates
+            }
+          }
         }
       }
     }
-    case '[CLIENT]:GETH:UPDATE_NETWORK': {
-      const { network } = action.payload
+    case 'CLIENT:UPDATE_PEER_COUNT': {
+      const { clientName, peerCount } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
       return {
         ...state,
-        config: {
-          ...state.config,
-          network
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...activeState, peerCount }
         }
       }
     }
-    case '[CLIENT]:GETH:UPDATE_SYNC_MODE': {
-      const { syncMode } = action.payload
+    case 'CLIENT:CLEAR_ERROR': {
+      const { clientName } = action.payload
       return {
         ...state,
-        config: {
-          ...state.config,
-          syncMode
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          error: null
         }
       }
-    }
-    case '[CLIENT]:GETH:UPDATE_PEER_COUNT': {
-      const { peerCount } = action.payload
-      return { ...state, peerCount }
-    }
-    case '[CLIENT]:GETH:CLEAR_ERROR': {
-      return { ...state, error: null }
     }
     default:
       return state

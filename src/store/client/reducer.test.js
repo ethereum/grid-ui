@@ -112,54 +112,48 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:ERROR', () => {
+  it('should handle CLIENT:ERROR', () => {
     const action = {
-      type: '[CLIENT]:GETH:ERROR',
-      error: 'Boom'
-    }
-    const expectedState = { ...initialState, state: 'ERROR', error: 'Boom' }
-
-    expect(reducer(initialState, action)).toEqual(expectedState)
-  })
-
-  it('should handle [CLIENT]:GETH:CLEAR_ERROR', () => {
-    const action = { type: '[CLIENT]:GETH:CLEAR_ERROR' }
-    const expectedState = { ...initialState, error: null }
-
-    expect(reducer(initialState, action)).toEqual(expectedState)
-  })
-
-  it('should handle [CLIENT]:GETH:UPDATE_PEER_COUNT', () => {
-    const action = {
-      type: '[CLIENT]:GETH:UPDATE_PEER_COUNT',
-      payload: { peerCount: '3' }
-    }
-    const expectedState = { ...initialState, peerCount: '3' }
-
-    expect(reducer(initialState, action)).toEqual(expectedState)
-  })
-
-  it('should handle [CLIENT]:GETH:UPDATE_NETWORK', () => {
-    const action = {
-      type: '[CLIENT]:GETH:UPDATE_NETWORK',
-      payload: { network: 'rinkeby' }
+      type: 'CLIENT:ERROR',
+      error: 'Boom',
+      payload: { clientName: 'geth' }
     }
     const expectedState = {
       ...initialState,
-      config: { ...initialState.config, network: 'rinkeby' }
+      geth: {
+        ...initialClientState,
+        error: 'Boom',
+        active: { ...initialClientState.active, status: 'ERROR' }
+      }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:UPDATE_SYNC_MODE', () => {
+  it('should handle CLIENT:CLEAR_ERROR', () => {
     const action = {
-      type: '[CLIENT]:GETH:UPDATE_SYNC_MODE',
-      payload: { syncMode: 'light' }
+      type: 'CLIENT:CLEAR_ERROR',
+      payload: { clientName: 'geth' }
     }
     const expectedState = {
       ...initialState,
-      config: { ...initialState.config, syncMode: 'light' }
+      geth: { ...initialClientState, error: null }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle CLIENT:UPDATE_PEER_COUNT', () => {
+    const action = {
+      type: 'CLIENT:UPDATE_PEER_COUNT',
+      payload: { clientName: 'geth', peerCount: '3' }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, peerCount: '3' }
+      }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
@@ -188,23 +182,25 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:UPDATE_NEW_BLOCK', () => {
+  it('should handle CLIENT:UPDATE_NEW_BLOCK', () => {
     const blockNumber = '123123'
     const timestamp = '321321321'
     const action = {
-      type: '[CLIENT]:GETH:UPDATE_NEW_BLOCK',
-      payload: { blockNumber, timestamp }
+      type: 'CLIENT:UPDATE_NEW_BLOCK',
+      payload: { clientName: 'geth', blockNumber, timestamp }
     }
     const expectedState = {
       ...initialState,
-      blockNumber,
-      timestamp
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, blockNumber, timestamp }
+      }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle [CLIENT]:GETH:UPDATE_SYNCING', () => {
+  it('should handle CLIENT:UPDATE_SYNCING', () => {
     const sync = {
       currentBlock: 123,
       highestBlock: 124,
@@ -213,10 +209,16 @@ describe('the client reducer', () => {
       startingBlock: 0
     }
     const action = {
-      type: '[CLIENT]:GETH:UPDATE_SYNCING',
-      payload: { ...sync }
+      type: 'CLIENT:UPDATE_SYNCING',
+      payload: { clientName: 'geth', ...sync }
     }
-    const expectedState = { ...initialState, sync }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialClientState,
+        active: { ...initialClientState.active, sync }
+      }
+    }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
