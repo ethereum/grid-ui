@@ -15,9 +15,10 @@ class HelpFab extends React.Component {
         color="primary"
         style={{
           position: 'fixed',
-          right: 20,
+          left: 20,
           bottom: 20,
-          transform: 'translate3d(0, 0, 0)'
+          transform: 'translate3d(0, 0, 0)',
+          zIndex: 9999
         }}
       >
         <FeedbackIcon />

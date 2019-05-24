@@ -17,10 +17,10 @@ export default class NewApp extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
+        <HelpFab />
         <ErrorBoundary>
           <NavTabs />
         </ErrorBoundary>
-        <HelpFab />
       </MuiThemeProvider>
     )
   }
