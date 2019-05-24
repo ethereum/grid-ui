@@ -12,6 +12,7 @@ import Terminal from '../Terminal'
 // import NodeInfo from '../NodeInfo'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
+import ErrorBoundary from '../../GenericErrorBoundary'
 
 function TabContainer(props) {
   const { children, style } = props
@@ -108,7 +109,7 @@ class ClientConfig extends Component {
       <StyledMain>
         <Typography variant="h5">
           {clientName}
-          {/* <NodeInfo /> */}
+          {/* clientName === 'Geth' && <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           <StyledState data-test-id="node-state">
@@ -123,9 +124,9 @@ class ClientConfig extends Component {
             textColor="primary"
             indicatorColor="primary"
           >
-            <Tab label="Version" />
-            <Tab label="Settings" />
-            <Tab label="Terminal" />
+            <Tab label="Version" data-test-id="navbar-item-version" />
+            <Tab label="Settings" data-test-id="navbar-item-settings" />
+            <Tab label="Terminal" data-test-id="navbar-item-terminal" />
           </Tabs>
         </StyledAppBar>
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
@@ -136,13 +137,15 @@ class ClientConfig extends Component {
         </TabContainer>
         {activeTab === 1 && (
           <TabContainer>
-            <DynamicConfigForm
-              clientName={client.name}
-              settings={settings}
-              handleClientConfigChanged={this.handleClientConfigChanged}
-              isClientRunning={isRunning}
-              clientConfigChanged={clientConfigChanged}
-            />
+            <ErrorBoundary>
+              <DynamicConfigForm
+                clientName={client.name}
+                settings={settings}
+                handleClientConfigChanged={this.handleClientConfigChanged}
+                isClientRunning={isRunning}
+                clientConfigChanged={clientConfigChanged}
+              />
+            </ErrorBoundary>
           </TabContainer>
         )}
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>

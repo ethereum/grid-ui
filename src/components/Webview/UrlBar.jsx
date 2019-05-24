@@ -5,7 +5,6 @@ import Paper from '@material-ui/core/Paper'
 import InputBase from '@material-ui/core/InputBase'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
 import ArrowIcon from '@material-ui/icons/ArrowForward'
 import BuildIcon from '@material-ui/icons/Build'
 
@@ -82,13 +81,16 @@ class CustomizedInputBase extends React.Component {
           <ArrowIcon />
         </IconButton>
         <Divider className={classes.divider} />
+        {/*
         <Button
           onClick={() =>
-            this.navigate('package://github.com/ethereum/remix-ide')
+            // this.navigate('package://github.com/ethereum/remix-ide')
+            this.navigate('package://24f0c0e4272ca1bbb7e32fe1d8bf87367b169f74415e48eb9f2ca4552759ef5c')
           }
         >
           Remix IDE
         </Button>
+         */}
         <Divider className={classes.divider} />
         <IconButton onClick={() => onOpenDevTools()}>
           <BuildIcon />

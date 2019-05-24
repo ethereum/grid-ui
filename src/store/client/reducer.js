@@ -114,69 +114,16 @@ const client = (state = initialState, action) => {
         }
       }
     }
-    case '[CLIENT]:GETH:INIT': {
-      const { status } = action.payload
-      return { ...state, state: status }
-    }
-    case '[CLIENT]:GETH:ERROR': {
-      const { error } = action
-      return { ...state, state: 'ERROR', error }
-    }
-    case '[CLIENT]:GETH:UPDATE_NEW_BLOCK': {
-      const { blockNumber, timestamp } = action.payload
-      return { ...state, blockNumber, timestamp }
-    }
-    case '[CLIENT]:GETH:UPDATE_SYNCING': {
-      const {
-        startingBlock,
-        currentBlock,
-        highestBlock,
-        knownStates,
-        pulledStates
-      } = action.payload
-      return {
-        ...state,
-        sync: {
-          ...state.sync,
-          startingBlock,
-          currentBlock,
-          highestBlock,
-          knownStates,
-          pulledStates
-        }
-      }
-    }
-    case '[CLIENT]:GETH:UPDATE_NETWORK': {
-      const { network } = action.payload
-      return {
-        ...state,
-        config: {
-          ...state.config,
-          network
-        }
-      }
-    }
-    case '[CLIENT]:GETH:UPDATE_SYNC_MODE': {
-      const { syncMode } = action.payload
-      return {
-        ...state,
-        config: {
-          ...state.config,
-          syncMode
-        }
-      }
-    }
-    case '[CLIENT]:GETH:UPDATE_PEER_COUNT': {
-      const { peerCount } = action.payload
-      return { ...state, peerCount }
-    }
     case 'CLIENT:ERROR': {
-      const { clientName, error } = action.payload
+      const { payload, error } = action
+      const { clientName } = payload
       return {
         ...state,
         [clientName]: {
+          ...initialClientState,
           ...state[clientName],
-          error
+          error,
+          active: { ...initialClientState.active, status: 'ERROR' }
         }
       }
     }
@@ -185,8 +132,71 @@ const client = (state = initialState, action) => {
       return {
         ...state,
         [clientName]: {
+          ...initialClientState,
           ...state[clientName],
           error: null
+        }
+      }
+    }
+    case 'CLIENT:UPDATE_NEW_BLOCK': {
+      const { clientName, blockNumber, timestamp } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...activeState, blockNumber, timestamp }
+        }
+      }
+    }
+    case 'CLIENT:UPDATE_SYNCING': {
+      const {
+        clientName,
+        startingBlock,
+        currentBlock,
+        highestBlock,
+        knownStates,
+        pulledStates
+      } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: {
+            ...activeState,
+            sync: {
+              ...state.sync,
+              startingBlock,
+              currentBlock,
+              highestBlock,
+              knownStates,
+              pulledStates
+            }
+          }
+        }
+      }
+    }
+    case 'CLIENT:UPDATE_PEER_COUNT': {
+      const { clientName, peerCount } = action.payload
+      const activeState = state[clientName]
+        ? state[clientName].active
+        : initialClientState.active
+
+      return {
+        ...state,
+        [clientName]: {
+          ...initialClientState,
+          ...state[clientName],
+          active: { ...activeState, peerCount }
         }
       }
     }
