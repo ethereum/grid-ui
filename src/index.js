@@ -34,7 +34,7 @@ const root = document.getElementById('root')
 const urlParams = getUrlVars()
 const popupName = urlParams.name
 
-const args = Grid.window.getArgs() || {}
+const args = (Grid && Grid.window && Grid.window.getArgs()) || {}
 
 if (args.isApp) {
   ReactDOM.render(
