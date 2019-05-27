@@ -83,7 +83,7 @@ class Webview extends React.Component {
             style={{
               display: 'inline-flex',
               width: '100%',
-              height: '800px'
+              height: 'calc(100vh - 100px)'
             }}
           />
         </div>
