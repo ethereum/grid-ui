@@ -6,10 +6,10 @@ export default class Button extends Component {
   static displayName = 'Button'
 
   static propTypes = {
-    children: PropTypes.node,
+    children: PropTypes.node.isRequired,
     color: PropTypes.oneOf(['primary', 'secondary']),
     disabled: PropTypes.bool,
-    onClick: PropTypes.func,
+    onClick: PropTypes.func.isRequired,
     secondary: PropTypes.bool,
     type: PropTypes.oneOf(['button', 'reset', 'submit']),
     className: PropTypes.string,

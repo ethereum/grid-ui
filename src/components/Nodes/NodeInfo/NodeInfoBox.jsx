@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import moment from 'moment'
 import styled, { css } from 'styled-components'
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna'
@@ -10,7 +9,7 @@ import LayersIcon from '@material-ui/icons/Layers'
 import PeopleIcon from '@material-ui/icons/People'
 import LinearScaleIcon from '@material-ui/icons/LinearScale'
 
-const numberWithCommas = val => {
+const numberWithCommas = (val = 0) => {
   return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
@@ -19,22 +18,6 @@ const defaultIconProps = {
 }
 
 class NodeInfoBox extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { diffTimestamp: moment().unix() }
-  }
-
-  componentDidMount() {
-    // NOTE: this component should update diff every second
-    this.diffInterval = setInterval(() => {
-      this.setState({ diffTimestamp: moment().unix() })
-    }, 1000)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.diffInterval)
-  }
-
   renderStopped = () => {
     return (
       <StyledIconRow>
@@ -64,7 +47,8 @@ class NodeInfoBox extends Component {
 
   renderSyncStarting = () => {
     const { client } = this.props
-    const { peerCount } = client
+    const { active } = client
+    const { peerCount } = active
 
     return (
       <div>
@@ -82,7 +66,8 @@ class NodeInfoBox extends Component {
 
   renderSyncProgress() {
     const { client } = this.props
-    const { sync, config, peerCount } = client
+    const { config, active } = client
+    const { peerCount, sync } = active
     const { network } = config
     const { highestBlock, currentBlock, startingBlock } = sync
 
@@ -114,9 +99,9 @@ class NodeInfoBox extends Component {
   }
 
   renderSynced() {
-    const { client } = this.props
-    const { diffTimestamp } = this.state
-    const { blockNumber, timestamp, peerCount, config } = client
+    const { client, diffTimestamp } = this.props
+    const { active, config } = client
+    const { blockNumber, peerCount, timestamp } = active
     const { network } = config
 
     const formattedBlockNumber = numberWithCommas(blockNumber)
@@ -151,17 +136,18 @@ class NodeInfoBox extends Component {
 
   renderStats() {
     const { client } = this.props
-    const { sync, blockNumber, config, peerCount, state } = client
+    const { active, config } = client
     const { syncMode, network } = config
+    const { blockNumber, peerCount, status, sync } = active
     const { highestBlock, startingBlock } = sync
 
     let stats
 
-    if (state === 'STARTED') {
+    if (status === 'STARTED') {
       // Case: connecting
       stats = this.renderConnecting()
     }
-    if (state === 'CONNECTED') {
+    if (status === 'CONNECTED') {
       if (peerCount === 0) {
         // Case: no peers yet
         stats = this.renderFindingPeers()
@@ -177,7 +163,7 @@ class NodeInfoBox extends Component {
       // Case: show progress
       stats = this.renderSyncProgress()
     }
-    if (state === 'STOPPED') {
+    if (status === 'STOPPED') {
       // Case: node stopped
       stats = this.renderStopped()
     }
@@ -216,13 +202,7 @@ class NodeInfoBox extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    client: state.client
-  }
-}
-
-export default connect(mapStateToProps)(NodeInfoBox)
+export default NodeInfoBox
 
 const StyledSubmenuContainer = styled.div`
   width: 220px;

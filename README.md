@@ -10,19 +10,18 @@
 
 [![ethpkg status](http://api.ethpkg.org/badge/gh/ethereum/grid-ui)](http://ethpkg.org/gh/ethereum/grid-ui)
 
-### Project Goals
+### What is Grid?
 
-- improved security and easier maintenance than former Mist
-- rapid development, faster iterations and releases
-- improved testability
-- removal of electron API references from UI components
-- allows to run the app in a browser, electron or [tau](https://github.com/PhilippLgh/tau) window
-- separation of electron shell application and user interface
-- independent release, versioning and packaging of host application (Grid) and dapp (Grid UI, Wallet UI)
-- introduction of an app namespace and removal of global variables
-- reducing the amount of custom build scripts required to produce distributables
-- a popular technology to encourage the community to contribute
-- no network connection or full node required to run and develop the UI
+“Often referred to […] as “digital frontier", the Grid was made to provide an experimental platform where all forms of research could be carried out at unparalleled speeds.” - [Tron Movie](https://tron.fandom.com/wiki/Grid)
+
+One way to describe Ethereum Grid is a platform to run experiments, create prototypes (and hackathon projects) or develop fully working apps for the many available clients in the ecosystem.
+Another description could be that Ethereum Grid is the control center for all kinds of clients and Ethereum core binaries.
+
+With Grid, clients can be downloaded, configured, and started all in one place. But even more than this, Grid serves as an Ethereum provider, which means that once a client is configured and started, DApps can connect to Grid and share the connection to the Ethereum network.
+
+It is ideal for people who want to run a full node, have a convenient and secure way to update their binaries, and don't want to rely on centralized 3rd party services.
+
+Grid can host and launch other interfaces and the functionality can be extended and adjusted through apps and plugins.
 
 ### Contributing
 
@@ -30,23 +29,18 @@ There are many ways to get involved with this project. Get started [here](/docs/
 
 ### Development
 
+Clone, install dependencies, and start the application:
+
 ```
 git clone https://github.com/ethereum/grid-ui.git
 cd grid-ui
-yarn
-
-Start in 2 terminals:
-yarn run start -> start dev server for react with hot reloading
-yarn run electron:dev -> load the app from the dev server into an electron window
+yarn && yarn start
 ```
 
-#### Using local ethereum-react-components
+This will serve the application at `localhost:3080`, but little can be done without the [Grid](https://github.com/ethereum/grid) electron wrapper:
 
-To develop in `grid-ui` using your local copy of `ethereum-react-components`:
-
-1. cd `ethereum-react-components`
-1. `npm link`
-1. cd `grid-ui`
-1. `npm link ethereum-react-components`
-
-After making changes in `ethereum-react-components`, run `yarn` for a fresh build to be picked up by `grid-ui`.
+```
+git clone https://github.com/ethereum/grid.git
+cd grid
+yarn && yarn start:dev
+```

@@ -12,10 +12,10 @@ import { without } from '../../../lib/utils'
 
 export default class VersionListItem extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    release: PropTypes.object,
-    handleDownloadError: PropTypes.func,
-    handleReleaseDownloaded: PropTypes.func,
+    client: PropTypes.object.isRequired,
+    release: PropTypes.object.isRequired,
+    handleDownloadError: PropTypes.func.isRequired,
+    handleReleaseDownloaded: PropTypes.func.isRequired,
     handleReleaseSelect: PropTypes.func,
     isSelectedRelease: PropTypes.func
   }
@@ -23,6 +23,15 @@ export default class VersionListItem extends Component {
   state = {
     isDownloading: false,
     downloadProgress: 0
+  }
+
+  componentDidMount() {
+    // @see https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
+    this._isMounted = true
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 
   releaseDisplayName = release => {
@@ -58,12 +67,14 @@ export default class VersionListItem extends Component {
       let localRelease
       try {
         localRelease = await client.download(release, downloadProgress => {
-          this.setState({ downloadProgress })
+          if (this._isMounted) this.setState({ downloadProgress })
         })
       } catch (error) {
         handleDownloadError(error)
       }
-      this.setState({ isDownloading: false, downloadProgress: 0 })
+      if (this._isMounted) {
+        this.setState({ isDownloading: false, downloadProgress: 0 })
+      }
       handleReleaseDownloaded(localRelease)
     })
   }
@@ -121,6 +132,8 @@ export default class VersionListItem extends Component {
         selected={isSelectedRelease(release)}
         isDownloading={isDownloading}
         alt={release.name}
+        data-test-is-selected={isSelectedRelease(release)}
+        data-test-is-downloaded={!release.remote}
       >
         <ListItemIcon>{this.renderIcon(release)}</ListItemIcon>
         <ListItemTextVersion

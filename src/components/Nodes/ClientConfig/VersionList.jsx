@@ -48,10 +48,10 @@ const styles = () => ({
 
 class VersionList extends Component {
   static propTypes = {
-    dispatch: PropTypes.func,
-    handleReleaseSelect: PropTypes.func,
-    client: PropTypes.object,
-    classes: PropTypes.object,
+    dispatch: PropTypes.func.isRequired,
+    handleReleaseSelect: PropTypes.func.isRequired,
+    client: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
     release: PropTypes.object
   }
 
@@ -116,9 +116,11 @@ class VersionList extends Component {
     const { classes } = this.props
     const { loadingReleases, releases, localReleaseCount } = this.state
 
+    /*
     if (releases.length === 0) {
       return <Spinner style={{ margin: '20px 0' }} />
     }
+    */
 
     return (
       <div>
@@ -152,17 +154,16 @@ class VersionList extends Component {
   }
 
   renderWarnings = () => {
-    // TODO:
-    // return <div>{this.renderLatestVersionWarning()}</div>
+    return <div>{this.renderLatestVersionWarning()}</div>
   }
 
   renderLatestVersionWarning = () => {
-    const { classes, release } = this.props
+    const { classes, release, client } = this.props
     const { releases } = this.state
-    if (!release || !releases.length) {
+    if (!release.version || releases.length === 0) {
       return null
     }
-    const latestRelease = this.allReleases()[0]
+    const latestRelease = releases[0]
     const latestVersion = latestRelease.version
     const selectedVersion = release.version
     if (semver.compare(selectedVersion, latestVersion)) {
@@ -172,8 +173,7 @@ class VersionList extends Component {
           message={
             <span>
               <WarningIcon classes={{ root: classes.warningIcon }} /> You are
-              using an older version of Geth ({selectedVersion})<br />
-              New releases contain performance and security enhancements.
+              using an older version of {client.displayName}
             </span>
           }
           action={
@@ -182,7 +182,7 @@ class VersionList extends Component {
                 this.handleReleaseSelect(latestRelease)
               }}
             >
-              Use {latestVersion}
+              Use {latestVersion.split('-')[0]}
             </Button>
           }
         />
@@ -198,9 +198,8 @@ class VersionList extends Component {
   }
 
   handleReleaseSelect = release => {
-    // FIXME duplicated state change: dispatch was not working for client other than geth
-    const { dispatch, handleReleaseSelect } = this.props
-    dispatch(setRelease(release))
+    const { client, dispatch, handleReleaseSelect } = this.props
+    dispatch(setRelease(client.name, release))
     handleReleaseSelect(release)
   }
 
@@ -242,7 +241,9 @@ class VersionList extends Component {
       })
       return list
     }
-    return <StyledList>{renderListItems()}</StyledList>
+    return (
+      <StyledList data-test-id="version-list">{renderListItems()}</StyledList>
+    )
   }
 
   render() {
@@ -260,7 +261,7 @@ class VersionList extends Component {
 
 function mapStateToProps(state) {
   return {
-    release: state.client.release
+    release: state.client[state.client.selected].release
   }
 }
 export default connect(mapStateToProps)(withStyles(styles)(VersionList))

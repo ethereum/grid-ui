@@ -13,7 +13,7 @@ export default class Select extends Component {
   static propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
-    defaultValue: PropTypes.any,
+    defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onChange: PropTypes.func,
     options: PropTypes.array,
     disabled: PropTypes.bool

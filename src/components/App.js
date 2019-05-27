@@ -3,6 +3,8 @@ import { MuiThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import NavTabs from './NavTabs'
 import theme from '../theme'
+import HelpFab from './shared/HelpFab'
+import ErrorBoundary from './GenericErrorBoundary'
 
 export default class NewApp extends Component {
   static displayName = 'App'
@@ -15,7 +17,10 @@ export default class NewApp extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
-        <NavTabs />
+        <ErrorBoundary>
+          <NavTabs />
+        </ErrorBoundary>
+        <HelpFab />
       </MuiThemeProvider>
     )
   }

@@ -41,10 +41,10 @@ const styles = theme => ({
 
 class Notification extends Component {
   static propTypes = {
-    classes: PropTypes.object,
+    classes: PropTypes.object.isRequired,
     type: PropTypes.string,
     message: PropTypes.string,
-    onDismiss: PropTypes.func
+    onDismiss: PropTypes.func.isRequired
   }
 
   render() {
