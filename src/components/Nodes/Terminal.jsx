@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Ansi from 'ansi-to-react'
 
 export default class Terminal extends Component {
   static propTypes = {
-    client: PropTypes.object
+    client: PropTypes.object.isRequired
   }
 
   state = {
@@ -102,7 +103,10 @@ export default class Terminal extends Component {
           }}
         >
           {logs.map((l, index) => (
-            <div key={index}> &gt; {l}</div>
+            <div key={index}>
+              {' '}
+              &gt; <Ansi>{l}</Ansi>
+            </div>
           ))}
         </div>
       </div>

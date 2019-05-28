@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import ClientConfig from './ClientConfig'
 import ServicesNav from './ServicesNav'
 import {
+  initClient,
   selectClient,
   setConfig,
   toggleClient
@@ -15,9 +16,8 @@ const { PluginHost } = Grid
 
 class NodesTab extends Component {
   static propTypes = {
-    config: PropTypes.object,
-    dispatch: PropTypes.func,
-    release: PropTypes.object
+    clientState: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
   }
 
   state = {
@@ -26,14 +26,24 @@ class NodesTab extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props
     if (!PluginHost) return
     const plugins = PluginHost.getAllPlugins()
-    const clients = [...plugins]
+    this.initClients(plugins)
+  }
+
+  initClients = clients => {
+    const { dispatch } = this.props
+
+    // Sync clients with redux
+    clients.map(client => dispatch(initClient(client)))
+
+    // Set the selected client
     const selectedClient =
       clients.find(client => client.order === 1) || clients[0]
-    dispatch(selectClient(selectedClient.plugin.config))
-    this.setState({ clients, selectedClient })
+    this.handleSelectClient(selectedClient)
+
+    // TODO: two sources of truth - local and redux state
+    this.setState({ clients })
   }
 
   isDisabled = client => {
@@ -41,19 +51,18 @@ class NodesTab extends Component {
     return !selectedRelease
   }
 
-  handleSelect = client => {
+  handleSelectClient = client => {
     const { dispatch } = this.props
-    dispatch(selectClient(client.plugin.config))
-    this.setState({ selectedClient: client })
+
+    this.setState({ selectedClient: client }, () => {
+      dispatch(selectClient(client.name))
+    })
   }
 
   handleClientConfigChanged = (key, value) => {
-    const { config, dispatch } = this.props
+    const { clientState, dispatch } = this.props
     const { selectedClient } = this.state
 
-    // we need to store the config per client
-    // for now we just use a nested data model where the selected client
-    // has a property with the latest user selected config
     // WARNING: if selected client is destructured
     /**
      * newSelectedClient = {
@@ -62,12 +71,13 @@ class NodesTab extends Component {
      * the reference to the remote object in main is killed in this process
      */
 
+    const { config } = clientState[clientState.selected]
     const newConfig = { ...config }
     newConfig[key] = value
 
     selectedClient.selectedConfig = newConfig
     this.setState({ selectedClient }, () => {
-      dispatch(setConfig(newConfig))
+      dispatch(setConfig(clientState.selected, newConfig))
     })
   }
 
@@ -77,10 +87,10 @@ class NodesTab extends Component {
     this.setState({ selectedClient, selectedRelease: release })
   }
 
-  handleToggle = async () => {
-    const { dispatch, release, config } = this.props
-    const { selectedClient } = this.state
-    dispatch(toggleClient(selectedClient, release, config))
+  handleToggle = client => {
+    const { clientState, dispatch } = this.props
+    // TODO: refactor to only require clientName to toggle?
+    dispatch(toggleClient(client, clientState[client.name].release))
   }
 
   render() {
@@ -89,7 +99,7 @@ class NodesTab extends Component {
     return (
       <ServicesNav
         handleToggle={this.handleToggle}
-        handleSelect={this.handleSelect}
+        handleSelectClient={this.handleSelectClient}
         clients={clients}
       >
         {selectedClient && (
@@ -107,8 +117,7 @@ class NodesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    config: state.client.config,
-    release: state.client.release
+    clientState: state.client
   }
 }
 

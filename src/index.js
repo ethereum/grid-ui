@@ -5,8 +5,9 @@ import { Provider } from 'react-redux'
 // import { PersistGate } from 'redux-persist/integration/react'
 import App from './components/App'
 import Popup from './components/popups'
-import { Mist } from './API'
+import { Grid } from './API'
 import configureStore from './store'
+import Webview from './components/Webview'
 // import Spinner from './components/shared/Spinner'
 
 const { store /* , persistor */ } = configureStore()
@@ -33,29 +34,39 @@ const root = document.getElementById('root')
 const urlParams = getUrlVars()
 const popupName = urlParams.name
 
-const args = Mist.window.getArgs()
-switch (urlParams.app) {
-  case 'popup':
-    store.dispatch({
-      type: 'SET_TX',
-      payload: args
-    })
-    ReactDOM.render(
-      <Provider store={store}>
-        <Popup name={popupName} popup={{ args }} />
-      </Provider>,
-      root
-    )
-    break
-  case undefined:
-  default:
-    ReactDOM.render(
-      <Provider store={store}>
-        {/* <PersistGate loading={<Spinner />} persistor={persistor}> */}
-        <App />
-        {/* </PersistGate> */}
-      </Provider>,
-      root
-    )
-    break
+const args = (Grid && Grid.window && Grid.window.getArgs()) || {}
+
+if (args.isApp) {
+  ReactDOM.render(
+    <Provider store={store}>
+      <Webview url={args.url} />
+    </Provider>,
+    root
+  )
+} else {
+  switch (urlParams.app) {
+    case 'popup':
+      store.dispatch({
+        type: 'SET_TX',
+        payload: args
+      })
+      ReactDOM.render(
+        <Provider store={store}>
+          <Popup name={popupName} popup={{ args }} />
+        </Provider>,
+        root
+      )
+      break
+    case undefined:
+    default:
+      ReactDOM.render(
+        <Provider store={store}>
+          {/* <PersistGate loading={<Spinner />} persistor={persistor}> */}
+          <App />
+          {/* </PersistGate> */}
+        </Provider>,
+        root
+      )
+      break
+  }
 }
