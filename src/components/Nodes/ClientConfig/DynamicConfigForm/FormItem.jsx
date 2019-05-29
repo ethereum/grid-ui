@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -10,6 +11,7 @@ import { Grid as GridAPI } from '../../../../API'
 class DynamicConfigFormItem extends Component {
   static propTypes = {
     itemKey: PropTypes.string,
+    itemValue: PropTypes.string,
     item: PropTypes.object,
     client: PropTypes.object,
     clientName: PropTypes.string,
@@ -44,11 +46,10 @@ class DynamicConfigFormItem extends Component {
   }
 
   render() {
-    const { itemKey, item, client, clientName, isClientRunning } = this.props
+    const { itemKey, itemValue, item, isClientRunning } = this.props
     const label = item.label || itemKey
     let { type } = item
     if (!type) type = item.options ? 'select' : 'text'
-    const itemValue = client[clientName].config[itemKey] || item.default
     let options
 
     switch (type) {
@@ -145,4 +146,12 @@ class DynamicConfigFormItem extends Component {
   }
 }
 
-export default DynamicConfigFormItem
+function mapStateToProps(state, ownProps) {
+  const selectedClient = state.client.selected
+
+  return {
+    itemValue: state.client[selectedClient].config[ownProps.itemKey]
+  }
+}
+
+export default connect(mapStateToProps)(DynamicConfigFormItem)

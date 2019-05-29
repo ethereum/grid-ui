@@ -13,6 +13,7 @@ import Terminal from '../Terminal'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
+import { getPluginSettingsConfig } from '../../../lib/utils'
 
 function TabContainer(props) {
   const { children, style } = props
@@ -72,10 +73,6 @@ class ClientConfig extends Component {
     dispatch(clearError())
   }
 
-  getClientSettings = client => {
-    return ((client.plugin || {}).config || {}).settings
-  }
-
   renderErrors() {
     const { downloadError } = this.state
     const { client } = this.props
@@ -109,7 +106,6 @@ class ClientConfig extends Component {
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
       client.state
     )
-    const settings = this.getClientSettings(client)
 
     return (
       <StyledMain>
@@ -141,19 +137,17 @@ class ClientConfig extends Component {
             handleReleaseSelect={handleReleaseSelect}
           />
         </TabContainer>
-        {activeTab === 1 && (
-          <TabContainer>
-            <ErrorBoundary>
-              <DynamicConfigForm
-                clientName={client.name}
-                settings={settings}
-                handleClientConfigChanged={this.handleClientConfigChanged}
-                isClientRunning={isRunning}
-                clientConfigChanged={clientConfigChanged}
-              />
-            </ErrorBoundary>
-          </TabContainer>
-        )}
+        <TabContainer style={{ display: activeTab === 1 ? 'block' : 'none' }}>
+          <ErrorBoundary>
+            <DynamicConfigForm
+              clientName={client.name}
+              settings={getPluginSettingsConfig(client)}
+              handleClientConfigChanged={this.handleClientConfigChanged}
+              isClientRunning={isRunning}
+              clientConfigChanged={clientConfigChanged}
+            />
+          </ErrorBoundary>
+        </TabContainer>
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />
         </TabContainer>
