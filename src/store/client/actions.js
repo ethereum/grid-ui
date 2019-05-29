@@ -1,10 +1,6 @@
 import ClientService from './clientService'
 import { generateFlags } from '../../lib/flags'
 
-export const clientError = (clientName, error) => {
-  return { type: 'CLIENT:ERROR', error, payload: { clientName } }
-}
-
 export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
 }
@@ -95,14 +91,16 @@ export const updatePeerCountError = (clientName, message) => {
   }
 }
 
+export const clientError = (clientName, error) => {
+  return { type: 'CLIENT:ERROR', error, payload: { clientName } }
+}
+
 export const clearError = clientName => {
   return {
     type: 'CLIENT:CLEAR_ERROR',
     payload: { clientName }
   }
 }
-
-// TODO: finish refactor to generic client:
 
 export const selectClient = clientName => {
   return { type: 'CLIENT:SELECT', payload: { clientName } }

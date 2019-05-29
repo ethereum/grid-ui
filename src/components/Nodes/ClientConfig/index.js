@@ -36,12 +36,12 @@ class ClientConfig extends Component {
     dispatch: PropTypes.func,
     isActiveClient: PropTypes.bool,
     handleReleaseSelect: PropTypes.func,
-    handleClientConfigChanged: PropTypes.func
+    handleClientConfigChanged: PropTypes.func,
+    clientError: PropTypes.string
   }
 
   state = {
-    activeTab: 0,
-    downloadError: null
+    activeTab: 0
   }
 
   componentDidUpdate(prevProps) {
@@ -67,9 +67,9 @@ class ClientConfig extends Component {
     handleClientConfigChanged(key, value)
   }
 
-  onDismissError = () => {
-    const { dispatch } = this.props
-    dispatch(clearError())
+  dismissClientError = () => {
+    const { dispatch, client } = this.props
+    dispatch(clearError(client.name))
   }
 
   getClientSettings = client => {
@@ -77,23 +77,17 @@ class ClientConfig extends Component {
   }
 
   renderErrors() {
-    const { downloadError } = this.state
-    const { client } = this.props
-    const { error } = client
-
-    const errorMessage = (error && error.toString()) || downloadError
-
-    if (!errorMessage) {
-      return null
+    const { clientError } = this.props
+    if (clientError) {
+      return (
+        <Notification
+          type="error"
+          message={clientError}
+          onDismiss={this.dismissClientError}
+        />
+      )
     }
-
-    return (
-      <Notification
-        type="error"
-        message={errorMessage}
-        onDismiss={this.onDismissError}
-      />
-    )
+    return null
   }
 
   render() {
@@ -167,6 +161,7 @@ function mapStateToProps(state) {
 
   return {
     clientStatus: state.client[selectedClient].active.status,
+    clientError: state.client[selectedClient].error,
     isActiveClient: state.client[selectedClient].active.name !== 'STOPPED'
   }
 }
