@@ -131,23 +131,29 @@ class ClientConfig extends Component {
             <Tab label="Terminal" data-test-id="navbar-item-terminal" />
           </Tabs>
         </StyledAppBar>
+
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
           <VersionList
             client={client}
             handleReleaseSelect={handleReleaseSelect}
           />
         </TabContainer>
-        <TabContainer style={{ display: activeTab === 1 ? 'block' : 'none' }}>
-          <ErrorBoundary>
-            <DynamicConfigForm
-              clientName={client.name}
-              settings={getPluginSettingsConfig(client)}
-              handleClientConfigChanged={this.handleClientConfigChanged}
-              isClientRunning={isRunning}
-              clientConfigChanged={clientConfigChanged}
-            />
-          </ErrorBoundary>
-        </TabContainer>
+
+        {/* NOTE: MUI requires generating the ConfigForm from state each render */}
+        {activeTab === 1 && (
+          <TabContainer>
+            <ErrorBoundary>
+              <DynamicConfigForm
+                clientName={client.name}
+                settings={getPluginSettingsConfig(client)}
+                handleClientConfigChanged={this.handleClientConfigChanged}
+                isClientRunning={isRunning}
+                clientConfigChanged={clientConfigChanged}
+              />
+            </ErrorBoundary>
+          </TabContainer>
+        )}
+
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />
         </TabContainer>
