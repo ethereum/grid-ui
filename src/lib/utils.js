@@ -42,11 +42,12 @@ export const getPluginSettingsConfig = client => {
 }
 
 export const generateFlags = (userConfig, nodeSettings) => {
-  if (!Array.isArray(nodeSettings)) throw 'Settings must be an Array instance'
+  if (!Array.isArray(nodeSettings))
+    throw new Error('Settings must be an Array instance')
   const userConfigEntries = Object.keys(userConfig)
   let flags = []
 
-  userConfigEntries.map(entry => {
+  userConfigEntries.forEach(entry => {
     let flag
     let configEntry = nodeSettings.find(setting => setting.id === entry)
     let flagString = configEntry.flag
@@ -60,12 +61,14 @@ export const generateFlags = (userConfig, nodeSettings) => {
           userConfig[entry] === option.value || userConfig[entry] === option
       )
       if (typeof selectedOption['flag'] !== 'string') {
-        throw `Option "${selectedOption.value ||
-          selectedOption}" must have the "flag" key`
+        throw new Error(
+          `Option "${selectedOption.value ||
+            selectedOption}" must have the "flag" key`
+        )
       }
       flag = selectedOption.flag.replace(/%s/, userConfig[entry]).split(' ')
     } else {
-      throw `Config entry "${entry}" must have the "flag" key`
+      throw new Error(`Config entry "${entry}" must have the "flag" key`)
     }
     flags = flags.concat(flag)
   })
