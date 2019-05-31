@@ -34,6 +34,6 @@ export default class Button extends Component {
   render() {
     const { children } = this.props
 
-    return <MuiButton {...this.props}>{children}</MuiButton>
+    return <MuiButton {...this.props} />
   }
 }

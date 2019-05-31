@@ -50,6 +50,7 @@
   },
   "ignore": {},
   "devDependencies": {
+    "@testing-library/react": "^8.0.1",
     "babel-register": "^6.26.0",
     "colors": "^1.3.0",
     "create-react-app-extensions": "^1.1.1",
@@ -59,6 +60,7 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-watch": "^4.0.2",
     "husky": "^1.3.1",
+    "jest-dom": "^3.4.0",
     "lint-staged": "^8.1.1",
     "prettier": "^1.16.1",
     "react-test-renderer": "^16.5.2",
