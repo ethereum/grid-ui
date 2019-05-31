@@ -30,6 +30,7 @@ class NodeInfoDot extends Component {
     }
   }
 
+  // TODO: extract & unit-test
   determineDotColor = () => {
     const { client, isStopped } = this.props
     const { config, active } = client
@@ -47,6 +48,7 @@ class NodeInfoDot extends Component {
     return dotColor
   }
 
+  // TODO: extract & unit-test
   pulseForNewBlock = () => {
     const { client } = this.props
     const { config } = client
@@ -62,6 +64,7 @@ class NodeInfoDot extends Component {
     })
   }
 
+  // TODO: extract & unit-test
   secondsSinceLastBlock = () => {
     const { client, diffTimestamp } = this.props
     const { timestamp } = client

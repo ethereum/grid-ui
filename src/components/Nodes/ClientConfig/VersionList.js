@@ -47,6 +47,7 @@ const styles = () => ({
   }
 })
 
+// TODO: component test priority
 class VersionList extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
