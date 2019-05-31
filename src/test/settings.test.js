@@ -119,6 +119,21 @@ describe('generateFlags', () => {
     const flags = generateFlags(input, settings)
     expect(flags).toEqual(['--syncmode', 'light', '--maxpeers=100'])
   })
+
+  it('should not split values with spaces', () => {
+    const input = {
+      ipcpath: '/path/with spaces/node.ipc'
+    }
+    const settings = [
+      {
+        id: 'ipcpath',
+        flag: '--ipcpath %s'
+      }
+    ]
+
+    const flags = generateFlags(input, settings)
+    expect(flags).toEqual(['--ipcpath', '/path/with spaces/node.ipc'])
+  })
 })
 
 describe('generateFlags error handling', () => {
