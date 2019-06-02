@@ -1,27 +1,16 @@
 import ClientService from './clientService'
-import { generateFlags } from '../../lib/flags'
+import { generateFlags, getPluginSettingsConfig } from '../../lib/utils'
 
 export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
 }
 
-const getPluginSettings = client => {
-  try {
-    const settings = client.plugin.config.settings // eslint-disable-line
-    return Array.isArray(settings) ? settings : []
-  } catch (e) {
-    return []
-  }
-}
-
-const getClientDefaults = client => {
+const buildClientDefaults = client => {
   const pluginDefaults = {}
-
-  const clientSettings = getPluginSettings(client)
-
-  clientSettings.forEach(i => {
-    if ('default' in i) {
-      pluginDefaults[i.id] = i.default
+  const clientSettings = getPluginSettingsConfig(client)
+  clientSettings.forEach(setting => {
+    if ('default' in setting) {
+      pluginDefaults[setting.id] = setting.default
     }
   })
   return pluginDefaults
@@ -30,7 +19,7 @@ const getClientDefaults = client => {
 export const initClient = client => {
   return dispatch => {
     const clientData = client.plugin.config
-    const config = getClientDefaults(client)
+    const config = buildClientDefaults(client)
 
     dispatch({
       type: 'CLIENT:INIT',
@@ -121,7 +110,7 @@ export const startClient = (client, release) => {
   return (dispatch, getState) => {
     try {
       const { config } = getState().client[client.name]
-      const settings = getPluginSettings(client)
+      const settings = getPluginSettingsConfig(client)
       const flags = generateFlags(config, settings)
       ClientService.start(client, release, flags, config, dispatch)
       return dispatch({

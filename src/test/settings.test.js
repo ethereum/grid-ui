@@ -1,4 +1,27 @@
-import { generateFlags } from '../lib/flags'
+import { getPluginSettingsConfig, generateFlags } from '../lib/utils'
+
+describe('getPluginSettingsConfig', () => {
+  it('returns an empty array if no client', () => {
+    const client = undefined
+    expect(getPluginSettingsConfig(client)).toEqual([])
+  })
+
+  it('returns an empty array if no settings config', () => {
+    const client = { plugin: { config: {} } }
+    expect(getPluginSettingsConfig(client)).toEqual([])
+  })
+
+  it('returns an empty array if settings are not an array', () => {
+    const client = { plugin: { config: { settings: { one: '1', two: '2' } } } }
+    expect(getPluginSettingsConfig(client)).toEqual([])
+  })
+
+  it('returns the array of settings', () => {
+    const settings = [{ id: 'one' }, { id: 'two' }]
+    const client = { plugin: { config: { settings } } }
+    expect(getPluginSettingsConfig(client)).toEqual(settings)
+  })
+})
 
 describe('generateFlags', () => {
   it('should handle an empty settings', () => {

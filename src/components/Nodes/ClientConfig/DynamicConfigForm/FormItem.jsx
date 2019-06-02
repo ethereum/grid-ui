@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import debounce from 'lodash/debounce'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton'
@@ -10,6 +12,7 @@ import { Grid as GridAPI } from '../../../../API'
 class DynamicConfigFormItem extends Component {
   static propTypes = {
     itemKey: PropTypes.string,
+    itemValue: PropTypes.string,
     item: PropTypes.object,
     client: PropTypes.object,
     clientName: PropTypes.string,
@@ -20,6 +23,17 @@ class DynamicConfigFormItem extends Component {
   constructor(props) {
     super(props)
     this.inputOpenFileRef = React.createRef()
+
+    // NOTE: for performance, form fields are populated by local state.
+    // Redux state doesn't need to update on every keystroke.
+    this.updateRedux = debounce(this.updateRedux, 500)
+    this.state = {
+      fieldValue: props.itemValue
+    }
+  }
+
+  componentWillUnmount() {
+    this.updateRedux.cancel()
   }
 
   browseDir = key => async event => {
@@ -39,16 +53,21 @@ class DynamicConfigFormItem extends Component {
   }
 
   handleChange = (key, value) => {
+    this.setState({ fieldValue: value })
+    this.updateRedux(key, value)
+  }
+
+  updateRedux = (key, value) => {
     const { handleClientConfigChanged } = this.props
     handleClientConfigChanged(key, value)
   }
 
   render() {
-    const { itemKey, item, client, clientName, isClientRunning } = this.props
+    const { fieldValue } = this.state
+    const { itemKey, item, isClientRunning } = this.props
     const label = item.label || itemKey
     let { type } = item
     if (!type) type = item.options ? 'select' : 'text'
-    const itemValue = client[clientName].config[itemKey] || item.default
     let options
 
     switch (type) {
@@ -76,7 +95,7 @@ class DynamicConfigFormItem extends Component {
           <div data-test-id={`input-select-${item.id}`}>
             <Select
               name={label}
-              defaultValue={itemValue}
+              defaultValue={fieldValue}
               options={options}
               disabled={isClientRunning}
               onChange={value => this.handleChange(itemKey, value)}
@@ -90,7 +109,7 @@ class DynamicConfigFormItem extends Component {
               data-test-id={`input-path-${item.id}`}
               variant="outlined"
               label={item.label}
-              value={itemValue || ''}
+              value={fieldValue || ''}
               onChange={event => this.handleChange(itemKey, event.target.value)}
               disabled={isClientRunning}
               InputProps={{
@@ -135,7 +154,7 @@ class DynamicConfigFormItem extends Component {
             data-test-id={`input-text-${item.id}`}
             variant="outlined"
             label={label}
-            value={itemValue}
+            value={fieldValue}
             disabled={isClientRunning}
             onChange={event => this.handleChange(itemKey, event.target.value)}
             fullWidth
@@ -145,4 +164,12 @@ class DynamicConfigFormItem extends Component {
   }
 }
 
-export default DynamicConfigFormItem
+function mapStateToProps(state, ownProps) {
+  const selectedClient = state.client.selected
+
+  return {
+    itemValue: state.client[selectedClient].config[ownProps.itemKey]
+  }
+}
+
+export default connect(mapStateToProps)(DynamicConfigFormItem)

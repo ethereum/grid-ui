@@ -13,6 +13,7 @@ import Terminal from '../Terminal'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
+import { getPluginSettingsConfig } from '../../../lib/utils'
 
 function TabContainer(props) {
   const { children, style } = props
@@ -72,10 +73,6 @@ class ClientConfig extends Component {
     dispatch(clearError(client.name))
   }
 
-  getClientSettings = client => {
-    return ((client.plugin || {}).config || {}).settings
-  }
-
   renderErrors() {
     const { clientError } = this.props
     if (clientError) {
@@ -103,7 +100,6 @@ class ClientConfig extends Component {
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
       client.state
     )
-    const settings = this.getClientSettings(client)
 
     return (
       <StyledMain>
@@ -129,18 +125,21 @@ class ClientConfig extends Component {
             <Tab label="Terminal" data-test-id="navbar-item-terminal" />
           </Tabs>
         </StyledAppBar>
+
         <TabContainer style={{ display: activeTab === 0 ? 'block' : 'none' }}>
           <VersionList
             client={client}
             handleReleaseSelect={handleReleaseSelect}
           />
         </TabContainer>
+
+        {/* NOTE: MUI requires generating the ConfigForm from state each render */}
         {activeTab === 1 && (
           <TabContainer>
             <ErrorBoundary>
               <DynamicConfigForm
                 clientName={client.name}
-                settings={settings}
+                settings={getPluginSettingsConfig(client)}
                 handleClientConfigChanged={this.handleClientConfigChanged}
                 isClientRunning={isRunning}
                 clientConfigChanged={clientConfigChanged}
@@ -148,6 +147,7 @@ class ClientConfig extends Component {
             </ErrorBoundary>
           </TabContainer>
         )}
+
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />
         </TabContainer>
