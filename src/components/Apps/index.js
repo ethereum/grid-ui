@@ -10,7 +10,7 @@ class AppsOverview extends React.Component {
     const apps = GridAPI.AppManager ? GridAPI.AppManager.getAvailableApps() : []
 
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', paddingBottom: '64px' }}>
         <Grid container spacing={24}>
           {apps.length ? (
             apps.map(app => (
