@@ -149,12 +149,12 @@ describe('generateFlags', () => {
     const settings = [
       {
         id: 'ipcPath',
-        flag: '--ipc "%s"'
+        flag: '--ipc %s'
       }
     ]
 
     const flags = generateFlags(input, settings)
-    expect(flags).toEqual(['--ipc', '"/path/with spaces.ipc"'])
+    expect(flags).toEqual(['--ipc', '/path/with spaces.ipc'])
   })
 })
 
