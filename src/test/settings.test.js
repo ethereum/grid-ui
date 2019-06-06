@@ -1,4 +1,5 @@
-import { getPluginSettingsConfig, generateFlags } from '../lib/utils'
+import { getPluginSettingsConfig } from '../lib/utils'
+import { generateFlags } from '../lib/flags'
 
 describe('getPluginSettingsConfig', () => {
   it('returns an empty array if no client', () => {
@@ -141,6 +142,19 @@ describe('generateFlags', () => {
 
     const flags = generateFlags(input, settings)
     expect(flags).toEqual(['--syncmode', 'light', '--maxpeers=100'])
+  })
+
+  it('should not split values with spaces', () => {
+    const input = { ipcPath: '/path/with spaces.ipc' }
+    const settings = [
+      {
+        id: 'ipcPath',
+        flag: '--ipc %s'
+      }
+    ]
+
+    const flags = generateFlags(input, settings)
+    expect(flags).toEqual(['--ipc', '/path/with spaces.ipc'])
   })
 })
 

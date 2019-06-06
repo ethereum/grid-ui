@@ -1,5 +1,6 @@
 import ClientService from './clientService'
-import { generateFlags, getPluginSettingsConfig } from '../../lib/utils'
+import { getPluginSettingsConfig } from '../../lib/utils'
+import { generateFlags } from '../../lib/flags'
 
 export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
