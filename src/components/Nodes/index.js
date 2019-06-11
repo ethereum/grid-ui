@@ -32,14 +32,16 @@ class NodesTab extends Component {
   }
 
   initClients = clients => {
-    const { dispatch } = this.props
+    const { clientState, dispatch } = this.props
 
     // Sync clients with redux
     clients.map(client => dispatch(initClient(client)))
 
-    // Set the selected client
+    // Set the selected client if Redux out of sync
     const selectedClient =
-      clients.find(client => client.order === 1) || clients[0]
+      clients.find(client => client.name === clientState.selected) ||
+      clients.find(client => client.order === 1) ||
+      clients[0]
     this.handleSelectClient(selectedClient)
 
     // TODO: two sources of truth - local and redux state

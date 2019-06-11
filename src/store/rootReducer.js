@@ -1,24 +1,35 @@
+import omit from 'lodash/omit'
 import { combineReducers } from 'redux'
-// import { persistReducer } from 'redux-persist'
-// import storage from 'redux-persist/lib/storage'
-import clientReducer from './client/reducer'
+import { createTransform, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+import client, { initialClientState } from './client/reducer'
 
-// const rootPersistConfig = {
-// key: 'root',
-// storage,
-// blacklist: ['client']
-// }
+const pluginTransform = createTransform((inboundState, key) => {
+  if (key === 'client') {
+    const persistablePluginData = { selected: inboundState.selected }
 
-// const clientPersistConfig = {
-// key: 'client',
-// storage,
-// whitelist: ['config', 'release']
-// }
+    const plugins = Object.keys(omit(inboundState, 'selected'))
+    plugins.forEach(plugin => {
+      persistablePluginData[plugin] = {
+        ...initialClientState,
+        config: inboundState[plugin].config
+      }
+    })
 
-const rootReducer = combineReducers({
-  // client: persistReducer(clientPersistConfig, clientReducer)
-  client: clientReducer
+    return persistablePluginData
+  }
+
+  return inboundState
 })
 
-// export default persistReducer(rootPersistConfig, rootReducer)
-export default rootReducer
+const rootPersistConfig = {
+  key: 'root',
+  storage,
+  transforms: [pluginTransform]
+}
+
+const rootReducer = combineReducers({
+  client
+})
+
+export default persistReducer(rootPersistConfig, rootReducer)

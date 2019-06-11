@@ -40,3 +40,14 @@ export const getPluginSettingsConfig = client => {
     return []
   }
 }
+
+export const getDefaultSetting = (client, id) => {
+  try {
+    const setting = client.plugin.config.settings.find(
+      setting => setting.id === id
+    )
+    return setting.default
+  } catch (e) {
+    return ''
+  }
+}

@@ -1,19 +1,34 @@
 import ClientService from './clientService'
-import { getPluginSettingsConfig } from '../../lib/utils'
+import { getPluginSettingsConfig, getDefaultSetting } from '../../lib/utils'
 import { generateFlags } from '../../lib/flags'
 
 export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
 }
 
-const buildClientDefaults = client => {
+const buildClientDefaults = (client, reduxClientState) => {
   const pluginDefaults = {}
+  const settings = client.plugin.config.settings || []
+  const settingsIds = settings.map(setting => setting.id)
+
+  // Handle rehydration: if Redux has settings already, use them.
+  if (settingsIds.length && reduxClientState) {
+    if (Object.keys(reduxClientState.config).length) {
+      settingsIds.forEach(id => {
+        pluginDefaults[id] =
+          reduxClientState.config[id] || getDefaultSetting(client, id)
+      })
+      return pluginDefaults
+    }
+  }
+
   const clientSettings = getPluginSettingsConfig(client)
   clientSettings.forEach(setting => {
     if ('default' in setting) {
       pluginDefaults[setting.id] = setting.default
     }
   })
+
   return pluginDefaults
 }
 
@@ -24,9 +39,10 @@ export const getGeneratedFlags = (client, config) => {
 }
 
 export const initClient = client => {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const reduxClientState = getState().client[client.name]
+    const config = buildClientDefaults(client, reduxClientState)
     const clientData = client.plugin.config
-    const config = buildClientDefaults(client)
     const flags = getGeneratedFlags(client, config)
 
     dispatch({
