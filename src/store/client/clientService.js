@@ -13,8 +13,6 @@ const isHex = str => typeof str === 'string' && str.startsWith('0x')
 const hexToNumberString = str => new BigNumber(str).toString(10)
 const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
 
-// TODO: store 'client' and 'dispatch' on start/resume?
-
 class ClientService {
   start(client, release, flags, config, dispatch) {
     client.start(release, flags, config)

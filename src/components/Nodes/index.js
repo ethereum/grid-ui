@@ -61,24 +61,12 @@ class NodesTab extends Component {
 
   handleClientConfigChanged = (key, value) => {
     const { clientState, dispatch } = this.props
-    const { selectedClient } = this.state
-
-    // WARNING: if selected client is destructured
-    /**
-     * newSelectedClient = {
-     *  ...selectedClient
-     * }
-     * the reference to the remote object in main is killed in this process
-     */
 
     const { config } = clientState[clientState.selected]
     const newConfig = { ...config }
     newConfig[key] = value
 
-    selectedClient.selectedConfig = newConfig
-    this.setState({ selectedClient }, () => {
-      dispatch(setConfig(clientState.selected, newConfig))
-    })
+    dispatch(setConfig(clientState.selected, newConfig))
   }
 
   handleReleaseSelect = release => {

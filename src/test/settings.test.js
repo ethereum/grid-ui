@@ -1,4 +1,28 @@
+import { getPluginSettingsConfig } from '../lib/utils'
 import { generateFlags } from '../lib/flags'
+
+describe('getPluginSettingsConfig', () => {
+  it('returns an empty array if no client', () => {
+    const client = undefined
+    expect(getPluginSettingsConfig(client)).toEqual([])
+  })
+
+  it('returns an empty array if no settings config', () => {
+    const client = { plugin: { config: {} } }
+    expect(getPluginSettingsConfig(client)).toEqual([])
+  })
+
+  it('returns an empty array if settings are not an array', () => {
+    const client = { plugin: { config: { settings: { one: '1', two: '2' } } } }
+    expect(getPluginSettingsConfig(client)).toEqual([])
+  })
+
+  it('returns the array of settings', () => {
+    const settings = [{ id: 'one' }, { id: 'two' }]
+    const client = { plugin: { config: { settings } } }
+    expect(getPluginSettingsConfig(client)).toEqual(settings)
+  })
+})
 
 describe('generateFlags', () => {
   it('should handle an empty settings', () => {
@@ -118,6 +142,19 @@ describe('generateFlags', () => {
 
     const flags = generateFlags(input, settings)
     expect(flags).toEqual(['--syncmode', 'light', '--maxpeers=100'])
+  })
+
+  it('should not split values with spaces', () => {
+    const input = { ipcPath: '/path/with spaces.ipc' }
+    const settings = [
+      {
+        id: 'ipcPath',
+        flag: '--ipc %s'
+      }
+    ]
+
+    const flags = generateFlags(input, settings)
+    expect(flags).toEqual(['--ipc', '/path/with spaces.ipc'])
   })
 })
 

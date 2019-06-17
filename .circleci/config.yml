@@ -1,10 +1,10 @@
 # Javascript Node CircleCI 2.0 configuration file
 version: 2
 jobs:
-  build: 
+  build:
     docker:
       - image: circleci/node:10.5
-      
+
     steps:
       - checkout
 
@@ -14,7 +14,7 @@ jobs:
 
       - run: yarn lint
 
-      - run: echo $CIRCLE_BRANCH
+      - run: yarn test --verbose --coverage
 
       - run: CI=false yarn deploy $CIRCLE_BRANCH
 
@@ -24,31 +24,9 @@ jobs:
       - store_artifacts:
           path: build/manifest.json
 
-  build-nightly:
-    docker:
-      - image: circleci/node:10.5
-    steps:
-      - checkout
-      - run: yarn
-      - run: yarn lint
-      - run: CI=false yarn deploy nightly
-      - store_artifacts:
-          path: build/grid-ui*.zip
-      - store_artifacts:
-          path: build/manifest.json
 
 workflows:
   version: 2
   commit:
     jobs:
       - build
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - dev
-    jobs:
-      - build-nightly

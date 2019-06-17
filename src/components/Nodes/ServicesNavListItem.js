@@ -67,6 +67,7 @@ class ServicesNavListItem extends Component {
           selected: classes.selected
         }}
         button
+        data-test-id={`node-${client.name}`}
       >
         <ListItemText
           primary={client.displayName}

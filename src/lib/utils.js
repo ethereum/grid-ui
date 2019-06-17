@@ -31,3 +31,12 @@ export const without = (...omitProps) => {
     return WithoutPropsComponent
   }
 }
+
+export const getPluginSettingsConfig = client => {
+  try {
+    const settings = client.plugin.config.settings // eslint-disable-line
+    return Array.isArray(settings) ? settings : []
+  } catch (e) {
+    return []
+  }
+}

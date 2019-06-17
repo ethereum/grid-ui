@@ -7,8 +7,8 @@ import Typography from '@material-ui/core/Typography'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import styled, { css } from 'styled-components'
-import Spinner from '../../shared/Spinner'
-import { without } from '../../../lib/utils'
+import Spinner from '../../../shared/Spinner'
+import { without } from '../../../../lib/utils'
 
 // TODO: component test priority
 export default class VersionListItem extends Component {
@@ -128,9 +128,7 @@ export default class VersionListItem extends Component {
     return (
       <StyledListItem
         button
-        onClick={() => {
-          this.handleReleaseSelect(release)
-        }}
+        onClick={() => this.handleReleaseSelect(release)}
         selected={isSelectedRelease(release)}
         isDownloading={isDownloading}
         alt={release.name}

@@ -1,15 +1,28 @@
+/**
+ * This method preserves spaces contained in the value.
+ * input: "--ipc '%s'", "/path with spaces"
+ * output: ["--ipc", "/path with spaces"]
+ */
+const parseFlag = (pattern, value) => {
+  let result = pattern.split(' ').map(e => e.replace(/%s/, value))
+
+  return result
+}
+
 export const generateFlags = (userConfig, nodeSettings) => {
-  if (!Array.isArray(nodeSettings)) throw 'Settings must be an Array instance'
+  if (!Array.isArray(nodeSettings))
+    throw new Error('Settings must be an Array instance')
+
   const userConfigEntries = Object.keys(userConfig)
   let flags = []
 
-  userConfigEntries.map(entry => {
-    let flag
+  userConfigEntries.forEach(entry => {
+    let pattern
     let configEntry = nodeSettings.find(setting => setting.id === entry)
     let flagString = configEntry.flag
 
     if (flagString) {
-      flag = flagString.replace(/%s/, userConfig[entry]).split(' ')
+      pattern = flagString
     } else if (configEntry.options) {
       const options = configEntry.options
       const selectedOption = options.find(
@@ -17,14 +30,18 @@ export const generateFlags = (userConfig, nodeSettings) => {
           userConfig[entry] === option.value || userConfig[entry] === option
       )
       if (typeof selectedOption['flag'] !== 'string') {
-        throw `Option "${selectedOption.value ||
-          selectedOption}" must have the "flag" key`
+        throw new Error(
+          `Option "${selectedOption.value ||
+            selectedOption}" must have the "flag" key`
+        )
       }
-      flag = selectedOption.flag.replace(/%s/, userConfig[entry]).split(' ')
+      pattern = selectedOption.flag
     } else {
-      throw `Config entry "${entry}" must have the "flag" key`
+      throw new Error(`Config entry "${entry}" must have the "flag" key`)
     }
-    flags = flags.concat(flag)
+
+    const parsedFlag = parseFlag(pattern, userConfig[entry])
+    flags = flags.concat(parsedFlag)
   })
 
   return flags.filter(flag => flag.length > 0)
