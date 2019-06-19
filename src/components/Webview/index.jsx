@@ -74,7 +74,12 @@ class Webview extends React.Component {
             onNavigate={this.handleNavigate}
           />
         )}
-        <div style={{ width: '100%', height: '100%' }}>
+        <div
+          style={{
+            width: '100%',
+            height: showUrlBar ? 'calc(100% - 52px)' : '100%'
+          }}
+        >
           <webview
             ref={ref => {
               this.webview = ref
