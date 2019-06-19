@@ -52,32 +52,14 @@ class ClientService {
   }
 
   createListeners(client, dispatch) {
-    client.on('starting', () =>
-      dispatch(onConnectionUpdate(client.name, 'STARTING'))
-    )
-    client.on('started', () =>
-      dispatch(onConnectionUpdate(client.name, 'STARTED'))
-    )
-    client.on('connected', () => this.onConnect(client, dispatch))
-    client.on('stopping', () =>
-      dispatch(onConnectionUpdate(client.name, 'STOPPING'))
-    )
-    client.on('stopped', () =>
-      dispatch(onConnectionUpdate(client.name, 'STOPPED'))
-    )
-    client.on('disconnect', () =>
-      dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
+    client.on('newState', newState =>
+      dispatch(onConnectionUpdate(client.name, newState.toUpperCase()))
     )
     client.on('error', e => dispatch(clientError(client.name, e)))
   }
 
   removeListeners(client) {
-    client.removeAllListeners('starting')
-    client.removeAllListeners('started')
-    client.removeAllListeners('connected')
-    client.removeAllListeners('stopping')
-    client.removeAllListeners('stopped')
-    client.removeAllListeners('disconnect')
+    client.removeAllListeners('newState')
     client.removeAllListeners('error')
   }
 
