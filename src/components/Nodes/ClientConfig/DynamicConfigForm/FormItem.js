@@ -9,6 +9,7 @@ import FolderOpenIcon from '@material-ui/icons/FolderOpen'
 import Select from '../../../shared/Select'
 import { Grid as GridAPI } from '../../../../API'
 
+// TODO: component test priority
 class DynamicConfigFormItem extends Component {
   static propTypes = {
     itemKey: PropTypes.string,

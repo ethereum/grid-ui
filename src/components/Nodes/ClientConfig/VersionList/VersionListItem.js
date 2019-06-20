@@ -10,6 +10,7 @@ import styled, { css } from 'styled-components'
 import Spinner from '../../../shared/Spinner'
 import { without } from '../../../../lib/utils'
 
+// TODO: component test priority
 export default class VersionListItem extends Component {
   static propTypes = {
     client: PropTypes.object.isRequired,
@@ -34,6 +35,7 @@ export default class VersionListItem extends Component {
     this._isMounted = false
   }
 
+  // TODO: extract & unit-test
   releaseDisplayName = release => {
     const { client } = this.props
     const { fileName } = release
