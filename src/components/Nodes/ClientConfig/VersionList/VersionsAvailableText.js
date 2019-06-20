@@ -32,7 +32,8 @@ class VersionsAvailableText extends Component {
     classes: PropTypes.object,
     loadingReleases: PropTypes.bool,
     localReleaseCount: PropTypes.number,
-    totalReleaseCount: PropTypes.number
+    totalReleaseCount: PropTypes.number,
+    lastLoadTimestamp: PropTypes.number
   }
 
   render() {
@@ -40,7 +41,8 @@ class VersionsAvailableText extends Component {
       classes,
       loadingReleases,
       localReleaseCount,
-      totalReleaseCount
+      totalReleaseCount,
+      lastLoadTimestamp
     } = this.props
 
     return (
@@ -55,6 +57,8 @@ class VersionsAvailableText extends Component {
             variant="h6"
             onClick={this.handleRefresh}
             classes={{ root: classes.versionsAvailable }}
+            data-test-id="button-refresh-version-list"
+            data-test-timestamp={lastLoadTimestamp}
           >
             {totalReleaseCount}{' '}
             {localReleaseCount === 1 ? 'version' : 'versions'} available
