@@ -60,7 +60,13 @@ class VersionList extends Component {
     releases = releases.filter(r => !r.remote || !localReleases[r.fileName])
     // console.timeEnd('dedupe') // for 132 -> 83 ms
     this.setState(
-      { releases, loadingReleases: false, localReleaseCount: count },
+      {
+        releases,
+        loadingReleases: false,
+        localReleaseCount: count,
+        // lastLoadTimestamp used in tests
+        lastLoadTimestamp: new Date().getTime()
+      },
       () => {
         // Set first local release as active
         // TODO: revisit after redux-persist reintroduced
@@ -143,6 +149,7 @@ class VersionList extends Component {
       downloadError,
       loadingReleases,
       localReleaseCount,
+      lastLoadTimestamp,
       releases
     } = this.state
 
@@ -160,6 +167,7 @@ class VersionList extends Component {
           loadingReleases={loadingReleases}
           localReleaseCount={localReleaseCount}
           totalReleaseCount={releases.length}
+          lastLoadTimestamp={lastLoadTimestamp}
         />
 
         <LatestVersionWarning

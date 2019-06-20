@@ -67,23 +67,27 @@ class Webview extends React.Component {
   render() {
     const { currentUrl, showUrlBar } = this.state
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', height: '100%' }}>
         {showUrlBar && (
           <UrlBar
             onOpenDevTools={this.openDevTools}
             onNavigate={this.handleNavigate}
           />
         )}
-        <div style={{ width: '100%', marginTop: 10 }}>
+        <div
+          style={{
+            width: '100%',
+            height: showUrlBar ? 'calc(100% - 52px)' : '100%'
+          }}
+        >
           <webview
             ref={ref => {
               this.webview = ref
             }}
             src={currentUrl}
             style={{
-              display: 'inline-flex',
               width: '100%',
-              height: 'calc(100vh - 100px)'
+              height: '100%'
             }}
           />
         </div>
