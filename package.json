@@ -11,7 +11,7 @@
   "scripts": {
     "analyze-modules": "source-map-explorer build/static/js/1.*",
     "analyze": "source-map-explorer build/static/js/main.*",
-    "start": "cross-env PORT=3080 CI='false' react-scripts start",
+    "start": "cross-env PORT=3080 CI=false BROWSER=none react-scripts start",
     "_build": "react-scripts build",
     "build": "react-scripts-ext build app",
     "package": "react-scripts-ext package",
