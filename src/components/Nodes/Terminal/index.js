@@ -102,6 +102,17 @@ class Terminal extends Component {
     const { classes, client } = this.props
     const { logs } = this.state
 
+    if (logs.length === 0) {
+      return <div>No logs yet.</div>
+    }
+
+    const renderLogs = logs.map((l, index) => (
+      <div key={index}>
+        {' '}
+        &gt; <Ansi>{l}</Ansi>
+      </div>
+    ))
+
     return (
       <div key="terminalContainer">
         <div
@@ -109,12 +120,7 @@ class Terminal extends Component {
           ref={this.terminalScrollViewRef}
           className={classes.terminalWrapper}
         >
-          {logs.map((l, index) => (
-            <div key={index}>
-              {' '}
-              &gt; <Ansi>{l}</Ansi>
-            </div>
-          ))}
+          {renderLogs}
         </div>
         <TerminalInput client={client} addNewLog={this.addNewLog} />
       </div>
