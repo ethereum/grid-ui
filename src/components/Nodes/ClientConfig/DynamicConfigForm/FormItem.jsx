@@ -153,9 +153,9 @@ class DynamicConfigFormItem extends Component {
               onClick={this.showOpenDialog(itemKey)}
               ref={this.inputOpenFileRef}
               style={{ display: 'none' }}
-              webkitdirectory={type.includes('directory')}
-              directory={type.includes('directory')}
-              multiple={type.includes('multiple')}
+              webkitdirectory={type.includes('directory') ? 1 : 0}
+              directory={type.includes('directory') ? 1 : 0}
+              multiple={type.includes('multiple') ? 1 : 0}
             />
           </div>
         )
