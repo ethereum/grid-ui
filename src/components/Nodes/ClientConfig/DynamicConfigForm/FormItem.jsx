@@ -48,13 +48,9 @@ class DynamicConfigFormItem extends Component {
     const { client, clientName, item } = this.props
     const { type } = item
     const defaultPath = client[clientName].config[key]
-    const openDirectory = type.includes('directory')
+    const pathType = type.replace('_multiple', '')
     const selectMultiple = type.includes('multiple')
-    const path = await showOpenDialog(
-      openDirectory,
-      selectMultiple,
-      defaultPath
-    )
+    const path = await showOpenDialog(pathType, selectMultiple, defaultPath)
     this.handleChange(key, path)
     return null
   }
