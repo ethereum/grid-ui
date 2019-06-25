@@ -36,19 +36,22 @@ class DynamicConfigFormItem extends Component {
     this.updateRedux.cancel()
   }
 
-  browseDir = key => async event => {
-    const { openFolderDialog } = GridAPI
-    // If we don't have openFolderDialog from Grid,
+  showOpenDialog = key => async event => {
+    const { showOpenDialog } = GridAPI
+    // If we don't have showOpenDialog from Grid,
     // return true to continue with native file dialog
-    if (!openFolderDialog) {
+    if (!showOpenDialog) {
       return true
     }
+    // Continue with Grid.showOpenDialog()
     event.preventDefault()
-    // Continue with Grid.openFolderDialog()
-    const { client, clientName } = this.props
+    const { client, clientName, item } = this.props
+    const { type } = item
     const defaultPath = client[clientName].config[key]
-    const dir = await openFolderDialog(defaultPath)
-    this.handleChange(key, dir)
+    const pathType = type.replace('_multiple', '')
+    const selectMultiple = type.includes('multiple')
+    const path = await showOpenDialog(pathType, selectMultiple, defaultPath)
+    this.handleChange(key, path)
     return null
   }
 
@@ -102,7 +105,10 @@ class DynamicConfigFormItem extends Component {
             />
           </div>
         )
-      case 'path':
+      case 'file':
+      case 'file_multiple':
+      case 'directory':
+      case 'directory_multiple':
         return (
           <div>
             <TextField
@@ -117,7 +123,7 @@ class DynamicConfigFormItem extends Component {
                   <InputAdornment position="end">
                     <IconButton
                       disabled={isClientRunning}
-                      aria-label="Open folder browser"
+                      aria-label="Show Open Dialog"
                       onClick={() => {
                         if (
                           this.inputOpenFileRef &&
@@ -136,15 +142,16 @@ class DynamicConfigFormItem extends Component {
             />
             <input
               type="file"
-              id="open-file-dialog"
+              id="show-open-dialog"
               onChange={event =>
                 this.handleChange(itemKey, event.target.files[0].path)
               }
-              onClick={this.browseDir(itemKey)}
+              onClick={this.showOpenDialog(itemKey)}
               ref={this.inputOpenFileRef}
               style={{ display: 'none' }}
-              webkitdirectory="true"
-              directory="true"
+              webkitdirectory={type.includes('directory') ? 1 : 0}
+              directory={type.includes('directory') ? 1 : 0}
+              multiple={type.includes('multiple') ? 1 : 0}
             />
           </div>
         )
