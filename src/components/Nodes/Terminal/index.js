@@ -1,18 +1,40 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Ansi from 'ansi-to-react'
+import { withStyles } from '@material-ui/core/styles'
+import TerminalInput from './TerminalInput'
 
-export default class Terminal extends Component {
-  static propTypes = {
-    client: PropTypes.object.isRequired
+const styles = () => ({
+  terminalWrapper: {
+    background: '#111',
+    color: '#eee',
+    fontFamily:
+      'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
+    fontSize: '11px',
+    padding: 10,
+
+    // Fluid width and height with support to scrolling
+    width: 'calc(100vw - 310px)',
+    height: 'calc(100vh - 274px)',
+
+    // Scroll config
+    overflowX: 'auto',
+    overflowY: 'scroll',
+    whiteSpace: 'nowrap'
   }
+})
 
-  state = {
-    logs: []
+class Terminal extends Component {
+  static propTypes = {
+    client: PropTypes.object.isRequired,
+    classes: PropTypes.object
   }
 
   constructor(props) {
     super(props)
+    this.state = {
+      logs: []
+    }
     this.terminalScrollViewRef = React.createRef()
   }
 
@@ -77,39 +99,33 @@ export default class Terminal extends Component {
   }
 
   render() {
+    const { classes, client } = this.props
     const { logs } = this.state
+
+    if (logs.length === 0) {
+      return <div>No logs yet.</div>
+    }
+
+    const renderLogs = logs.map((l, index) => (
+      <div key={index}>
+        {' '}
+        &gt; <Ansi>{l}</Ansi>
+      </div>
+    ))
 
     return (
       <div key="terminalContainer">
         <div
           key="terminalWrapper"
           ref={this.terminalScrollViewRef}
-          style={{
-            background: '#111',
-            color: '#eee',
-            fontFamily:
-              'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
-            fontSize: '11px',
-            padding: 10,
-
-            // Fluid width and height with support to scrolling
-            width: 'calc(100vw - 310px)',
-            maxHeight: 'calc(100vh - 238px)',
-
-            // Scroll config
-            overflowX: 'auto',
-            overflowY: 'scroll',
-            whiteSpace: 'nowrap'
-          }}
+          className={classes.terminalWrapper}
         >
-          {logs.map((l, index) => (
-            <div key={index}>
-              {' '}
-              &gt; <Ansi>{l}</Ansi>
-            </div>
-          ))}
+          {renderLogs}
         </div>
+        <TerminalInput client={client} addNewLog={this.addNewLog} />
       </div>
     )
   }
 }
+
+export default withStyles(styles)(Terminal)
