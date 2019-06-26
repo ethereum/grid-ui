@@ -17,6 +17,12 @@ const buildClientDefaults = client => {
   return pluginDefaults
 }
 
+export const getGeneratedFlags = (client, config) => {
+  const settings = getPluginSettingsConfig(client)
+  const flags = generateFlags(config, settings)
+  return flags
+}
+
 export const initClient = client => {
   return dispatch => {
     const clientData = client.plugin.config
@@ -103,12 +109,6 @@ export const setRelease = (clientName, release) => {
     type: 'CLIENT:SET_RELEASE',
     payload: { clientName, release }
   }
-}
-
-export const getGeneratedFlags = (client, config) => {
-  const settings = getPluginSettingsConfig(client)
-  const flags = generateFlags(config, settings)
-  return flags
 }
 
 export const setFlags = (client, config) => {

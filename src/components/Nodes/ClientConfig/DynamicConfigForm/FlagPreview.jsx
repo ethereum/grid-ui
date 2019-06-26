@@ -58,7 +58,7 @@ class FlagPreview extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {}
 }
 
