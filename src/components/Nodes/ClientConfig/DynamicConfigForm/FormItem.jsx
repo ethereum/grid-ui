@@ -17,7 +17,8 @@ class DynamicConfigFormItem extends Component {
     client: PropTypes.object,
     clientName: PropTypes.string,
     isClientRunning: PropTypes.bool,
-    handleClientConfigChanged: PropTypes.func
+    handleClientConfigChanged: PropTypes.func,
+    editGeneratedFlags: PropTypes.bool
   }
 
   constructor(props) {
@@ -67,8 +68,9 @@ class DynamicConfigFormItem extends Component {
 
   render() {
     const { fieldValue } = this.state
-    const { itemKey, item, isClientRunning } = this.props
+    const { itemKey, item, isClientRunning, editGeneratedFlags } = this.props
     const label = item.label || itemKey
+    const disabled = isClientRunning || editGeneratedFlags
     let { type } = item
     if (!type) type = item.options ? 'select' : 'text'
     let options
@@ -100,7 +102,7 @@ class DynamicConfigFormItem extends Component {
               name={label}
               defaultValue={fieldValue}
               options={options}
-              disabled={isClientRunning}
+              disabled={disabled}
               onChange={value => this.handleChange(itemKey, value)}
             />
           </div>
@@ -117,12 +119,12 @@ class DynamicConfigFormItem extends Component {
               label={item.label}
               value={fieldValue || ''}
               onChange={event => this.handleChange(itemKey, event.target.value)}
-              disabled={isClientRunning}
+              disabled={disabled}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      disabled={isClientRunning}
+                      disabled={disabled}
                       aria-label="Show Open Dialog"
                       onClick={() => {
                         if (
@@ -162,7 +164,7 @@ class DynamicConfigFormItem extends Component {
             variant="outlined"
             label={label}
             value={fieldValue}
-            disabled={isClientRunning}
+            disabled={disabled}
             onChange={event => this.handleChange(itemKey, event.target.value)}
             fullWidth
           />

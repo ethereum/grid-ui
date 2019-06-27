@@ -61,12 +61,15 @@ class NodesTab extends Component {
 
   handleClientConfigChanged = (key, value) => {
     const { clientState, dispatch } = this.props
+    const { clients } = this.state
+
+    const client = clients.filter(c => c.name === clientState.selected)[0]
 
     const { config } = clientState[clientState.selected]
     const newConfig = { ...config }
     newConfig[key] = value
 
-    dispatch(setConfig(clientState.selected, newConfig))
+    dispatch(setConfig(client, newConfig))
   }
 
   handleReleaseSelect = release => {
