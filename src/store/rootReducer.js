@@ -25,7 +25,9 @@ const pluginTransform = createTransform((inboundState, key) => {
 const rootPersistConfig = {
   key: 'root',
   storage,
-  transforms: [pluginTransform]
+  transforms: [
+    /* pluginTransform */
+  ]
 }
 
 const rootReducer = combineReducers({

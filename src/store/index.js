@@ -2,6 +2,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { persistStore } from 'redux-persist'
 import { composeWithDevTools } from 'remote-redux-devtools'
 import thunk from 'redux-thunk'
+import { saveSettings } from './middleware'
 import persistedReducer from './rootReducer'
 
 // In development, send Redux actions to a local DevTools server
@@ -18,7 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 export default function configureStore() {
   const store = createStore(
     persistedReducer,
-    debugWrapper(applyMiddleware(thunk))
+    debugWrapper(applyMiddleware(thunk, saveSettings))
   )
   const persistor = persistStore(store)
 

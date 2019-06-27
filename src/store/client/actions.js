@@ -1,22 +1,27 @@
 import ClientService from './clientService'
-import { getPluginSettingsConfig, getDefaultSetting } from '../../lib/utils'
+import {
+  getClientPersistedSettings,
+  getDefaultSetting,
+  getPluginSettingsConfig,
+  getSettingsIds
+} from '../../lib/utils'
 import { generateFlags } from '../../lib/flags'
 
 export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
 }
 
-const buildClientDefaults = (client, reduxClientState) => {
+const buildClientDefaults = client => {
   const pluginDefaults = {}
-  const settings = client.plugin.config.settings || []
-  const settingsIds = settings.map(setting => setting.id)
+  const settingsIds = getSettingsIds(client)
 
-  // Handle rehydration: if Redux has settings already, use them.
-  if (settingsIds.length && reduxClientState) {
-    if (Object.keys(reduxClientState.config).length) {
+  // Handle rehydration: if config.json has settings already, use them.
+  const persistedSettings = getClientPersistedSettings(client.name)
+  if (settingsIds.length && persistedSettings) {
+    if (Object.keys(persistedSettings).length) {
       settingsIds.forEach(id => {
         pluginDefaults[id] =
-          reduxClientState.config[id] || getDefaultSetting(client, id)
+          persistedSettings[id] || getDefaultSetting(client, id)
       })
       return pluginDefaults
     }
@@ -39,9 +44,9 @@ export const getGeneratedFlags = (client, config) => {
 }
 
 export const initClient = client => {
-  return (dispatch, getState) => {
-    const reduxClientState = getState().client[client.name]
-    const config = buildClientDefaults(client, reduxClientState)
+  return dispatch => {
+    // const reduxClientState = getState().client[client.name]
+    const config = buildClientDefaults(client /* , reduxClientState */)
     const clientData = client.plugin.config
     const flags = getGeneratedFlags(client, config)
 

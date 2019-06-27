@@ -1,4 +1,8 @@
-import { getDefaultSetting, getPluginSettingsConfig } from '../lib/utils'
+import {
+  getDefaultSetting,
+  getPluginSettingsConfig,
+  getSettingsIds
+} from '../lib/utils'
 import { generateFlags } from '../lib/flags'
 
 describe('getPluginSettingsConfig', () => {
@@ -40,6 +44,19 @@ describe('getDefaultSetting', () => {
     const settings = [{ id: 'one', default: 'a' }, { id: 'two', default: 'b' }]
     const client = { plugin: { config: { settings } } }
     expect(getDefaultSetting(client, 'two')).toEqual('b')
+  })
+})
+
+describe('getSettingsIds', () => {
+  it('returns an empty array if no client', () => {
+    const client = undefined
+    expect(getSettingsIds(client)).toEqual([])
+  })
+
+  it('returns an array of ids', () => {
+    const settings = [{ id: 'one', default: 'a' }, { id: 'two', default: 'b' }]
+    const client = { plugin: { config: { settings } } }
+    expect(getSettingsIds(client)).toEqual(['one', 'two'])
   })
 })
 
