@@ -134,7 +134,7 @@ class TerminalInput extends Component {
                 style={{ marginLeft: 10 }}
               />
             }
-            label="Protect Input"
+            label="Hide Input"
           />
         </FormGroup>
       </form>
