@@ -17,10 +17,17 @@ const buildClientDefaults = client => {
   return pluginDefaults
 }
 
+export const getGeneratedFlags = (client, config) => {
+  const settings = getPluginSettingsConfig(client)
+  const flags = generateFlags(config, settings)
+  return flags
+}
+
 export const initClient = client => {
   return dispatch => {
     const clientData = client.plugin.config
     const config = buildClientDefaults(client)
+    const flags = getGeneratedFlags(client, config)
 
     dispatch({
       type: 'CLIENT:INIT',
@@ -28,7 +35,8 @@ export const initClient = client => {
         clientName: clientData.name,
         type: client.type,
         clientData,
-        config
+        config,
+        flags
       }
     })
 
@@ -103,16 +111,31 @@ export const setRelease = (clientName, release) => {
   }
 }
 
-export const setConfig = (clientName, config) => {
-  return { type: 'CLIENT:SET_CONFIG', payload: { clientName, config } }
+export const setFlags = (client, config) => {
+  const clientName = client.name
+  const flags = getGeneratedFlags(client, config)
+  return { type: 'CLIENT:SET_FLAGS', payload: { clientName, flags } }
+}
+
+export const setCustomFlags = (clientName, flags) => {
+  return { type: 'CLIENT:SET_FLAGS', payload: { clientName, flags } }
+}
+
+export const setConfig = (client, config) => {
+  return dispatch => {
+    const clientName = client.name
+    dispatch({
+      type: 'CLIENT:SET_CONFIG',
+      payload: { clientName, config }
+    })
+    dispatch(setFlags(client, config))
+  }
 }
 
 export const startClient = (client, release) => {
   return (dispatch, getState) => {
     try {
-      const { config } = getState().client[client.name]
-      const settings = getPluginSettingsConfig(client)
-      const flags = generateFlags(config, settings)
+      const { config, flags } = getState().client[client.name]
       ClientService.start(client, release, flags, config, dispatch)
       return dispatch({
         type: 'CLIENT:START',

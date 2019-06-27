@@ -12,6 +12,7 @@ describe('the client reducer', () => {
           config: { default: { sync: 'warp' } }
         },
         config: { sync: 'warp' },
+        flags: [],
         type: 'client'
       }
     }
@@ -22,6 +23,7 @@ describe('the client reducer', () => {
         name: 'parity',
         displayName: 'Parity',
         config: { sync: 'warp' },
+        flags: [],
         type: 'client'
       }
     }
