@@ -1,5 +1,10 @@
 import ClientService from './clientService'
-import { getPluginSettingsConfig } from '../../lib/utils'
+import {
+  getPersistedClientSettings,
+  getDefaultSetting,
+  getPluginSettingsConfig,
+  getSettingsIds
+} from '../../lib/utils'
 import { generateFlags } from '../../lib/flags'
 
 export const onConnectionUpdate = (clientName, status) => {
@@ -8,12 +13,27 @@ export const onConnectionUpdate = (clientName, status) => {
 
 const buildClientDefaults = client => {
   const pluginDefaults = {}
+  const settingsIds = getSettingsIds(client)
+
+  // Handle rehydration: if config.json has settings already, use them.
+  const persistedSettings = getPersistedClientSettings(client.name)
+  if (settingsIds.length && persistedSettings) {
+    if (Object.keys(persistedSettings).length) {
+      settingsIds.forEach(id => {
+        pluginDefaults[id] =
+          persistedSettings[id] || getDefaultSetting(client, id)
+      })
+      return pluginDefaults
+    }
+  }
+
   const clientSettings = getPluginSettingsConfig(client)
   clientSettings.forEach(setting => {
     if ('default' in setting) {
       pluginDefaults[setting.id] = setting.default
     }
   })
+
   return pluginDefaults
 }
 
@@ -25,8 +45,8 @@ export const getGeneratedFlags = (client, config) => {
 
 export const initClient = client => {
   return dispatch => {
-    const clientData = client.plugin.config
     const config = buildClientDefaults(client)
+    const clientData = client.plugin.config
     const flags = getGeneratedFlags(client, config)
 
     dispatch({

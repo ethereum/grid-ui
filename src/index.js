@@ -2,15 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import { Provider } from 'react-redux'
-// import { PersistGate } from 'redux-persist/integration/react'
 import App from './components/App'
 import Popup from './components/popups'
 import { Grid } from './API'
 import configureStore from './store'
 import Webview from './components/Webview'
-// import Spinner from './components/shared/Spinner'
 
-const { store /* , persistor */ } = configureStore()
+const store = configureStore()
 
 // see https://github.com/facebook/create-react-app/issues/1084#issuecomment-273272872
 // Copied from http:jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
@@ -61,9 +59,7 @@ if (args.isApp) {
     default:
       ReactDOM.render(
         <Provider store={store}>
-          {/* <PersistGate loading={<Spinner />} persistor={persistor}> */}
           <App />
-          {/* </PersistGate> */}
         </Provider>,
         root
       )
