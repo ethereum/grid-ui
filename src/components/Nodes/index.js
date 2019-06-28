@@ -9,6 +9,7 @@ import {
   setConfig,
   toggleClient
 } from '../../store/client/actions'
+import { getPersistedClientSelection } from '../../lib/utils'
 
 import Grid from '../../API/Grid'
 
@@ -32,14 +33,17 @@ class NodesTab extends Component {
   }
 
   initClients = clients => {
-    const { dispatch } = this.props
+    const { clientState, dispatch } = this.props
 
-    // Sync clients with redux
+    // Sync clients with Redux
     clients.map(client => dispatch(initClient(client)))
 
-    // Set the selected client
+    // Set the selected client from config.json or a fallback method
     const selectedClient =
-      clients.find(client => client.order === 1) || clients[0]
+      clients.find(client => client.name === getPersistedClientSelection()) ||
+      clients.find(client => client.name === clientState.selected) ||
+      clients.find(client => client.order === 1) ||
+      clients[0]
     this.handleSelectClient(selectedClient)
 
     // TODO: two sources of truth - local and redux state
