@@ -61,11 +61,20 @@ export const getSettingsIds = client => {
   }
 }
 
-export const getClientPersistedSettings = clientName => {
+export const getPersistedClientSettings = clientName => {
   try {
     const settings = Grid.Config.getItem('settings')
     return settings[clientName] || {}
   } catch (e) {
     return {}
+  }
+}
+
+export const getPersistedClientSelection = () => {
+  try {
+    const settings = Grid.Config.getItem('settings')
+    return settings.selected || ''
+  } catch (e) {
+    return ''
   }
 }

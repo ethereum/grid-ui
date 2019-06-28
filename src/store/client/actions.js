@@ -1,6 +1,6 @@
 import ClientService from './clientService'
 import {
-  getClientPersistedSettings,
+  getPersistedClientSettings,
   getDefaultSetting,
   getPluginSettingsConfig,
   getSettingsIds
@@ -16,7 +16,7 @@ const buildClientDefaults = client => {
   const settingsIds = getSettingsIds(client)
 
   // Handle rehydration: if config.json has settings already, use them.
-  const persistedSettings = getClientPersistedSettings(client.name)
+  const persistedSettings = getPersistedClientSettings(client.name)
   if (settingsIds.length && persistedSettings) {
     if (Object.keys(persistedSettings).length) {
       settingsIds.forEach(id => {
@@ -45,8 +45,7 @@ export const getGeneratedFlags = (client, config) => {
 
 export const initClient = client => {
   return dispatch => {
-    // const reduxClientState = getState().client[client.name]
-    const config = buildClientDefaults(client /* , reduxClientState */)
+    const config = buildClientDefaults(client)
     const clientData = client.plugin.config
     const flags = getGeneratedFlags(client, config)
 
