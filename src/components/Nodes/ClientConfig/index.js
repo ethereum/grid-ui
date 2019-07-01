@@ -154,9 +154,11 @@ class ClientConfig extends Component {
           <Terminal client={client} />
         </TabContainer>
 
-        <TabContainer style={{ display: activeTab === 3 ? 'block' : 'none' }}>
-          <PluginView plugin={client} />
-        </TabContainer>
+        {activeTab === 3 && (
+          <TabContainer>
+            <PluginView plugin={client} />
+          </TabContainer>
+        )}
       </StyledMain>
     )
   }

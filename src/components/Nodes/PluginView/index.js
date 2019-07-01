@@ -36,13 +36,6 @@ class PluginView extends Component {
     plugin: PropTypes.object.isRequired
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {}
-  }
-
-  componentWillReceiveProps() {}
-
   renderPluginMetadata = metadata => {
     const { classes } = this.props
     const {
@@ -61,7 +54,7 @@ class PluginView extends Component {
       verificationResult
     } = metadata
     const { signers, isTrusted, isValid } = verificationResult
-    console.log('signers', signers)
+
     return (
       <Fragment>
         <Grid item xs={4}>
@@ -164,7 +157,7 @@ class PluginView extends Component {
     return (
       <div>
         <h3 style={{ color: 'grey' }}>Plugin Details</h3>
-        <Grid container spacing={3}>
+        <Grid container spacing={8}>
           {metadata && this.renderPluginMetadata(metadata)}
         </Grid>
         <h3 style={{ color: 'grey' }}>Plugin Code</h3>
