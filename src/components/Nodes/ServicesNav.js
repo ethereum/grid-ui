@@ -93,7 +93,7 @@ class ServicesTab extends Component {
       <List
         key={type}
         subheader={
-          <ListSubheader key={type} classes={{ root: classes.listSubheader }}>
+          <ListSubheader classes={{ root: classes.listSubheader }}>
             {type}
           </ListSubheader>
         }
