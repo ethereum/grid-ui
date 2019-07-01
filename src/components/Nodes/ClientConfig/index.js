@@ -10,6 +10,7 @@ import VersionList from './VersionList'
 import DynamicConfigForm from './DynamicConfigForm'
 import Terminal from '../Terminal'
 // import NodeInfo from '../NodeInfo'
+import PluginView from '../PluginView'
 import { clearError } from '../../../store/client/actions'
 import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
@@ -123,6 +124,7 @@ class ClientConfig extends Component {
             <Tab label="Version" data-test-id="navbar-item-version" />
             <Tab label="Settings" data-test-id="navbar-item-settings" />
             <Tab label="Terminal" data-test-id="navbar-item-terminal" />
+            <Tab label="Details" data-test-id="navbar-item-terminal" />
           </Tabs>
         </StyledAppBar>
 
@@ -151,6 +153,12 @@ class ClientConfig extends Component {
         <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Terminal client={client} />
         </TabContainer>
+
+        {activeTab === 3 && (
+          <TabContainer>
+            <PluginView plugin={client} />
+          </TabContainer>
+        )}
       </StyledMain>
     )
   }

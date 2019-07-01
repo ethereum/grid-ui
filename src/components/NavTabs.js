@@ -67,7 +67,7 @@ class NavTabs extends React.Component {
             textColor="primary"
             indicatorColor="primary"
           >
-            <Tab label="Nodes" data-test-id="navbar-item-nodes" />
+            <Tab label="Plugins" data-test-id="navbar-item-nodes" />
             <Tab label="Apps" data-test-id="navbar-item-apps" />
           </Tabs>
         </AppBar>
