@@ -133,33 +133,36 @@ class ClientService {
     this.syncingSubscriptionId = null
   }
 
+  startBlockSubscriptions(client, dispatch) {
+    const startSubscriptions = async () => {
+      const result = await client.rpc('eth_syncing')
+      if (result === false) {
+        // Not syncing, start newHeads subscription
+        this.startNewHeadsSubscription(client, dispatch)
+      } else {
+        // Subscribe to syncing
+        this.startSyncingSubscription(client, dispatch)
+      }
+    }
+
+    const setLastBlock = () => {
+      client.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
+        const { number: hexBlockNumber, timestamp: hexTimestamp } = block
+        const blockNumber = Number(toNumberString(hexBlockNumber))
+        const timestamp = Number(toNumberString(hexTimestamp))
+        dispatch(newBlock(client.name, blockNumber, timestamp))
+      })
+    }
+
+    setTimeout(() => {
+      setLastBlock()
+      startSubscriptions()
+    }, 2000)
+  }
+
   onConnect(client, dispatch) {
-    // Only start block subscriptions for `client` plugins
     if (client.type === 'client') {
-      const startSubscriptions = async () => {
-        const result = await client.rpc('eth_syncing')
-        if (result === false) {
-          // Not syncing, start newHeads subscription
-          this.startNewHeadsSubscription(client, dispatch)
-        } else {
-          // Subscribe to syncing
-          this.startSyncingSubscription(client, dispatch)
-        }
-      }
-
-      const setLastBlock = () => {
-        client.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
-          const { number: hexBlockNumber, timestamp: hexTimestamp } = block
-          const blockNumber = Number(toNumberString(hexBlockNumber))
-          const timestamp = Number(toNumberString(hexTimestamp))
-          dispatch(newBlock(client.name, blockNumber, timestamp))
-        })
-      }
-
-      setTimeout(() => {
-        setLastBlock()
-        startSubscriptions()
-      }, 2000)
+      this.startBlockSubscriptions(client, dispatch)
     }
   }
 
