@@ -52,9 +52,12 @@ class ClientService {
   }
 
   createListeners(client, dispatch) {
-    client.on('newState', newState =>
+    client.on('newState', newState => {
       dispatch(onConnectionUpdate(client.name, newState.toUpperCase()))
-    )
+      if (newState === 'connected') {
+        this.onConnect(client, dispatch)
+      }
+    })
     client.on('error', e => dispatch(clientError(client.name, e)))
   }
 
@@ -131,8 +134,6 @@ class ClientService {
   }
 
   onConnect(client, dispatch) {
-    dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
-
     // Only start block subscriptions for `client` plugins
     if (client.type === 'client') {
       const startSubscriptions = async () => {
