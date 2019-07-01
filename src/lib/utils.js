@@ -1,4 +1,5 @@
 import React from 'react'
+import { Grid } from '../API'
 
 // calling styled(without('unneededProp')(TheComponent))
 // helps satisfy error of extra StyledComponents props passing into children
@@ -38,5 +39,42 @@ export const getPluginSettingsConfig = client => {
     return Array.isArray(settings) ? settings : []
   } catch (e) {
     return []
+  }
+}
+
+export const getDefaultSetting = (client, id) => {
+  try {
+    const setting = client.plugin.config.settings.find(
+      setting => setting.id === id
+    )
+    return setting.default
+  } catch (e) {
+    return ''
+  }
+}
+
+export const getSettingsIds = client => {
+  try {
+    return client.plugin.config.settings.map(setting => setting.id)
+  } catch (e) {
+    return []
+  }
+}
+
+export const getPersistedClientSettings = clientName => {
+  try {
+    const settings = Grid.Config.getItem('settings')
+    return settings[clientName] || {}
+  } catch (e) {
+    return {}
+  }
+}
+
+export const getPersistedClientSelection = () => {
+  try {
+    const settings = Grid.Config.getItem('settings')
+    return settings.selected || ''
+  } catch (e) {
+    return ''
   }
 }

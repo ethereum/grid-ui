@@ -1,8 +1,8 @@
 import { createStore, applyMiddleware } from 'redux'
-// import { persistStore } from 'redux-persist'
 import { composeWithDevTools } from 'remote-redux-devtools'
 import thunk from 'redux-thunk'
-import persistedReducer from './rootReducer'
+import { saveSettings } from './middleware'
+import rootReducer from './rootReducer'
 
 // In development, send Redux actions to a local DevTools server
 // Note: run and view these DevTools with `yarn dev:tools`
@@ -17,10 +17,9 @@ if (process.env.NODE_ENV === 'development') {
 
 export default function configureStore() {
   const store = createStore(
-    persistedReducer,
-    debugWrapper(applyMiddleware(thunk))
+    rootReducer,
+    debugWrapper(applyMiddleware(thunk, saveSettings))
   )
-  // const persistor = persistStore(store)
 
   if (module.hot) {
     module.hot.accept('./rootReducer', () => {
@@ -29,5 +28,5 @@ export default function configureStore() {
     })
   }
 
-  return { store /* , persistor */ }
+  return store
 }

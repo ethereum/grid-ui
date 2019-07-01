@@ -17,7 +17,8 @@ class DynamicConfigFormItem extends Component {
     client: PropTypes.object,
     clientName: PropTypes.string,
     isClientRunning: PropTypes.bool,
-    handleClientConfigChanged: PropTypes.func
+    handleClientConfigChanged: PropTypes.func,
+    editGeneratedFlags: PropTypes.bool
   }
 
   constructor(props) {
@@ -36,19 +37,22 @@ class DynamicConfigFormItem extends Component {
     this.updateRedux.cancel()
   }
 
-  browseDir = key => async event => {
-    const { openFolderDialog } = GridAPI
-    // If we don't have openFolderDialog from Grid,
+  showOpenDialog = key => async event => {
+    const { showOpenDialog } = GridAPI
+    // If we don't have showOpenDialog from Grid,
     // return true to continue with native file dialog
-    if (!openFolderDialog) {
+    if (!showOpenDialog) {
       return true
     }
+    // Continue with Grid.showOpenDialog()
     event.preventDefault()
-    // Continue with Grid.openFolderDialog()
-    const { client, clientName } = this.props
+    const { client, clientName, item } = this.props
+    const { type } = item
     const defaultPath = client[clientName].config[key]
-    const dir = await openFolderDialog(defaultPath)
-    this.handleChange(key, dir)
+    const pathType = type.replace('_multiple', '')
+    const selectMultiple = type.includes('multiple')
+    const path = await showOpenDialog(pathType, selectMultiple, defaultPath)
+    this.handleChange(key, path)
     return null
   }
 
@@ -64,8 +68,9 @@ class DynamicConfigFormItem extends Component {
 
   render() {
     const { fieldValue } = this.state
-    const { itemKey, item, isClientRunning } = this.props
+    const { itemKey, item, isClientRunning, editGeneratedFlags } = this.props
     const label = item.label || itemKey
+    const disabled = isClientRunning || editGeneratedFlags
     let { type } = item
     if (!type) type = item.options ? 'select' : 'text'
     let options
@@ -97,12 +102,15 @@ class DynamicConfigFormItem extends Component {
               name={label}
               defaultValue={fieldValue}
               options={options}
-              disabled={isClientRunning}
+              disabled={disabled}
               onChange={value => this.handleChange(itemKey, value)}
             />
           </div>
         )
-      case 'path':
+      case 'file':
+      case 'file_multiple':
+      case 'directory':
+      case 'directory_multiple':
         return (
           <div>
             <TextField
@@ -111,13 +119,13 @@ class DynamicConfigFormItem extends Component {
               label={item.label}
               value={fieldValue || ''}
               onChange={event => this.handleChange(itemKey, event.target.value)}
-              disabled={isClientRunning}
+              disabled={disabled}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      disabled={isClientRunning}
-                      aria-label="Open folder browser"
+                      disabled={disabled}
+                      aria-label="Show Open Dialog"
                       onClick={() => {
                         if (
                           this.inputOpenFileRef &&
@@ -136,15 +144,16 @@ class DynamicConfigFormItem extends Component {
             />
             <input
               type="file"
-              id="open-file-dialog"
+              id="show-open-dialog"
               onChange={event =>
                 this.handleChange(itemKey, event.target.files[0].path)
               }
-              onClick={this.browseDir(itemKey)}
+              onClick={this.showOpenDialog(itemKey)}
               ref={this.inputOpenFileRef}
               style={{ display: 'none' }}
-              webkitdirectory="true"
-              directory="true"
+              webkitdirectory={type.includes('directory') ? 1 : 0}
+              directory={type.includes('directory') ? 1 : 0}
+              multiple={type.includes('multiple') ? 1 : 0}
             />
           </div>
         )
@@ -155,7 +164,7 @@ class DynamicConfigFormItem extends Component {
             variant="outlined"
             label={label}
             value={fieldValue}
-            disabled={isClientRunning}
+            disabled={disabled}
             onChange={event => this.handleChange(itemKey, event.target.value)}
             fullWidth
           />

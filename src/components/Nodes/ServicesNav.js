@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
+import ListSubheader from '@material-ui/core/ListSubheader'
 import ServicesNavListItem from './ServicesNavListItem'
 
 const drawerWidth = 240
@@ -21,7 +22,12 @@ const styles = theme => ({
     padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
   },
-  toolbar: theme.mixins.toolbar
+  toolbar: theme.mixins.toolbar,
+  listSubheader: {
+    textTransform: 'uppercase',
+    fontSize: '80%',
+    height: '40px'
+  }
 })
 
 class ServicesTab extends Component {
@@ -56,7 +62,14 @@ class ServicesTab extends Component {
       selectedClientName
     } = this.props
 
-    const { content, drawer, drawerPaper, toolbar, ...restClasses } = classes
+    const {
+      content,
+      drawer,
+      drawerPaper,
+      toolbar,
+      listSubheader,
+      ...restClasses
+    } = classes
 
     return (
       <ServicesNavListItem
@@ -73,24 +86,32 @@ class ServicesTab extends Component {
     )
   }
 
-  renderServiceListItems = () => {
-    const { clients } = this.props
-    const servicesSorted = clients.sort((a, b) => a.order - b.order)
-
-    // Build client list items
-    const clientsSorted = servicesSorted.filter(s => s.type === 'client')
-    const clientListItems = clientsSorted.map(c => this.buildListItem(c))
-
-    // Build other service list items
-    const otherServices = servicesSorted.filter(s => s.type !== 'client')
-    const serviceListItems = otherServices.map(s => this.buildListItem(s))
-
-    return (
-      <React.Fragment>
-        {clientListItems}
-        {serviceListItems}
-      </React.Fragment>
+  renderLists = () => {
+    const { clients, classes } = this.props
+    const types = [...new Set(clients.map(client => client.type))]
+    const buildList = type => (
+      <List
+        key={type}
+        subheader={
+          <ListSubheader classes={{ root: classes.listSubheader }}>
+            {type}
+          </ListSubheader>
+        }
+      >
+        {this.renderClients(type)}
+      </List>
     )
+    const render = types.map(type => buildList(type))
+    return render
+  }
+
+  renderClients = type => {
+    const { clients } = this.props
+    const renderClients = clients
+      .filter(client => client.type === type)
+      .sort((a, b) => a.order - b.order)
+      .map(s => this.buildListItem(s))
+    return renderClients
   }
 
   render() {
@@ -104,7 +125,7 @@ class ServicesTab extends Component {
           classes={{ paper: classes.drawerPaper }}
         >
           <div className={classes.toolbar} />
-          <List>{this.renderServiceListItems()}</List>
+          {this.renderLists()}
         </Drawer>
         <main className={classes.content}>{children}</main>
       </React.Fragment>
