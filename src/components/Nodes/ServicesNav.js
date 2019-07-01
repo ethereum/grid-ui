@@ -62,7 +62,14 @@ class ServicesTab extends Component {
       selectedClientName
     } = this.props
 
-    const { content, drawer, drawerPaper, toolbar, ...restClasses } = classes
+    const {
+      content,
+      drawer,
+      drawerPaper,
+      toolbar,
+      listSubheader,
+      ...restClasses
+    } = classes
 
     return (
       <ServicesNavListItem
@@ -84,8 +91,9 @@ class ServicesTab extends Component {
     const types = [...new Set(clients.map(client => client.type))]
     const buildList = type => (
       <List
+        key={type}
         subheader={
-          <ListSubheader className={classes.listSubheader}>
+          <ListSubheader classes={{ root: classes.listSubheader }}>
             {type}
           </ListSubheader>
         }
