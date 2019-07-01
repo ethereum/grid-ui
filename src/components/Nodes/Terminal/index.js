@@ -15,7 +15,7 @@ const styles = () => ({
 
     // Fluid width and height with support to scrolling
     width: 'calc(100vw - 310px)',
-    height: 'calc(100vh - 274px)',
+    height: 'calc(100vh - 330px)',
 
     // Scroll config
     overflowX: 'auto',

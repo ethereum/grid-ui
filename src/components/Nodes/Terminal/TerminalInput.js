@@ -4,6 +4,9 @@ import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Typography from '@material-ui/core/Typography'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
 
 const styles = () => ({
   textField: {
@@ -36,8 +39,13 @@ class TerminalInput extends Component {
     this.state = {
       input: '',
       history: [''],
-      historyIndex: 0
+      historyIndex: 0,
+      protectInput: false
     }
+  }
+
+  toggleProtect = event => {
+    this.setState({ protectInput: event.target.checked })
   }
 
   handleChange = event => {
@@ -70,9 +78,9 @@ class TerminalInput extends Component {
 
   submit = () => {
     const { client, addNewLog } = this.props
-    const { input, history } = this.state
+    const { input, history, protectInput } = this.state
     client.write(input)
-    addNewLog(input)
+    addNewLog(protectInput ? '***' : input)
     this.setState({ input: '', historyIndex: 0 })
     // Add to history if not same as last history entry
     if (history[-1] !== input) {
@@ -83,7 +91,7 @@ class TerminalInput extends Component {
 
   render() {
     const { classes, client } = this.props
-    const { input } = this.state
+    const { input, protectInput } = this.state
 
     const isClientRunning = ['STARTED', 'CONNECTED'].includes(client.state)
 
@@ -93,26 +101,42 @@ class TerminalInput extends Component {
 
     return (
       <form onSubmit={this.submit}>
-        <TextField
-          data-test-id="terminal-input"
-          value={input}
-          onChange={this.handleChange}
-          onKeyDown={this.handleKeyDown}
-          disabled={!isClientRunning}
-          className={classes.textField}
-          InputProps={{
-            className: classes.input,
-            startAdornment: (
-              <InputAdornment
-                position="start"
-                className={classes.inputAdornment}
-              >
-                <Typography className={classes.inputAdornment}>&gt;</Typography>
-              </InputAdornment>
-            )
-          }}
-          fullWidth
-        />
+        <FormGroup row>
+          <TextField
+            data-test-id="terminal-input"
+            value={input}
+            onChange={this.handleChange}
+            onKeyDown={this.handleKeyDown}
+            disabled={!isClientRunning}
+            className={classes.textField}
+            type={protectInput ? 'password' : 'text'}
+            InputProps={{
+              className: classes.input,
+              startAdornment: (
+                <InputAdornment
+                  position="start"
+                  className={classes.inputAdornment}
+                >
+                  <Typography className={classes.inputAdornment}>
+                    &gt;
+                  </Typography>
+                </InputAdornment>
+              )
+            }}
+            fullWidth
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={protectInput}
+                onChange={this.toggleProtect}
+                style={{ marginLeft: 10 }}
+              />
+            }
+            label="Hide Input"
+          />
+        </FormGroup>
       </form>
     )
   }
