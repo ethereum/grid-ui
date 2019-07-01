@@ -154,12 +154,17 @@ class PluginView extends Component {
   render() {
     const { plugin } = this.props
     const { metadata } = plugin
+
     return (
       <div>
-        <h3 style={{ color: 'grey' }}>Plugin Details</h3>
-        <Grid container spacing={8}>
-          {metadata && this.renderPluginMetadata(metadata)}
-        </Grid>
+        {metadata && (
+          <React.Fragment>
+            <h3 style={{ color: 'grey' }}>Plugin Details</h3>
+            <Grid container spacing={8}>
+              {this.renderPluginMetadata(metadata)}
+            </Grid>
+          </React.Fragment>
+        )}
         <h3 style={{ color: 'grey' }}>Plugin Code</h3>
         <CodeMirror
           value={plugin.source}
