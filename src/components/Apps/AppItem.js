@@ -6,9 +6,9 @@ import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardActions from '@material-ui/core/CardActions'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import moment from 'moment'
+import Button from '../shared/Button'
 import Grid from '../../API/Grid'
 
 const styles = {
@@ -53,9 +53,7 @@ class AppItem extends React.Component {
           <Typography component="p">{description}</Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={this.handleAppLaunch}>
-            Launch
-          </Button>
+          <Button onClick={this.handleAppLaunch}>Launch</Button>
         </CardActions>
       </Card>
     )

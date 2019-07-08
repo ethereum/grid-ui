@@ -1,6 +1,7 @@
 import { createMuiTheme } from '@material-ui/core/styles'
 
-const primary = '#3792E6'
+export const primary = '#4fb783'
+export const primary2 = '#78aac7'
 
 const theme = createMuiTheme({
   typography: {
@@ -12,9 +13,9 @@ const theme = createMuiTheme({
     },
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: primary
+      main: primary,
       // dark: will be calculated from palette.primary.main,
-      // contrastText: will be calculated to contrast with palette.primary.main
+      contrastText: '#ffffff' // will be calculated to contrast with palette.primary.main
     },
     secondary: {
       // light: '#0066ff',
