@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import { Provider } from 'react-redux'
 import App from './components/App'
+import Terminal from './components/Nodes/Terminal'
 import Popup from './components/popups'
 import { Grid } from './API'
 import configureStore from './store'
@@ -38,6 +39,15 @@ if (args.isApp) {
   ReactDOM.render(
     <Provider store={store}>
       <Webview url={args.url} />
+    </Provider>,
+    root
+  )
+} else if (args.scope) {
+  const { client: clientName } = args.scope
+  const client = window.Grid.PluginHost.getPluginByName(clientName)
+  ReactDOM.render(
+    <Provider store={store}>
+      <Terminal client={client} />
     </Provider>,
     root
   )
