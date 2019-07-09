@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import { Provider } from 'react-redux'
 import App from './components/App'
-import Terminal from './components/Nodes/Terminal'
+import SimpleConfigForm from './components/Nodes/ClientConfig/SimpleConfigForm'
 import Popup from './components/popups'
 import { Grid } from './API'
 import configureStore from './store'
@@ -47,7 +47,7 @@ if (args.isApp) {
   const client = window.Grid.PluginHost.getPluginByName(clientName)
   ReactDOM.render(
     <Provider store={store}>
-      <Terminal client={client} />
+      <SimpleConfigForm clientPlugin={client} />
     </Provider>,
     root
   )
