@@ -68,7 +68,7 @@ class ClientService {
     client.on('disconnect', () =>
       dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
     )
-    client.on('error', e => dispatch(clientError(client.name, e)))
+    client.on('pluginError', error => dispatch(clientError(client.name, error)))
   }
 
   removeListeners(client) {
