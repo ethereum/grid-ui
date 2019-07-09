@@ -78,7 +78,7 @@ class ClientService {
     client.removeAllListeners('stopping')
     client.removeAllListeners('stopped')
     client.removeAllListeners('disconnect')
-    client.removeAllListeners('error')
+    client.removeAllListeners('pluginError')
   }
 
   onNewHeadsSubscriptionResult(client, result, dispatch) {
