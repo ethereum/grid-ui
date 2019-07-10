@@ -45,12 +45,24 @@ if (args.isApp) {
 } else if (args.scope) {
   const { client: clientName } = args.scope
   const client = window.Grid.PluginHost.getPluginByName(clientName)
-  ReactDOM.render(
-    <Provider store={store}>
-      <SimpleConfigForm clientPlugin={client} />
-    </Provider>,
-    root
-  )
+  console.log('∆∆∆ args.scope', args.scope)
+  if (args.scope.component === 'ui') {
+    console.log('∆∆∆ rendering grid-ui')
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      root
+    )
+  } else {
+    console.log('∆∆∆ falling back to SimpleConfigForm')
+    ReactDOM.render(
+      <Provider store={store}>
+        <SimpleConfigForm clientPlugin={client} />
+      </Provider>,
+      root
+    )
+  }
 } else {
   switch (urlParams.app) {
     case 'popup':
