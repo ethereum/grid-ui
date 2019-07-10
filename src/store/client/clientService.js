@@ -16,8 +16,7 @@ const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
 class ClientService {
   start(client, release, flags, config, dispatch) {
     client.start(release, flags, config)
-    this.watchForPeers(client, dispatch)
-    this.createListeners(client, dispatch)
+    if (client.type === 'client') this.watchForPeers(client, dispatch)
   }
 
   resume(client, dispatch) {
