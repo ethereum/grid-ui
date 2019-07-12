@@ -22,7 +22,8 @@ export default class VersionListItem extends Component {
 
   state = {
     isDownloading: false,
-    downloadProgress: 0
+    downloadProgress: 0,
+    isHovered: false
   }
 
   componentDidMount() {
@@ -90,20 +91,25 @@ export default class VersionListItem extends Component {
 
   renderIcon = release => {
     const { isSelectedRelease } = this.props
-    const { downloadProgress, isDownloading } = this.state
+    const { downloadProgress, isDownloading, isHovered } = this.state
     let icon = <BlankIconPlaceholder />
     if (isDownloading) {
       icon = (
         <Spinner variant="determinate" size={20} value={downloadProgress} />
       )
     } else if (release.remote) {
-      icon = <CloudDownloadIcon color="primary" />
+      icon = <CloudDownloadIcon color={isHovered ? 'primary' : 'inherit'} />
     } else if (isSelectedRelease(release)) {
       icon = <CheckBoxIcon color="primary" />
     } else if (!release.remote) {
-      icon = <HiddenCheckBoxIcon color="primary" />
+      icon = <HiddenCheckBoxIcon color={isHovered ? 'primary' : 'inherit'} />
     }
     return icon
+  }
+
+  toggleHover = () => {
+    const { isHovered } = this.state
+    this.setState({ isHovered: !isHovered })
   }
 
   render() {
@@ -126,6 +132,8 @@ export default class VersionListItem extends Component {
     return (
       <StyledListItem
         button
+        onMouseEnter={this.toggleHover}
+        onMouseLeave={this.toggleHover}
         onClick={() => this.handleReleaseSelect(release)}
         selected={isSelectedRelease(release)}
         isDownloading={isDownloading}
@@ -140,7 +148,10 @@ export default class VersionListItem extends Component {
           secondary={downloadProgress > 0 ? `${downloadProgress}%` : null}
         />
         <StyledListItemAction>
-          <Typography variant="button" color="primary">
+          <Typography
+            variant="button"
+            color={isSelectedRelease ? 'primary' : 'inherit'}
+          >
             {actionLabel}
           </Typography>
         </StyledListItemAction>

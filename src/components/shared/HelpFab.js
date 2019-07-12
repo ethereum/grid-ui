@@ -1,6 +1,18 @@
 import React from 'react'
 import Fab from '@material-ui/core/Fab'
+import styled from 'styled-components'
 import FeedbackIcon from '@material-ui/icons/Feedback'
+import { primary, primary2, primary3 } from '../../theme'
+
+const StyledButton = styled(Fab)`
+  background-color: #fad961;
+  background-image: linear-gradient(
+    45deg,
+    ${primary3} 0%,
+    ${primary2} 50%,
+    ${primary} 100%
+  );
+`
 
 class HelpFab extends React.Component {
   handleButtonClick = () => {
@@ -10,7 +22,7 @@ class HelpFab extends React.Component {
 
   render() {
     return (
-      <Fab
+      <StyledButton
         onClick={this.handleButtonClick}
         color="primary"
         style={{
@@ -22,7 +34,7 @@ class HelpFab extends React.Component {
         }}
       >
         <FeedbackIcon />
-      </Fab>
+      </StyledButton>
     )
   }
 }
