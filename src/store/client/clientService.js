@@ -58,12 +58,12 @@ class ClientService {
         this.onConnect(client, dispatch)
       }
     })
-    client.on('error', e => dispatch(clientError(client.name, e)))
+    client.on('pluginError', error => dispatch(clientError(client.name, error)))
   }
 
   removeListeners(client) {
     client.removeAllListeners('newState')
-    client.removeAllListeners('error')
+    client.removeAllListeners('pluginError')
   }
 
   onNewHeadsSubscriptionResult(client, result, dispatch) {
