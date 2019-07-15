@@ -7,6 +7,7 @@ import Popup from './components/popups'
 import { Grid } from './API'
 import configureStore from './store'
 import Webview from './components/Webview'
+import Apps from './components/Apps'
 
 const store = configureStore()
 
@@ -41,6 +42,25 @@ if (args.isApp) {
     </Provider>,
     root
   )
+} else if (args.scope) {
+  if (args.scope.component === 'ui') {
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      root
+    )
+  } else {
+    // args.scope.component === 'apps'
+    ReactDOM.render(
+      <Provider store={store}>
+        <div style={{ margin: '24px' }}>
+          <Apps />
+        </div>
+      </Provider>,
+      root
+    )
+  }
 } else {
   switch (urlParams.app) {
     case 'popup':
