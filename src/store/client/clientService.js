@@ -51,33 +51,18 @@ class ClientService {
   }
 
   createListeners(client, dispatch) {
-    client.on('starting', () =>
-      dispatch(onConnectionUpdate(client.name, 'STARTING'))
-    )
-    client.on('started', () =>
-      dispatch(onConnectionUpdate(client.name, 'STARTED'))
-    )
-    client.on('connected', () => this.onConnect(client, dispatch))
-    client.on('stopping', () =>
-      dispatch(onConnectionUpdate(client.name, 'STOPPING'))
-    )
-    client.on('stopped', () =>
-      dispatch(onConnectionUpdate(client.name, 'STOPPED'))
-    )
-    client.on('disconnect', () =>
-      dispatch(onConnectionUpdate(client.name, 'DISCONNETED'))
-    )
-    client.on('error', e => dispatch(clientError(client.name, e)))
+    client.on('newState', newState => {
+      dispatch(onConnectionUpdate(client.name, newState.toUpperCase()))
+      if (newState === 'connected') {
+        this.onConnect(client, dispatch)
+      }
+    })
+    client.on('pluginError', error => dispatch(clientError(client.name, error)))
   }
 
   removeListeners(client) {
-    client.removeAllListeners('starting')
-    client.removeAllListeners('started')
-    client.removeAllListeners('connected')
-    client.removeAllListeners('stopping')
-    client.removeAllListeners('stopped')
-    client.removeAllListeners('disconnect')
-    client.removeAllListeners('error')
+    client.removeAllListeners('newState')
+    client.removeAllListeners('pluginError')
   }
 
   onNewHeadsSubscriptionResult(client, result, dispatch) {
@@ -147,35 +132,36 @@ class ClientService {
     this.syncingSubscriptionId = null
   }
 
+  startBlockSubscriptions(client, dispatch) {
+    const startSubscriptions = async () => {
+      const result = await client.rpc('eth_syncing')
+      if (result === false) {
+        // Not syncing, start newHeads subscription
+        this.startNewHeadsSubscription(client, dispatch)
+      } else {
+        // Subscribe to syncing
+        this.startSyncingSubscription(client, dispatch)
+      }
+    }
+
+    const setLastBlock = () => {
+      client.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
+        const { number: hexBlockNumber, timestamp: hexTimestamp } = block
+        const blockNumber = Number(toNumberString(hexBlockNumber))
+        const timestamp = Number(toNumberString(hexTimestamp))
+        dispatch(newBlock(client.name, blockNumber, timestamp))
+      })
+    }
+
+    setTimeout(() => {
+      setLastBlock()
+      startSubscriptions()
+    }, 2000)
+  }
+
   onConnect(client, dispatch) {
-    dispatch(onConnectionUpdate(client.name, 'CONNECTED'))
-
-    // Only start block subscriptions for `client` plugins
     if (client.type === 'client') {
-      const startSubscriptions = async () => {
-        const result = await client.rpc('eth_syncing')
-        if (result === false) {
-          // Not syncing, start newHeads subscription
-          this.startNewHeadsSubscription(client, dispatch)
-        } else {
-          // Subscribe to syncing
-          this.startSyncingSubscription(client, dispatch)
-        }
-      }
-
-      const setLastBlock = () => {
-        client.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
-          const { number: hexBlockNumber, timestamp: hexTimestamp } = block
-          const blockNumber = Number(toNumberString(hexBlockNumber))
-          const timestamp = Number(toNumberString(hexTimestamp))
-          dispatch(newBlock(client.name, blockNumber, timestamp))
-        })
-      }
-
-      setTimeout(() => {
-        setLastBlock()
-        startSubscriptions()
-      }, 2000)
+      this.startBlockSubscriptions(client, dispatch)
     }
   }
 
