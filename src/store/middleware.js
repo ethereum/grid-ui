@@ -9,6 +9,13 @@ export const saveSettings = store => next => async action => {
     Grid.Config.setItem('settings', newSettings)
   }
 
+  if (action.type === 'CLIENT:SET_FLAGS') {
+    const flags = Grid.Config.getItem('flags')
+    const newFlags = Object.assign({}, flags)
+    newFlags[action.payload.clientName] = action.payload.flags
+    Grid.Config.setItem('flags', newFlags)
+  }
+
   if (action.type === 'CLIENT:SELECT') {
     const settings = Grid.Config.getItem('settings')
     const newSettings = Object.assign({}, settings)
