@@ -39,7 +39,7 @@ class ServicesNavListItem extends Component {
     client: PropTypes.object.isRequired,
     handleToggle: PropTypes.func.isRequired,
     handleSelectClient: PropTypes.func.isRequired,
-    // isDisabled: PropTypes.bool,
+    isDisabled: PropTypes.bool,
     isRunning: PropTypes.bool,
     isSelected: PropTypes.bool,
     secondaryText: PropTypes.string
@@ -50,7 +50,7 @@ class ServicesNavListItem extends Component {
       classes,
       handleToggle,
       handleSelectClient,
-      // isDisabled,
+      isDisabled,
       isRunning,
       isSelected,
       secondaryText,
@@ -82,13 +82,16 @@ class ServicesNavListItem extends Component {
           }}
         />
         <ListItemSecondaryAction>
-          <Tooltip title="" placement="left">
+          <Tooltip
+            title={isDisabled ? 'No version selected' : ''}
+            placement="left"
+          >
             <span>
               <Switch
                 color="primary"
                 onChange={() => handleToggle(client)}
                 checked={isRunning}
-                disabled
+                disabled={isDisabled}
                 data-test-id={`switch-${client.name}`}
               />
             </span>
