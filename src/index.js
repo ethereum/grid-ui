@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import { Provider } from 'react-redux'
 import App from './components/App'
-import SimpleConfigForm from './components/Nodes/ClientConfig/SimpleConfigForm'
 import Popup from './components/popups'
 import { Grid } from './API'
 import configureStore from './store'
@@ -44,32 +43,20 @@ if (args.isApp) {
     root
   )
 } else if (args.scope) {
-  const { client: clientName } = args.scope
-  const client = window.Grid.PluginHost.getPluginByName(clientName)
-  console.log('∆∆∆ args.scope', args.scope)
   if (args.scope.component === 'ui') {
-    console.log('∆∆∆ rendering grid-ui')
     ReactDOM.render(
       <Provider store={store}>
         <App />
       </Provider>,
       root
     )
-  } else if (args.scope.component === 'apps') {
-    console.log('∆∆∆ rendering apps')
+  } else {
+    // args.scope.component === 'apps'
     ReactDOM.render(
       <Provider store={store}>
         <div style={{ margin: '24px' }}>
           <Apps />
         </div>
-      </Provider>,
-      root
-    )
-  } else {
-    console.log('∆∆∆ falling back to SimpleConfigForm')
-    ReactDOM.render(
-      <Provider store={store}>
-        <SimpleConfigForm clientPlugin={client} />
       </Provider>,
       root
     )
