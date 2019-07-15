@@ -67,8 +67,10 @@ class Terminal extends Component {
     })
   }
 
-  clearLogs = () => {
-    this.setState({ logs: [] })
+  clearLogs = newState => {
+    if (newState === 'started') {
+      this.setState({ logs: [] })
+    }
   }
 
   subscribeLogs = client => {
@@ -76,14 +78,14 @@ class Terminal extends Component {
     client = client || this.props.client
     client.on('log', this.addNewLog)
     // Clear old logs on restart
-    client.on('starting', this.clearLogs)
+    client.on('newState', this.clearLogs)
   }
 
   unsubscribeLogs = client => {
     // eslint-disable-next-line
     client = client || this.props.client
     client.removeListener('log', this.addNewLog)
-    client.removeListener('started', this.clearLogs)
+    client.removeListener('newState', this.clearLogs)
   }
 
   terminalScrollToBottom = () => {
