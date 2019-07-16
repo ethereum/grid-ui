@@ -54,7 +54,7 @@ if (args.isApp) {
   } else if (args.scope.component === 'terminal') {
     ReactDOM.render(
       <Provider store={store}>
-        <Terminal />
+        <Terminal clientName={args.scope.client} />
       </Provider>,
       root
     )

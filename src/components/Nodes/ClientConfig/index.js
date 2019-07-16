@@ -157,7 +157,7 @@ class ClientConfig extends Component {
             height: 'calc(100vh - 330px)'
           }}
         >
-          <Terminal client={client} uid="1" />
+          <Terminal clientName={client.name} uid="1" />
         </TabContainer>
 
         {activeTab === 3 && (

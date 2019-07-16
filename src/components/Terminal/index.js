@@ -91,9 +91,7 @@ export default class XTerminal extends Component {
     })
     const term = this.term
 
-    // const args = (Grid && Grid.window && Grid.window.getArgs()) || {}
-    // const { client: clientName } = args.scope
-    const clientName = 'geth'
+    const { clientName } = this.props
     const client = Grid.PluginHost.getPluginByName(clientName)
     term.writeln(
       `***** Ethereum Grid: Emulated Terminal for "${client.displayName}" *****`
