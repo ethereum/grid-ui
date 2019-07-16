@@ -28,7 +28,7 @@ export default class XTerminal extends Component {
 
     this.term.open(this.termRef)
 
-    // this.term.fit() // calculate rows and cols to make it fit the window (fit plugin)
+    this.term.fit() // calculate rows and cols to make it fit the window (fit plugin)
     try {
       this.init()
         .then(() => console.log('xterm initialized'))
