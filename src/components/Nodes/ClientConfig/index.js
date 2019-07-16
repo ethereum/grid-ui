@@ -8,7 +8,7 @@ import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
 import DynamicConfigForm from './DynamicConfigForm'
-import Terminal from '../Terminal'
+import Terminal from '../../Terminal'
 // import NodeInfo from '../NodeInfo'
 import PluginView from '../PluginView'
 import { clearError } from '../../../store/client/actions'
@@ -150,8 +150,14 @@ class ClientConfig extends Component {
           </TabContainer>
         )}
 
-        <TabContainer style={{ display: activeTab === 2 ? 'block' : 'none' }}>
-          <Terminal client={client} />
+        <TabContainer
+          style={{
+            display: activeTab === 2 ? 'block' : 'none',
+            width: 'calc(100vw - 310px)',
+            height: 'calc(100vh - 330px)'
+          }}
+        >
+          <Terminal client={client} uid="1" />
         </TabContainer>
 
         {activeTab === 3 && (
