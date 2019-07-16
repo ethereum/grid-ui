@@ -8,6 +8,7 @@ import { Grid } from './API'
 import configureStore from './store'
 import Webview from './components/Webview'
 import Apps from './components/Apps'
+import Terminal from './components/Terminal'
 
 const store = configureStore()
 
@@ -47,6 +48,13 @@ if (args.isApp) {
     ReactDOM.render(
       <Provider store={store}>
         <App />
+      </Provider>,
+      root
+    )
+  } else if (args.scope.component === 'terminal') {
+    ReactDOM.render(
+      <Provider store={store}>
+        <Terminal />
       </Provider>,
       root
     )
