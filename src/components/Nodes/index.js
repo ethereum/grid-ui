@@ -9,7 +9,10 @@ import {
   setConfig,
   toggleClient
 } from '../../store/client/actions'
-import { getPersistedClientSelection } from '../../lib/utils'
+import {
+  getPersistedClientSelection,
+  getPersistedTabSelection
+} from '../../lib/utils'
 
 import Grid from '../../API/Grid'
 
@@ -44,7 +47,8 @@ class NodesTab extends Component {
       clients.find(client => client.name === clientState.selected) ||
       clients.find(client => client.order === 1) ||
       clients[0]
-    this.handleSelectClient(selectedClient)
+    const selectedTab = getPersistedTabSelection()
+    this.handleSelectClient(selectedClient, selectedTab)
 
     // TODO: two sources of truth - local and redux state
     this.setState({ clients })
@@ -55,11 +59,11 @@ class NodesTab extends Component {
     return !selectedRelease
   }
 
-  handleSelectClient = client => {
+  handleSelectClient = (client, tab) => {
     const { dispatch } = this.props
 
     this.setState({ selectedClient: client }, () => {
-      dispatch(selectClient(client.name))
+      dispatch(selectClient(client.name, tab))
     })
   }
 

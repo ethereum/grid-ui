@@ -78,3 +78,12 @@ export const getPersistedClientSelection = () => {
     return ''
   }
 }
+
+export const getPersistedTabSelection = () => {
+  try {
+    const settings = Grid.Config.getItem('settings')
+    return settings.selectedTab || 0
+  } catch (e) {
+    return 0
+  }
+}
