@@ -8,14 +8,6 @@ import Switch from '@material-ui/core/Switch'
 import Tooltip from '@material-ui/core/Tooltip'
 
 const styles = () => ({
-  selected: {
-    '&$selected': {
-      backgroundColor: '#ffffff',
-      '&:hover': {
-        backgroundColor: '#ffffff'
-      }
-    }
-  },
   serviceName: {
     marginRight: 5,
     textTransform: 'capitalize'

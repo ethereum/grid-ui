@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import NavTabs from './NavTabs'
-import theme from '../theme'
+import { darkTheme, lightTheme } from '../theme'
 import HelpFab from './shared/HelpFab'
 import ErrorBoundary from './GenericErrorBoundary'
 
@@ -13,9 +13,17 @@ export default class NewApp extends Component {
 
   static defaultProps = {}
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentTheme: darkTheme
+    }
+  }
+
   render() {
+    const { currentTheme } = this.state
     return (
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={currentTheme}>
         <CssBaseline />
         <HelpFab />
         <ErrorBoundary>
