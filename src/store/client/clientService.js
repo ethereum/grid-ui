@@ -21,8 +21,13 @@ class ClientService {
 
   resume(client, dispatch) {
     if (client.type === 'client') this.watchForPeers(client, dispatch)
-    this.createListeners(client, dispatch)
-    this.onConnect(client, dispatch)
+    dispatch(onConnectionUpdate(client.name, client.state))
+
+    // `resume` is called for 'STARTED', 'STARTING', and 'CONNECTED' states.
+    // If plugin starts as 'CONNECTED', manually trigger `onConnect`.
+    if (client.state === 'CONNECTED') {
+      this.onConnect(client, dispatch)
+    }
   }
 
   stop(client) {

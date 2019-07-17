@@ -60,12 +60,12 @@ export const initClient = client => {
       }
     })
 
+    console.log('Creating listeners for', client.name)
+    ClientService.createListeners(client, dispatch)
+
     if (client.isRunning) {
       console.log('Resuming', client.name)
       ClientService.resume(client, dispatch)
-    } else {
-      console.log('Creating listeners for', client.name)
-      ClientService.createListeners(client, dispatch)
     }
   }
 }
