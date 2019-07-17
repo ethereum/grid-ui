@@ -168,7 +168,7 @@ const ListItemTextVersion = styled(({ isLocalRelease, children, ...rest }) => (
   <ListItemText
     {...rest}
     primaryTypographyProps={{
-      style: { color: isLocalRelease ? 'black' : 'grey' }
+      style: { opacity: isLocalRelease ? '1' : '.4' }
     }}
   >
     {children}

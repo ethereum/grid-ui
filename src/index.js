@@ -35,6 +35,11 @@ const popupName = urlParams.name
 
 const args = (Grid && Grid.window && Grid.window.getArgs()) || {}
 
+let themeMode = 'dark'
+if (args.scope && args.scope.themeMode === 'light') {
+  themeMode = 'light'
+}
+
 if (args.isApp) {
   ReactDOM.render(
     <Provider store={store}>
@@ -46,7 +51,7 @@ if (args.isApp) {
   if (args.scope.component === 'ui') {
     ReactDOM.render(
       <Provider store={store}>
-        <App />
+        <App themeMode={themeMode} />
       </Provider>,
       root
     )
@@ -79,7 +84,7 @@ if (args.isApp) {
     default:
       ReactDOM.render(
         <Provider store={store}>
-          <App />
+          <App themeMode={themeMode} />
         </Provider>,
         root
       )
