@@ -23,5 +23,13 @@ export const saveSettings = store => next => async action => {
     Grid.Config.setItem('settings', newSettings)
   }
 
+  if (action.type === 'CLIENT:SELECT_TAB') {
+    const settings = Grid.Config.getItem('settings')
+    const newSettings = Object.assign({}, settings, {
+      selectedTab: action.payload.tab
+    })
+    Grid.Config.setItem('settings', newSettings)
+  }
+
   return next(action)
 }

@@ -60,12 +60,12 @@ export const initClient = client => {
       }
     })
 
+    console.log('Creating listeners for', client.name)
+    ClientService.createListeners(client, dispatch)
+
     if (client.isRunning) {
       console.log('Resuming', client.name)
       ClientService.resume(client, dispatch)
-    } else {
-      console.log('Creating listeners for', client.name)
-      ClientService.createListeners(client, dispatch)
     }
   }
 }
@@ -124,8 +124,12 @@ export const clearError = clientName => {
   }
 }
 
-export const selectClient = clientName => {
-  return { type: 'CLIENT:SELECT', payload: { clientName } }
+export const selectClient = (clientName, tab = 0) => {
+  return { type: 'CLIENT:SELECT', payload: { clientName, tab } }
+}
+
+export const selectTab = tab => {
+  return { type: 'CLIENT:SELECT_TAB', payload: { tab } }
 }
 
 export const setRelease = (clientName, release) => {

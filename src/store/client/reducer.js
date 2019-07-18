@@ -1,5 +1,6 @@
 export const initialState = {
-  selected: 'geth'
+  selected: 'geth',
+  selectedTab: 0
   // Clients dynamically populate within this object, e.g.
   // geth: { config: {}, release: {}, ... },
   // parity: { config: {}, release: {}, ... },
@@ -58,8 +59,12 @@ const client = (state = initialState, action) => {
       }
     }
     case 'CLIENT:SELECT': {
-      const { clientName } = action.payload
-      return { ...state, selected: clientName }
+      const { clientName, tab } = action.payload
+      return { ...state, selected: clientName, selectedTab: tab }
+    }
+    case 'CLIENT:SELECT_TAB': {
+      const { tab } = action.payload
+      return { ...state, selectedTab: tab }
     }
     case 'CLIENT:SET_RELEASE': {
       const { clientName, release } = action.payload

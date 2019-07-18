@@ -34,9 +34,19 @@ describe('the client reducer', () => {
   it('should handle CLIENT:SELECT', () => {
     const action = {
       type: 'CLIENT:SELECT',
-      payload: { clientName: 'parity' }
+      payload: { clientName: 'parity', tab: 0 }
     }
     const expectedState = { ...initialState, selected: 'parity' }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle CLIENT:SELECT_TAB', () => {
+    const action = {
+      type: 'CLIENT:SELECT_TAB',
+      payload: { tab: 2 }
+    }
+    const expectedState = { ...initialState, selectedTab: 2 }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
