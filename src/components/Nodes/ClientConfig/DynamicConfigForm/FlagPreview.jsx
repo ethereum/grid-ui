@@ -25,7 +25,8 @@ class FlagPreview extends Component {
   handleChange = event => {
     const { dispatch, client } = this.props
     const flags = event.target.value.split(' ')
-    dispatch(setCustomFlags(client.name, flags))
+    const clientName = client[client.selected].name
+    dispatch(setCustomFlags(clientName, flags))
   }
 
   render() {
