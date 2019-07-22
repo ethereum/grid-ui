@@ -70,6 +70,15 @@ export const getPersistedClientSettings = clientName => {
   }
 }
 
+export const getPersistedFlags = clientName => {
+  try {
+    const flags = Grid.Config.getItem('flags')
+    return flags[clientName] || null
+  } catch (e) {
+    return null
+  }
+}
+
 export const getPersistedClientSelection = () => {
   try {
     const settings = Grid.Config.getItem('settings')
