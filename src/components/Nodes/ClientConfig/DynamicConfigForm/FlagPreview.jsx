@@ -52,7 +52,7 @@ class FlagPreview extends Component {
               style={{ marginLeft: 10 }}
             />
           }
-          label="Edit"
+          label="Use custom flags"
         />
       </FormGroup>
     )
