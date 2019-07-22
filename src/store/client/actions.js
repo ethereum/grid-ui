@@ -1,6 +1,7 @@
 import ClientService from './clientService'
 import {
   getPersistedClientSettings,
+  getPersistedFlags,
   getDefaultSetting,
   getPluginSettingsConfig,
   getSettingsIds
@@ -47,7 +48,8 @@ export const initClient = client => {
   return dispatch => {
     const config = buildClientDefaults(client)
     const clientData = client.plugin.config
-    const flags = getGeneratedFlags(client, config)
+    const flags =
+      getPersistedFlags(client.name) || getGeneratedFlags(client, config)
 
     dispatch({
       type: 'CLIENT:INIT',
