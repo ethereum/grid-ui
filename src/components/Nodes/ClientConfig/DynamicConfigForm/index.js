@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
 import FormItem from './FormItem'
 import FlagPreview from './FlagPreview'
+import { setFlags, getGeneratedFlags } from '../../../../store/client/actions'
 
 class DynamicConfigForm extends Component {
   static propTypes = {
@@ -11,19 +12,31 @@ class DynamicConfigForm extends Component {
     clientName: PropTypes.string,
     client: PropTypes.object,
     isClientRunning: PropTypes.bool,
-    handleClientConfigChanged: PropTypes.func
+    handleClientConfigChanged: PropTypes.func,
+    dispatch: PropTypes.func
   }
 
   constructor(props) {
     super(props)
 
+    const { client } = props
+    const clientPlugin = window.Grid.PluginHost.getPluginByName(client.selected)
+    const { config, flags } = client[client.selected]
+    const generatedFlags = getGeneratedFlags(clientPlugin, config)
+    const flagsIsCustom = !flags.every(f => generatedFlags.includes(f))
     this.state = {
-      editGeneratedFlags: false
+      editGeneratedFlags: flagsIsCustom
     }
   }
 
   toggleEditGeneratedFlags = checked => {
+    const { client, dispatch } = this.props
+    const { config } = client[client.selected]
+    const clientPlugin = window.Grid.PluginHost.getPluginByName(client.selected)
     this.setState({ editGeneratedFlags: checked })
+    if (!checked) {
+      dispatch(setFlags(clientPlugin, config))
+    }
   }
 
   wrapGridItem = (el, index) => {
