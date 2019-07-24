@@ -56,18 +56,23 @@ class ClientService {
   }
 
   createListeners(client, dispatch) {
-    client.on('newState', newState => {
+    this.newStateListener = newState => {
       dispatch(onConnectionUpdate(client.name, newState.toUpperCase()))
       if (newState === 'connected') {
         this.onConnect(client, dispatch)
       }
-    })
-    client.on('pluginError', error => dispatch(clientError(client.name, error)))
+    }
+
+    this.pluginErrorListener = error =>
+      dispatch(clientError(client.name, error))
+
+    client.on('newState', this.newStateListener)
+    client.on('pluginError', this.pluginErrorListener)
   }
 
   removeListeners(client) {
-    client.removeAllListeners('newState')
-    client.removeAllListeners('pluginError')
+    client.removeListener('newState', this.newStateListener)
+    client.removeListener('pluginError', this.pluginErrorListener)
   }
 
   onNewHeadsSubscriptionResult(client, result, dispatch) {
