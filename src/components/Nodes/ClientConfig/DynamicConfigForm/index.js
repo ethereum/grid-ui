@@ -92,7 +92,7 @@ class DynamicConfigForm extends Component {
           <FlagPreview
             flags={flags}
             client={client}
-            editGeneratedFlags={editGeneratedFlags}
+            isEditingFlags={editGeneratedFlags}
             toggleEditGeneratedFlags={this.toggleEditGeneratedFlags}
             isClientRunning={isClientRunning}
           />
