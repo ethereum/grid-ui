@@ -139,7 +139,9 @@ describe('the client reducer', () => {
       }
     }
 
-    expect(reducer(initialState, action)).toEqual(expectedState)
+    expect(
+      reducer({ ...initialState, geth: initialClientState }, action)
+    ).toEqual(expectedState)
   })
 
   it('should handle CLIENT:CLEAR_ERROR', () => {
@@ -152,7 +154,9 @@ describe('the client reducer', () => {
       geth: { ...initialClientState, errors: [] }
     }
 
-    expect(reducer(initialState, action)).toEqual(expectedState)
+    expect(
+      reducer({ ...initialState, geth: initialClientState }, action)
+    ).toEqual(expectedState)
   })
 
   it('should handle CLIENT:UPDATE_PEER_COUNT', () => {
