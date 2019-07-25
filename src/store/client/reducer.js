@@ -107,7 +107,7 @@ const client = (state = initialState, action) => {
           ...initialClientState,
           ...state[clientName],
           active: { ...activeState, version },
-          error: null
+          errors: []
         }
       }
     }
