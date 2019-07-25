@@ -146,7 +146,11 @@ const client = (state = initialState, action) => {
           ...initialClientState,
           ...state[clientName],
           errors: [...state[clientName].errors, error],
-          active: { ...initialClientState.active, status: 'ERROR' }
+          active: {
+            ...initialClientState.active,
+            ...state[clientName].active,
+            status: 'ERROR'
+          }
         }
       }
     }
