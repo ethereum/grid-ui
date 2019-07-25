@@ -25,7 +25,7 @@ export const initialClientState = {
   config: {},
   flags: [],
   displayName: '',
-  error: null,
+  errors: [],
   name: '',
   prefix: '',
   release: {
@@ -137,7 +137,7 @@ const client = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:ERROR': {
+    case 'CLIENT:ERROR:ADD': {
       const { payload, error } = action
       const { clientName } = payload
       return {
@@ -145,19 +145,22 @@ const client = (state = initialState, action) => {
         [clientName]: {
           ...initialClientState,
           ...state[clientName],
-          error,
+          errors: [...state[clientName].errors, error],
           active: { ...initialClientState.active, status: 'ERROR' }
         }
       }
     }
     case 'CLIENT:CLEAR_ERROR': {
-      const { clientName } = action.payload
+      const { clientName, index } = action.payload
+
       return {
         ...state,
         [clientName]: {
           ...initialClientState,
           ...state[clientName],
-          error: null
+          errors: state[clientName].errors.filter(
+            (n, nIndex) => nIndex !== index
+          )
         }
       }
     }

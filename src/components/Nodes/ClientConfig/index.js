@@ -39,7 +39,7 @@ class ClientConfig extends Component {
     isActiveClient: PropTypes.bool,
     handleReleaseSelect: PropTypes.func,
     handleClientConfigChanged: PropTypes.func,
-    clientError: PropTypes.string,
+    errors: PropTypes.array,
     selectedTab: PropTypes.number
   }
 
@@ -67,23 +67,29 @@ class ClientConfig extends Component {
     handleClientConfigChanged(key, value)
   }
 
-  dismissClientError = () => {
+  dismissError = index => {
     const { dispatch, client } = this.props
-    dispatch(clearError(client.name))
+    dispatch(clearError(client.name, index))
   }
 
   renderErrors() {
-    const { clientError } = this.props
-    if (clientError) {
-      return (
+    const { errors } = this.props
+    const renderErrors = []
+    errors.forEach((error, index) => {
+      const renderError = (
         <Notification
+          key={index}
           type="error"
-          message={clientError}
-          onDismiss={this.dismissClientError}
+          message={error}
+          onDismiss={() => {
+            this.dismissError(index)
+          }}
         />
       )
-    }
-    return null
+      renderErrors.push(renderError)
+    })
+
+    return renderErrors
   }
 
   render() {
@@ -167,7 +173,7 @@ function mapStateToProps(state) {
 
   return {
     clientStatus: state.client[selectedClient].active.status,
-    clientError: state.client[selectedClient].error,
+    errors: state.client[selectedClient].errors,
     isActiveClient: state.client[selectedClient].active.name !== 'STOPPED',
     selectedTab: state.client.selectedTab
   }

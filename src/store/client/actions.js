@@ -115,14 +115,14 @@ export const updatePeerCountError = (clientName, message) => {
   }
 }
 
-export const clientError = (clientName, error) => {
-  return { type: 'CLIENT:ERROR', error, payload: { clientName } }
+export const addPluginError = (clientName, error) => {
+  return { type: 'CLIENT:ERROR:ADD', error, payload: { clientName } }
 }
 
-export const clearError = clientName => {
+export const clearError = (clientName, index) => {
   return {
     type: 'CLIENT:CLEAR_ERROR',
-    payload: { clientName }
+    payload: { clientName, index }
   }
 }
 
