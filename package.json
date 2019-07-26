@@ -31,7 +31,7 @@
     "classnames": "^2.2.6",
     "codemirror": "^5.48.0",
     "ethereum-react-components": "^1.13.11",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "moment": "^2.24.0",
     "numeral": "^2.0.6",
     "prop-types": "^15.6.2",
