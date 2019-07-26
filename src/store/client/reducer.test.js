@@ -134,8 +134,7 @@ describe('the client reducer', () => {
       ...initialState,
       geth: {
         ...initialClientState,
-        errors: ['Boom'],
-        active: { ...initialClientState.active, status: 'ERROR' }
+        errors: ['Boom']
       }
     }
 
