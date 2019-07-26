@@ -46,8 +46,15 @@ export const initialClientState = {
 const client = (state = initialState, action) => {
   switch (action.type) {
     case 'CLIENT:INIT': {
-      const { clientName, clientData, config, type, flags } = action.payload
-      return {
+      const {
+        clientName,
+        clientData,
+        config,
+        type,
+        flags,
+        release
+      } = action.payload
+      const newState = {
         ...state,
         [clientName]: {
           ...initialClientState,
@@ -57,6 +64,10 @@ const client = (state = initialState, action) => {
           flags
         }
       }
+      if (release) {
+        newState[clientName].release = release
+      }
+      return newState
     }
     case 'CLIENT:SELECT': {
       const { clientName, tab } = action.payload

@@ -7,6 +7,7 @@ import {
   getSettingsIds
 } from '../../lib/utils'
 import { generateFlags } from '../../lib/flags'
+import Grid from '../../API/Grid'
 
 export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
@@ -50,6 +51,8 @@ export const initClient = client => {
     const clientData = client.plugin.config
     const flags =
       getPersistedFlags(client.name) || getGeneratedFlags(client, config)
+    const release = client.plugin.getSelectedRelease()
+    console.log('RELEASE', release)
 
     dispatch({
       type: 'CLIENT:INIT',
@@ -58,7 +61,8 @@ export const initClient = client => {
         type: client.type,
         clientData,
         config,
-        flags
+        flags,
+        release
       }
     })
 
@@ -134,10 +138,11 @@ export const selectTab = tab => {
   return { type: 'CLIENT:SELECT_TAB', payload: { tab } }
 }
 
-export const setRelease = (clientName, release) => {
+export const setRelease = (client, release) => {
+  client.plugin.setSelectedRelease(release)
   return {
     type: 'CLIENT:SET_RELEASE',
-    payload: { clientName, release }
+    payload: { clientName: client.name, release }
   }
 }
 
