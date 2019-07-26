@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import AppItem from './AppItem'
 import GridAPI from '../../API/Grid'
-import { darkTheme, lightTheme } from '../../theme'
+import { darkTheme } from '../../theme'
 
 class AppsOverview extends React.Component {
   state = {}
