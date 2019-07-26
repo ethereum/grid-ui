@@ -7,7 +7,6 @@ import {
   getSettingsIds
 } from '../../lib/utils'
 import { generateFlags } from '../../lib/flags'
-import Grid from '../../API/Grid'
 
 export const onConnectionUpdate = (clientName, status) => {
   return { type: 'CLIENT:STATUS_UPDATE', payload: { clientName, status } }
