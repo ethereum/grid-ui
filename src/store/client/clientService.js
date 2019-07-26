@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import {
   newBlock,
   updateSyncing,
-  clientError,
+  addPluginError,
   onConnectionUpdate,
   updatePeerCount,
   updatePeerCountError
@@ -64,7 +64,7 @@ class ClientService {
     }
 
     this.pluginErrorListener = error =>
-      dispatch(clientError(client.name, error))
+      dispatch(addPluginError(client.name, error))
 
     client.on('newState', this.newStateListener)
     client.on('pluginError', this.pluginErrorListener)
