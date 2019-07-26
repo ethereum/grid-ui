@@ -68,13 +68,15 @@ class VersionList extends Component {
         lastLoadTimestamp: new Date().getTime()
       },
       () => {
-        // Set first local release as active
-        // TODO: revisit after redux-persist reintroduced
-        const firstLocalRelease = releases.find(release => {
-          return !release.remote
-        })
-        if (firstLocalRelease) {
-          this.handleReleaseSelect(firstLocalRelease)
+        // Set first local release as active if no release is already set
+        const { selectedRelease } = this.props
+        if (!selectedRelease) {
+          const firstLocalRelease = releases.find(release => {
+            return !release.remote
+          })
+          if (firstLocalRelease) {
+            this.handleReleaseSelect(firstLocalRelease)
+          }
         }
       }
     )
@@ -96,7 +98,7 @@ class VersionList extends Component {
 
   handleReleaseSelect = release => {
     const { client, dispatch, handleReleaseSelect } = this.props
-    dispatch(setRelease(client.name, release))
+    dispatch(setRelease(client, release))
     handleReleaseSelect(release)
   }
 
