@@ -44,7 +44,7 @@ class Notification extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     type: PropTypes.string,
-    message: PropTypes.string,
+    message: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     onDismiss: PropTypes.func.isRequired
   }
 
@@ -79,6 +79,9 @@ class Notification extends Component {
         break
     }
 
+    const displayMessage =
+      typeof message === 'object' ? message.message : message
+
     return (
       <Snackbar
         anchorOrigin={{
@@ -95,7 +98,7 @@ class Notification extends Component {
           message={
             <span>
               {icon}
-              {message}
+              {displayMessage}
             </span>
           }
           action={[

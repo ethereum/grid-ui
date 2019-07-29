@@ -51,7 +51,6 @@ export const initClient = client => {
     const flags =
       getPersistedFlags(client.name) || getGeneratedFlags(client, config)
     const release = client.plugin.getSelectedRelease()
-    console.log('RELEASE', release)
 
     dispatch({
       type: 'CLIENT:INIT',
