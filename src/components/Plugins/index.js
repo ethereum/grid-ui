@@ -18,7 +18,7 @@ import Grid from '../../API/Grid'
 
 const { PluginHost } = Grid
 
-class NodesTab extends Component {
+class PluginsTab extends Component {
   static propTypes = {
     clientState: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -120,4 +120,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(NodesTab)
+export default connect(mapStateToProps)(PluginsTab)
