@@ -43,7 +43,7 @@ export const initialClientState = {
   type: ''
 }
 
-const client = (state = initialState, action) => {
+const plugin = (state = initialState, action) => {
   switch (action.type) {
     case 'CLIENT:INIT': {
       const {
@@ -241,4 +241,4 @@ const client = (state = initialState, action) => {
   }
 }
 
-export default client
+export default plugin

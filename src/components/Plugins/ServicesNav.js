@@ -135,8 +135,8 @@ class ServicesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    clientState: state.client,
-    selectedClientName: state.client.selected
+    clientState: state.plugin,
+    selectedClientName: state.plugin.selected
   }
 }
 

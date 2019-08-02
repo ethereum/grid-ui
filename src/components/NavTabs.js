@@ -6,7 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import Typography from '@material-ui/core/Typography'
 import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
-import NodesTab from './Nodes'
+import PluginsTab from './Plugins'
 import AppsTab from './Apps'
 
 const styles = theme => ({
@@ -79,7 +79,7 @@ class NavTabs extends React.Component {
             display: activeTab === 0 ? 'inherit' : 'none'
           }}
         >
-          <NodesTab />
+          <PluginsTab />
         </Typography>
 
         <TabContainer style={{ display: activeTab === 1 ? 'block' : 'none' }}>

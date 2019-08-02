@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import List from '@material-ui/core/List'
 import Notification from '../../../shared/Notification'
-import { setRelease } from '../../../../store/client/actions'
+import { setRelease } from '../../../../store/plugin/actions'
 import VersionListItem from './VersionListItem'
 import VersionsAvailableText from './VersionsAvailableText'
 import LatestVersionWarning from './LatestVersionWarning'
@@ -187,7 +187,7 @@ class VersionList extends Component {
 
 function mapStateToProps(state) {
   return {
-    selectedRelease: state.client[state.client.selected].release
+    selectedRelease: state.plugin[state.plugin.selected].release
   }
 }
 

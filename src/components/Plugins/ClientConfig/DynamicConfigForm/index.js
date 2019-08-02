@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
 import FormItem from './FormItem'
 import FlagPreview from './FlagPreview'
-import { setFlags, getGeneratedFlags } from '../../../../store/client/actions'
+import { setFlags, getGeneratedFlags } from '../../../../store/plugin/actions'
 
 class DynamicConfigForm extends Component {
   static propTypes = {
@@ -104,7 +104,7 @@ class DynamicConfigForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    client: state.client
+    client: state.plugin
   }
 }
 

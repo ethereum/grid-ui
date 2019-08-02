@@ -70,8 +70,8 @@ class NodeInfo extends Component {
 
 function mapStateToProps(state) {
   return {
-    clientState: state.client,
-    selectedClient: state.client.selected
+    clientState: state.plugin,
+    selectedClient: state.plugin.selected
   }
 }
 

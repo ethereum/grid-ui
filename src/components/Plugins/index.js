@@ -8,7 +8,7 @@ import {
   selectClient,
   setConfig,
   toggleClient
-} from '../../store/client/actions'
+} from '../../store/plugin/actions'
 import {
   getPersistedClientSelection,
   getPersistedTabSelection
@@ -18,7 +18,7 @@ import Grid from '../../API/Grid'
 
 const { PluginHost } = Grid
 
-class NodesTab extends Component {
+class PluginsTab extends Component {
   static propTypes = {
     clientState: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -116,8 +116,8 @@ class NodesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    clientState: state.client
+    clientState: state.plugin
   }
 }
 
-export default connect(mapStateToProps)(NodesTab)
+export default connect(mapStateToProps)(PluginsTab)
