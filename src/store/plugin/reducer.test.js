@@ -1,9 +1,9 @@
 import reducer, { initialState, initialClientState } from './reducer'
 
 describe('the client reducer', () => {
-  it('should handle CLIENT:INIT', () => {
+  it('should handle PLUGIN:INIT', () => {
     const action = {
-      type: 'CLIENT:INIT',
+      type: 'PLUGIN:INIT',
       payload: {
         clientName: 'parity',
         clientData: {
@@ -31,9 +31,9 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:SELECT', () => {
+  it('should handle PLUGIN:SELECT', () => {
     const action = {
-      type: 'CLIENT:SELECT',
+      type: 'PLUGIN:SELECT',
       payload: { clientName: 'parity', tab: 0 }
     }
     const expectedState = { ...initialState, selected: 'parity' }
@@ -41,9 +41,9 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:SELECT_TAB', () => {
+  it('should handle PLUGIN:SELECT_TAB', () => {
     const action = {
-      type: 'CLIENT:SELECT_TAB',
+      type: 'PLUGIN:SELECT_TAB',
       payload: { tab: 2 }
     }
     const expectedState = { ...initialState, selectedTab: 2 }
@@ -51,7 +51,7 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:SET_CONFIG', () => {
+  it('should handle PLUGIN:SET_CONFIG', () => {
     const config = {
       name: 'default',
       dataDir: '/example',
@@ -62,7 +62,7 @@ describe('the client reducer', () => {
       ipc: 'websockets'
     }
     const action = {
-      type: 'CLIENT:SET_CONFIG',
+      type: 'PLUGIN:SET_CONFIG',
       payload: { clientName: 'geth', config }
     }
     const expectedState = {
@@ -73,9 +73,9 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:START', () => {
+  it('should handle PLUGIN:START', () => {
     const action = {
-      type: 'CLIENT:START',
+      type: 'PLUGIN:START',
       payload: {
         clientName: 'geth',
         version: '1.X.X'
@@ -92,9 +92,9 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:STATUS_UPDATE', () => {
+  it('should handle PLUGIN:STATUS_UPDATE', () => {
     const action = {
-      type: 'CLIENT:STATUS_UPDATE',
+      type: 'PLUGIN:STATUS_UPDATE',
       payload: {
         clientName: 'geth',
         status: 'STARTED'
@@ -111,9 +111,9 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:STOP', () => {
+  it('should handle PLUGIN:STOP', () => {
     const action = {
-      type: 'CLIENT:STOP',
+      type: 'PLUGIN:STOP',
       payload: { clientName: 'geth' }
     }
     const expectedState = {
@@ -124,9 +124,9 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:ERROR:ADD', () => {
+  it('should handle PLUGIN:ERROR:ADD', () => {
     const action = {
-      type: 'CLIENT:ERROR:ADD',
+      type: 'PLUGIN:ERROR:ADD',
       error: 'Boom',
       payload: { clientName: 'geth' }
     }
@@ -143,9 +143,9 @@ describe('the client reducer', () => {
     ).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:CLEAR_ERROR', () => {
+  it('should handle PLUGIN:CLEAR_ERROR', () => {
     const action = {
-      type: 'CLIENT:CLEAR_ERROR',
+      type: 'PLUGIN:CLEAR_ERROR',
       payload: { clientName: 'geth', index: 0 }
     }
     const expectedState = {
@@ -158,9 +158,9 @@ describe('the client reducer', () => {
     ).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:UPDATE_PEER_COUNT', () => {
+  it('should handle PLUGIN:UPDATE_PEER_COUNT', () => {
     const action = {
-      type: 'CLIENT:UPDATE_PEER_COUNT',
+      type: 'PLUGIN:UPDATE_PEER_COUNT',
       payload: { clientName: 'geth', peerCount: '3' }
     }
     const expectedState = {
@@ -174,7 +174,7 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:SET_RELEASE', () => {
+  it('should handle PLUGIN:SET_RELEASE', () => {
     const release = {
       name: 'example',
       fileName: 'example',
@@ -186,7 +186,7 @@ describe('the client reducer', () => {
       signature: 'example'
     }
     const action = {
-      type: 'CLIENT:SET_RELEASE',
+      type: 'PLUGIN:SET_RELEASE',
       payload: { clientName: 'geth', release }
     }
     const expectedState = {
@@ -197,11 +197,11 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:UPDATE_NEW_BLOCK', () => {
+  it('should handle PLUGIN:UPDATE_NEW_BLOCK', () => {
     const blockNumber = '123123'
     const timestamp = '321321321'
     const action = {
-      type: 'CLIENT:UPDATE_NEW_BLOCK',
+      type: 'PLUGIN:UPDATE_NEW_BLOCK',
       payload: { clientName: 'geth', blockNumber, timestamp }
     }
     const expectedState = {
@@ -215,7 +215,7 @@ describe('the client reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
-  it('should handle CLIENT:UPDATE_SYNCING', () => {
+  it('should handle PLUGIN:UPDATE_SYNCING', () => {
     const sync = {
       currentBlock: 123,
       highestBlock: 124,
@@ -224,7 +224,7 @@ describe('the client reducer', () => {
       startingBlock: 0
     }
     const action = {
-      type: 'CLIENT:UPDATE_SYNCING',
+      type: 'PLUGIN:UPDATE_SYNCING',
       payload: { clientName: 'geth', ...sync }
     }
     const expectedState = {
