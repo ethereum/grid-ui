@@ -45,7 +45,7 @@ export const initialClientState = {
 
 const plugin = (state = initialState, action) => {
   switch (action.type) {
-    case 'CLIENT:INIT': {
+    case 'PLUGIN:INIT': {
       const {
         clientName,
         clientData,
@@ -69,22 +69,22 @@ const plugin = (state = initialState, action) => {
       }
       return newState
     }
-    case 'CLIENT:SELECT': {
+    case 'PLUGIN:SELECT': {
       const { clientName, tab } = action.payload
       return { ...state, selected: clientName, selectedTab: tab }
     }
-    case 'CLIENT:SELECT_TAB': {
+    case 'PLUGIN:SELECT_TAB': {
       const { tab } = action.payload
       return { ...state, selectedTab: tab }
     }
-    case 'CLIENT:SET_RELEASE': {
+    case 'PLUGIN:SET_RELEASE': {
       const { clientName, release } = action.payload
       return {
         ...state,
         [clientName]: { ...initialClientState, ...state[clientName], release }
       }
     }
-    case 'CLIENT:SET_CONFIG': {
+    case 'PLUGIN:SET_CONFIG': {
       const { clientName, config } = action.payload
       return {
         ...state,
@@ -95,7 +95,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:SET_FLAGS': {
+    case 'PLUGIN:SET_FLAGS': {
       const { clientName, flags } = action.payload
       return {
         ...state,
@@ -106,7 +106,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:START': {
+    case 'PLUGIN:START': {
       const { clientName, version } = action.payload
       const activeState = state[clientName]
         ? state[clientName].active
@@ -122,7 +122,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:STATUS_UPDATE': {
+    case 'PLUGIN:STATUS_UPDATE': {
       const { clientName, status } = action.payload
       const activeState = state[clientName]
         ? state[clientName].active
@@ -137,7 +137,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:STOP': {
+    case 'PLUGIN:STOP': {
       const { clientName } = action.payload
       return {
         ...state,
@@ -148,7 +148,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:ERROR:ADD': {
+    case 'PLUGIN:ERROR:ADD': {
       const { payload, error } = action
       const { clientName } = payload
       return {
@@ -160,7 +160,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:CLEAR_ERROR': {
+    case 'PLUGIN:CLEAR_ERROR': {
       const { clientName, index } = action.payload
 
       return {
@@ -174,7 +174,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:UPDATE_NEW_BLOCK': {
+    case 'PLUGIN:UPDATE_NEW_BLOCK': {
       const { clientName, blockNumber, timestamp } = action.payload
       const activeState = state[clientName]
         ? state[clientName].active
@@ -189,7 +189,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:UPDATE_SYNCING': {
+    case 'PLUGIN:UPDATE_SYNCING': {
       const {
         clientName,
         startingBlock,
@@ -221,7 +221,7 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'CLIENT:UPDATE_PEER_COUNT': {
+    case 'PLUGIN:UPDATE_PEER_COUNT': {
       const { clientName, peerCount } = action.payload
       const activeState = state[clientName]
         ? state[clientName].active
