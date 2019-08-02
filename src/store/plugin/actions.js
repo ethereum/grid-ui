@@ -1,4 +1,4 @@
-import ClientService from './clientService'
+import PluginService from './pluginService'
 import {
   getPersistedClientSettings,
   getPersistedFlags,
@@ -65,11 +65,11 @@ export const initClient = client => {
     })
 
     console.log('Creating listeners for', client.name)
-    ClientService.createListeners(client, dispatch)
+    PluginService.createListeners(client, dispatch)
 
     if (client.isRunning) {
       console.log('Resuming', client.name)
-      ClientService.resume(client, dispatch)
+      PluginService.resume(client, dispatch)
     }
   }
 }
@@ -169,7 +169,7 @@ export const startClient = (client, release) => {
   return (dispatch, getState) => {
     try {
       const { config, flags } = getState().plugin[client.name]
-      ClientService.start(client, release, flags, config, dispatch)
+      PluginService.start(client, release, flags, config, dispatch)
       return dispatch({
         type: 'PLUGIN:START',
         payload: { clientName: client.name, version: release.version, config }
@@ -183,7 +183,7 @@ export const startClient = (client, release) => {
 export const stopClient = client => {
   return dispatch => {
     try {
-      ClientService.stop(client)
+      PluginService.stop(client)
       dispatch({ type: 'PLUGIN:STOP', payload: { clientName: client.name } })
     } catch (e) {
       dispatch({ type: 'PLUGIN:STOP:ERROR', error: e.toString() })
