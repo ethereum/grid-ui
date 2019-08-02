@@ -61,7 +61,7 @@ export const getSettingsIds = client => {
   }
 }
 
-export const getPersistedClientSettings = clientName => {
+export const getPersistedPluginSettings = clientName => {
   try {
     const settings = Grid.Config.getItem('settings')
     return settings[clientName] || {}
@@ -79,7 +79,7 @@ export const getPersistedFlags = clientName => {
   }
 }
 
-export const getPersistedClientSelection = () => {
+export const getPersistedPluginSelection = () => {
   try {
     const settings = Grid.Config.getItem('settings')
     return settings.selected || ''

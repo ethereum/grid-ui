@@ -1,6 +1,6 @@
 import PluginService from './pluginService'
 import {
-  getPersistedClientSettings,
+  getPersistedPluginSettings,
   getPersistedFlags,
   getDefaultSetting,
   getPluginSettingsConfig,
@@ -8,28 +8,28 @@ import {
 } from '../../lib/utils'
 import { generateFlags } from '../../lib/flags'
 
-export const onConnectionUpdate = (clientName, status) => {
-  return { type: 'PLUGIN:STATUS_UPDATE', payload: { clientName, status } }
+export const onConnectionUpdate = (pluginName, status) => {
+  return { type: 'PLUGIN:STATUS_UPDATE', payload: { pluginName, status } }
 }
 
-const buildClientDefaults = client => {
+const buildPluginDefaults = plugin => {
   const pluginDefaults = {}
-  const settingsIds = getSettingsIds(client)
+  const settingsIds = getSettingsIds(plugin)
 
   // Handle rehydration: if config.json has settings already, use them.
-  const persistedSettings = getPersistedClientSettings(client.name)
+  const persistedSettings = getPersistedPluginSettings(plugin.name)
   if (settingsIds.length && persistedSettings) {
     if (Object.keys(persistedSettings).length) {
       settingsIds.forEach(id => {
         pluginDefaults[id] =
-          persistedSettings[id] || getDefaultSetting(client, id)
+          persistedSettings[id] || getDefaultSetting(plugin, id)
       })
       return pluginDefaults
     }
   }
 
-  const clientSettings = getPluginSettingsConfig(client)
-  clientSettings.forEach(setting => {
+  const pluginSettings = getPluginSettingsConfig(plugin)
+  pluginSettings.forEach(setting => {
     if ('default' in setting) {
       pluginDefaults[setting.id] = setting.default
     }
@@ -38,57 +38,57 @@ const buildClientDefaults = client => {
   return pluginDefaults
 }
 
-export const getGeneratedFlags = (client, config) => {
-  const settings = getPluginSettingsConfig(client)
+export const getGeneratedFlags = (plugin, config) => {
+  const settings = getPluginSettingsConfig(plugin)
   const flags = generateFlags(config, settings)
   return flags
 }
 
-export const initClient = client => {
+export const initPlugin = plugin => {
   return dispatch => {
-    const config = buildClientDefaults(client)
-    const clientData = client.plugin.config
+    const config = buildPluginDefaults(plugin)
+    const pluginData = plugin.plugin.config
     const flags =
-      getPersistedFlags(client.name) || getGeneratedFlags(client, config)
-    const release = client.plugin.getSelectedRelease()
+      getPersistedFlags(plugin.name) || getGeneratedFlags(plugin, config)
+    const release = plugin.plugin.getSelectedRelease()
 
     dispatch({
       type: 'PLUGIN:INIT',
       payload: {
-        clientName: clientData.name,
-        type: client.type,
-        clientData,
+        pluginName: pluginData.name,
+        type: plugin.type,
+        pluginData,
         config,
         flags,
         release
       }
     })
 
-    console.log('Creating listeners for', client.name)
-    PluginService.createListeners(client, dispatch)
+    console.log('Creating listeners for', plugin.name)
+    PluginService.createListeners(plugin, dispatch)
 
-    if (client.isRunning) {
-      console.log('Resuming', client.name)
-      PluginService.resume(client, dispatch)
+    if (plugin.isRunning) {
+      console.log('Resuming', plugin.name)
+      PluginService.resume(plugin, dispatch)
     }
   }
 }
 
-export const newBlock = (clientName, blockNumber, timestamp) => {
+export const newBlock = (pluginName, blockNumber, timestamp) => {
   return {
     type: 'PLUGIN:UPDATE_NEW_BLOCK',
-    payload: { clientName, blockNumber, timestamp }
+    payload: { pluginName, blockNumber, timestamp }
   }
 }
 
 export const updateSyncing = (
-  clientName,
+  pluginName,
   { startingBlock, currentBlock, highestBlock, knownStates, pulledStates }
 ) => {
   return {
     type: 'PLUGIN:UPDATE_SYNCING',
     payload: {
-      clientName,
+      pluginName,
       startingBlock,
       currentBlock,
       highestBlock,
@@ -98,81 +98,81 @@ export const updateSyncing = (
   }
 }
 
-export const updatePeerCount = (clientName, peerCount) => {
+export const updatePeerCount = (pluginName, peerCount) => {
   return (dispatch, getState) => {
-    if (peerCount !== getState().plugin[clientName].active.peerCount) {
+    if (peerCount !== getState().plugin[pluginName].active.peerCount) {
       dispatch({
         type: 'PLUGIN:UPDATE_PEER_COUNT',
-        payload: { clientName, peerCount }
+        payload: { pluginName, peerCount }
       })
     }
   }
 }
 
-export const updatePeerCountError = (clientName, message) => {
+export const updatePeerCountError = (pluginName, message) => {
   return {
     type: 'PLUGIN:UPDATE_PEER_COUNT:ERROR',
     error: true,
-    payload: { clientName, message }
+    payload: { pluginName, message }
   }
 }
 
-export const addPluginError = (clientName, error) => {
-  return { type: 'PLUGIN:ERROR:ADD', error, payload: { clientName } }
+export const addPluginError = (pluginName, error) => {
+  return { type: 'PLUGIN:ERROR:ADD', error, payload: { pluginName } }
 }
 
-export const clearError = (clientName, index) => {
+export const clearError = (pluginName, index) => {
   return {
     type: 'PLUGIN:CLEAR_ERROR',
-    payload: { clientName, index }
+    payload: { pluginName, index }
   }
 }
 
-export const selectClient = (clientName, tab = 0) => {
-  return { type: 'PLUGIN:SELECT', payload: { clientName, tab } }
+export const selectPlugin = (pluginName, tab = 0) => {
+  return { type: 'PLUGIN:SELECT', payload: { pluginName, tab } }
 }
 
 export const selectTab = tab => {
   return { type: 'PLUGIN:SELECT_TAB', payload: { tab } }
 }
 
-export const setRelease = (client, release) => {
-  client.plugin.setSelectedRelease(release)
+export const setRelease = (plugin, release) => {
+  plugin.plugin.setSelectedRelease(release)
   return {
     type: 'PLUGIN:SET_RELEASE',
-    payload: { clientName: client.name, release }
+    payload: { pluginName: plugin.name, release }
   }
 }
 
-export const setFlags = (client, config) => {
-  const clientName = client.name
-  const flags = getGeneratedFlags(client, config)
-  return { type: 'PLUGIN:SET_FLAGS', payload: { clientName, flags } }
+export const setFlags = (plugin, config) => {
+  const pluginName = plugin.name
+  const flags = getGeneratedFlags(plugin, config)
+  return { type: 'PLUGIN:SET_FLAGS', payload: { pluginName, flags } }
 }
 
-export const setCustomFlags = (clientName, flags) => {
-  return { type: 'PLUGIN:SET_FLAGS', payload: { clientName, flags } }
+export const setCustomFlags = (pluginName, flags) => {
+  return { type: 'PLUGIN:SET_FLAGS', payload: { pluginName, flags } }
 }
 
-export const setConfig = (client, config) => {
+export const setConfig = (plugin, config) => {
   return dispatch => {
-    const clientName = client.name
+    const pluginName = plugin.name
     dispatch({
       type: 'PLUGIN:SET_CONFIG',
-      payload: { clientName, config }
+      payload: { pluginName, config }
     })
-    dispatch(setFlags(client, config))
+    dispatch(setFlags(plugin, config))
   }
 }
 
-export const startClient = (client, release) => {
+export const startPlugin = (plugin, release) => {
   return (dispatch, getState) => {
     try {
-      const { config, flags } = getState().plugin[client.name]
-      PluginService.start(client, release, flags, config, dispatch)
+      const { config, flags } = getState().plugin[plugin.name]
+      PluginService.start(plugin, release, flags, config, dispatch)
       return dispatch({
         type: 'PLUGIN:START',
-        payload: { clientName: client.name, version: release.version, config }
+        payload: { pluginName: plugin.name, version: release.version, config }
       })
     } catch (error) {
       return dispatch({ type: 'PLUGIN:START:ERROR', error: error.toString() })
@@ -180,24 +180,24 @@ export const startClient = (client, release) => {
   }
 }
 
-export const stopClient = client => {
+export const stopPlugin = plugin => {
   return dispatch => {
     try {
-      PluginService.stop(client)
-      dispatch({ type: 'PLUGIN:STOP', payload: { clientName: client.name } })
+      PluginService.stop(plugin)
+      dispatch({ type: 'PLUGIN:STOP', payload: { pluginName: plugin.name } })
     } catch (e) {
       dispatch({ type: 'PLUGIN:STOP:ERROR', error: e.toString() })
     }
   }
 }
 
-export const toggleClient = (client, release) => {
+export const togglePlugin = (plugin, release) => {
   return async dispatch => {
     try {
-      if (client.isRunning) {
-        return dispatch(stopClient(client))
+      if (plugin.isRunning) {
+        return dispatch(stopPlugin(plugin))
       }
-      return dispatch(startClient(client, release))
+      return dispatch(startPlugin(plugin, release))
     } catch (e) {
       return { type: 'PLUGIN:TOGGLE:ERROR', error: e.toString() }
     }

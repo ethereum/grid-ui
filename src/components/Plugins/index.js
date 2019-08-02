@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 import ClientConfig from './ClientConfig'
 import ServicesNav from './ServicesNav'
 import {
-  initClient,
-  selectClient,
+  initPlugin,
+  selectPlugin,
   setConfig,
-  toggleClient
+  togglePlugin
 } from '../../store/plugin/actions'
 import {
-  getPersistedClientSelection,
+  getPersistedPluginSelection,
   getPersistedTabSelection
 } from '../../lib/utils'
 
@@ -20,92 +20,92 @@ const { PluginHost } = Grid
 
 class PluginsTab extends Component {
   static propTypes = {
-    clientState: PropTypes.object.isRequired,
+    pluginState: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   }
 
   state = {
-    clients: [],
-    selectedClient: undefined
+    plugins: [],
+    selectedPlugin: undefined
   }
 
   componentDidMount() {
     if (!PluginHost) return
     const plugins = PluginHost.getAllPlugins()
-    this.initClients(plugins)
+    this.initPlugins(plugins)
   }
 
-  initClients = clients => {
-    const { clientState, dispatch } = this.props
+  initPlugins = plugins => {
+    const { pluginState, dispatch } = this.props
 
-    // Sync clients with Redux
-    clients.map(client => dispatch(initClient(client)))
+    // Sync plugins with Redux
+    plugins.map(plugin => dispatch(initPlugin(plugin)))
 
-    // Set the selected client from config.json or a fallback method
-    const selectedClient =
-      clients.find(client => client.name === getPersistedClientSelection()) ||
-      clients.find(client => client.name === clientState.selected) ||
-      clients.find(client => client.order === 1) ||
-      clients[0]
+    // Set the selected plugin from config.json or a fallback method
+    const selectedPlugin =
+      plugins.find(plugin => plugin.name === getPersistedPluginSelection()) ||
+      plugins.find(plugin => plugin.name === pluginState.selected) ||
+      plugins.find(plugin => plugin.order === 1) ||
+      plugins[0]
     const selectedTab = getPersistedTabSelection()
-    this.handleSelectClient(selectedClient, selectedTab)
+    this.handleSelectPlugin(selectedPlugin, selectedTab)
 
     // TODO: two sources of truth - local and redux state
-    this.setState({ clients })
+    this.setState({ plugins })
   }
 
-  isDisabled = client => {
-    const { selectedRelease } = client
+  isDisabled = plugin => {
+    const { selectedRelease } = plugin
     return !selectedRelease
   }
 
-  handleSelectClient = (client, tab) => {
+  handleSelectPlugin = (plugin, tab) => {
     const { dispatch } = this.props
 
-    this.setState({ selectedClient: client }, () => {
-      dispatch(selectClient(client.name, tab))
+    this.setState({ selectedPlugin: plugin }, () => {
+      dispatch(selectPlugin(plugin.name, tab))
     })
   }
 
-  handleClientConfigChanged = (key, value) => {
-    const { clientState, dispatch } = this.props
-    const { clients } = this.state
+  handlePluginConfigChanged = (key, value) => {
+    const { pluginState, dispatch } = this.props
+    const { plugins } = this.state
 
-    const client = clients.filter(c => c.name === clientState.selected)[0]
+    const plugin = plugins.filter(c => c.name === pluginState.selected)[0]
 
-    const { config } = clientState[clientState.selected]
+    const { config } = pluginState[pluginState.selected]
     const newConfig = { ...config }
     newConfig[key] = value
 
-    dispatch(setConfig(client, newConfig))
+    dispatch(setConfig(plugin, newConfig))
   }
 
   handleReleaseSelect = release => {
-    const { selectedClient } = this.state
-    selectedClient.selectedRelease = release
-    this.setState({ selectedClient, selectedRelease: release })
+    const { selectedPlugin } = this.state
+    selectedPlugin.selectedRelease = release
+    this.setState({ selectedPlugin, selectedRelease: release })
   }
 
-  handleToggle = client => {
-    const { clientState, dispatch } = this.props
-    // TODO: refactor to only require clientName to toggle?
-    dispatch(toggleClient(client, clientState[client.name].release))
+  handleToggle = plugin => {
+    const { pluginState, dispatch } = this.props
+    // TODO: refactor to only require pluginName to toggle?
+    dispatch(togglePlugin(plugin, pluginState[plugin.name].release))
   }
 
   render() {
-    const { clients, selectedClient, selectedRelease } = this.state
+    const { plugins, selectedPlugin, selectedRelease } = this.state
 
     return (
       <ServicesNav
         handleToggle={this.handleToggle}
-        handleSelectClient={this.handleSelectClient}
-        clients={clients}
+        handleSelectClient={this.handleSelectPlugin}
+        clients={plugins}
       >
-        {selectedClient && (
+        {selectedPlugin && (
           <ClientConfig
-            client={selectedClient}
+            client={selectedPlugin}
             selectedRelease={selectedRelease}
-            handleClientConfigChanged={this.handleClientConfigChanged}
+            handlePluginConfigChanged={this.handlePluginConfigChanged}
             handleReleaseSelect={this.handleReleaseSelect}
           />
         )}
@@ -116,7 +116,7 @@ class PluginsTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    clientState: state.plugin
+    pluginState: state.plugin
   }
 }
 

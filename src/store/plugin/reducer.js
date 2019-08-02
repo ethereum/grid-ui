@@ -1,12 +1,12 @@
 export const initialState = {
   selected: 'geth',
   selectedTab: 0
-  // Clients dynamically populate within this object, e.g.
+  // Plugins dynamically populate within this object, e.g.
   // geth: { config: {}, release: {}, ... },
   // parity: { config: {}, release: {}, ... },
 }
 
-export const initialClientState = {
+export const initialPluginState = {
   active: {
     blockNumber: null,
     peerCount: 0,
@@ -47,8 +47,8 @@ const plugin = (state = initialState, action) => {
   switch (action.type) {
     case 'PLUGIN:INIT': {
       const {
-        clientName,
-        clientData,
+        pluginName,
+        pluginData,
         config,
         type,
         flags,
@@ -56,157 +56,157 @@ const plugin = (state = initialState, action) => {
       } = action.payload
       const newState = {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...clientData,
+        [pluginName]: {
+          ...initialPluginState,
+          ...pluginData,
           config,
           type,
           flags
         }
       }
       if (release) {
-        newState[clientName].release = release
+        newState[pluginName].release = release
       }
       return newState
     }
     case 'PLUGIN:SELECT': {
-      const { clientName, tab } = action.payload
-      return { ...state, selected: clientName, selectedTab: tab }
+      const { pluginName, tab } = action.payload
+      return { ...state, selected: pluginName, selectedTab: tab }
     }
     case 'PLUGIN:SELECT_TAB': {
       const { tab } = action.payload
       return { ...state, selectedTab: tab }
     }
     case 'PLUGIN:SET_RELEASE': {
-      const { clientName, release } = action.payload
+      const { pluginName, release } = action.payload
       return {
         ...state,
-        [clientName]: { ...initialClientState, ...state[clientName], release }
+        [pluginName]: { ...initialPluginState, ...state[pluginName], release }
       }
     }
     case 'PLUGIN:SET_CONFIG': {
-      const { clientName, config } = action.payload
+      const { pluginName, config } = action.payload
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
           config
         }
       }
     }
     case 'PLUGIN:SET_FLAGS': {
-      const { clientName, flags } = action.payload
+      const { pluginName, flags } = action.payload
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
           flags
         }
       }
     }
     case 'PLUGIN:START': {
-      const { clientName, version } = action.payload
-      const activeState = state[clientName]
-        ? state[clientName].active
-        : initialClientState.active
+      const { pluginName, version } = action.payload
+      const activeState = state[pluginName]
+        ? state[pluginName].active
+        : initialPluginState.active
 
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
           active: { ...activeState, version },
           errors: []
         }
       }
     }
     case 'PLUGIN:STATUS_UPDATE': {
-      const { clientName, status } = action.payload
-      const activeState = state[clientName]
-        ? state[clientName].active
-        : initialClientState.active
+      const { pluginName, status } = action.payload
+      const activeState = state[pluginName]
+        ? state[pluginName].active
+        : initialPluginState.active
 
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
           active: { ...activeState, status }
         }
       }
     }
     case 'PLUGIN:STOP': {
-      const { clientName } = action.payload
+      const { pluginName } = action.payload
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
-          active: { ...initialClientState.active }
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
+          active: { ...initialPluginState.active }
         }
       }
     }
     case 'PLUGIN:ERROR:ADD': {
       const { payload, error } = action
-      const { clientName } = payload
+      const { pluginName } = payload
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
-          errors: [...state[clientName].errors, error]
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
+          errors: [...state[pluginName].errors, error]
         }
       }
     }
     case 'PLUGIN:CLEAR_ERROR': {
-      const { clientName, index } = action.payload
+      const { pluginName, index } = action.payload
 
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
-          errors: state[clientName].errors.filter(
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
+          errors: state[pluginName].errors.filter(
             (n, nIndex) => nIndex !== index
           )
         }
       }
     }
     case 'PLUGIN:UPDATE_NEW_BLOCK': {
-      const { clientName, blockNumber, timestamp } = action.payload
-      const activeState = state[clientName]
-        ? state[clientName].active
-        : initialClientState.active
+      const { pluginName, blockNumber, timestamp } = action.payload
+      const activeState = state[pluginName]
+        ? state[pluginName].active
+        : initialPluginState.active
 
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
           active: { ...activeState, blockNumber, timestamp }
         }
       }
     }
     case 'PLUGIN:UPDATE_SYNCING': {
       const {
-        clientName,
+        pluginName,
         startingBlock,
         currentBlock,
         highestBlock,
         knownStates,
         pulledStates
       } = action.payload
-      const activeState = state[clientName]
-        ? state[clientName].active
-        : initialClientState.active
+      const activeState = state[pluginName]
+        ? state[pluginName].active
+        : initialPluginState.active
 
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
           active: {
             ...activeState,
             sync: {
@@ -222,16 +222,16 @@ const plugin = (state = initialState, action) => {
       }
     }
     case 'PLUGIN:UPDATE_PEER_COUNT': {
-      const { clientName, peerCount } = action.payload
-      const activeState = state[clientName]
-        ? state[clientName].active
-        : initialClientState.active
+      const { pluginName, peerCount } = action.payload
+      const activeState = state[pluginName]
+        ? state[pluginName].active
+        : initialPluginState.active
 
       return {
         ...state,
-        [clientName]: {
-          ...initialClientState,
-          ...state[clientName],
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
           active: { ...activeState, peerCount }
         }
       }
