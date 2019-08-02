@@ -174,10 +174,10 @@ class DynamicConfigFormItem extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const selectedClient = state.client.selected
+  const selectedClient = state.plugin.selected
 
   return {
-    itemValue: state.client[selectedClient].config[ownProps.itemKey]
+    itemValue: state.plugin[selectedClient].config[ownProps.itemKey]
   }
 }
 

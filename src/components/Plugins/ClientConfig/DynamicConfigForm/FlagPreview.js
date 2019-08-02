@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
-import { setCustomFlags } from '../../../../store/client/actions'
+import { setCustomFlags } from '../../../../store/plugin/actions'
 import Notification from '../../../shared/Notification'
 
 class FlagPreview extends Component {

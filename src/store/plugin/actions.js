@@ -100,7 +100,7 @@ export const updateSyncing = (
 
 export const updatePeerCount = (clientName, peerCount) => {
   return (dispatch, getState) => {
-    if (peerCount !== getState().client[clientName].active.peerCount) {
+    if (peerCount !== getState().plugin[clientName].active.peerCount) {
       dispatch({
         type: 'CLIENT:UPDATE_PEER_COUNT',
         payload: { clientName, peerCount }
@@ -168,7 +168,7 @@ export const setConfig = (client, config) => {
 export const startClient = (client, release) => {
   return (dispatch, getState) => {
     try {
-      const { config, flags } = getState().client[client.name]
+      const { config, flags } = getState().plugin[client.name]
       ClientService.start(client, release, flags, config, dispatch)
       return dispatch({
         type: 'CLIENT:START',

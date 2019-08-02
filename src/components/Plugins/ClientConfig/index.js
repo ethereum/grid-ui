@@ -11,7 +11,7 @@ import DynamicConfigForm from './DynamicConfigForm'
 import Terminal from '../Terminal'
 // import NodeInfo from '../NodeInfo'
 import PluginView from '../PluginView'
-import { clearError, selectTab } from '../../../store/client/actions'
+import { clearError, selectTab } from '../../../store/plugin/actions'
 import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
 import { getPluginSettingsConfig } from '../../../lib/utils'
@@ -169,13 +169,13 @@ class ClientConfig extends Component {
 }
 
 function mapStateToProps(state) {
-  const selectedClient = state.client.selected
+  const selectedClient = state.plugin.selected
 
   return {
-    clientStatus: state.client[selectedClient].active.status,
-    errors: state.client[selectedClient].errors,
-    isActiveClient: state.client[selectedClient].active.name !== 'STOPPED',
-    selectedTab: state.client.selectedTab
+    clientStatus: state.plugin[selectedClient].active.status,
+    errors: state.plugin[selectedClient].errors,
+    isActiveClient: state.plugin[selectedClient].active.name !== 'STOPPED',
+    selectedTab: state.plugin.selectedTab
   }
 }
 

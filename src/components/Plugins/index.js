@@ -8,7 +8,7 @@ import {
   selectClient,
   setConfig,
   toggleClient
-} from '../../store/client/actions'
+} from '../../store/plugin/actions'
 import {
   getPersistedClientSelection,
   getPersistedTabSelection
@@ -116,7 +116,7 @@ class PluginsTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    clientState: state.client
+    clientState: state.plugin
   }
 }
 
