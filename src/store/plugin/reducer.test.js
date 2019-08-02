@@ -1,12 +1,12 @@
-import reducer, { initialState, initialClientState } from './reducer'
+import reducer, { initialState, initialPluginState } from './reducer'
 
-describe('the client reducer', () => {
+describe('the plugin reducer', () => {
   it('should handle PLUGIN:INIT', () => {
     const action = {
       type: 'PLUGIN:INIT',
       payload: {
-        clientName: 'parity',
-        clientData: {
+        pluginName: 'parity',
+        pluginData: {
           name: 'parity',
           displayName: 'Parity',
           config: { default: { sync: 'warp' } }
@@ -19,7 +19,7 @@ describe('the client reducer', () => {
     const expectedState = {
       ...initialState,
       parity: {
-        ...initialClientState,
+        ...initialPluginState,
         name: 'parity',
         displayName: 'Parity',
         config: { sync: 'warp' },
@@ -34,7 +34,7 @@ describe('the client reducer', () => {
   it('should handle PLUGIN:SELECT', () => {
     const action = {
       type: 'PLUGIN:SELECT',
-      payload: { clientName: 'parity', tab: 0 }
+      payload: { pluginName: 'parity', tab: 0 }
     }
     const expectedState = { ...initialState, selected: 'parity' }
 
@@ -63,11 +63,11 @@ describe('the client reducer', () => {
     }
     const action = {
       type: 'PLUGIN:SET_CONFIG',
-      payload: { clientName: 'geth', config }
+      payload: { pluginName: 'geth', config }
     }
     const expectedState = {
       ...initialState,
-      geth: { ...initialClientState, config }
+      geth: { ...initialPluginState, config }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
@@ -77,15 +77,15 @@ describe('the client reducer', () => {
     const action = {
       type: 'PLUGIN:START',
       payload: {
-        clientName: 'geth',
+        pluginName: 'geth',
         version: '1.X.X'
       }
     }
     const expectedState = {
       ...initialState,
       geth: {
-        ...initialClientState,
-        active: { ...initialClientState.active, version: '1.X.X' }
+        ...initialPluginState,
+        active: { ...initialPluginState.active, version: '1.X.X' }
       }
     }
 
@@ -96,15 +96,15 @@ describe('the client reducer', () => {
     const action = {
       type: 'PLUGIN:STATUS_UPDATE',
       payload: {
-        clientName: 'geth',
+        pluginName: 'geth',
         status: 'STARTED'
       }
     }
     const expectedState = {
       ...initialState,
       geth: {
-        ...initialClientState,
-        active: { ...initialClientState.active, status: 'STARTED' }
+        ...initialPluginState,
+        active: { ...initialPluginState.active, status: 'STARTED' }
       }
     }
 
@@ -114,11 +114,11 @@ describe('the client reducer', () => {
   it('should handle PLUGIN:STOP', () => {
     const action = {
       type: 'PLUGIN:STOP',
-      payload: { clientName: 'geth' }
+      payload: { pluginName: 'geth' }
     }
     const expectedState = {
       ...initialState,
-      geth: { ...initialClientState }
+      geth: { ...initialPluginState }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
@@ -128,46 +128,46 @@ describe('the client reducer', () => {
     const action = {
       type: 'PLUGIN:ERROR:ADD',
       error: 'Boom',
-      payload: { clientName: 'geth' }
+      payload: { pluginName: 'geth' }
     }
     const expectedState = {
       ...initialState,
       geth: {
-        ...initialClientState,
+        ...initialPluginState,
         errors: ['Boom']
       }
     }
 
     expect(
-      reducer({ ...initialState, geth: initialClientState }, action)
+      reducer({ ...initialState, geth: initialPluginState }, action)
     ).toEqual(expectedState)
   })
 
   it('should handle PLUGIN:CLEAR_ERROR', () => {
     const action = {
       type: 'PLUGIN:CLEAR_ERROR',
-      payload: { clientName: 'geth', index: 0 }
+      payload: { pluginName: 'geth', index: 0 }
     }
     const expectedState = {
       ...initialState,
-      geth: { ...initialClientState, errors: [] }
+      geth: { ...initialPluginState, errors: [] }
     }
 
     expect(
-      reducer({ ...initialState, geth: initialClientState }, action)
+      reducer({ ...initialState, geth: initialPluginState }, action)
     ).toEqual(expectedState)
   })
 
   it('should handle PLUGIN:UPDATE_PEER_COUNT', () => {
     const action = {
       type: 'PLUGIN:UPDATE_PEER_COUNT',
-      payload: { clientName: 'geth', peerCount: '3' }
+      payload: { pluginName: 'geth', peerCount: '3' }
     }
     const expectedState = {
       ...initialState,
       geth: {
-        ...initialClientState,
-        active: { ...initialClientState.active, peerCount: '3' }
+        ...initialPluginState,
+        active: { ...initialPluginState.active, peerCount: '3' }
       }
     }
 
@@ -187,11 +187,11 @@ describe('the client reducer', () => {
     }
     const action = {
       type: 'PLUGIN:SET_RELEASE',
-      payload: { clientName: 'geth', release }
+      payload: { pluginName: 'geth', release }
     }
     const expectedState = {
       ...initialState,
-      geth: { ...initialClientState, release }
+      geth: { ...initialPluginState, release }
     }
 
     expect(reducer(initialState, action)).toEqual(expectedState)
@@ -202,13 +202,13 @@ describe('the client reducer', () => {
     const timestamp = '321321321'
     const action = {
       type: 'PLUGIN:UPDATE_NEW_BLOCK',
-      payload: { clientName: 'geth', blockNumber, timestamp }
+      payload: { pluginName: 'geth', blockNumber, timestamp }
     }
     const expectedState = {
       ...initialState,
       geth: {
-        ...initialClientState,
-        active: { ...initialClientState.active, blockNumber, timestamp }
+        ...initialPluginState,
+        active: { ...initialPluginState.active, blockNumber, timestamp }
       }
     }
 
@@ -225,13 +225,13 @@ describe('the client reducer', () => {
     }
     const action = {
       type: 'PLUGIN:UPDATE_SYNCING',
-      payload: { clientName: 'geth', ...sync }
+      payload: { pluginName: 'geth', ...sync }
     }
     const expectedState = {
       ...initialState,
       geth: {
-        ...initialClientState,
-        active: { ...initialClientState.active, sync }
+        ...initialPluginState,
+        active: { ...initialPluginState.active, sync }
       }
     }
 
