@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import ClientConfig from './ClientConfig'
+import PluginConfig from './PluginConfig'
 import ServicesNav from './ServicesNav'
 import {
   initPlugin,
@@ -102,8 +102,8 @@ class PluginsTab extends Component {
         clients={plugins}
       >
         {selectedPlugin && (
-          <ClientConfig
-            client={selectedPlugin}
+          <PluginConfig
+            plugin={selectedPlugin}
             selectedRelease={selectedRelease}
             handlePluginConfigChanged={this.handlePluginConfigChanged}
             handleReleaseSelect={this.handleReleaseSelect}

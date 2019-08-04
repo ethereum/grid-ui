@@ -12,7 +12,7 @@ import { without } from '../../../../lib/utils'
 
 export default class VersionListItem extends Component {
   static propTypes = {
-    client: PropTypes.object.isRequired,
+    plugin: PropTypes.object.isRequired,
     release: PropTypes.object.isRequired,
     handleDownloadError: PropTypes.func.isRequired,
     handleReleaseDownloaded: PropTypes.func.isRequired,
@@ -36,14 +36,14 @@ export default class VersionListItem extends Component {
   }
 
   releaseDisplayName = release => {
-    const { client } = this.props
+    const { plugin } = this.props
     const { fileName } = release
     try {
       const nameParts = fileName.split('-')
       let name = nameParts[0]
       // fixes: "geth alltools" vs clef
-      if (name !== client.displayName) {
-        name = client.displayName
+      if (name !== plugin.displayName) {
+        name = plugin.displayName
       }
       const osTypes = ['darwin', 'linux', 'windows']
       const os = nameParts.find(p => osTypes.includes(p)) || ''
@@ -60,14 +60,14 @@ export default class VersionListItem extends Component {
   }
 
   downloadRelease = release => {
-    const { client, handleDownloadError, handleReleaseDownloaded } = this.props
+    const { plugin, handleDownloadError, handleReleaseDownloaded } = this.props
     const { isDownloading } = this.state
     // Return if already downloading
     if (isDownloading) return
     this.setState({ isDownloading: true }, async () => {
       let localRelease
       try {
-        localRelease = await client.download(release, downloadProgress => {
+        localRelease = await plugin.download(release, downloadProgress => {
           if (this._isMounted) this.setState({ downloadProgress })
         })
       } catch (error) {
