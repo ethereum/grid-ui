@@ -12,8 +12,8 @@ class NodeInfo extends Component {
   static displayName = 'NodeInfo'
 
   static propTypes = {
-    clientState: PropTypes.object,
-    selectedClient: PropTypes.string
+    pluginState: PropTypes.object,
+    selectedPlugin: PropTypes.string
   }
 
   state = {
@@ -29,12 +29,12 @@ class NodeInfo extends Component {
   }
 
   render() {
-    const { clientState, selectedClient } = this.props
-    const client = clientState[selectedClient]
-    if (!client) return null
+    const { pluginState, selectedPlugin } = this.props
+    const plugin = pluginState[selectedPlugin]
+    if (!plugin) return null
 
     const { diffTimestamp, showSubmenu, sticky } = this.state
-    const { network } = client
+    const { network } = plugin
 
     const nodeInfoClass = classNames({
       'node-mainnet': network === 'main',
@@ -54,13 +54,13 @@ class NodeInfo extends Component {
           tabIndex={0}
         >
           <NodeInfoDot
-            client={client}
+            plugin={plugin}
             diffTimestamp={diffTimestamp}
-            isStopped={client.active.status === 'STOPPED'}
+            isStopped={plugin.active.status === 'STOPPED'}
             sticky={sticky}
           />
           {showSubmenu && (
-            <NodeInfoBox diffTimestamp={diffTimestamp} client={client} />
+            <NodeInfoBox diffTimestamp={diffTimestamp} plugin={plugin} />
           )}
         </div>
       </StyledNode>
@@ -70,8 +70,8 @@ class NodeInfo extends Component {
 
 function mapStateToProps(state) {
   return {
-    clientState: state.plugin,
-    selectedClient: state.plugin.selected
+    pluginState: state.plugin,
+    selectedPlugin: state.plugin.selected
   }
 }
 

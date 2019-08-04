@@ -46,8 +46,8 @@ class NodeInfoBox extends Component {
   }
 
   renderSyncStarting = () => {
-    const { client } = this.props
-    const { active } = client
+    const { plugin } = this.props
+    const { active } = plugin
     const { peerCount } = active
 
     return (
@@ -65,8 +65,8 @@ class NodeInfoBox extends Component {
   }
 
   renderSyncProgress() {
-    const { client } = this.props
-    const { config, active } = client
+    const { plugin } = this.props
+    const { config, active } = plugin
     const { peerCount, sync } = active
     const { network } = config
     const { highestBlock, currentBlock, startingBlock } = sync
@@ -99,8 +99,8 @@ class NodeInfoBox extends Component {
   }
 
   renderSynced() {
-    const { client, diffTimestamp } = this.props
-    const { active, config } = client
+    const { plugin, diffTimestamp } = this.props
+    const { active, config } = plugin
     const { blockNumber, peerCount, timestamp } = active
     const { network } = config
 
@@ -135,8 +135,8 @@ class NodeInfoBox extends Component {
   }
 
   renderStats() {
-    const { client } = this.props
-    const { active, config } = client
+    const { plugin } = this.props
+    const { active, config } = plugin
     const { syncMode, network } = config
     const { blockNumber, peerCount, status, sync } = active
     const { highestBlock, startingBlock } = sync
@@ -180,8 +180,8 @@ class NodeInfoBox extends Component {
   }
 
   render() {
-    const { client } = this.props
-    const { config } = client
+    const { plugin } = this.props
+    const { config } = plugin
     const { network } = config
     return (
       <StyledBox>
