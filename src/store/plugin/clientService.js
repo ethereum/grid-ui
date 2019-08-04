@@ -29,6 +29,10 @@ class ClientService {
     }
   }
 
+  clearPeerCountInterval() {
+    clearInterval(this.peerCountInterval)
+  }
+
   onNewHeadsSubscriptionResult(plugin, result, dispatch) {
     const { result: subscriptionResult } = result
     if (!subscriptionResult) return

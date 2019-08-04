@@ -48,7 +48,7 @@ class PluginService {
     plugin.removeListener('newState', this.newStateListener)
     plugin.removeListener('pluginError', this.pluginErrorListener)
     if (plugin.type === 'client') {
-      clearInterval(this.peerCountInterval)
+      ClientService.clearPeerCountInterval()
       ClientService.unsubscribeSyncingSubscription(plugin)
       ClientService.unsubscribeNewHeadsSubscription(plugin)
     }
