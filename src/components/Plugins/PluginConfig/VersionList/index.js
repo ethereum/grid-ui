@@ -13,7 +13,7 @@ class VersionList extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     handleReleaseSelect: PropTypes.func.isRequired,
-    client: PropTypes.object.isRequired,
+    plugin: PropTypes.object.isRequired,
     selectedRelease: PropTypes.object
   }
 
@@ -28,12 +28,12 @@ class VersionList extends Component {
     this.loadReleases()
   }
 
-  componentWillReceiveProps({ client: nextClient }) {
-    const { client: oldClient } = this.props
-    if (oldClient && nextClient !== oldClient) {
+  componentWillReceiveProps({ plugin: nextPlugin }) {
+    const { plugin: oldPlugin } = this.props
+    if (oldPlugin && nextPlugin !== oldPlugin) {
       // this.loadLocalReleases()
       this.setState({ releases: [] })
-      this.loadReleases(nextClient)
+      this.loadReleases(nextPlugin)
     }
   }
 
@@ -41,13 +41,13 @@ class VersionList extends Component {
     this.setState({ downloadError: null })
   }
 
-  loadReleases = async client => {
+  loadReleases = async plugin => {
     // eslint-disable-next-line
-    client = client || this.props.client
+    plugin = plugin || this.props.plugin
     this.setState({ loadingReleases: true })
     const localReleases = {}
     // console.time('load releases')
-    let releases = await client.getReleases()
+    let releases = await plugin.getReleases()
     // console.timeEnd('load releases')
     // console.time('dedupe')
     let count = 0
@@ -97,8 +97,8 @@ class VersionList extends Component {
   }
 
   handleReleaseSelect = release => {
-    const { client, dispatch, handleReleaseSelect } = this.props
-    dispatch(setRelease(client, release))
+    const { plugin, dispatch, handleReleaseSelect } = this.props
+    dispatch(setRelease(plugin, release))
     handleReleaseSelect(release)
   }
 
@@ -120,13 +120,13 @@ class VersionList extends Component {
   }
 
   renderVersionList = () => {
-    const { client } = this.props
+    const { plugin } = this.props
     const { releases } = this.state
     const renderListItems = () => {
       const list = releases.map((release, i) => {
         return (
           <VersionListItem
-            client={client}
+            plugin={plugin}
             release={release}
             key={i}
             isSelectedRelease={this.isSelectedRelease}
@@ -146,7 +146,7 @@ class VersionList extends Component {
   }
 
   render() {
-    const { client, selectedRelease } = this.props
+    const { plugin, selectedRelease } = this.props
     const {
       downloadError,
       loadingReleases,
@@ -173,7 +173,7 @@ class VersionList extends Component {
         />
 
         <LatestVersionWarning
-          displayName={client.displayName}
+          displayName={plugin.displayName}
           selectedVersion={selectedRelease.version}
           latestRelease={releases[0]}
           handleReleaseSelect={this.handleReleaseSelect}

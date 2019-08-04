@@ -30,29 +30,29 @@ TabContainer.propTypes = {
   style: PropTypes.object
 }
 
-class ClientConfig extends Component {
+class PluginConfig extends Component {
   static propTypes = {
-    client: PropTypes.object,
-    clientConfigChanged: PropTypes.func,
-    clientStatus: PropTypes.string,
+    plugin: PropTypes.object,
+    pluginConfigChanged: PropTypes.func,
+    pluginStatus: PropTypes.string,
     dispatch: PropTypes.func,
-    isActiveClient: PropTypes.bool,
+    isActivePlugin: PropTypes.bool,
     handleReleaseSelect: PropTypes.func,
-    handleClientConfigChanged: PropTypes.func,
+    handlePluginConfigChanged: PropTypes.func,
     errors: PropTypes.array,
     selectedTab: PropTypes.number
   }
 
   componentDidUpdate(prevProps) {
-    const { client, clientStatus } = this.props
+    const { plugin, pluginStatus } = this.props
 
     // On client start, show Terminal
-    if (prevProps.clientStatus === 'STOPPED' && clientStatus !== 'STOPPED') {
+    if (prevProps.pluginStatus === 'STOPPED' && pluginStatus !== 'STOPPED') {
       this.handleTabChange(null, 2)
     }
 
     // If switching clients, reset tab to VersionList
-    if (prevProps.client.name !== client.name) {
+    if (prevProps.plugin.name !== plugin.name) {
       this.handleTabChange(null, 0)
     }
   }
@@ -62,14 +62,14 @@ class ClientConfig extends Component {
     dispatch(selectTab(tab))
   }
 
-  handleClientConfigChanged = (key, value) => {
-    const { handleClientConfigChanged } = this.props
-    handleClientConfigChanged(key, value)
+  handlePluginConfigChanged = (key, value) => {
+    const { handlePluginConfigChanged } = this.props
+    handlePluginConfigChanged(key, value)
   }
 
   dismissError = index => {
-    const { dispatch, client } = this.props
-    dispatch(clearError(client.name, index))
+    const { dispatch, plugin } = this.props
+    dispatch(clearError(plugin.name, index))
   }
 
   renderErrors() {
@@ -94,27 +94,27 @@ class ClientConfig extends Component {
 
   render() {
     const {
-      client,
-      clientConfigChanged,
-      clientStatus,
-      isActiveClient,
+      plugin,
+      pluginConfigChanged,
+      pluginStatus,
+      isActivePlugin,
       handleReleaseSelect,
       selectedTab
     } = this.props
-    const { displayName: clientName } = client || {}
+    const { displayName: pluginName } = plugin || {}
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
-      client.state
+      plugin.state
     )
 
     return (
       <StyledMain>
         <Typography variant="h5">
-          {clientName}
+          {pluginName}
           {/* clientName === 'Geth' && <NodeInfo /> */}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           <StyledState data-test-id="node-state">
-            {isActiveClient ? clientStatus : 'STOPPED'}
+            {isActivePlugin ? pluginStatus : 'STOPPED'}
           </StyledState>
         </Typography>
         {this.renderErrors()}
@@ -134,7 +134,7 @@ class ClientConfig extends Component {
 
         <TabContainer style={{ display: selectedTab === 0 ? 'block' : 'none' }}>
           <VersionList
-            client={client}
+            plugin={plugin}
             handleReleaseSelect={handleReleaseSelect}
           />
         </TabContainer>
@@ -144,23 +144,23 @@ class ClientConfig extends Component {
           <TabContainer>
             <ErrorBoundary>
               <DynamicConfigForm
-                clientName={client.name}
-                settings={getPluginSettingsConfig(client)}
-                handleClientConfigChanged={this.handleClientConfigChanged}
-                isClientRunning={isRunning}
-                clientConfigChanged={clientConfigChanged}
+                pluginName={plugin.name}
+                settings={getPluginSettingsConfig(plugin)}
+                handlePluginConfigChanged={this.handlePluginConfigChanged}
+                isPluginRunning={isRunning}
+                pluginConfigChanged={pluginConfigChanged}
               />
             </ErrorBoundary>
           </TabContainer>
         )}
 
         <TabContainer style={{ display: selectedTab === 2 ? 'block' : 'none' }}>
-          <Terminal client={client} />
+          <Terminal client={plugin} />
         </TabContainer>
 
         {selectedTab === 3 && (
           <TabContainer>
-            <PluginView plugin={client} />
+            <PluginView plugin={plugin} />
           </TabContainer>
         )}
       </StyledMain>
@@ -172,14 +172,14 @@ function mapStateToProps(state) {
   const selectedClient = state.plugin.selected
 
   return {
-    clientStatus: state.plugin[selectedClient].active.status,
+    pluginStatus: state.plugin[selectedClient].active.status,
     errors: state.plugin[selectedClient].errors,
-    isActiveClient: state.plugin[selectedClient].active.name !== 'STOPPED',
+    isActivePlugin: state.plugin[selectedClient].active.name !== 'STOPPED',
     selectedTab: state.plugin.selectedTab
   }
 }
 
-export default connect(mapStateToProps)(ClientConfig)
+export default connect(mapStateToProps)(PluginConfig)
 
 const StyledMain = styled.main`
   position: relative;
