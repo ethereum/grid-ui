@@ -84,7 +84,7 @@ const StyledNode = styled.div`
   color: #827a7a;
 
   #node-info {
-    margin: 0 5px;
+    margin: 0 8px;
     -webkit-app-region: no-drag;
 
     &:focus {
