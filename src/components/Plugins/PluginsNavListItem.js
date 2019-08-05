@@ -8,7 +8,7 @@ import Switch from '@material-ui/core/Switch'
 import Tooltip from '@material-ui/core/Tooltip'
 
 const styles = () => ({
-  serviceName: {
+  pluginName: {
     marginRight: 5,
     textTransform: 'capitalize'
   },
@@ -23,14 +23,12 @@ const styles = () => ({
   }
 })
 
-class ServicesNavListItem extends Component {
-  static displayName = 'ServicesNavListItem'
-
+class PluginsNavListItem extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    client: PropTypes.object.isRequired,
+    plugin: PropTypes.object.isRequired,
     handleToggle: PropTypes.func.isRequired,
-    handleSelectClient: PropTypes.func.isRequired,
+    handleSelectPlugin: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool,
     isRunning: PropTypes.bool,
     isSelected: PropTypes.bool,
@@ -41,32 +39,32 @@ class ServicesNavListItem extends Component {
     const {
       classes,
       handleToggle,
-      handleSelectClient,
+      handleSelectPlugin,
       isDisabled,
       isRunning,
       isSelected,
       secondaryText,
-      client
+      plugin
     } = this.props
 
     return (
       <ListItem
-        key={client.name}
+        key={plugin.name}
         selected={isSelected}
-        onClick={() => handleSelectClient(client)}
+        onClick={() => handleSelectPlugin(plugin)}
         classes={{
           root: classes.hoverableListItem,
           selected: classes.selected
         }}
         button
-        data-test-id={`node-${client.name}`}
+        data-test-id={`node-${plugin.name}`}
       >
         <ListItemText
-          primary={client.displayName}
+          primary={plugin.displayName}
           secondary={secondaryText}
           primaryTypographyProps={{
             inline: true,
-            classes: { root: classes.serviceName }
+            classes: { root: classes.pluginName }
           }}
           secondaryTypographyProps={{
             inline: true,
@@ -81,10 +79,10 @@ class ServicesNavListItem extends Component {
             <span>
               <Switch
                 color="primary"
-                onChange={() => handleToggle(client)}
+                onChange={() => handleToggle(plugin)}
                 checked={isRunning}
                 disabled={isDisabled}
-                data-test-id={`switch-${client.name}`}
+                data-test-id={`switch-${plugin.name}`}
               />
             </span>
           </Tooltip>
@@ -94,4 +92,4 @@ class ServicesNavListItem extends Component {
   }
 }
 
-export default withStyles(styles)(ServicesNavListItem)
+export default withStyles(styles)(PluginsNavListItem)
