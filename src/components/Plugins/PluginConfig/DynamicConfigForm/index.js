@@ -20,9 +20,11 @@ class DynamicConfigForm extends Component {
     super(props)
 
     const { plugin } = props
-    const clientPlugin = window.Grid.PluginHost.getPluginByName(plugin.selected)
+    const preloadPlugin = window.Grid.PluginHost.getPluginByName(
+      plugin.selected
+    )
     const { config, flags } = plugin[plugin.selected]
-    const generatedFlags = getGeneratedFlags(clientPlugin, config)
+    const generatedFlags = getGeneratedFlags(preloadPlugin, config)
     const flagsIsCustom = !flags.every(f => generatedFlags.includes(f))
     this.state = {
       editGeneratedFlags: flagsIsCustom
@@ -32,10 +34,12 @@ class DynamicConfigForm extends Component {
   toggleEditGeneratedFlags = checked => {
     const { plugin, dispatch } = this.props
     const { config } = plugin[plugin.selected]
-    const clientPlugin = window.Grid.PluginHost.getPluginByName(plugin.selected)
+    const preloadPlugin = window.Grid.PluginHost.getPluginByName(
+      plugin.selected
+    )
     this.setState({ editGeneratedFlags: checked })
     if (!checked) {
-      dispatch(setFlags(clientPlugin, config))
+      dispatch(setFlags(preloadPlugin, config))
     }
   }
 

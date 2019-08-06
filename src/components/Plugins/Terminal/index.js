@@ -26,7 +26,7 @@ const styles = () => ({
 
 class Terminal extends Component {
   static propTypes = {
-    client: PropTypes.object.isRequired,
+    plugin: PropTypes.object.isRequired,
     classes: PropTypes.object
   }
 
@@ -42,13 +42,13 @@ class Terminal extends Component {
     this.subscribeLogs()
   }
 
-  componentWillReceiveProps({ client: nextClient }) {
-    const { client: oldClient } = this.props
-    const logs = nextClient.getLogs()
+  componentWillReceiveProps({ plugin: nextPlugin }) {
+    const { plugin: oldPlugin } = this.props
+    const logs = nextPlugin.getLogs()
     this.setState({ logs })
-    if (oldClient && nextClient !== oldClient) {
-      this.unsubscribeLogs(oldClient)
-      this.subscribeLogs(nextClient)
+    if (oldPlugin && nextPlugin !== oldPlugin) {
+      this.unsubscribeLogs(oldPlugin)
+      this.subscribeLogs(nextPlugin)
     }
   }
 
@@ -73,19 +73,19 @@ class Terminal extends Component {
     }
   }
 
-  subscribeLogs = client => {
+  subscribeLogs = plugin => {
     // eslint-disable-next-line
-    client = client || this.props.client
-    client.on('log', this.addNewLog)
+    plugin = plugin || this.props.plugin
+    plugin.on('log', this.addNewLog)
     // Clear old logs on restart
-    client.on('newState', this.clearLogs)
+    plugin.on('newState', this.clearLogs)
   }
 
-  unsubscribeLogs = client => {
+  unsubscribeLogs = plugin => {
     // eslint-disable-next-line
-    client = client || this.props.client
-    client.removeListener('log', this.addNewLog)
-    client.removeListener('newState', this.clearLogs)
+    plugin = plugin || this.props.plugin
+    plugin.removeListener('log', this.addNewLog)
+    plugin.removeListener('newState', this.clearLogs)
   }
 
   terminalScrollToBottom = () => {
@@ -101,7 +101,7 @@ class Terminal extends Component {
   }
 
   render() {
-    const { classes, client } = this.props
+    const { classes, plugin } = this.props
     const { logs } = this.state
 
     if (logs.length === 0) {
@@ -124,7 +124,7 @@ class Terminal extends Component {
         >
           {renderLogs}
         </div>
-        <TerminalInput client={client} addNewLog={this.addNewLog} />
+        <TerminalInput plugin={plugin} addNewLog={this.addNewLog} />
       </div>
     )
   }
