@@ -29,7 +29,7 @@ const styles = () => ({
 
 class TerminalInput extends Component {
   static propTypes = {
-    client: PropTypes.object.isRequired,
+    plugin: PropTypes.object.isRequired,
     addNewLog: PropTypes.func,
     classes: PropTypes.object
   }
@@ -77,9 +77,9 @@ class TerminalInput extends Component {
   }
 
   submit = () => {
-    const { client, addNewLog } = this.props
+    const { plugin, addNewLog } = this.props
     const { input, history, protectInput } = this.state
-    client.write(input)
+    plugin.write(input)
     addNewLog(protectInput ? '***' : input)
     this.setState({ input: '', historyIndex: 0 })
     // Add to history if not same as last history entry
@@ -90,12 +90,12 @@ class TerminalInput extends Component {
   }
 
   render() {
-    const { classes, client } = this.props
+    const { classes, plugin } = this.props
     const { input, protectInput } = this.state
 
-    const isClientRunning = ['STARTED', 'CONNECTED'].includes(client.state)
+    const isPluginRunning = ['STARTED', 'CONNECTED'].includes(plugin.state)
 
-    if (!isClientRunning) {
+    if (!isPluginRunning) {
       return null
     }
 
@@ -107,7 +107,7 @@ class TerminalInput extends Component {
             value={input}
             onChange={this.handleChange}
             onKeyDown={this.handleKeyDown}
-            disabled={!isClientRunning}
+            disabled={!isPluginRunning}
             className={classes.textField}
             type={protectInput ? 'password' : 'text'}
             InputProps={{
