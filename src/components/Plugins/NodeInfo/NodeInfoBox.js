@@ -270,7 +270,7 @@ const StyledPill = styled.span`
   margin-left: 5px;
   font-weight: 300;
   font-size: 11px;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 2px 6px;
   vertical-align: middle;
