@@ -6,57 +6,57 @@ import {
 import { generateFlags } from '../lib/flags'
 
 describe('getPluginSettingsConfig', () => {
-  it('returns an empty array if no client', () => {
-    const client = undefined
-    expect(getPluginSettingsConfig(client)).toEqual([])
+  it('returns an empty array if no plugin', () => {
+    const plugin = undefined
+    expect(getPluginSettingsConfig(plugin)).toEqual([])
   })
 
   it('returns an empty array if no settings config', () => {
-    const client = { plugin: { config: {} } }
-    expect(getPluginSettingsConfig(client)).toEqual([])
+    const plugin = { plugin: { config: {} } }
+    expect(getPluginSettingsConfig(plugin)).toEqual([])
   })
 
   it('returns an empty array if settings are not an array', () => {
-    const client = { plugin: { config: { settings: { one: '1', two: '2' } } } }
-    expect(getPluginSettingsConfig(client)).toEqual([])
+    const plugin = { plugin: { config: { settings: { one: '1', two: '2' } } } }
+    expect(getPluginSettingsConfig(plugin)).toEqual([])
   })
 
   it('returns the array of settings', () => {
     const settings = [{ id: 'one' }, { id: 'two' }]
-    const client = { plugin: { config: { settings } } }
-    expect(getPluginSettingsConfig(client)).toEqual(settings)
+    const plugin = { plugin: { config: { settings } } }
+    expect(getPluginSettingsConfig(plugin)).toEqual(settings)
   })
 })
 
 describe('getDefaultSetting', () => {
-  it('returns an empty string if no client', () => {
-    const client = undefined
-    expect(getDefaultSetting(client, 'network')).toEqual('')
+  it('returns an empty string if no plugin', () => {
+    const plugin = undefined
+    expect(getDefaultSetting(plugin, 'network')).toEqual('')
   })
 
   it('returns an empty string if no id', () => {
     const settings = [{ id: 'one', default: 'a' }, { id: 'two', default: 'b' }]
-    const client = { plugin: { config: { settings } } }
-    expect(getDefaultSetting(client, undefined)).toEqual('')
+    const plugin = { plugin: { config: { settings } } }
+    expect(getDefaultSetting(plugin, undefined)).toEqual('')
   })
 
   it('returns the default value', () => {
     const settings = [{ id: 'one', default: 'a' }, { id: 'two', default: 'b' }]
-    const client = { plugin: { config: { settings } } }
-    expect(getDefaultSetting(client, 'two')).toEqual('b')
+    const plugin = { plugin: { config: { settings } } }
+    expect(getDefaultSetting(plugin, 'two')).toEqual('b')
   })
 })
 
 describe('getSettingsIds', () => {
-  it('returns an empty array if no client', () => {
-    const client = undefined
-    expect(getSettingsIds(client)).toEqual([])
+  it('returns an empty array if no plugin', () => {
+    const plugin = undefined
+    expect(getSettingsIds(plugin)).toEqual([])
   })
 
   it('returns an array of ids', () => {
     const settings = [{ id: 'one', default: 'a' }, { id: 'two', default: 'b' }]
-    const client = { plugin: { config: { settings } } }
-    expect(getSettingsIds(client)).toEqual(['one', 'two'])
+    const plugin = { plugin: { config: { settings } } }
+    expect(getSettingsIds(plugin)).toEqual(['one', 'two'])
   })
 })
 

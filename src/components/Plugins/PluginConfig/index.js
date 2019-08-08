@@ -46,12 +46,12 @@ class PluginConfig extends Component {
   componentDidUpdate(prevProps) {
     const { plugin, pluginStatus } = this.props
 
-    // On client start, show Terminal
+    // On plugin start, show Terminal
     if (prevProps.pluginStatus === 'STOPPED' && pluginStatus !== 'STOPPED') {
       this.handleTabChange(null, 2)
     }
 
-    // If switching clients, reset tab to VersionList
+    // If switching plugins, reset tab to VersionList
     if (prevProps.plugin.name !== plugin.name) {
       this.handleTabChange(null, 0)
     }
@@ -155,7 +155,7 @@ class PluginConfig extends Component {
         )}
 
         <TabContainer style={{ display: selectedTab === 2 ? 'block' : 'none' }}>
-          <Terminal client={plugin} />
+          <Terminal plugin={plugin} />
         </TabContainer>
 
         {selectedTab === 3 && (
@@ -169,12 +169,12 @@ class PluginConfig extends Component {
 }
 
 function mapStateToProps(state) {
-  const selectedClient = state.plugin.selected
+  const selectedPlugin = state.plugin.selected
 
   return {
-    pluginStatus: state.plugin[selectedClient].active.status,
-    errors: state.plugin[selectedClient].errors,
-    isActivePlugin: state.plugin[selectedClient].active.name !== 'STOPPED',
+    pluginStatus: state.plugin[selectedPlugin].active.status,
+    errors: state.plugin[selectedPlugin].errors,
+    isActivePlugin: state.plugin[selectedPlugin].active.name !== 'STOPPED',
     selectedTab: state.plugin.selectedTab
   }
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import PluginConfig from './PluginConfig'
-import ServicesNav from './ServicesNav'
+import PluginsNav from './PluginsNav'
 import {
   initPlugin,
   selectPlugin,
@@ -96,10 +96,10 @@ class PluginsTab extends Component {
     const { plugins, selectedPlugin, selectedRelease } = this.state
 
     return (
-      <ServicesNav
+      <PluginsNav
         handleToggle={this.handleToggle}
-        handleSelectClient={this.handleSelectPlugin}
-        clients={plugins}
+        handleSelectPlugin={this.handleSelectPlugin}
+        plugins={plugins}
       >
         {selectedPlugin && (
           <PluginConfig
@@ -109,7 +109,7 @@ class PluginsTab extends Component {
             handleReleaseSelect={this.handleReleaseSelect}
           />
         )}
-      </ServicesNav>
+      </PluginsNav>
     )
   }
 }

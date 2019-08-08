@@ -6,28 +6,19 @@
   <a href="https://circleci.com/gh/ethereum/grid-ui"><img src="https://img.shields.io/circleci/project/github/ethereum/grid-ui/master.svg" alt="Build Status"></a>
 </p>
 
-## Grid UI
+# Ethereum Grid
 
-[![ethpkg status](http://api.ethpkg.org/badge/gh/ethereum/grid-ui)](http://ethpkg.org/gh/ethereum/grid-ui)
+Grid is a desktop application that allows you to securely download, configure and use various clients and tools in the Ethereum ecosystem. Download the [latest version](https://grid.ethereum.org/).
 
-### What is Grid?
+![](https://imgur.com/T3Tt65P.jpg)
 
-“Often referred to […] as “digital frontier", the Grid was made to provide an experimental platform where all forms of research could be carried out at unparalleled speeds.” - [Tron Movie](https://tron.fandom.com/wiki/Grid)
+See this [introductory post](https://medium.com/ethereum-grid/introducing-ethereum-grid-1e65e7fb771e) to learn more about the motivations behind the project. Release announcements and tutorials are released on the project [Medium publication](https://medium.com/ethereum-grid).
 
-One way to describe Ethereum Grid is a platform to run experiments, create prototypes (and hackathon projects) or develop fully working apps for the many available clients in the ecosystem.
-Another description could be that Ethereum Grid is the control center for all kinds of clients and Ethereum core binaries.
+## Development
 
-With Grid, clients can be downloaded, configured, and started all in one place. But even more than this, Grid serves as an Ethereum provider, which means that once a client is configured and started, DApps can connect to Grid and share the connection to the Ethereum network.
+This repo is the web application hosted by [Grid](https://github.com/ethereum/grid).
 
-It is ideal for people who want to run a full node, have a convenient and secure way to update their binaries, and don't want to rely on centralized 3rd party services.
-
-Grid can host and launch other interfaces and the functionality can be extended and adjusted through apps and plugins.
-
-### Contributing
-
-There are many ways to get involved with this project. Get started [here](/docs/CONTRIBUTING.md).
-
-### Development
+### Quick Start
 
 Clone, install dependencies, and start the application:
 
@@ -44,3 +35,7 @@ git clone https://github.com/ethereum/grid.git
 cd grid
 yarn && yarn start:dev
 ```
+
+### Contributing
+
+There are many ways to get involved with this project. Get started [here](/docs/CONTRIBUTING.md).
