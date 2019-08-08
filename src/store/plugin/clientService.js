@@ -3,7 +3,8 @@ import {
   newBlock,
   updateSyncing,
   updatePeerCount,
-  updatePeerCountError
+  updatePeerCountError,
+  clearSyncing
 } from './actions'
 
 // Utils
@@ -130,6 +131,10 @@ class ClientService {
   }
 
   async startNewHeadsSubscription(plugin, dispatch) {
+    // Clear any stale syncing data
+    dispatch(clearSyncing(plugin.name))
+
+    // Subscribe
     const subscriptionId = await plugin.rpc('eth_subscribe', ['newHeads'])
     this.newHeadsSubscriptionId = subscriptionId
     plugin.on('notification', result => {
