@@ -6,7 +6,7 @@ import PieChart from 'react-minimal-pie-chart'
 
 const colorMainnet = '#7ed321'
 const colorTestnet = '#00aafa'
-const colorRed = '#e81e1e'
+const colorRed = '#de3232'
 const colorOrange = 'orange'
 
 class NodeInfoDot extends Component {
