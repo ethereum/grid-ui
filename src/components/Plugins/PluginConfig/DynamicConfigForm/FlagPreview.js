@@ -44,7 +44,7 @@ class FlagPreview extends Component {
             variant="outlined"
             value={flags.join(' ')}
             onChange={this.handleChange}
-            disabled={!isEditingFlags}
+            disabled={isPluginRunning || !isEditingFlags}
             fullWidth
           />
           <FormControlLabel
