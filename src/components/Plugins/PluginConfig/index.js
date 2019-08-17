@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
 import DynamicConfigForm from './DynamicConfigForm'
 import Terminal from '../Terminal'
-// import NodeInfo from '../NodeInfo'
+import NodeInfo from '../NodeInfo'
 import PluginView from '../PluginView'
 import { clearError, selectTab } from '../../../store/plugin/actions'
 import Notification from '../../shared/Notification'
@@ -110,7 +110,7 @@ class PluginConfig extends Component {
       <StyledMain>
         <Typography variant="h5">
           {pluginName}
-          {/* clientName === 'Geth' && <NodeInfo /> */}
+          {plugin.type === 'client' && <NodeInfo />}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           <StyledState data-test-id="node-state">

@@ -3,13 +3,15 @@ import {
   newBlock,
   updateSyncing,
   updatePeerCount,
-  updatePeerCountError
+  updatePeerCountError,
+  clearSyncing
 } from './actions'
 
 // Utils
 const isHex = str => typeof str === 'string' && str.startsWith('0x')
 const hexToNumberString = str => new BigNumber(str).toString(10)
 const toNumberString = str => (isHex(str) ? hexToNumberString(str) : str)
+const hexToNumber = str => Number(hexToNumberString(str))
 
 class ClientService {
   watchForPeers(plugin, dispatch) {
@@ -24,7 +26,7 @@ class ClientService {
     if (hexPeerCount.message) {
       dispatch(updatePeerCountError(plugin.name, hexPeerCount.message))
     } else {
-      const peerCount = toNumberString(hexPeerCount)
+      const peerCount = hexToNumber(hexPeerCount)
       dispatch(updatePeerCount(plugin.name, peerCount))
     }
   }
@@ -46,36 +48,33 @@ class ClientService {
     dispatch(newBlock(plugin.name, blockNumber, timestamp))
   }
 
-  onSyncingSubscriptionResult(plugin, result, dispatch) {
+  onSyncingResult(plugin, result, dispatch) {
     if (result === false) {
       // Stopped syncing, begin newHeads subscription
       this.startNewHeadsSubscription(plugin, dispatch)
-      // Unsubscribe from syncing subscription
-      this.unsubscribeSyncingSubscription(plugin)
+      // Clear syncing interval
+      this.clearSyncingInterval()
       return
     }
 
-    // waiting for syncing data
+    // Waiting for syncing data
     if (result === true) return
 
-    const { status } = result
-    if (!status) return
-
     const {
-      StartingBlock: startingBlock,
-      CurrentBlock: currentBlock,
-      HighestBlock: highestBlock,
-      KnownStates: knownStates,
-      PulledStates: pulledStates
-    } = status
+      startingBlock,
+      currentBlock,
+      highestBlock,
+      knownStates,
+      pulledStates
+    } = result
 
     dispatch(
       updateSyncing(plugin.name, {
-        startingBlock,
-        currentBlock,
-        highestBlock,
-        knownStates,
-        pulledStates
+        startingBlock: hexToNumber(startingBlock),
+        currentBlock: hexToNumber(currentBlock),
+        highestBlock: hexToNumber(highestBlock),
+        knownStates: hexToNumber(knownStates),
+        pulledStates: hexToNumber(pulledStates)
       })
     )
   }
@@ -83,73 +82,76 @@ class ClientService {
   unsubscribeNewHeadsSubscription(plugin) {
     if (!this.newHeadsSubscriptionId) return
     plugin.rpc('eth_unsubscribe', [this.newHeadsSubscriptionId])
-    plugin.removeListener(
-      this.newHeadsSubscriptionId,
-      this.onNewHeadsSubscriptionResult
-    )
     this.newHeadsSubscriptionId = null
   }
 
-  unsubscribeSyncingSubscription(plugin) {
-    if (!this.syncingSubscriptionId) return
-    plugin.rpc('eth_unsubscribe', [this.syncingSubscriptionId])
-    plugin.removeListener(
-      this.syncingSubscriptionId,
-      this.onSyncingSubscriptionResult
-    )
-    this.syncingSubscriptionId = null
+  clearSyncingInterval() {
+    clearInterval(this.syncingInterval)
   }
 
   startBlockSubscriptions(plugin, dispatch) {
     const startSubscriptions = async () => {
       const result = await plugin.rpc('eth_syncing')
-      if (result === false) {
+      if (result) {
+        // Subscribe to syncing
+        this.startSyncingInterval(plugin, dispatch)
+      } else {
         // Not syncing, start newHeads subscription
         this.startNewHeadsSubscription(plugin, dispatch)
-      } else {
-        // Subscribe to syncing
-        this.startSyncingSubscription(plugin, dispatch)
       }
     }
 
     const setLastBlock = () => {
       plugin.rpc('eth_getBlockByNumber', ['latest', false]).then(block => {
         const { number: hexBlockNumber, timestamp: hexTimestamp } = block
-        const blockNumber = Number(toNumberString(hexBlockNumber))
-        const timestamp = Number(toNumberString(hexTimestamp))
+        const blockNumber = hexToNumber(hexBlockNumber)
+        const timestamp = hexToNumber(hexTimestamp)
         dispatch(newBlock(plugin.name, blockNumber, timestamp))
       })
     }
 
-    setTimeout(() => {
-      setLastBlock()
-      startSubscriptions()
-    }, 2000)
+    const start = async () => {
+      // Start if we have peers
+      const hexPeerCount = await plugin.rpc('net_peerCount')
+      if (!hexPeerCount.message && hexToNumber(hexPeerCount) > 0) {
+        // Wait 5s before starting to give time for syncing status to update
+        setTimeout(() => {
+          setLastBlock()
+          startSubscriptions()
+        }, 5000)
+      } else {
+        // Otherwise, try again in 3s
+        setTimeout(() => {
+          start()
+        }, 3000)
+      }
+    }
+
+    start()
   }
 
   async startNewHeadsSubscription(plugin, dispatch) {
-    plugin.rpc('eth_subscribe', ['newHeads']).then(subscriptionId => {
-      this.newHeadsSubscriptionId = subscriptionId
-      plugin.on('notification', result => {
-        const { subscription } = result
-        if (subscription === this.newHeadsSubscriptionId) {
-          this.onNewHeadsSubscriptionResult(plugin, result, dispatch)
-        }
-      })
-    })
-  }
+    // Clear any stale syncing data
+    dispatch(clearSyncing(plugin.name))
 
-  async startSyncingSubscription(plugin, dispatch) {
-    console.log('∆∆∆ startSyncingSubscription')
-    const subscriptionId = await plugin.rpc('eth_subscribe', ['syncing'])
-    this.syncingSubscriptionId = subscriptionId
+    // Subscribe
+    const subscriptionId = await plugin.rpc('eth_subscribe', ['newHeads'])
+    this.newHeadsSubscriptionId = subscriptionId
     plugin.on('notification', result => {
       const { subscription } = result
       if (subscription === this.newHeadsSubscriptionId) {
-        console.log('∆∆∆ subscriptionId syncing', subscriptionId, result)
-        this.onSyncingSubscriptionResult(plugin, result, dispatch)
+        this.onNewHeadsSubscriptionResult(plugin, result, dispatch)
       }
     })
+  }
+
+  async startSyncingInterval(plugin, dispatch) {
+    // Parity doesn't support eth_subscribe('syncing') yet and
+    // geth wasn't returning results reliably, so for now we will poll.
+    this.syncingInterval = setInterval(async () => {
+      const result = await plugin.rpc('eth_syncing')
+      this.onSyncingResult(plugin, result, dispatch)
+    }, 3000)
   }
 }
 

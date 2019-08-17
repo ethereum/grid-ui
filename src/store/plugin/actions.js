@@ -98,6 +98,15 @@ export const updateSyncing = (
   }
 }
 
+export const clearSyncing = pluginName => {
+  return {
+    type: 'PLUGIN:CLEAR_SYNCING',
+    payload: {
+      pluginName
+    }
+  }
+}
+
 export const updatePeerCount = (pluginName, peerCount) => {
   return (dispatch, getState) => {
     if (peerCount !== getState().plugin[pluginName].active.peerCount) {

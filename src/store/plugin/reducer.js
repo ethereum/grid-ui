@@ -221,6 +221,26 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
+    case 'PLUGIN:CLEAR_SYNCING': {
+      const { pluginName } = action.payload
+      const activeState = state[pluginName]
+        ? state[pluginName].active
+        : initialPluginState.active
+
+      return {
+        ...state,
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
+          active: {
+            ...activeState,
+            sync: {
+              ...initialPluginState.active.sync
+            }
+          }
+        }
+      }
+    }
     case 'PLUGIN:UPDATE_PEER_COUNT': {
       const { pluginName, peerCount } = action.payload
       const activeState = state[pluginName]

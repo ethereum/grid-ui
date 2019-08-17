@@ -6,12 +6,12 @@ import PieChart from 'react-minimal-pie-chart'
 
 const colorMainnet = '#7ed321'
 const colorTestnet = '#00aafa'
-const colorRed = '#e81e1e'
+const colorRed = '#de3232'
 const colorOrange = 'orange'
 
 class NodeInfoDot extends Component {
   static propTypes = {
-    client: PropTypes.object,
+    plugin: PropTypes.object,
     diffTimestamp: PropTypes.number,
     isStopped: PropTypes.bool,
     /** If component is stickied, apply drop shadow on dot */
@@ -23,16 +23,16 @@ class NodeInfoDot extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { client } = this.props
+    const { plugin } = this.props
 
-    if ((prevProps.client.blockNumber || 0) !== (client.blockNumber || 0)) {
+    if ((prevProps.plugin.blockNumber || 0) !== (plugin.blockNumber || 0)) {
       this.pulseForNewBlock()
     }
   }
 
   determineDotColor = () => {
-    const { client, isStopped } = this.props
-    const { config, active } = client
+    const { plugin, isStopped } = this.props
+    const { config, active } = plugin
     const { network } = config
     const { blockNumber } = active
 
@@ -48,8 +48,8 @@ class NodeInfoDot extends Component {
   }
 
   pulseForNewBlock = () => {
-    const { client } = this.props
-    const { config } = client
+    const { plugin } = this.props
+    const { config } = plugin
     const { network } = config
 
     const pulseColor = network === 'main' ? 'green' : 'blue'
@@ -63,16 +63,16 @@ class NodeInfoDot extends Component {
   }
 
   secondsSinceLastBlock = () => {
-    const { client, diffTimestamp } = this.props
-    const { timestamp } = client
+    const { plugin, diffTimestamp } = this.props
+    const { timestamp } = plugin
     const lastBlock = moment.unix(timestamp) // eslint-disable-line
     return moment.unix(diffTimestamp).diff(lastBlock, 'seconds')
   }
 
   render() {
-    const { client, sticky } = this.props
+    const { plugin, sticky } = this.props
     const { pulseColor } = this.state
-    const { active, config } = client
+    const { active, config } = plugin
     const { blockNumber } = active
     const { network } = config
 

@@ -237,4 +237,41 @@ describe('the plugin reducer', () => {
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
+
+  it('should handle PLUGIN:CLEAR_SYNCING', () => {
+    const sync = {
+      currentBlock: 123,
+      highestBlock: 124,
+      knownStates: 125,
+      pulledStates: 124,
+      startingBlock: 5
+    }
+    const action = {
+      type: 'PLUGIN:CLEAR_SYNCING',
+      payload: { pluginName: 'geth' }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialPluginState,
+        active: {
+          ...initialPluginState.active,
+          sync: initialPluginState.active.sync
+        }
+      }
+    }
+
+    expect(
+      reducer(
+        {
+          ...initialState,
+          geth: {
+            ...initialPluginState,
+            active: { ...initialPluginState.active, sync }
+          }
+        },
+        action
+      )
+    ).toEqual(expectedState)
+  })
 })
