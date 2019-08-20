@@ -37,26 +37,9 @@ export default class VersionListItem extends Component {
 
   releaseDisplayName = release => {
     const { plugin } = this.props
-    const { fileName } = release
-    try {
-      const nameParts = fileName.split('-')
-      let name = nameParts[0]
-      // fixes: "geth alltools" vs clef
-      if (name !== plugin.displayName) {
-        name = plugin.displayName
-      }
-      const osTypes = ['darwin', 'linux', 'windows']
-      const os = nameParts.find(p => osTypes.includes(p)) || ''
-      let arch = nameParts[2]
-      if (os === 'windows') {
-        arch = arch === '386' ? '32 Bit' : '64 Bit'
-      }
-      const version = nameParts.find(p => p.includes('.'))
-      // const channel = nameParts[4]
-      return `${name} ${os} ${version} (${arch})`
-    } catch (error) {
-      return fileName
-    }
+    const { displayName } = plugin
+    const { platform, arch, displayVersion } = release
+    return `${displayName} ${platform} ${displayVersion} (${arch})`
   }
 
   downloadRelease = release => {
