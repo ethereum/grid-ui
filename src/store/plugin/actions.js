@@ -137,7 +137,7 @@ export const clearError = (pluginName, index) => {
   }
 }
 
-export const selectPlugin = (pluginName, tab = 0) => {
+export const selectPlugin = (pluginName, tab) => {
   return { type: 'PLUGIN:SELECT', payload: { pluginName, tab } }
 }
 
