@@ -110,6 +110,9 @@ class AboutPlugin extends Component {
   render() {
     const { plugin, classes } = this.props
     const { about } = plugin
+
+    if (!about) return <p>Plugin has no about data.</p>
+
     const { description, links, community, docs } = about
     return (
       <div>
