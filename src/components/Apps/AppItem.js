@@ -13,7 +13,8 @@ import Grid from '../../API/Grid'
 
 const styles = {
   card: {
-    minWidth: 275
+    minWidth: 275,
+    background: '#222428'
   },
   media: {
     height: 0,
@@ -47,6 +48,8 @@ class AppItem extends React.Component {
         <CardHeader
           title={name}
           subheader={moment(lastUpdated).format('MMMM Do YYYY')}
+          titleTypographyProps={{ style: { fontSize: '22px' } }}
+          subheaderTypographyProps={{ style: { fontSize: '14px' } }}
         />
         <CardMedia className={classes.media} image={screenshot} />
         <CardContent>

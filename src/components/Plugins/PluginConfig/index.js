@@ -8,6 +8,7 @@ import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
 import DynamicConfigForm from './DynamicConfigForm'
+import AboutPlugin from './AboutPlugin'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
 import PluginView from '../PluginView'
@@ -48,10 +49,10 @@ class PluginConfig extends Component {
 
     // On plugin start, show Terminal
     if (prevProps.pluginStatus === 'STOPPED' && pluginStatus !== 'STOPPED') {
-      this.handleTabChange(null, 2)
+      this.handleTabChange(null, 3)
     }
 
-    // If switching plugins, reset tab to VersionList
+    // If switching plugins, reset tab to About
     if (prevProps.plugin.name !== plugin.name) {
       this.handleTabChange(null, 0)
     }
@@ -125,22 +126,26 @@ class PluginConfig extends Component {
             textColor="primary"
             indicatorColor="primary"
           >
+            <Tab label="About" data-test-id="navbar-item-about" />
             <Tab label="Version" data-test-id="navbar-item-version" />
             <Tab label="Settings" data-test-id="navbar-item-settings" />
             <Tab label="Terminal" data-test-id="navbar-item-terminal" />
-            <Tab label="Details" data-test-id="navbar-item-terminal" />
+            <Tab label="Metadata" data-test-id="navbar-item-metadata" />
           </Tabs>
         </StyledAppBar>
 
         <TabContainer style={{ display: selectedTab === 0 ? 'block' : 'none' }}>
+          <AboutPlugin plugin={plugin} />
+        </TabContainer>
+
+        <TabContainer style={{ display: selectedTab === 1 ? 'block' : 'none' }}>
           <VersionList
             plugin={plugin}
             handleReleaseSelect={handleReleaseSelect}
           />
         </TabContainer>
-
         {/* NOTE: MUI requires generating the ConfigForm from state each render */}
-        {selectedTab === 1 && (
+        {selectedTab === 2 && (
           <TabContainer>
             <ErrorBoundary>
               <DynamicConfigForm
@@ -153,12 +158,10 @@ class PluginConfig extends Component {
             </ErrorBoundary>
           </TabContainer>
         )}
-
-        <TabContainer style={{ display: selectedTab === 2 ? 'block' : 'none' }}>
+        <TabContainer style={{ display: selectedTab === 3 ? 'block' : 'none' }}>
           <Terminal plugin={plugin} />
         </TabContainer>
-
-        {selectedTab === 3 && (
+        {selectedTab === 4 && (
           <TabContainer>
             <PluginView plugin={plugin} />
           </TabContainer>

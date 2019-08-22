@@ -71,7 +71,11 @@ const plugin = (state = initialState, action) => {
     }
     case 'PLUGIN:SELECT': {
       const { pluginName, tab } = action.payload
-      return { ...state, selected: pluginName, selectedTab: tab }
+      const newState = { ...state, selected: pluginName }
+      if (tab) {
+        newState.selectedTab = tab
+      }
+      return newState
     }
     case 'PLUGIN:SELECT_TAB': {
       const { tab } = action.payload
