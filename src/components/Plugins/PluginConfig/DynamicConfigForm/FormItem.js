@@ -29,7 +29,7 @@ class DynamicConfigFormItem extends Component {
     // Redux state doesn't need to update on every keystroke.
     this.updateRedux = debounce(this.updateRedux, 500)
     this.state = {
-      fieldValue: props.itemValue
+      fieldValue: (props.itemValue || '').toString()
     }
   }
 
@@ -177,7 +177,7 @@ function mapStateToProps(state, ownProps) {
   const selectedPlugin = state.plugin.selected
 
   return {
-    itemValue: state.plugin[selectedPlugin].config[ownProps.itemKey].toString()
+    itemValue: state.plugin[selectedPlugin].config[ownProps.itemKey]
   }
 }
 
