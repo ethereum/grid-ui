@@ -76,9 +76,15 @@ class AboutPlugin extends Component {
         {apps.map(app => {
           const gridApp = gridApps.find(thisApp => thisApp.url === app.url)
           if (gridApp) {
+            // Overwrite `dependencies` key with one specified in plugin so
+            // plugin can have priority in launching with its own settings.
+            const finalApp = { ...gridApp }
+            if (app.dependencies) {
+              finalApp.dependencies = app.dependencies
+            }
             return (
-              <Grid item xs={6} key={app.name}>
-                <AppItem app={gridApp} />
+              <Grid item xs={6} key={gridApp.name}>
+                <AppItem app={finalApp} />
               </Grid>
             )
           }
