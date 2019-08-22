@@ -177,7 +177,7 @@ function mapStateToProps(state, ownProps) {
   const selectedPlugin = state.plugin.selected
 
   return {
-    itemValue: state.plugin[selectedPlugin].config[ownProps.itemKey]
+    itemValue: state.plugin[selectedPlugin].config[ownProps.itemKey].toString()
   }
 }
 
