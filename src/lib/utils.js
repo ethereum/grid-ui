@@ -33,18 +33,18 @@ export const without = (...omitProps) => {
   }
 }
 
-export const getPluginSettingsConfig = client => {
+export const getPluginSettingsConfig = plugin => {
   try {
-    const settings = client.plugin.config.settings // eslint-disable-line
+    const settings = plugin.plugin.config.settings // eslint-disable-line
     return Array.isArray(settings) ? settings : []
   } catch (e) {
     return []
   }
 }
 
-export const getDefaultSetting = (client, id) => {
+export const getDefaultSetting = (plugin, id) => {
   try {
-    const setting = client.plugin.config.settings.find(
+    const setting = plugin.plugin.config.settings.find(
       setting => setting.id === id
     )
     return setting.default
@@ -53,33 +53,33 @@ export const getDefaultSetting = (client, id) => {
   }
 }
 
-export const getSettingsIds = client => {
+export const getSettingsIds = plugin => {
   try {
-    return client.plugin.config.settings.map(setting => setting.id)
+    return plugin.plugin.config.settings.map(setting => setting.id)
   } catch (e) {
     return []
   }
 }
 
-export const getPersistedClientSettings = clientName => {
+export const getPersistedPluginSettings = pluginName => {
   try {
     const settings = Grid.Config.getItem('settings')
-    return settings[clientName] || {}
+    return settings[pluginName] || {}
   } catch (e) {
     return {}
   }
 }
 
-export const getPersistedFlags = clientName => {
+export const getPersistedFlags = pluginName => {
   try {
     const flags = Grid.Config.getItem('flags')
-    return flags[clientName] || null
+    return flags[pluginName] || null
   } catch (e) {
     return null
   }
 }
 
-export const getPersistedClientSelection = () => {
+export const getPersistedPluginSelection = () => {
   try {
     const settings = Grid.Config.getItem('settings')
     return settings.selected || ''

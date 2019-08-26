@@ -14,10 +14,10 @@ class DynamicConfigFormItem extends Component {
     itemKey: PropTypes.string,
     itemValue: PropTypes.string,
     item: PropTypes.object,
-    client: PropTypes.object,
-    clientName: PropTypes.string,
-    isClientRunning: PropTypes.bool,
-    handleClientConfigChanged: PropTypes.func,
+    plugin: PropTypes.object,
+    pluginName: PropTypes.string,
+    isPluginRunning: PropTypes.bool,
+    handlePluginConfigChanged: PropTypes.func,
     editGeneratedFlags: PropTypes.bool
   }
 
@@ -29,7 +29,7 @@ class DynamicConfigFormItem extends Component {
     // Redux state doesn't need to update on every keystroke.
     this.updateRedux = debounce(this.updateRedux, 500)
     this.state = {
-      fieldValue: props.itemValue
+      fieldValue: (props.itemValue || '').toString()
     }
   }
 
@@ -46,9 +46,9 @@ class DynamicConfigFormItem extends Component {
     }
     // Continue with Grid.showOpenDialog()
     event.preventDefault()
-    const { client, clientName, item } = this.props
+    const { plugin, pluginName, item } = this.props
     const { type } = item
-    const defaultPath = client[clientName].config[key]
+    const defaultPath = plugin[pluginName].config[key]
     const pathType = type.replace('_multiple', '')
     const selectMultiple = type.includes('multiple')
     const path = await showOpenDialog(pathType, selectMultiple, defaultPath)
@@ -62,15 +62,15 @@ class DynamicConfigFormItem extends Component {
   }
 
   updateRedux = (key, value) => {
-    const { handleClientConfigChanged } = this.props
-    handleClientConfigChanged(key, value)
+    const { handlePluginConfigChanged } = this.props
+    handlePluginConfigChanged(key, value)
   }
 
   render() {
     const { fieldValue } = this.state
-    const { itemKey, item, isClientRunning, editGeneratedFlags } = this.props
+    const { itemKey, item, isPluginRunning, editGeneratedFlags } = this.props
     const label = item.label || itemKey
-    const disabled = isClientRunning || editGeneratedFlags
+    const disabled = isPluginRunning || editGeneratedFlags
     let { type } = item
     if (!type) type = item.options ? 'select' : 'text'
     let options
@@ -174,10 +174,10 @@ class DynamicConfigFormItem extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const selectedClient = state.client.selected
+  const selectedPlugin = state.plugin.selected
 
   return {
-    itemValue: state.client[selectedClient].config[ownProps.itemKey]
+    itemValue: state.plugin[selectedPlugin].config[ownProps.itemKey]
   }
 }
 

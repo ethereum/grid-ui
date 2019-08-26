@@ -6,7 +6,6 @@ First, thanks for your interest! We appreciate your time.
 
 this project is broken into several pieces:
 
-- [ethereum-react-components](https://github.com/ethereum/ethereum-react-components) - a React component library
 - grid-ui (this repo) - uses the component library to assemble Grid's user interface
 - [grid](https://github.com/ethereum/grid) - the desktop app wrapper for grid-ui
 - [electron-app-manager](https://github.com/PhilippLgh/electron-app-manager) - handles app updates

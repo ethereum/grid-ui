@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import client from './client/reducer'
+import plugin from './plugin/reducer'
 
 const rootReducer = combineReducers({
-  client
+  plugin
 })
 
 export default rootReducer

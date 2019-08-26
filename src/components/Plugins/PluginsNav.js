@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import ListSubheader from '@material-ui/core/ListSubheader'
-import ServicesNavListItem from './ServicesNavListItem'
+import PluginsNavListItem from './PluginsNavListItem'
 
 const drawerWidth = 240
 
@@ -30,36 +30,36 @@ const styles = theme => ({
   }
 })
 
-class ServicesTab extends Component {
+class PluginsNav extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    clients: PropTypes.array.isRequired,
-    clientState: PropTypes.object.isRequired,
+    plugins: PropTypes.array.isRequired,
+    pluginState: PropTypes.object.isRequired,
     children: PropTypes.node,
     handleToggle: PropTypes.func.isRequired,
-    handleSelectClient: PropTypes.func.isRequired,
-    selectedClientName: PropTypes.string
+    handleSelectPlugin: PropTypes.func.isRequired,
+    selectedPluginName: PropTypes.string
   }
 
-  isDisabled = client => {
-    const { clientState } = this.props
-    return !clientState[client.name].release.version
+  isDisabled = plugin => {
+    const { pluginState } = this.props
+    return !pluginState[plugin.name].release.version
   }
 
-  isRunning = client => {
-    const { clientState } = this.props
+  isRunning = plugin => {
+    const { pluginState } = this.props
     return ['STARTING', 'STARTED', 'CONNECTED'].includes(
-      clientState[client.name].active.status
+      pluginState[plugin.name].active.status
     )
   }
 
-  buildListItem = client => {
+  buildListItem = plugin => {
     const {
       classes,
-      clientState,
+      pluginState,
       handleToggle,
-      handleSelectClient,
-      selectedClientName
+      handleSelectPlugin,
+      selectedPluginName
     } = this.props
 
     const {
@@ -72,23 +72,23 @@ class ServicesTab extends Component {
     } = classes
 
     return (
-      <ServicesNavListItem
-        key={client.name}
-        client={client}
+      <PluginsNavListItem
+        key={plugin.name}
+        plugin={plugin}
         classes={restClasses}
         handleToggle={handleToggle}
-        handleSelectClient={handleSelectClient}
-        isRunning={this.isRunning(client)}
-        isDisabled={this.isDisabled(client)}
-        isSelected={client.name === selectedClientName}
-        secondaryText={clientState[client.name].release.version || ''}
+        handleSelectPlugin={handleSelectPlugin}
+        isRunning={this.isRunning(plugin)}
+        isDisabled={this.isDisabled(plugin)}
+        isSelected={plugin.name === selectedPluginName}
+        secondaryText={pluginState[plugin.name].release.version || ''}
       />
     )
   }
 
   renderLists = () => {
-    const { clients, classes } = this.props
-    const types = [...new Set(clients.map(client => client.type))]
+    const { plugins, classes } = this.props
+    const types = [...new Set(plugins.map(plugin => plugin.type))]
     const buildList = type => (
       <List
         key={type}
@@ -98,20 +98,20 @@ class ServicesTab extends Component {
           </ListSubheader>
         }
       >
-        {this.renderClients(type)}
+        {this.renderPlugins(type)}
       </List>
     )
     const render = types.map(type => buildList(type))
     return render
   }
 
-  renderClients = type => {
-    const { clients } = this.props
-    const renderClients = clients
-      .filter(client => client.type === type)
+  renderPlugins = type => {
+    const { plugins } = this.props
+    const renderPlugins = plugins
+      .filter(plugin => plugin.type === type)
       .sort((a, b) => a.order - b.order)
       .map(s => this.buildListItem(s))
-    return renderClients
+    return renderPlugins
   }
 
   render() {
@@ -135,9 +135,9 @@ class ServicesTab extends Component {
 
 function mapStateToProps(state) {
   return {
-    clientState: state.client,
-    selectedClientName: state.client.selected
+    pluginState: state.plugin,
+    selectedPluginName: state.plugin.selected
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(ServicesTab))
+export default connect(mapStateToProps)(withStyles(styles)(PluginsNav))
