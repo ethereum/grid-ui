@@ -80,7 +80,10 @@ class DynamicConfigForm extends Component {
 
     if (!settings) return <h4>No configuration settings found</h4>
 
-    const formItems = settings.map(this.wrapFormItem).map(this.wrapGridItem)
+    const formItems = settings
+      .filter(setting => !setting.required) // Omit required flags from UI
+      .map(this.wrapFormItem)
+      .map(this.wrapGridItem)
 
     return (
       <div>
