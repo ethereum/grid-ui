@@ -27,6 +27,7 @@ const styles = {
 class AboutPlugin extends Component {
   static propTypes = {
     plugin: PropTypes.object.isRequired,
+    pluginState: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired
   }
 
