@@ -6,6 +6,7 @@ import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardActions from '@material-ui/core/CardActions'
+import Badge from '@material-ui/core/Badge'
 import Typography from '@material-ui/core/Typography'
 import moment from 'moment'
 import Button from '../shared/Button'
@@ -28,7 +29,8 @@ const styles = {
 class AppItem extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    app: PropTypes.object
+    app: PropTypes.object,
+    badge: PropTypes.number
   }
 
   state = {}
@@ -39,7 +41,7 @@ class AppItem extends React.Component {
   }
 
   render() {
-    const { classes, app } = this.props
+    const { classes, app, badge } = this.props
 
     const { name, lastUpdated, description, screenshot } = app
 
@@ -56,7 +58,9 @@ class AppItem extends React.Component {
           <Typography component="p">{description}</Typography>
         </CardContent>
         <CardActions>
-          <Button onClick={this.handleAppLaunch}>Launch</Button>
+          <Badge color="secondary" badgeContent={badge}>
+            <Button onClick={this.handleAppLaunch}>Launch</Button>
+          </Badge>
         </CardActions>
       </Card>
     )

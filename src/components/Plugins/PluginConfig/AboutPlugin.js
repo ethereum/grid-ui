@@ -63,7 +63,7 @@ class AboutPlugin extends Component {
   }
 
   renderApps() {
-    const { plugin, classes } = this.props
+    const { plugin, classes, pluginState } = this.props
     const { gridApps } = this.state
     const { apps } = plugin.about
 
@@ -82,9 +82,13 @@ class AboutPlugin extends Component {
             if (app.dependencies) {
               finalApp.dependencies = app.dependencies
             }
+            let badge = 0
+            if (pluginState[plugin.name].appBadges[gridApp.id]) {
+              badge = pluginState[plugin.name].appBadges[gridApp.id]
+            }
             return (
               <Grid item xs={6} key={gridApp.name}>
-                <AppItem app={finalApp} />
+                <AppItem app={finalApp} badge={badge} />
               </Grid>
             )
           }
@@ -149,8 +153,10 @@ class AboutPlugin extends Component {
   }
 }
 
-function mapStateToProps() {
-  return {}
+function mapStateToProps(state) {
+  return {
+    pluginState: state.plugin
+  }
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(AboutPlugin))

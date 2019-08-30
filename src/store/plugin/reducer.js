@@ -26,6 +26,7 @@ export const initialPluginState = {
   flags: [],
   displayName: '',
   errors: [],
+  appBadges: {},
   name: '',
   prefix: '',
   release: {
@@ -175,6 +176,20 @@ const plugin = (state = initialState, action) => {
           errors: state[pluginName].errors.filter(
             (n, nIndex) => nIndex !== index
           )
+        }
+      }
+    }
+    case 'PLUGIN:SET_APP_BADGES': {
+      const { pluginName, appBadges } = action.payload
+      return {
+        ...state,
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
+          appBadges: {
+            ...state[pluginName].appBadges,
+            ...appBadges
+          }
         }
       }
     }

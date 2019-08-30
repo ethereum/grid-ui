@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Badge from '@material-ui/core/Badge'
 import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
 import DynamicConfigForm from './DynamicConfigForm'
@@ -12,7 +13,11 @@ import AboutPlugin from './AboutPlugin'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
 import PluginView from '../PluginView'
-import { clearError, selectTab } from '../../../store/plugin/actions'
+import {
+  clearError,
+  selectTab,
+  setAppBadges
+} from '../../../store/plugin/actions'
 import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
 import { getPluginSettingsConfig } from '../../../lib/utils'
@@ -41,7 +46,13 @@ class PluginConfig extends Component {
     handleReleaseSelect: PropTypes.func,
     handlePluginConfigChanged: PropTypes.func,
     errors: PropTypes.array,
+    appBadges: PropTypes.object,
     selectedTab: PropTypes.number
+  }
+
+  constructor(props) {
+    super(props)
+    this.getAppBadges()
   }
 
   componentDidUpdate(prevProps) {
@@ -55,6 +66,15 @@ class PluginConfig extends Component {
     // If switching plugins, reset tab to About
     if (prevProps.plugin.name !== plugin.name) {
       this.handleTabChange(null, 0)
+      this.getAppBadges()
+    }
+  }
+
+  getAppBadges = () => {
+    const { plugin, dispatch } = this.props
+    if (plugin.api && plugin.api.getAppBadges) {
+      const appBadges = plugin.api.getAppBadges()
+      dispatch(setAppBadges(plugin, appBadges))
     }
   }
 
@@ -71,6 +91,11 @@ class PluginConfig extends Component {
   dismissError = index => {
     const { dispatch, plugin } = this.props
     dispatch(clearError(plugin.name, index))
+  }
+
+  appBadgesCount() {
+    const { appBadges } = this.props
+    return Object.values(appBadges).reduce((a, b) => a + b, 0)
   }
 
   renderErrors() {
@@ -126,7 +151,14 @@ class PluginConfig extends Component {
             textColor="primary"
             indicatorColor="primary"
           >
-            <Tab label="About" data-test-id="navbar-item-about" />
+            <Tab
+              label={
+                <Badge color="secondary" badgeContent={this.appBadgesCount()}>
+                  About
+                </Badge>
+              }
+              data-test-id="navbar-item-about"
+            />
             <Tab label="Version" data-test-id="navbar-item-version" />
             <Tab label="Settings" data-test-id="navbar-item-settings" />
             <Tab label="Terminal" data-test-id="navbar-item-terminal" />
@@ -177,6 +209,7 @@ function mapStateToProps(state) {
   return {
     pluginStatus: state.plugin[selectedPlugin].active.status,
     errors: state.plugin[selectedPlugin].errors,
+    appBadges: state.plugin[selectedPlugin].appBadges,
     isActivePlugin: state.plugin[selectedPlugin].active.name !== 'STOPPED',
     selectedTab: state.plugin.selectedTab
   }
