@@ -28,6 +28,10 @@ class NodeInfo extends Component {
     }, 1000)
   }
 
+  componentWillUnmount() {
+    clearInterval(this.diffInterval)
+  }
+
   render() {
     const { pluginState, selectedPlugin } = this.props
     const plugin = pluginState[selectedPlugin]
