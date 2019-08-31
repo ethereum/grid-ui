@@ -204,13 +204,13 @@ class PluginConfig extends Component {
 }
 
 function mapStateToProps(state) {
-  const selectedPlugin = state.plugin.selected
+  const { selected } = state.plugin
 
   return {
-    pluginStatus: state.plugin[selectedPlugin].active.status,
-    errors: state.plugin[selectedPlugin].errors,
-    appBadges: state.plugin[selectedPlugin].appBadges,
-    isActivePlugin: state.plugin[selectedPlugin].active.name !== 'STOPPED',
+    pluginStatus: state.plugin[selected].active.status,
+    errors: state.plugin[selected].errors,
+    appBadges: state.plugin[selected].appBadges,
+    isActivePlugin: state.plugin[selected].active.name !== 'STOPPED',
     selectedTab: state.plugin.selectedTab
   }
 }
