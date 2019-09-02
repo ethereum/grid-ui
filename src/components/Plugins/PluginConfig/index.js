@@ -28,7 +28,8 @@ function TabContainer(props) {
         ...style,
         overflowY: 'auto',
         overflowX: 'hidden',
-        maxHeight: '100%'
+        maxHeight: '100%',
+        maxWidth: '100%'
       }}
     >
       {children}

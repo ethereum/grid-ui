@@ -22,6 +22,7 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     maxHeight: '100%',
+    maxWidth: '100%',
     flexGrow: 1,
     padding: `${theme.spacing.unit * 1}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`,
