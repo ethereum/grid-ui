@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -20,7 +20,17 @@ import { getPluginSettingsConfig } from '../../../lib/utils'
 function TabContainer(props) {
   const { children, style } = props
   return (
-    <Typography component="div" style={{ padding: '0 10px', ...style }}>
+    <Typography
+      component="div"
+      className="scroll-container"
+      style={{
+        padding: '0 10px',
+        ...style,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        maxHeight: '100%'
+      }}
+    >
       {children}
     </Typography>
   )
@@ -108,7 +118,7 @@ class PluginConfig extends Component {
     )
 
     return (
-      <StyledMain>
+      <Fragment>
         <Typography variant="h5">
           {pluginName}
           {plugin.type === 'client' && <NodeInfo />}
@@ -166,7 +176,7 @@ class PluginConfig extends Component {
             <PluginView plugin={plugin} />
           </TabContainer>
         )}
-      </StyledMain>
+      </Fragment>
     )
   }
 }
@@ -183,11 +193,6 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(PluginConfig)
-
-const StyledMain = styled.main`
-  position: relative;
-  min-width: 500px;
-`
 
 const StyledAppBar = styled(AppBar)`
   margin: 20px 0;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -141,7 +141,9 @@ class VersionList extends Component {
       return list
     }
     return (
-      <StyledList data-test-id="version-list">{renderListItems()}</StyledList>
+      <StyledList data-test-id="version-list" className="scroll-container">
+        {renderListItems()}
+      </StyledList>
     )
   }
 
@@ -156,7 +158,7 @@ class VersionList extends Component {
     } = this.state
 
     return (
-      <div>
+      <Fragment>
         {downloadError && (
           <Notification
             type="error"
@@ -180,7 +182,7 @@ class VersionList extends Component {
         />
 
         {this.renderVersionList()}
-      </div>
+      </Fragment>
     )
   }
 }
@@ -195,6 +197,6 @@ export default connect(mapStateToProps)(VersionList)
 
 const StyledList = styled(List)`
   min-height: 200px;
-  max-height: calc(100vh - 295px);
+  max-height: '100%',
   overflow-y: scroll;
 `
