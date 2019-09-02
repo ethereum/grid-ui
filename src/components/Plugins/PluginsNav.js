@@ -25,8 +25,8 @@ const styles = theme => ({
     maxWidth: '100%',
     flexGrow: 1,
     padding: `${theme.spacing.unit * 1}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`,
-    marginLeft: -drawerWidth
+      .spacing.unit * 3}px`
+    // marginLeft: -drawerWidth
   },
   toolbar: theme.mixins.toolbar,
   listSubheader: {
@@ -122,7 +122,7 @@ class PluginsNav extends Component {
 
   render() {
     const { classes, children } = this.props
-    const showDrawer = false
+    const showDrawer = true
     return (
       <React.Fragment>
         <Drawer
