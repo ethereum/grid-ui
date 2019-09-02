@@ -121,11 +121,13 @@ class PluginsNav extends Component {
 
   render() {
     const { classes, children } = this.props
+    const showDrawer = false
     return (
       <React.Fragment>
         <Drawer
           className={classes.drawer}
-          variant="permanent"
+          variant="persistent"
+          open={showDrawer}
           classes={{ paper: classes.drawerPaper }}
         >
           {this.renderLists()}
