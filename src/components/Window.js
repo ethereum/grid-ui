@@ -41,7 +41,7 @@ class ConditionalWindow extends Component {
     // eslint-disable-next-line react/prop-types
     const { children } = this.props
     const isWindows = platform === 'win32'
-    return isWindows && !Grid.window.hasFrame
+    return isWindows && !Grid.window.hasFrame()
       ? this.renderWithWindow(children)
       : children
   }
