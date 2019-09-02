@@ -1445,6 +1445,11 @@ array-find-index@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-find-index/-/array-find-index-1.0.2.tgz#df010aa1287e164bbda6f9723b0a96a1ec4187a1"
 
+array-find@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/array-find/-/array-find-1.0.0.tgz#6c8e286d11ed768327f8e62ecee87353ca3e78b8"
+  integrity sha1-bI4obRHtdoMn+OYuzuhzU8o+eLg=
+
 array-flatten@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/array-flatten/-/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
@@ -9420,6 +9425,16 @@ querystringify@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.1.0.tgz#7ded8dfbf7879dcc60d0a644ac6754b283ad17ef"
 
+radium@=0.19.6:
+  version "0.19.6"
+  resolved "https://registry.yarnpkg.com/radium/-/radium-0.19.6.tgz#b86721d08dbd303b061a4ae2ebb06cc6e335ae72"
+  integrity sha512-IABYntqCwYelUUIwA52maSCgJbqtJjHKIoD21wgpw3dGhIUbJ5chDShDGdaFiEzdF03hN9jfQqlmn0bF4YhfrQ==
+  dependencies:
+    array-find "^1.0.0"
+    exenv "^1.2.1"
+    inline-style-prefixer "^2.0.5"
+    prop-types "^15.5.8"
+
 raf@3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.0.tgz#a28876881b4bc2ca9117d4138163ddb80f781575"
@@ -9494,6 +9509,13 @@ react-codemirror2@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-6.0.0.tgz#180065df57a64026026cde569a9708fdf7656525"
   integrity sha512-D7y9qZ05FbUh9blqECaJMdDwKluQiO3A9xB+fssd5jKM7YAXucRuEOlX32mJQumUvHUkHRHqXIPBjm6g0FW0Ag==
+
+react-desktop@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/react-desktop/-/react-desktop-0.3.9.tgz#775c36bdcc7603dbe99825740d2b501e8e61ea66"
+  integrity sha512-vyyEH/mK0P8mU7m/kaD8MeA/7T0R3x19pBGpMY8AROcazJuOuXNBi2fPqNosDNBqQbVLgCcH3py+tciCI+mvTA==
+  dependencies:
+    radium "=0.19.6"
 
 react-dev-utils@^6.1.1:
   version "6.1.1"

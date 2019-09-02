@@ -37,6 +37,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-codemirror2": "^6.0.0",
+    "react-desktop": "^0.3.9",
     "react-dom": "^16.4.1",
     "react-md-spinner": "^0.3.0",
     "react-minimal-pie-chart": "^3.5.0",
