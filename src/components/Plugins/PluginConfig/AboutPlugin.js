@@ -123,7 +123,7 @@ class AboutPlugin extends Component {
         <Grid container spacing={24} style={{ marginTop: 30 }}>
           <Grid item xs={4}>
             {runtimeDependencies.map(dependency => (
-              <DependencyCard dependency key={dependency.name} />
+              <DependencyCard dependency={dependency} key={dependency.name} />
             ))}
           </Grid>
         </Grid>
