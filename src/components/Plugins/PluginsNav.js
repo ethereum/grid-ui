@@ -15,11 +15,12 @@ const styles = theme => ({
     flexShrink: 0
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
+    top: 'auto'
   },
   content: {
     flexGrow: 1,
-    padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
+    padding: `${theme.spacing.unit * 1}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
   },
   toolbar: theme.mixins.toolbar,
@@ -124,7 +125,6 @@ class PluginsNav extends Component {
           variant="permanent"
           classes={{ paper: classes.drawerPaper }}
         >
-          <div className={classes.toolbar} />
           {this.renderLists()}
         </Drawer>
         <main className={classes.content}>{children}</main>
