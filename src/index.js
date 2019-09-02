@@ -32,7 +32,10 @@ if (args.isApp) {
   ReactDOM.render(
     <Window>
       <Provider store={store}>
-        <div style={{ margin: '24px' }}>
+        <div
+          className="scroll-container"
+          style={{ height: '100%', overflowY: 'auto' }}
+        >
           <Apps />
         </div>
       </Provider>

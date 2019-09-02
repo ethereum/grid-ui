@@ -13,7 +13,7 @@ class AppsOverview extends React.Component {
 
     return (
       <MuiThemeProvider theme={darkTheme}>
-        <div style={{ width: '100%', paddingBottom: '64px' }}>
+        <div style={{ margin: '24px' }}>
           <Grid container spacing={24}>
             {apps.length ? (
               apps.map(app => (
