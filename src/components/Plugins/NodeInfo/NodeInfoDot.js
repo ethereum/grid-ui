@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import moment from 'moment'
 import PieChart from 'react-minimal-pie-chart'
 
@@ -16,8 +15,7 @@ class NodeInfoDot extends Component {
     diffTimestamp: PropTypes.number,
     isStopped: PropTypes.bool,
     /** If component is stickied, apply drop shadow on dot */
-    sticky: PropTypes.bool,
-    blockNumber: PropTypes.number
+    sticky: PropTypes.bool
   }
 
   state = {
@@ -25,8 +23,10 @@ class NodeInfoDot extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { props } = this
-    if (props.blockNumber > prevProps.blockNumber) {
+    const { plugin } = this.props
+    const { blockNumber: oldBlockNumber } = prevProps.plugin.active
+    const { blockNumber: newBlockNumber } = plugin.active
+    if ((Number(newBlockNumber) || 0) > (Number(oldBlockNumber) || 0)) {
       this.pulseForNewBlock()
     }
   }
@@ -116,14 +116,7 @@ class NodeInfoDot extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    blockNumber:
-      Number(state.plugin[state.plugin.selected].active.blockNumber) || 0
-  }
-}
-
-export default connect(mapStateToProps)(NodeInfoDot)
+export default NodeInfoDot
 
 const beaconOrange = keyframes`
   0% {
