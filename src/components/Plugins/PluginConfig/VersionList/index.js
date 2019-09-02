@@ -8,6 +8,7 @@ import { setRelease } from '../../../../store/plugin/actions'
 import VersionListItem from './VersionListItem'
 import VersionsAvailableText from './VersionsAvailableText'
 import LatestVersionWarning from './LatestVersionWarning'
+import { Grid } from '../../../../API'
 
 class VersionList extends Component {
   static propTypes = {
@@ -172,6 +173,9 @@ class VersionList extends Component {
           localReleaseCount={localReleaseCount}
           totalReleaseCount={releases.length}
           lastLoadTimestamp={lastLoadTimestamp}
+          onClick={() => {
+            Grid.openCache(plugin.name)
+          }}
         />
 
         <LatestVersionWarning
