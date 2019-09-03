@@ -32,6 +32,10 @@ class AppItem extends React.Component {
     badge: PropTypes.number
   }
 
+  static defaultProps = {
+    badge: 0
+  }
+
   state = {}
 
   handleAppLaunch = () => {
