@@ -14,7 +14,6 @@ import Grid from '../../API/Grid'
 
 const styles = {
   card: {
-    minWidth: 275,
     background: '#222428'
   },
   media: {

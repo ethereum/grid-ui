@@ -59,7 +59,7 @@ class PluginConfig extends Component {
     const { plugin, pluginStatus } = this.props
 
     // On plugin start, show Terminal
-    if (prevProps.pluginStatus === 'STOPPED' && pluginStatus !== 'STOPPED') {
+    if (prevProps.pluginStatus === 'STOPPED' && pluginStatus === 'STARTING') {
       this.handleTabChange(null, 3)
     }
 

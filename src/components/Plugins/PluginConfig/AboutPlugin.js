@@ -71,9 +71,8 @@ class AboutPlugin extends Component {
     if (!apps || !gridApps) {
       return null
     }
-
     const renderList = (
-      <Grid container spacing={24} style={{ marginTop: 0 }}>
+      <Grid container spacing={16} style={{ marginTop: 0 }}>
         {apps.map(app => {
           const gridApp = gridApps.find(thisApp => thisApp.url === app.url)
           if (gridApp) {
@@ -88,7 +87,7 @@ class AboutPlugin extends Component {
               badge = pluginState[plugin.name].appBadges[gridApp.id]
             }
             return (
-              <Grid item xs={6} key={gridApp.name}>
+              <Grid item xs={4} key={gridApp.name}>
                 <AppItem app={finalApp} badge={badge} />
               </Grid>
             )
