@@ -28,6 +28,7 @@ const styles = {
 class AboutPlugin extends Component {
   static propTypes = {
     plugin: PropTypes.object.isRequired,
+    pluginState: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired
   }
 
@@ -64,16 +65,15 @@ class AboutPlugin extends Component {
   }
 
   renderApps() {
-    const { plugin, classes } = this.props
+    const { plugin, classes, pluginState } = this.props
     const { gridApps } = this.state
     const { apps } = plugin.about
 
     if (!apps || !gridApps) {
       return null
     }
-
     const renderList = (
-      <Grid container spacing={24} style={{ marginTop: 0 }}>
+      <Grid container spacing={16} style={{ marginTop: 0 }}>
         {apps.map(app => {
           const gridApp = gridApps.find(thisApp => thisApp.url === app.url)
           if (gridApp) {
@@ -83,9 +83,13 @@ class AboutPlugin extends Component {
             if (app.dependencies) {
               finalApp.dependencies = app.dependencies
             }
+            let badge = 0
+            if (pluginState[plugin.name].appBadges[gridApp.id]) {
+              badge = pluginState[plugin.name].appBadges[gridApp.id]
+            }
             return (
               <Grid item xs={4} key={gridApp.name}>
-                <AppItem app={finalApp} />
+                <AppItem app={finalApp} badge={badge} />
               </Grid>
             )
           }
@@ -174,8 +178,10 @@ class AboutPlugin extends Component {
   }
 }
 
-function mapStateToProps() {
-  return {}
+function mapStateToProps(state) {
+  return {
+    pluginState: state.plugin
+  }
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(AboutPlugin))
