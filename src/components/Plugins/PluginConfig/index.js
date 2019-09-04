@@ -56,7 +56,7 @@ class PluginConfig extends Component {
     isActivePlugin: PropTypes.bool,
     handleReleaseSelect: PropTypes.func,
     handlePluginConfigChanged: PropTypes.func,
-    errors: PropTypes.array,
+    pluginErrors: PropTypes.array,
     appBadges: PropTypes.object,
     selectedTab: PropTypes.number
   }
@@ -92,6 +92,10 @@ class PluginConfig extends Component {
   handleTabChange = (event, tab) => {
     const { dispatch } = this.props
     dispatch(selectTab(tab))
+    // Clear errors if going to Terminal tab
+    if (tab === 3) {
+      this.clearPluginErrors()
+    }
   }
 
   handlePluginConfigChanged = (key, value) => {
@@ -102,6 +106,15 @@ class PluginConfig extends Component {
   dismissError = index => {
     const { dispatch, plugin } = this.props
     dispatch(clearError(plugin.name, index))
+    this.clearPluginErrors()
+  }
+
+  clearPluginErrors = () => {
+    // Clear errors in nano
+    const { plugin, pluginErrors } = this.props
+    if (pluginErrors.length > 0) {
+      plugin.emit('clearPluginErrors')
+    }
   }
 
   appBadgesCount() {
@@ -110,9 +123,9 @@ class PluginConfig extends Component {
   }
 
   renderErrors() {
-    const { errors } = this.props
+    const { pluginErrors } = this.props
     const renderErrors = []
-    errors.forEach((error, index) => {
+    pluginErrors.forEach((error, index) => {
       const renderError = (
         <Notification
           key={index}
@@ -136,7 +149,8 @@ class PluginConfig extends Component {
       pluginStatus,
       isActivePlugin,
       handleReleaseSelect,
-      selectedTab
+      selectedTab,
+      pluginErrors
     } = this.props
     const { displayName: pluginName } = plugin || {}
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
@@ -172,7 +186,14 @@ class PluginConfig extends Component {
             />
             <Tab label="Version" data-test-id="navbar-item-version" />
             <Tab label="Settings" data-test-id="navbar-item-settings" />
-            <Tab label="Terminal" data-test-id="navbar-item-terminal" />
+            <Tab
+              label={
+                <Badge color="error" badgeContent={pluginErrors.length}>
+                  Terminal
+                </Badge>
+              }
+              data-test-id="navbar-item-terminal"
+            />
             <Tab label="Metadata" data-test-id="navbar-item-metadata" />
           </Tabs>
         </StyledAppBar>
@@ -219,7 +240,7 @@ function mapStateToProps(state) {
 
   return {
     pluginStatus: state.plugin[selected].active.status,
-    errors: state.plugin[selected].errors,
+    pluginErrors: state.plugin[selected].errors,
     appBadges: state.plugin[selected].appBadges,
     isActivePlugin: state.plugin[selected].active.name !== 'STOPPED',
     selectedTab: state.plugin.selectedTab
