@@ -12,7 +12,8 @@ import Tooltip from '@material-ui/core/Tooltip'
 const styles = () => ({
   pluginName: {
     marginRight: 5,
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
+    fontSize: '85%'
   },
   hoverableListItem: {
     '&:hover $versionInfo': {

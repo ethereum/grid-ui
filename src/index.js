@@ -1,12 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
+import './scrollbar-fix.css'
 import { Provider } from 'react-redux'
 import App from './components/App'
 import { Grid } from './API'
 import configureStore from './store'
 import Webview from './components/Webview'
 import Apps from './components/Apps'
+import Window from './components/Window'
 
 const store = configureStore()
 const root = document.getElementById('root')
@@ -19,25 +21,34 @@ if (args.scope && args.scope.themeMode === 'light') {
 
 if (args.isApp) {
   ReactDOM.render(
-    <Provider store={store}>
-      <Webview url={args.url} />
-    </Provider>,
+    <Window>
+      <Provider store={store}>
+        <Webview url={args.url} />
+      </Provider>
+    </Window>,
     root
   )
 } else if (args.scope && args.scope.component === 'apps') {
   ReactDOM.render(
-    <Provider store={store}>
-      <div style={{ margin: '24px' }}>
-        <Apps />
-      </div>
-    </Provider>,
+    <Window>
+      <Provider store={store}>
+        <div
+          className="scroll-container"
+          style={{ height: '100%', overflowY: 'auto' }}
+        >
+          <Apps />
+        </div>
+      </Provider>
+    </Window>,
     root
   )
 } else {
   ReactDOM.render(
-    <Provider store={store}>
-      <App themeMode={themeMode} />
-    </Provider>,
+    <Window>
+      <Provider store={store}>
+        <App themeMode={themeMode} />
+      </Provider>
+    </Window>,
     root
   )
 }

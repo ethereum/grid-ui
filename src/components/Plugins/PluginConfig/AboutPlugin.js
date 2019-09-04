@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import GridAPI from '../../../API/Grid'
 import AppItem from '../../Apps/AppItem'
+import DependencyCard from './DependencyCard'
 
 const styles = {
   spacing: {
@@ -49,13 +50,13 @@ class AboutPlugin extends Component {
 
     const renderList = links.map(link => (
       <a href={link.url} className={classes.link} key={link.name}>
-        <Typography variant="body1">{link.name}</Typography>
+        <Typography variant="body2">{link.name}</Typography>
       </a>
     ))
 
     return (
       <div>
-        <Typography variant="body1" className={classes.headerText}>
+        <Typography variant="h6" className={classes.headerText}>
           {name}
         </Typography>
         {renderList}
@@ -100,7 +101,7 @@ class AboutPlugin extends Component {
     return (
       <div>
         <Typography
-          variant="body1"
+          variant="h6"
           className={classes.headerText}
           style={{ marginTop: 30 }}
         >
@@ -111,9 +112,32 @@ class AboutPlugin extends Component {
     )
   }
 
+  renderDependencies = dependencies => {
+    const { classes } = this.props
+    const { runtime: runtimeDependencies } = dependencies
+    return (
+      <Fragment>
+        <Typography
+          variant="h6"
+          style={{ marginTop: 30 }}
+          className={classes.headerText}
+        >
+          Dependencies
+        </Typography>
+        <Grid container spacing={24} style={{ marginTop: 30 }}>
+          <Grid item xs={4}>
+            {runtimeDependencies.map(dependency => (
+              <DependencyCard dependency={dependency} key={dependency.name} />
+            ))}
+          </Grid>
+        </Grid>
+      </Fragment>
+    )
+  }
+
   render() {
     const { plugin, classes } = this.props
-    const { about } = plugin
+    const { about, dependencies } = plugin
 
     if (!about) return <p>Plugin has no about data.</p>
 
@@ -124,7 +148,7 @@ class AboutPlugin extends Component {
           <div>
             <div>
               <Typography
-                variant="body1"
+                variant="h6"
                 className={classes.headerText}
                 style={{ marginTop: 30 }}
               >
@@ -132,7 +156,7 @@ class AboutPlugin extends Component {
               </Typography>
             </div>
             <div>
-              <Typography variant="body1">{description}</Typography>
+              <Typography variant="body2">{description}</Typography>
             </div>
           </div>
         )}
@@ -147,6 +171,7 @@ class AboutPlugin extends Component {
             {this.renderLinks(community, 'Community')}
           </Grid>
         </Grid>
+        {dependencies && this.renderDependencies(dependencies)}
         {this.renderApps()}
       </div>
     )

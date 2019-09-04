@@ -42,6 +42,7 @@ class FlagPreview extends Component {
           <TextField
             label="Generated Flags"
             variant="outlined"
+            multiline
             value={flags.join(' ')}
             onChange={this.handleChange}
             disabled={isPluginRunning || !isEditingFlags}

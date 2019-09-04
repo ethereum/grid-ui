@@ -15,12 +15,18 @@ const styles = theme => ({
     flexShrink: 0
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
+    top: 'auto'
   },
   content: {
+    display: 'flex',
+    flexDirection: 'column',
+    maxHeight: '100%',
+    maxWidth: '100%',
     flexGrow: 1,
-    padding: `${theme.spacing.unit * 9}px ${theme.spacing.unit * 3}px ${theme
+    padding: `${theme.spacing.unit * 1}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
+    // marginLeft: -drawerWidth
   },
   toolbar: theme.mixins.toolbar,
   listSubheader: {
@@ -116,15 +122,15 @@ class PluginsNav extends Component {
 
   render() {
     const { classes, children } = this.props
-
+    const showDrawer = true
     return (
       <React.Fragment>
         <Drawer
           className={classes.drawer}
-          variant="permanent"
+          variant="persistent"
+          open={showDrawer}
           classes={{ paper: classes.drawerPaper }}
         >
-          <div className={classes.toolbar} />
           {this.renderLists()}
         </Drawer>
         <main className={classes.content}>{children}</main>

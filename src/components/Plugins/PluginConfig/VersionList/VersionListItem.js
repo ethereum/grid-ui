@@ -23,6 +23,8 @@ export default class VersionListItem extends Component {
   state = {
     isDownloading: false,
     downloadProgress: 0,
+    extractionProgress: 0,
+    extractedFile: '',
     isHovered: false
   }
 
@@ -37,26 +39,9 @@ export default class VersionListItem extends Component {
 
   releaseDisplayName = release => {
     const { plugin } = this.props
-    const { fileName } = release
-    try {
-      const nameParts = fileName.split('-')
-      let name = nameParts[0]
-      // fixes: "geth alltools" vs clef
-      if (name !== plugin.displayName) {
-        name = plugin.displayName
-      }
-      const osTypes = ['darwin', 'linux', 'windows']
-      const os = nameParts.find(p => osTypes.includes(p)) || ''
-      let arch = nameParts[2]
-      if (os === 'windows') {
-        arch = arch === '386' ? '32 Bit' : '64 Bit'
-      }
-      const version = nameParts.find(p => p.includes('.'))
-      // const channel = nameParts[4]
-      return `${name} ${os} ${version} (${arch})`
-    } catch (error) {
-      return fileName
-    }
+    const { displayName } = plugin
+    const { platform, arch, displayVersion } = release
+    return `${displayName} ${displayVersion} - ${platform} (${arch})`
   }
 
   downloadRelease = release => {
@@ -67,14 +52,27 @@ export default class VersionListItem extends Component {
     this.setState({ isDownloading: true }, async () => {
       let localRelease
       try {
-        localRelease = await plugin.download(release, downloadProgress => {
-          if (this._isMounted) this.setState({ downloadProgress })
-        })
+        localRelease = await plugin.download(
+          release,
+          downloadProgress => {
+            if (this._isMounted) this.setState({ downloadProgress })
+          },
+          (extractionProgress, extractedFile) => {
+            if (this._isMounted) {
+              this.setState({ extractionProgress, extractedFile })
+            }
+          }
+        )
       } catch (error) {
         handleDownloadError(error)
       }
       if (this._isMounted) {
-        this.setState({ isDownloading: false, downloadProgress: 0 })
+        this.setState({
+          isDownloading: false,
+          downloadProgress: 0,
+          extractionProgress: 0,
+          extractedFile: ''
+        })
       }
       handleReleaseDownloaded(localRelease)
     })
@@ -91,11 +89,20 @@ export default class VersionListItem extends Component {
 
   renderIcon = release => {
     const { isSelectedRelease } = this.props
-    const { downloadProgress, isDownloading, isHovered } = this.state
+    const {
+      downloadProgress,
+      isDownloading,
+      extractionProgress,
+      isHovered
+    } = this.state
     let icon = <BlankIconPlaceholder />
     if (isDownloading) {
       icon = (
-        <Spinner variant="determinate" size={20} value={downloadProgress} />
+        <Spinner
+          variant="determinate"
+          size={20}
+          value={extractionProgress || downloadProgress}
+        />
       )
     } else if (release.remote) {
       icon = <CloudDownloadIcon color={isHovered ? 'primary' : 'inherit'} />
@@ -114,7 +121,12 @@ export default class VersionListItem extends Component {
 
   render() {
     const { isSelectedRelease, release } = this.props
-    const { downloadProgress, isDownloading } = this.state
+    const {
+      downloadProgress,
+      isDownloading,
+      extractionProgress,
+      extractedFile
+    } = this.state
 
     let actionLabel = 'Use'
     if (!release.remote) {
@@ -125,7 +137,7 @@ export default class VersionListItem extends Component {
     } else {
       actionLabel = 'Download'
       if (isDownloading) {
-        actionLabel = 'Downloading'
+        actionLabel = extractionProgress > 0 ? 'Extracting' : 'Downloading'
       }
     }
 
@@ -145,7 +157,14 @@ export default class VersionListItem extends Component {
         <ListItemTextVersion
           primary={this.releaseDisplayName(release)}
           isLocalRelease={!release.remote}
-          secondary={downloadProgress > 0 ? `${downloadProgress}%` : null}
+          secondary={
+            // eslint-disable-next-line no-nested-ternary
+            extractionProgress > 0
+              ? `${extractionProgress}% - ${extractedFile}`
+              : downloadProgress > 0
+              ? `${downloadProgress}%`
+              : null
+          }
         />
         <StyledListItemAction>
           <Typography
