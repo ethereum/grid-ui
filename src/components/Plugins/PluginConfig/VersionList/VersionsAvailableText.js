@@ -9,7 +9,7 @@ import Spinner from '../../../shared/Spinner'
 const styles = () => ({
   refreshIcon: {
     fontSize: 22,
-    color: 'rgba(0,0,0,0.25)',
+    color: 'rgba(100,100,100,0.35)',
     marginLeft: 5,
     verticalAlign: 'middle',
     marginBottom: 4,
