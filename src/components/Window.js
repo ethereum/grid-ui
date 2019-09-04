@@ -31,7 +31,15 @@ class ConditionalWindow extends Component {
             this.setState({ isMaximized: false })
           }}
         />
-        {children}
+        <div
+          style={{
+            display: 'flex',
+            height: '100vh',
+            width: '100vw'
+          }}
+        >
+          {children}
+        </div>
       </Window>
     )
   }
