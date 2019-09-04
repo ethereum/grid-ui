@@ -212,3 +212,10 @@ export const togglePlugin = (plugin, release) => {
     }
   }
 }
+
+export const setAppBadges = (plugin, appBadges = {}) => {
+  return {
+    type: 'PLUGIN:SET_APP_BADGES',
+    payload: { pluginName: plugin.name, appBadges }
+  }
+}

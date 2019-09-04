@@ -9,7 +9,7 @@ import Spinner from '../../../shared/Spinner'
 const styles = () => ({
   refreshIcon: {
     fontSize: 22,
-    color: 'rgba(0,0,0,0.25)',
+    color: 'rgba(100,100,100,0.35)',
     marginLeft: 5,
     verticalAlign: 'middle',
     marginBottom: 4,
@@ -33,7 +33,8 @@ class VersionsAvailableText extends Component {
     loadingReleases: PropTypes.bool,
     localReleaseCount: PropTypes.number,
     totalReleaseCount: PropTypes.number,
-    lastLoadTimestamp: PropTypes.number
+    lastLoadTimestamp: PropTypes.number,
+    onClick: PropTypes.func
   }
 
   render() {
@@ -42,7 +43,8 @@ class VersionsAvailableText extends Component {
       loadingReleases,
       localReleaseCount,
       totalReleaseCount,
-      lastLoadTimestamp
+      lastLoadTimestamp,
+      onClick
     } = this.props
 
     return (
@@ -67,7 +69,13 @@ class VersionsAvailableText extends Component {
         )}
 
         <Typography>
-          <StyledDownloadedVersions>
+          <StyledDownloadedVersions
+            onClick={onClick || (() => {})}
+            style={{
+              textDecoration: 'underline',
+              cursor: 'pointer'
+            }}
+          >
             {localReleaseCount}{' '}
             {localReleaseCount === 1 ? 'release' : 'releases'} downloaded
           </StyledDownloadedVersions>

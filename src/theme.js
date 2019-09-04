@@ -19,7 +19,7 @@ const darkTheme = createMuiTheme({
       main: primary2
     },
     background: {
-      default: '#35393E'
+      default: '#202225'
     }
     // primary: {
     //   // light: will be calculated from palette.primary.main,
@@ -51,7 +51,7 @@ const darkTheme = createMuiTheme({
     },
     MuiDrawer: {
       paper: {
-        backgroundColor: '#2E3137'
+        backgroundColor: '#202225'
       }
     }
   }

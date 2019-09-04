@@ -24,8 +24,9 @@ class NodeInfoDot extends Component {
 
   componentDidUpdate(prevProps) {
     const { plugin } = this.props
-
-    if ((prevProps.plugin.blockNumber || 0) !== (plugin.blockNumber || 0)) {
+    const { blockNumber: oldBlockNumber } = prevProps.plugin.active
+    const { blockNumber: newBlockNumber } = plugin.active
+    if ((Number(newBlockNumber) || 0) > (Number(oldBlockNumber) || 0)) {
       this.pulseForNewBlock()
     }
   }

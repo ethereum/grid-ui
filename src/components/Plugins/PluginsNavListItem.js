@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
+import Badge from '@material-ui/core/Badge'
 import Switch from '@material-ui/core/Switch'
 import Tooltip from '@material-ui/core/Tooltip'
 
 const styles = () => ({
   pluginName: {
     marginRight: 5,
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
+    fontSize: '85%'
   },
   hoverableListItem: {
     '&:hover $versionInfo': {
@@ -32,7 +35,13 @@ class PluginsNavListItem extends Component {
     isDisabled: PropTypes.bool,
     isRunning: PropTypes.bool,
     isSelected: PropTypes.bool,
-    secondaryText: PropTypes.string
+    secondaryText: PropTypes.string,
+    appBadges: PropTypes.object
+  }
+
+  badgeContent = () => {
+    const { appBadges } = this.props
+    return Object.values(appBadges).reduce((a, b) => a + b, 0)
   }
 
   render() {
@@ -60,7 +69,11 @@ class PluginsNavListItem extends Component {
         data-test-id={`node-${plugin.name}`}
       >
         <ListItemText
-          primary={plugin.displayName}
+          primary={
+            <Badge color="secondary" badgeContent={this.badgeContent()}>
+              {plugin.displayName}
+            </Badge>
+          }
           secondary={secondaryText}
           primaryTypographyProps={{
             inline: true,
@@ -92,4 +105,10 @@ class PluginsNavListItem extends Component {
   }
 }
 
-export default withStyles(styles)(PluginsNavListItem)
+function mapStateToProps(state, ownProps) {
+  return {
+    appBadges: state.plugin[ownProps.plugin.name].appBadges
+  }
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(PluginsNavListItem))

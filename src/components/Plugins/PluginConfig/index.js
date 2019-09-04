@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -13,7 +13,11 @@ import AboutPlugin from './AboutPlugin'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
 import PluginView from '../PluginView'
-import { clearError, selectTab } from '../../../store/plugin/actions'
+import {
+  clearError,
+  selectTab,
+  setAppBadges
+} from '../../../store/plugin/actions'
 import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
 import { getPluginSettingsConfig } from '../../../lib/utils'
@@ -21,7 +25,18 @@ import { getPluginSettingsConfig } from '../../../lib/utils'
 function TabContainer(props) {
   const { children, style } = props
   return (
-    <Typography component="div" style={{ padding: '0 10px', ...style }}>
+    <Typography
+      component="div"
+      className="scroll-container"
+      style={{
+        padding: '0 10px',
+        ...style,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        maxHeight: '100%',
+        maxWidth: '100%'
+      }}
+    >
       {children}
     </Typography>
   )
@@ -42,20 +57,35 @@ class PluginConfig extends Component {
     handleReleaseSelect: PropTypes.func,
     handlePluginConfigChanged: PropTypes.func,
     pluginErrors: PropTypes.array,
+    appBadges: PropTypes.object,
     selectedTab: PropTypes.number
+  }
+
+  constructor(props) {
+    super(props)
+    this.getAppBadges()
   }
 
   componentDidUpdate(prevProps) {
     const { plugin, pluginStatus } = this.props
 
     // On plugin start, show Terminal
-    if (prevProps.pluginStatus === 'STOPPED' && pluginStatus !== 'STOPPED') {
+    if (prevProps.pluginStatus === 'STOPPED' && pluginStatus === 'STARTING') {
       this.handleTabChange(null, 3)
     }
 
     // If switching plugins, reset tab to About
     if (prevProps.plugin.name !== plugin.name) {
       this.handleTabChange(null, 0)
+      this.getAppBadges()
+    }
+  }
+
+  getAppBadges = () => {
+    const { plugin, dispatch } = this.props
+    if (plugin.api && plugin.api.getAppBadges) {
+      const appBadges = plugin.api.getAppBadges()
+      dispatch(setAppBadges(plugin, appBadges))
     }
   }
 
@@ -85,6 +115,11 @@ class PluginConfig extends Component {
     if (pluginErrors.length > 0) {
       plugin.emit('clearPluginErrors')
     }
+  }
+
+  appBadgesCount() {
+    const { appBadges } = this.props
+    return Object.values(appBadges).reduce((a, b) => a + b, 0)
   }
 
   renderErrors() {
@@ -123,7 +158,7 @@ class PluginConfig extends Component {
     )
 
     return (
-      <StyledMain>
+      <Fragment>
         <Typography variant="h5">
           {pluginName}
           {plugin.type === 'client' && <NodeInfo />}
@@ -141,7 +176,14 @@ class PluginConfig extends Component {
             textColor="primary"
             indicatorColor="primary"
           >
-            <Tab label="About" data-test-id="navbar-item-about" />
+            <Tab
+              label={
+                <Badge color="secondary" badgeContent={this.appBadgesCount()}>
+                  About
+                </Badge>
+              }
+              data-test-id="navbar-item-about"
+            />
             <Tab label="Version" data-test-id="navbar-item-version" />
             <Tab label="Settings" data-test-id="navbar-item-settings" />
             <Tab
@@ -188,28 +230,24 @@ class PluginConfig extends Component {
             <PluginView plugin={plugin} />
           </TabContainer>
         )}
-      </StyledMain>
+      </Fragment>
     )
   }
 }
 
 function mapStateToProps(state) {
-  const selectedPlugin = state.plugin.selected
+  const { selected } = state.plugin
 
   return {
-    pluginStatus: state.plugin[selectedPlugin].active.status,
-    pluginErrors: state.plugin[selectedPlugin].errors,
-    isActivePlugin: state.plugin[selectedPlugin].active.name !== 'STOPPED',
+    pluginStatus: state.plugin[selected].active.status,
+    pluginErrors: state.plugin[selected].errors,
+    appBadges: state.plugin[selected].appBadges,
+    isActivePlugin: state.plugin[selected].active.name !== 'STOPPED',
     selectedTab: state.plugin.selectedTab
   }
 }
 
 export default connect(mapStateToProps)(PluginConfig)
-
-const StyledMain = styled.main`
-  position: relative;
-  min-width: 500px;
-`
 
 const StyledAppBar = styled(AppBar)`
   margin: 20px 0;
