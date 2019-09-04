@@ -24,7 +24,7 @@ const styles = theme => ({
     maxHeight: '100%',
     maxWidth: `calc(100% - ${drawerWidth}px)`,
     flexGrow: 1,
-    padding: `${theme.spacing.unit * 1}px ${theme.spacing.unit * 3}px ${theme
+    padding: `${theme.spacing.unit * 4}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
     // marginLeft: -drawerWidth
   },
