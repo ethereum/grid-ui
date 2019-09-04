@@ -58,8 +58,9 @@ export default class VersionListItem extends Component {
             if (this._isMounted) this.setState({ downloadProgress })
           },
           (extractionProgress, extractedFile) => {
-            if (this._isMounted)
+            if (this._isMounted) {
               this.setState({ extractionProgress, extractedFile })
+            }
           }
         )
       } catch (error) {
