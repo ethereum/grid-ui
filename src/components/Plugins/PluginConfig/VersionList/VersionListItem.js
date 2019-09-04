@@ -157,6 +157,7 @@ export default class VersionListItem extends Component {
           primary={this.releaseDisplayName(release)}
           isLocalRelease={!release.remote}
           secondary={
+            // eslint-disable-next-line no-nested-ternary
             extractionProgress > 0
               ? `${extractionProgress}% - ${extractedFile}`
               : downloadProgress > 0
