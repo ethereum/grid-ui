@@ -19,6 +19,7 @@ class Webview extends React.Component {
     webview.addEventListener('will-navigate', this.handleWillNavigate)
     webview.addEventListener('ipc-message', this.handleIpcMessage)
     webview.addEventListener('dom-ready', this.handleDomReady)
+    webview.addEventListener('did-fail-load', this.handleDidFailLoad)
     if (url) {
       this.setState({
         currentUrl: url,
@@ -33,6 +34,7 @@ class Webview extends React.Component {
     webview.removeEventListener('will-navigate', this.handleNavigate)
     webview.removeEventListener('ipc-message', this.handleIpcMessage)
     webview.removeEventListener('dom-ready', this.handleDomReady)
+    webview.removeEventListener('did-fail-load', this.handleDidFailLoad)
   }
 
   handleDomReady = () => {
@@ -45,6 +47,14 @@ class Webview extends React.Component {
 
   handleIpcMessage = () => {
     console.log('Webview: handle ipc')
+  }
+
+  handleDidFailLoad = error => {
+    const { webview } = this
+    if (error.errorCode === -102) {
+      // ERR_CONNECTION_REFUSED
+      webview.loadURL(`${document.URL}/errors/404.html`)
+    }
   }
 
   handleNavigate = newUrl => {
