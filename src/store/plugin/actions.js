@@ -64,11 +64,10 @@ export const initPlugin = plugin => {
       }
     })
 
-    console.log('Creating listeners for', plugin.name)
-    PluginService.createListeners(plugin, dispatch)
+    PluginService.createNewStateListener(plugin, dispatch)
 
     if (plugin.isRunning) {
-      console.log('Resuming', plugin.name)
+      console.log('Resuming ', plugin.name)
       PluginService.resume(plugin, dispatch)
     }
   }
