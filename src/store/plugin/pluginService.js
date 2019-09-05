@@ -2,9 +2,8 @@ import ClientService from './clientService'
 import { addPluginError, onConnectionUpdate, setAppBadges } from './actions'
 
 class PluginService {
-  start(plugin, release, flags, config, dispatch) {
-    plugin.start(release, flags, config)
-    if (plugin.type === 'client') ClientService.watchForPeers(plugin, dispatch)
+  async start(plugin, release, flags, config) {
+    await plugin.start(release, flags, config)
   }
 
   resume(plugin, dispatch) {
@@ -25,6 +24,7 @@ class PluginService {
 
   onConnect(plugin, dispatch) {
     if (plugin.type === 'client') {
+      ClientService.watchForPeers(plugin, dispatch)
       ClientService.startBlockSubscriptions(plugin, dispatch)
     }
   }
@@ -34,6 +34,10 @@ class PluginService {
       dispatch(onConnectionUpdate(plugin.name, newState.toUpperCase()))
       if (newState === 'connected') {
         this.onConnect(plugin, dispatch)
+      } else if (newState === 'stopping') {
+        if (plugin.type === 'client') {
+          ClientService.clearPeerCountInterval()
+        }
       }
     }
 
