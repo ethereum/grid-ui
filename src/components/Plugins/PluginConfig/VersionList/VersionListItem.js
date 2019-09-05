@@ -127,7 +127,6 @@ export default class VersionListItem extends Component {
       extractionProgress,
       extractedFile
     } = this.state
-
     let actionLabel = 'Use'
     if (!release.remote) {
       actionLabel = 'Use'

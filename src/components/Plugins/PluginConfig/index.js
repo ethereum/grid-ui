@@ -18,6 +18,7 @@ import {
   selectTab,
   setAppBadges
 } from '../../../store/plugin/actions'
+
 import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
 import { getPluginSettingsConfig } from '../../../lib/utils'

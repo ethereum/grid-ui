@@ -12,9 +12,21 @@ require('codemirror/mode/javascript/javascript')
 
 const styles = () => ({
   terminalWrapper: {
+    background: '#111',
+    color: '#eee',
+    fontFamily:
+      'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
+    fontSize: '11px',
+    padding: 10,
+
     // Fluid width and height with support to scrolling
     width: 'calc(100vw - 310px)',
-    height: 'calc(100vh - 274px)'
+    height: 'calc(100vh - 274px)',
+
+    // Scroll config
+    overflowX: 'auto',
+    overflowY: 'scroll',
+    whiteSpace: 'nowrap'
   }
 })
 
