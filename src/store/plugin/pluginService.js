@@ -37,9 +37,6 @@ class PluginService {
       case 'stopping':
         this.removeListeners(plugin)
         break
-      case 'stopped':
-        plugin.removeListener('newState', this.newStateListener)
-        break
       default:
         break
     }
