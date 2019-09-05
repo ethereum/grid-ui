@@ -19,7 +19,6 @@ class PluginService {
 
   stop(plugin) {
     plugin.stop()
-    this.removeListeners(plugin)
   }
 
   onConnect(plugin, dispatch) {
@@ -29,31 +28,38 @@ class PluginService {
     }
   }
 
-  createListeners(plugin, dispatch) {
-    this.newStateListener = newState => {
-      dispatch(onConnectionUpdate(plugin.name, newState.toUpperCase()))
-      if (newState === 'connected') {
+  newStateListener = (plugin, dispatch) => newState => {
+    dispatch(onConnectionUpdate(plugin.name, newState.toUpperCase()))
+    switch (newState) {
+      case 'connected':
         this.onConnect(plugin, dispatch)
-      } else if (newState === 'stopping') {
-        if (plugin.type === 'client') {
-          ClientService.clearPeerCountInterval()
-        }
-      }
+        break
+      case 'stopping':
+        this.removeListeners(plugin)
+        break
+      case 'stopped':
+        plugin.removeListener('newState', this.newStateListener)
+        break
+      default:
+        break
     }
+  }
 
-    this.pluginErrorListener = error =>
-      dispatch(addPluginError(plugin.name, error))
+  pluginErrorListener = (plugin, dispatch) => error => {
+    dispatch(addPluginError(plugin.name, error))
+  }
 
-    this.setAppBadgeListener = ({ appId, count }) =>
-      dispatch(setAppBadges(plugin, { [appId]: count }))
+  setAppBadgeListener = (plugin, dispatch) => ({ appId, count }) => {
+    dispatch(setAppBadges(plugin, { [appId]: count }))
+  }
 
-    plugin.on('newState', this.newStateListener)
-    plugin.on('pluginError', this.pluginErrorListener)
-    plugin.on('setAppBadge', this.setAppBadgeListener)
+  createListeners(plugin, dispatch) {
+    plugin.on('newState', this.newStateListener(plugin, dispatch))
+    plugin.on('pluginError', this.pluginErrorListener(plugin, dispatch))
+    plugin.on('setAppBadge', this.setAppBadgeListener(plugin, dispatch))
   }
 
   removeListeners(plugin) {
-    plugin.removeListener('newState', this.newStateListener)
     plugin.removeListener('pluginError', this.pluginErrorListener)
     plugin.removeListener('setAppBadge', this.setAppBadgeListener)
     if (plugin.type === 'client') {
