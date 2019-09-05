@@ -7,12 +7,12 @@ class PluginService {
   }
 
   resume(plugin, dispatch) {
-    if (plugin.type === 'client') ClientService.watchForPeers(plugin, dispatch)
     dispatch(onConnectionUpdate(plugin.name, plugin.state))
 
     // `resume` is called for 'STARTED', 'STARTING', and 'CONNECTED' states.
-    // If plugin starts as 'CONNECTED', manually trigger `onConnect`.
+    // If plugin starts as 'CONNECTED', manually trigger `createListeners` and `onConnect`.
     if (plugin.state === 'CONNECTED') {
+      this.createListeners(plugin, dispatch)
       this.onConnect(plugin, dispatch)
     }
   }
@@ -28,32 +28,36 @@ class PluginService {
     }
   }
 
-  newStateListener = (plugin, dispatch) => newState => {
-    dispatch(onConnectionUpdate(plugin.name, newState.toUpperCase()))
-    switch (newState) {
-      case 'connected':
-        this.onConnect(plugin, dispatch)
-        break
-      case 'stopping':
-        this.removeListeners(plugin)
-        break
-      default:
-        break
+  // Called in `initPlugin`
+  createNewStateListener(plugin, dispatch) {
+    this.newStateListener = newState => {
+      dispatch(onConnectionUpdate(plugin.name, newState.toUpperCase()))
+      switch (newState) {
+        case 'starting':
+          this.createListeners(plugin, dispatch)
+          break
+        case 'connected':
+          this.onConnect(plugin, dispatch)
+          break
+        case 'stopping':
+          this.removeListeners(plugin)
+          break
+        default:
+          break
+      }
     }
-  }
-
-  pluginErrorListener = (plugin, dispatch) => error => {
-    dispatch(addPluginError(plugin.name, error))
-  }
-
-  setAppBadgeListener = (plugin, dispatch) => ({ appId, count }) => {
-    dispatch(setAppBadges(plugin, { [appId]: count }))
+    plugin.on('newState', this.newStateListener)
   }
 
   createListeners(plugin, dispatch) {
-    plugin.on('newState', this.newStateListener(plugin, dispatch))
-    plugin.on('pluginError', this.pluginErrorListener(plugin, dispatch))
-    plugin.on('setAppBadge', this.setAppBadgeListener(plugin, dispatch))
+    this.pluginErrorListener = error => {
+      dispatch(addPluginError(plugin.name, error))
+    }
+    this.setAppBadgeListener = ({ appId, count }) => {
+      dispatch(setAppBadges(plugin, { [appId]: count }))
+    }
+    plugin.on('pluginError', this.pluginErrorListener)
+    plugin.on('setAppBadge', this.setAppBadgeListener)
   }
 
   removeListeners(plugin) {
