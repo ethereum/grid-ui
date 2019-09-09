@@ -41,6 +41,13 @@ describe('the plugin reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
+  it('should handle PLUGIN:DISMISS_FLAG_WARNING', () => {
+    const action = { type: 'PLUGIN:DISMISS_FLAG_WARNING' }
+    const expectedState = { ...initialState, showCustomFlagWarning: false }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
   it('should handle PLUGIN:SELECT_TAB', () => {
     const action = {
       type: 'PLUGIN:SELECT_TAB',

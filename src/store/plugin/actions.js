@@ -73,6 +73,10 @@ export const initPlugin = plugin => {
   }
 }
 
+export const dismissFlagWarning = () => {
+  return { type: 'PLUGIN:DISMISS_FLAG_WARNING' }
+}
+
 export const newBlock = (pluginName, blockNumber, timestamp) => {
   return {
     type: 'PLUGIN:UPDATE_NEW_BLOCK',
