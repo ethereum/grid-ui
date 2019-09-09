@@ -93,10 +93,6 @@ class PluginConfig extends Component {
   handleTabChange = (event, tab) => {
     const { dispatch } = this.props
     dispatch(selectTab(tab))
-    // Clear errors if going to Terminal tab
-    if (tab === 3) {
-      this.clearPluginErrors()
-    }
   }
 
   handlePluginConfigChanged = (key, value) => {
