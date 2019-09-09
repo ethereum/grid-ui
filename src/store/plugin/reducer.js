@@ -1,6 +1,7 @@
 export const initialState = {
   selected: 'geth',
-  selectedTab: 0
+  selectedTab: 0,
+  showCustomFlagWarning: true
   // Plugins dynamically populate within this object, e.g.
   // geth: { config: {}, release: {}, ... },
   // parity: { config: {}, release: {}, ... },
@@ -110,6 +111,9 @@ const plugin = (state = initialState, action) => {
           flags
         }
       }
+    }
+    case 'PLUGIN:DISMISS_FLAG_WARNING': {
+      return { ...state, showCustomFlagWarning: false }
     }
     case 'PLUGIN:START': {
       const { pluginName, version } = action.payload
