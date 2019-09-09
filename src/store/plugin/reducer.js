@@ -165,17 +165,26 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'PLUGIN:CLEAR_ERROR': {
-      const { pluginName, index } = action.payload
+    case 'PLUGIN:ERROR:CLEAR': {
+      const { pluginName, key } = action.payload
 
       return {
         ...state,
         [pluginName]: {
           ...initialPluginState,
           ...state[pluginName],
-          errors: state[pluginName].errors.filter(
-            (n, nIndex) => nIndex !== index
-          )
+          errors: state[pluginName].errors.filter(error => error.key !== key)
+        }
+      }
+    }
+    case 'PLUGIN:ERROR:CLEAR_ALL': {
+      const { pluginName } = action.payload
+      return {
+        ...state,
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
+          errors: []
         }
       }
     }
