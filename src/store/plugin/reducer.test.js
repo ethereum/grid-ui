@@ -41,6 +41,13 @@ describe('the plugin reducer', () => {
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
 
+  it('should handle PLUGIN:DISMISS_FLAG_WARNING', () => {
+    const action = { type: 'PLUGIN:DISMISS_FLAG_WARNING' }
+    const expectedState = { ...initialState, showCustomFlagWarning: false }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
   it('should handle PLUGIN:SELECT_TAB', () => {
     const action = {
       type: 'PLUGIN:SELECT_TAB',
@@ -143,10 +150,40 @@ describe('the plugin reducer', () => {
     ).toEqual(expectedState)
   })
 
-  it('should handle PLUGIN:CLEAR_ERROR', () => {
+  it('should handle PLUGIN:ERROR:CLEAR', () => {
     const action = {
-      type: 'PLUGIN:CLEAR_ERROR',
-      payload: { pluginName: 'geth', index: 0 }
+      type: 'PLUGIN:ERROR:CLEAR',
+      payload: { pluginName: 'geth', key: 'abc' }
+    }
+    const expectedState = {
+      ...initialState,
+      geth: {
+        ...initialPluginState,
+        errors: [{ key: 'abcd', message: 'boom2' }]
+      }
+    }
+
+    expect(
+      reducer(
+        {
+          ...initialState,
+          geth: {
+            ...initialPluginState,
+            errors: [
+              { key: 'abc', message: 'boom' },
+              { key: 'abcd', message: 'boom2' }
+            ]
+          }
+        },
+        action
+      )
+    ).toEqual(expectedState)
+  })
+
+  it('should handle PLUGIN:ERROR:CLEAR_ALL', () => {
+    const action = {
+      type: 'PLUGIN:ERROR:CLEAR_ALL',
+      payload: { pluginName: 'geth' }
     }
     const expectedState = {
       ...initialState,
@@ -154,7 +191,19 @@ describe('the plugin reducer', () => {
     }
 
     expect(
-      reducer({ ...initialState, geth: initialPluginState }, action)
+      reducer(
+        {
+          ...initialState,
+          geth: {
+            ...initialPluginState,
+            errors: [
+              { key: 'abc', message: 'boom' },
+              { key: 'abcd', message: 'boom2' }
+            ]
+          }
+        },
+        action
+      )
     ).toEqual(expectedState)
   })
 

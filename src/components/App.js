@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { MuiThemeProvider } from '@material-ui/core/styles'
+import { SnackbarProvider } from 'notistack'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { darkTheme, lightTheme } from '../theme'
 import HelpFab from './shared/HelpFab'
@@ -18,11 +19,20 @@ export default class NewApp extends Component {
     const { themeMode } = this.props
     return (
       <MuiThemeProvider theme={themeMode === 'light' ? lightTheme : darkTheme}>
-        <CssBaseline />
-        <HelpFab />
-        <ErrorBoundary>
-          <Plugins />
-        </ErrorBoundary>
+        <SnackbarProvider
+          maxSnack={10}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+          autoHideDuration={null}
+        >
+          <CssBaseline />
+          <HelpFab />
+          <ErrorBoundary>
+            <Plugins />
+          </ErrorBoundary>
+        </SnackbarProvider>
       </MuiThemeProvider>
     )
   }
