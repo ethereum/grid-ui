@@ -135,20 +135,6 @@ class PluginConfig extends Component {
       delete displayedErrors[key]
     }
 
-    const action = key => (
-      <Fragment>
-        <Button
-          style={{ color: 'black' }}
-          onClick={() => {
-            closeSnackbar(key)
-            onClose(plugin, key)
-          }}
-        >
-          {'Dismiss'}
-        </Button>
-      </Fragment>
-    )
-
     dispatch(getPluginErrors(plugin))
     pluginErrors.forEach(error => {
       if (displayedErrors[error.key]) return
@@ -158,7 +144,19 @@ class PluginConfig extends Component {
         onClose: (event, reason, key) => {
           onClose(plugin, key)
         },
-        action
+        action: key => (
+          <Fragment>
+            <Button
+              style={{ color: '#000' }}
+              onClick={() => {
+                closeSnackbar(key)
+                onClose(plugin, key)
+              }}
+            >
+              {'Dismiss'}
+            </Button>
+          </Fragment>
+        )
       })
       displayedErrors[error.key] = true
     })

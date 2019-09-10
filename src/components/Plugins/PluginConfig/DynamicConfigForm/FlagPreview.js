@@ -1,7 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
+import { withSnackbar } from 'notistack'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -9,7 +11,6 @@ import {
   dismissFlagWarning,
   setCustomFlags
 } from '../../../../store/plugin/actions'
-import Notification from '../../../shared/Notification'
 
 class FlagPreview extends Component {
   static propTypes = {
@@ -19,7 +20,39 @@ class FlagPreview extends Component {
     isEditingFlags: PropTypes.bool,
     toggleEditGeneratedFlags: PropTypes.func,
     dispatch: PropTypes.func,
-    showWarning: PropTypes.bool
+    showWarning: PropTypes.bool,
+    enqueueSnackbar: PropTypes.func,
+    closeSnackbar: PropTypes.func
+  }
+
+  componentDidUpdate = () => {
+    const {
+      isEditingFlags,
+      showWarning,
+      enqueueSnackbar,
+      closeSnackbar
+    } = this.props
+    if (isEditingFlags && showWarning) {
+      enqueueSnackbar("Use caution! Don't take flags from strangers.", {
+        variant: 'warning',
+        onClose: () => {
+          this.dismissFlagWarning()
+        },
+        action: key => (
+          <Fragment>
+            <Button
+              style={{ color: '#000' }}
+              onClick={() => {
+                closeSnackbar(key)
+                this.dismissFlagWarning()
+              }}
+            >
+              {'Dismiss'}
+            </Button>
+          </Fragment>
+        )
+      })
+    }
   }
 
   toggleEdit = event => {
@@ -40,7 +73,7 @@ class FlagPreview extends Component {
   }
 
   render() {
-    const { flags, isEditingFlags, isPluginRunning, showWarning } = this.props
+    const { flags, isEditingFlags, isPluginRunning } = this.props
 
     return (
       <React.Fragment>
@@ -67,13 +100,6 @@ class FlagPreview extends Component {
             label="Use custom flags"
           />
         </FormGroup>
-        {isEditingFlags && showWarning && (
-          <Notification
-            type="warning"
-            message="Use caution! Don't take flags from strangers."
-            onDismiss={this.dismissFlagWarning}
-          />
-        )}
       </React.Fragment>
     )
   }
@@ -85,4 +111,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(FlagPreview)
+export default connect(mapStateToProps)(withSnackbar(FlagPreview))
