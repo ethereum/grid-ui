@@ -59,7 +59,7 @@ class PluginService {
       dispatch(addPluginError(plugin.name, error))
     }
     this.clearPluginErrorsListener = () => {
-      dispatch(clearPluginErrors(plugin))
+      dispatch(clearPluginErrors(plugin.name))
     }
     this.setAppBadgeListener = ({ appId, count }) => {
       dispatch(setAppBadges(plugin, { [appId]: count }))

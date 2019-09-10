@@ -155,11 +155,8 @@ export const clearError = (plugin, key) => {
   }
 }
 
-export const clearPluginErrors = plugin => {
-  return {
-    type: 'PLUGIN:ERROR:CLEAR_ALL',
-    payload: { pluginName: plugin.name }
-  }
+export const clearPluginErrors = pluginName => {
+  return { type: 'PLUGIN:ERROR:CLEAR_ALL', payload: { pluginName } }
 }
 
 export const selectPlugin = (pluginName, tab) => {
