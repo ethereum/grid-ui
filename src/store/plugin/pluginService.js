@@ -3,7 +3,7 @@ import { addPluginError, onConnectionUpdate, setAppBadges } from './actions'
 
 class PluginService {
   async start(plugin, release, flags, config) {
-    await plugin.start(release, flags, config)
+    await plugin.start(flags, release, config)
   }
 
   resume(plugin, dispatch) {
