@@ -7,6 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 import CardActions from '@material-ui/core/CardActions'
 import CardHeader from '@material-ui/core/CardHeader'
 import Typography from '@material-ui/core/Typography'
+import CheckIcon from '@material-ui/icons/Check'
 import Button from '../../shared/Button'
 import Grid from '../../../API/Grid'
 
@@ -63,7 +64,19 @@ class AppItem extends React.Component {
           <Typography component="p">{description}</Typography>
         </CardContent>
         <CardActions style={{ justifyContent: 'center' }}>
-          <Button onClick={this.handleAppLaunch}>Install {name}</Button>
+          {Grid.platform.hasRuntime(dependency) ? (
+            <span
+              style={{
+                background: '#6662',
+                padding: '5px 15px',
+                borderRadius: 5
+              }}
+            >
+              <CheckIcon color="primary" /> {name} Installed
+            </span>
+          ) : (
+            <Button onClick={this.handleAppLaunch}>Install {name}</Button>
+          )}
         </CardActions>
       </Card>
     )
