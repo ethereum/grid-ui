@@ -133,7 +133,11 @@ class PluginConfig extends Component {
     }
     if (type === 'extraction-progress') {
       const { extractionProgress } = event
-      this.setState({ setupState: `Extracting ${extractionProgress}%` })
+      if (extractionProgress < 100) {
+        this.setState({ setupState: `Extracting ${extractionProgress}%` })
+      } else {
+        this.setState({ setupState: null })
+      }
     }
   }
 
