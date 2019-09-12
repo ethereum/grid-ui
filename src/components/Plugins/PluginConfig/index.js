@@ -2,9 +2,11 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { withSnackbar } from 'notistack'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Button from '@material-ui/core/Button'
 import Badge from '@material-ui/core/Badge'
 import Typography from '@material-ui/core/Typography'
 import VersionList from './VersionList'
@@ -16,10 +18,10 @@ import PluginView from '../PluginView'
 import {
   clearError,
   selectTab,
-  setAppBadges
+  setAppBadges,
+  getPluginErrors
 } from '../../../store/plugin/actions'
 
-import Notification from '../../shared/Notification'
 import ErrorBoundary from '../../GenericErrorBoundary'
 import { getPluginSettingsConfig } from '../../../lib/utils'
 
@@ -59,12 +61,18 @@ class PluginConfig extends Component {
     handlePluginConfigChanged: PropTypes.func,
     pluginErrors: PropTypes.array,
     appBadges: PropTypes.object,
-    selectedTab: PropTypes.number
+    selectedTab: PropTypes.number,
+    enqueueSnackbar: PropTypes.func,
+    closeSnackbar: PropTypes.func
   }
 
   constructor(props) {
     super(props)
+    this.state = {
+      displayedErrors: {}
+    }
     this.getAppBadges()
+    this.enqueueErrors()
   }
 
   componentDidUpdate(prevProps) {
@@ -80,6 +88,8 @@ class PluginConfig extends Component {
       this.handleTabChange(null, 0)
       this.getAppBadges()
     }
+
+    this.enqueueErrors()
   }
 
   getAppBadges = () => {
@@ -93,10 +103,6 @@ class PluginConfig extends Component {
   handleTabChange = (event, tab) => {
     const { dispatch } = this.props
     dispatch(selectTab(tab))
-    // Clear errors if going to Terminal tab
-    if (tab === 3) {
-      this.clearPluginErrors()
-    }
   }
 
   handlePluginConfigChanged = (key, value) => {
@@ -106,16 +112,7 @@ class PluginConfig extends Component {
 
   dismissError = index => {
     const { dispatch, plugin } = this.props
-    dispatch(clearError(plugin.name, index))
-    this.clearPluginErrors()
-  }
-
-  clearPluginErrors = () => {
-    // Clear errors in nano
-    const { plugin, pluginErrors } = this.props
-    if (pluginErrors.length > 0) {
-      plugin.emit('clearPluginErrors')
-    }
+    dispatch(clearError(plugin, index))
   }
 
   appBadgesCount() {
@@ -123,24 +120,46 @@ class PluginConfig extends Component {
     return Object.values(appBadges).reduce((a, b) => a + b, 0)
   }
 
-  renderErrors() {
-    const { pluginErrors } = this.props
-    const renderErrors = []
-    pluginErrors.forEach((error, index) => {
-      const renderError = (
-        <Notification
-          key={index}
-          type="error"
-          message={error}
-          onDismiss={() => {
-            this.dismissError(index)
-          }}
-        />
-      )
-      renderErrors.push(renderError)
-    })
+  enqueueErrors() {
+    const { displayedErrors } = this.state
+    const {
+      pluginErrors,
+      plugin,
+      enqueueSnackbar,
+      dispatch,
+      closeSnackbar
+    } = this.props
 
-    return renderErrors
+    const onClose = (thisPlugin, key) => {
+      dispatch(clearError(thisPlugin, key))
+      delete displayedErrors[key]
+    }
+
+    dispatch(getPluginErrors(plugin))
+    pluginErrors.forEach(error => {
+      if (displayedErrors[error.key]) return
+      enqueueSnackbar(error.message, {
+        key: error.key,
+        variant: 'error',
+        onClose: (event, reason, key) => {
+          onClose(plugin, key)
+        },
+        action: key => (
+          <Fragment>
+            <Button
+              style={{ color: '#000' }}
+              onClick={() => {
+                closeSnackbar(key)
+                onClose(plugin, key)
+              }}
+            >
+              {'Dismiss'}
+            </Button>
+          </Fragment>
+        )
+      })
+      displayedErrors[error.key] = true
+    })
   }
 
   render() {
@@ -169,7 +188,6 @@ class PluginConfig extends Component {
             {isActivePlugin ? pluginStatus : 'STOPPED'}
           </StyledState>
         </Typography>
-        {this.renderErrors()}
         <StyledAppBar position="static">
           <Tabs
             value={selectedTab}
@@ -248,7 +266,7 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(PluginConfig)
+export default connect(mapStateToProps)(withSnackbar(PluginConfig))
 
 const StyledAppBar = styled(AppBar)`
   margin: 20px 0;

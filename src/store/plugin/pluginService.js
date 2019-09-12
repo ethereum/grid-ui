@@ -1,5 +1,10 @@
 import ClientService from './clientService'
-import { addPluginError, onConnectionUpdate, setAppBadges } from './actions'
+import {
+  addPluginError,
+  onConnectionUpdate,
+  setAppBadges,
+  clearPluginErrors
+} from './actions'
 
 class PluginService {
   async start(plugin, release, flags, config) {
@@ -53,15 +58,20 @@ class PluginService {
     this.pluginErrorListener = error => {
       dispatch(addPluginError(plugin.name, error))
     }
+    this.clearPluginErrorsListener = () => {
+      dispatch(clearPluginErrors(plugin.name))
+    }
     this.setAppBadgeListener = ({ appId, count }) => {
       dispatch(setAppBadges(plugin, { [appId]: count }))
     }
     plugin.on('pluginError', this.pluginErrorListener)
+    plugin.on('clearPluginErrors', this.clearPluginErrorsListener)
     plugin.on('setAppBadge', this.setAppBadgeListener)
   }
 
   removeListeners(plugin) {
     plugin.removeListener('pluginError', this.pluginErrorListener)
+    plugin.removeListener('clearPluginErrors', this.clearPluginErrorsListener)
     plugin.removeListener('setAppBadge', this.setAppBadgeListener)
     if (plugin.type === 'client') {
       ClientService.clearPeerCountInterval()
