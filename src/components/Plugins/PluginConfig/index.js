@@ -69,10 +69,13 @@ class PluginConfig extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      displayedErrors: {}
+      displayedErrors: {},
+      setupState: null
     }
     this.getAppBadges()
     this.enqueueErrors()
+    const { plugin } = this.props
+    this.subscribeSetupEvent(plugin)
   }
 
   componentDidUpdate(prevProps) {
@@ -83,13 +86,58 @@ class PluginConfig extends Component {
       this.handleTabChange(null, 3)
     }
 
-    // If switching plugins, reset tab to About
+    // If switching plugins:
+    // 1. Reset tab to About
+    // 2. Get app badges
+    // 3. Subscribe to setup-event
     if (prevProps.plugin.name !== plugin.name) {
       this.handleTabChange(null, 0)
       this.getAppBadges()
+      this.subscribeSetupEvent(prevProps.plugin, false)
+      this.subscribeSetupEvent(plugin, true)
     }
 
     this.enqueueErrors()
+  }
+
+  componentWillUnmount() {
+    const { plugin } = this.props
+    this.subscribeSetupEvent(plugin, false)
+  }
+
+  subscribeSetupEvent = (plugin, subscribe = true) => {
+    const { setupState } = this.state
+    if (subscribe) {
+      plugin.on('setup-event', this.setupHandler)
+    } else {
+      plugin.off('setup-event', this.setupHandler)
+      // Reset setupState after 500ms
+      if (setupState) {
+        setTimeout(() => {
+          this.setState({ setupState: null })
+        }, 500)
+      }
+    }
+  }
+
+  setupHandler = event => {
+    const { type } = event
+    // let user know that a long running operation will be started
+    if (type === 'fetch-release') {
+      this.setState({ setupState: 'Fetching release' })
+    }
+    if (type === 'download-progress') {
+      const { downloadProgress } = event
+      this.setState({ setupState: `Downloading ${downloadProgress}%` })
+    }
+    if (type === 'extraction-progress') {
+      const { extractionProgress } = event
+      if (extractionProgress < 100) {
+        this.setState({ setupState: `Extracting ${extractionProgress}%` })
+      } else {
+        this.setState({ setupState: null })
+      }
+    }
   }
 
   getAppBadges = () => {
@@ -172,6 +220,7 @@ class PluginConfig extends Component {
       selectedTab,
       pluginErrors
     } = this.props
+    const { setupState } = this.state
     const { displayName: pluginName } = plugin || {}
     const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
       plugin.state
@@ -184,6 +233,11 @@ class PluginConfig extends Component {
           {plugin.type === 'client' && <NodeInfo />}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
+          {setupState && (
+            <StyledSetupState data-test-id="node-setup-state">
+              {setupState}
+            </StyledSetupState>
+          )}
           <StyledState data-test-id="node-state">
             {isActivePlugin ? pluginStatus : 'STOPPED'}
           </StyledState>
@@ -276,4 +330,11 @@ const StyledState = styled.div`
   opacity: 0.25;
   font-size: 13px;
   font-weight: bold;
+`
+
+const StyledSetupState = styled.div`
+  opacity: 0.5;
+  font-size: 15px;
+  font-weight: bold;
+  margin: 5px 0;
 `
