@@ -16,6 +16,15 @@ jobs:
 
       - run: yarn test --verbose --coverage
 
+      - run: 
+          name: "Building and deploying"
+          command: |
+           if [[ "${CIRCLE_BRANCH}" == 'master' || "${CIRCLE_BRANCH" == 'dev' ]]; then
+            CI=false yarn deploy $CIRCLE_BRANCH
+           else
+            CI=false yarn package alpha
+           end;
+            
       - run: CI=false yarn deploy $CIRCLE_BRANCH
 
       - store_artifacts:
