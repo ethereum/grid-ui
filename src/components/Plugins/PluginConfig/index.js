@@ -128,7 +128,6 @@ class PluginConfig extends Component {
     }
     if (type === 'download-progress') {
       const { downloadProgress } = event
-      this.downloadProgress = downloadProgress
       this.setState({ setupState: `Downloading ${downloadProgress}%` })
     }
     if (type === 'extraction-progress') {
