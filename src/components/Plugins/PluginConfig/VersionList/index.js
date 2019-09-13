@@ -173,7 +173,10 @@ class VersionList extends Component {
           localReleaseCount={localReleaseCount}
           totalReleaseCount={releases.length}
           lastLoadTimestamp={lastLoadTimestamp}
-          onClick={() => {
+          loadReleases={() => {
+            this.loadReleases()
+          }}
+          openCache={() => {
             Grid.openCache(plugin.name)
           }}
         />
