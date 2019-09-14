@@ -57,6 +57,11 @@ class ClientService {
       return
     }
 
+    // TODO: client is otherwise not correctly removing interval
+    if (result.startingBlock === undefined) {
+      this.clearSyncingInterval()
+    }
+
     // Waiting for syncing data
     if (result === true) return
 

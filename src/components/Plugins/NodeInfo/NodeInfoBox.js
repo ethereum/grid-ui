@@ -207,7 +207,7 @@ export default NodeInfoBox
 const StyledSubmenuContainer = styled.div`
   width: 220px;
   border-radius: 5px;
-  z-index: 1000;
+  z-index: 10000;
   cursor: default;
 
   transition: 150ms linear all, 1ms linear top;
@@ -225,8 +225,8 @@ const StyledSubmenuContainer = styled.div`
 
   /* Apply css arrow to topLeft of box */
   position: absolute;
-  left: 85px;
-  top: 6px;
+  left: 354px;
+  top: 38px;
 
   &::before {
     content: '';

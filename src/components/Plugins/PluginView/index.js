@@ -152,7 +152,7 @@ class PluginView extends Component {
   }
 
   render() {
-    const { plugin } = this.props
+    const { classes, plugin } = this.props
     const { metadata } = plugin
 
     return (
@@ -167,6 +167,7 @@ class PluginView extends Component {
         )}
         <h3 style={{ color: 'grey' }}>Plugin Code</h3>
         <CodeMirror
+          className={classes.terminalWrapper}
           value={plugin.source}
           options={{
             mode: 'javascript',

@@ -12,7 +12,7 @@ import { Grid as GridAPI } from '../../../../API'
 class DynamicConfigFormItem extends Component {
   static propTypes = {
     itemKey: PropTypes.string,
-    itemValue: PropTypes.string,
+    itemValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     item: PropTypes.object,
     plugin: PropTypes.object,
     pluginName: PropTypes.string,

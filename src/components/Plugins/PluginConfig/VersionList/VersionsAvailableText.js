@@ -9,7 +9,7 @@ import Spinner from '../../../shared/Spinner'
 const styles = () => ({
   refreshIcon: {
     fontSize: 22,
-    color: 'rgba(0,0,0,0.25)',
+    opacity: 0.5,
     marginLeft: 5,
     verticalAlign: 'middle',
     marginBottom: 4,
@@ -33,7 +33,9 @@ class VersionsAvailableText extends Component {
     loadingReleases: PropTypes.bool,
     localReleaseCount: PropTypes.number,
     totalReleaseCount: PropTypes.number,
-    lastLoadTimestamp: PropTypes.number
+    lastLoadTimestamp: PropTypes.number,
+    openCache: PropTypes.func,
+    loadReleases: PropTypes.func
   }
 
   render() {
@@ -42,7 +44,9 @@ class VersionsAvailableText extends Component {
       loadingReleases,
       localReleaseCount,
       totalReleaseCount,
-      lastLoadTimestamp
+      lastLoadTimestamp,
+      openCache,
+      loadReleases
     } = this.props
 
     return (
@@ -55,7 +59,9 @@ class VersionsAvailableText extends Component {
         ) : (
           <Typography
             variant="h6"
-            onClick={this.handleRefresh}
+            onClick={() => {
+              loadReleases()
+            }}
             classes={{ root: classes.versionsAvailable }}
             data-test-id="button-refresh-version-list"
             data-test-timestamp={lastLoadTimestamp}
@@ -67,7 +73,13 @@ class VersionsAvailableText extends Component {
         )}
 
         <Typography>
-          <StyledDownloadedVersions>
+          <StyledDownloadedVersions
+            onClick={openCache || (() => {})}
+            style={{
+              textDecoration: 'underline',
+              cursor: 'pointer'
+            }}
+          >
             {localReleaseCount}{' '}
             {localReleaseCount === 1 ? 'release' : 'releases'} downloaded
           </StyledDownloadedVersions>

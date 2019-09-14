@@ -1,6 +1,7 @@
 export const initialState = {
   selected: 'geth',
-  selectedTab: 0
+  selectedTab: 0,
+  showCustomFlagWarning: true
   // Plugins dynamically populate within this object, e.g.
   // geth: { config: {}, release: {}, ... },
   // parity: { config: {}, release: {}, ... },
@@ -26,6 +27,7 @@ export const initialPluginState = {
   flags: [],
   displayName: '',
   errors: [],
+  appBadges: {},
   name: '',
   prefix: '',
   release: {
@@ -110,6 +112,9 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
+    case 'PLUGIN:DISMISS_FLAG_WARNING': {
+      return { ...state, showCustomFlagWarning: false }
+    }
     case 'PLUGIN:START': {
       const { pluginName, version } = action.payload
       const activeState = state[pluginName]
@@ -164,17 +169,40 @@ const plugin = (state = initialState, action) => {
         }
       }
     }
-    case 'PLUGIN:CLEAR_ERROR': {
-      const { pluginName, index } = action.payload
+    case 'PLUGIN:ERROR:CLEAR': {
+      const { pluginName, key } = action.payload
 
       return {
         ...state,
         [pluginName]: {
           ...initialPluginState,
           ...state[pluginName],
-          errors: state[pluginName].errors.filter(
-            (n, nIndex) => nIndex !== index
-          )
+          errors: state[pluginName].errors.filter(error => error.key !== key)
+        }
+      }
+    }
+    case 'PLUGIN:ERROR:CLEAR_ALL': {
+      const { pluginName } = action.payload
+      return {
+        ...state,
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
+          errors: []
+        }
+      }
+    }
+    case 'PLUGIN:SET_APP_BADGES': {
+      const { pluginName, appBadges } = action.payload
+      return {
+        ...state,
+        [pluginName]: {
+          ...initialPluginState,
+          ...state[pluginName],
+          appBadges: {
+            ...state[pluginName].appBadges,
+            ...appBadges
+          }
         }
       }
     }

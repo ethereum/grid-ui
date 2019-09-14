@@ -64,14 +64,17 @@ export const initPlugin = plugin => {
       }
     })
 
-    console.log('Creating listeners for', plugin.name)
-    PluginService.createListeners(plugin, dispatch)
+    PluginService.createNewStateListener(plugin, dispatch)
 
     if (plugin.isRunning) {
-      console.log('Resuming', plugin.name)
+      console.log('Resuming ', plugin.name)
       PluginService.resume(plugin, dispatch)
     }
   }
+}
+
+export const dismissFlagWarning = () => {
+  return { type: 'PLUGIN:DISMISS_FLAG_WARNING' }
 }
 
 export const newBlock = (pluginName, blockNumber, timestamp) => {
@@ -127,14 +130,33 @@ export const updatePeerCountError = (pluginName, message) => {
 }
 
 export const addPluginError = (pluginName, error) => {
-  return { type: 'PLUGIN:ERROR:ADD', error, payload: { pluginName } }
+  return (dispatch, getState) => {
+    const state = getState()
+    if (state.plugin[pluginName].errors.find(e => e.key === error.key)) {
+      return
+    }
+    dispatch({ type: 'PLUGIN:ERROR:ADD', error, payload: { pluginName } })
+  }
 }
 
-export const clearError = (pluginName, index) => {
-  return {
-    type: 'PLUGIN:CLEAR_ERROR',
-    payload: { pluginName, index }
+export const getPluginErrors = plugin => {
+  return dispatch => {
+    plugin.getErrors().forEach(error => {
+      dispatch(addPluginError(plugin.name, error))
+    })
   }
+}
+
+export const clearError = (plugin, key) => {
+  plugin.plugin.dismissError(key)
+  return {
+    type: 'PLUGIN:ERROR:CLEAR',
+    payload: { pluginName: plugin.name, key }
+  }
+}
+
+export const clearPluginErrors = pluginName => {
+  return { type: 'PLUGIN:ERROR:CLEAR_ALL', payload: { pluginName } }
 }
 
 export const selectPlugin = (pluginName, tab) => {
@@ -210,5 +232,12 @@ export const togglePlugin = (plugin, release) => {
     } catch (e) {
       return { type: 'PLUGIN:TOGGLE:ERROR', error: e.toString() }
     }
+  }
+}
+
+export const setAppBadges = (plugin, appBadges = {}) => {
+  return {
+    type: 'PLUGIN:SET_APP_BADGES',
+    payload: { pluginName: plugin.name, appBadges }
   }
 }
