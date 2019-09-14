@@ -9,7 +9,7 @@ import Spinner from '../../../shared/Spinner'
 const styles = () => ({
   refreshIcon: {
     fontSize: 22,
-    color: 'rgba(100,100,100,0.35)',
+    opacity: 0.5,
     marginLeft: 5,
     verticalAlign: 'middle',
     marginBottom: 4,
@@ -34,7 +34,8 @@ class VersionsAvailableText extends Component {
     localReleaseCount: PropTypes.number,
     totalReleaseCount: PropTypes.number,
     lastLoadTimestamp: PropTypes.number,
-    onClick: PropTypes.func
+    openCache: PropTypes.func,
+    loadReleases: PropTypes.func
   }
 
   render() {
@@ -44,7 +45,8 @@ class VersionsAvailableText extends Component {
       localReleaseCount,
       totalReleaseCount,
       lastLoadTimestamp,
-      onClick
+      openCache,
+      loadReleases
     } = this.props
 
     return (
@@ -57,7 +59,9 @@ class VersionsAvailableText extends Component {
         ) : (
           <Typography
             variant="h6"
-            onClick={this.handleRefresh}
+            onClick={() => {
+              loadReleases()
+            }}
             classes={{ root: classes.versionsAvailable }}
             data-test-id="button-refresh-version-list"
             data-test-timestamp={lastLoadTimestamp}
@@ -70,7 +74,7 @@ class VersionsAvailableText extends Component {
 
         <Typography>
           <StyledDownloadedVersions
-            onClick={onClick || (() => {})}
+            onClick={openCache || (() => {})}
             style={{
               textDecoration: 'underline',
               cursor: 'pointer'
