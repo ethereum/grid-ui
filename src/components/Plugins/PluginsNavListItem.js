@@ -7,7 +7,6 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Badge from '@material-ui/core/Badge'
 import Switch from '@material-ui/core/Switch'
-import Tooltip from '@material-ui/core/Tooltip'
 
 const styles = () => ({
   pluginName: {
@@ -32,7 +31,6 @@ class PluginsNavListItem extends Component {
     plugin: PropTypes.object.isRequired,
     handleToggle: PropTypes.func.isRequired,
     handleSelectPlugin: PropTypes.func.isRequired,
-    isDisabled: PropTypes.bool,
     isRunning: PropTypes.bool,
     isSelected: PropTypes.bool,
     secondaryText: PropTypes.string,
@@ -49,7 +47,6 @@ class PluginsNavListItem extends Component {
       classes,
       handleToggle,
       handleSelectPlugin,
-      isDisabled,
       isRunning,
       isSelected,
       secondaryText,
@@ -85,20 +82,14 @@ class PluginsNavListItem extends Component {
           }}
         />
         <ListItemSecondaryAction>
-          <Tooltip
-            title={isDisabled ? 'No version selected' : ''}
-            placement="left"
-          >
-            <span>
-              <Switch
-                color="primary"
-                onChange={() => handleToggle(plugin)}
-                checked={isRunning}
-                disabled={isDisabled}
-                data-test-id={`switch-${plugin.name}`}
-              />
-            </span>
-          </Tooltip>
+          <span>
+            <Switch
+              color="primary"
+              onChange={() => handleToggle(plugin)}
+              checked={isRunning}
+              data-test-id={`switch-${plugin.name}`}
+            />
+          </span>
         </ListItemSecondaryAction>
       </ListItem>
     )

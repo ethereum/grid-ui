@@ -8,6 +8,9 @@ import {
 
 class PluginService {
   async start(plugin, release, flags, config) {
+    if (!release.location) {
+      release = null // eslint-disable-line
+    }
     await plugin.start(flags, release, config)
   }
 
