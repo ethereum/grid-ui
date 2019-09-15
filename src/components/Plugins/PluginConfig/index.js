@@ -222,9 +222,13 @@ class PluginConfig extends Component {
     } = this.props
     const { setupState } = this.state
     const { displayName: pluginName } = plugin || {}
-    const isRunning = ['STARTING', 'STARTED', 'CONNECTED'].includes(
-      plugin.state
-    )
+    const isRunning = [
+      'DOWNLOADING',
+      'EXTRACTING',
+      'STARTING',
+      'STARTED',
+      'CONNECTED'
+    ].includes(plugin.state)
 
     return (
       <Fragment>

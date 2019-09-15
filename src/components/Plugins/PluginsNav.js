@@ -47,16 +47,15 @@ class PluginsNav extends Component {
     selectedPluginName: PropTypes.string
   }
 
-  isDisabled = plugin => {
-    const { pluginState } = this.props
-    return !pluginState[plugin.name].release.version
-  }
-
   isRunning = plugin => {
     const { pluginState } = this.props
-    return ['STARTING', 'STARTED', 'CONNECTED'].includes(
-      pluginState[plugin.name].active.status
-    )
+    return [
+      'DOWNLOADING',
+      'EXTRACTING',
+      'STARTING',
+      'STARTED',
+      'CONNECTED'
+    ].includes(pluginState[plugin.name].active.status)
   }
 
   buildListItem = plugin => {
@@ -85,7 +84,6 @@ class PluginsNav extends Component {
         handleToggle={handleToggle}
         handleSelectPlugin={handleSelectPlugin}
         isRunning={this.isRunning(plugin)}
-        isDisabled={this.isDisabled(plugin)}
         isSelected={plugin.name === selectedPluginName}
         secondaryText={pluginState[plugin.name].release.version || ''}
       />
