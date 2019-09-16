@@ -11,22 +11,8 @@ import moment from 'moment'
 require('codemirror/mode/javascript/javascript')
 
 const styles = () => ({
-  terminalWrapper: {
-    background: '#111',
-    color: '#eee',
-    fontFamily:
-      'Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace',
-    fontSize: '11px',
-    padding: 10,
-
-    // Fluid width and height with support to scrolling
-    width: 'calc(100vw - 310px)',
-    height: 'calc(100vh - 274px)',
-
-    // Scroll config
-    overflowX: 'auto',
-    overflowY: 'scroll',
-    whiteSpace: 'nowrap'
+  pluginCode: {
+    width: 'calc(100vw - 310px)'
   }
 })
 
@@ -167,7 +153,7 @@ class PluginView extends Component {
         )}
         <h3 style={{ color: 'grey' }}>Plugin Code</h3>
         <CodeMirror
-          className={classes.terminalWrapper}
+          className={classes.pluginCode}
           value={plugin.source}
           options={{
             mode: 'javascript',
