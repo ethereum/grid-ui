@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
+import debounce from 'lodash/debounce'
 import { withSnackbar } from 'notistack'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
@@ -61,10 +62,16 @@ class FlagPreview extends Component {
   }
 
   handleChange = event => {
-    const { dispatch, plugin } = this.props
-    const flags = event.target.value.split(' ')
+    const { plugin } = this.props
     const pluginName = plugin[plugin.selected].name
-    dispatch(setCustomFlags(pluginName, flags))
+    const flags = event.target.value
+    this.setState({ flags })
+    this.updateRedux(pluginName, flags)
+  }
+
+  updateRedux = (pluginName, flags) => {
+    const { dispatch } = this.props
+    dispatch(setCustomFlags(pluginName, flags.split(' ')))
   }
 
   dismissFlagWarning = () => {
@@ -73,7 +80,8 @@ class FlagPreview extends Component {
   }
 
   render() {
-    const { flags, isEditingFlags, isPluginRunning } = this.props
+    const { isEditingFlags, isPluginRunning } = this.props
+    const { flags } = this.state
 
     return (
       <React.Fragment>
@@ -82,7 +90,7 @@ class FlagPreview extends Component {
             label="Generated Flags"
             variant="outlined"
             multiline
-            value={flags.join(' ')}
+            value={flags}
             onChange={this.handleChange}
             disabled={isPluginRunning || !isEditingFlags}
             fullWidth
