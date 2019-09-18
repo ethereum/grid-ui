@@ -26,32 +26,47 @@ class FlagPreview extends Component {
     closeSnackbar: PropTypes.func
   }
 
+  constructor(props) {
+    super(props)
+
+    // NOTE: for performance, form fields are populated by local state.
+    // Redux state doesn't need to update on every keystroke.
+    this.updateRedux = debounce(this.updateRedux, 500)
+    this.state = {
+      flags: props.flags.join(' '),
+      warningHasBeenShown: false
+    }
+  }
+
   componentDidUpdate = () => {
+    const { warningHasBeenShown } = this.state
     const {
       isEditingFlags,
       showWarning,
       enqueueSnackbar,
       closeSnackbar
     } = this.props
-    if (isEditingFlags && showWarning) {
-      enqueueSnackbar("Use caution! Don't take flags from strangers.", {
-        variant: 'warning',
-        onClose: () => {
-          this.dismissFlagWarning()
-        },
-        action: key => (
-          <Fragment>
-            <Button
-              style={{ color: '#000' }}
-              onClick={() => {
-                closeSnackbar(key)
-                this.dismissFlagWarning()
-              }}
-            >
-              {'Dismiss'}
-            </Button>
-          </Fragment>
-        )
+    if (isEditingFlags && showWarning && !warningHasBeenShown) {
+      this.setState({ warningHasBeenShown: true }, () => {
+        enqueueSnackbar("Use caution! Don't take flags from strangers.", {
+          variant: 'warning',
+          onClose: () => {
+            this.dismissFlagWarning()
+          },
+          action: key => (
+            <Fragment>
+              <Button
+                style={{ color: '#000' }}
+                onClick={() => {
+                  closeSnackbar(key)
+                  this.dismissFlagWarning()
+                }}
+              >
+                {'Dismiss'}
+              </Button>
+            </Fragment>
+          )
+        })
       })
     }
   }
