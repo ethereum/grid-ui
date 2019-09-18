@@ -54,7 +54,6 @@ class NodeInfoDot extends Component {
     const { network } = config
 
     const pulseColor = network === 'main' ? 'green' : 'blue'
-    console.log('∆∆∆ pulse!', pulseColor)
 
     this.setState({ pulseColor }, () => {
       setTimeout(() => {
