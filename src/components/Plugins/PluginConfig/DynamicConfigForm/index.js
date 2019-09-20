@@ -2,14 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
-import Button from '../../../shared/Button'
 import FormItem from './FormItem'
 import FlagPreview from './FlagPreview'
-import {
-  getGeneratedFlags,
-  restoreDefaultSettings,
-  setFlags
-} from '../../../../store/plugin/actions'
+import { getGeneratedFlags, setFlags } from '../../../../store/plugin/actions'
 
 class DynamicConfigForm extends Component {
   static propTypes = {
@@ -30,10 +25,8 @@ class DynamicConfigForm extends Component {
     )
     const { config, flags } = pluginState[pluginState.selected]
     const generatedFlags = getGeneratedFlags(preloadPlugin, config)
-    const flagsIsCustom = !flags.every(f => generatedFlags.includes(f))
-    this.state = {
-      editGeneratedFlags: flagsIsCustom
-    }
+    const isEditingFlags = !flags.every(f => generatedFlags.includes(f))
+    this.state = { isEditingFlags }
   }
 
   toggleEditGeneratedFlags = checked => {
@@ -42,7 +35,7 @@ class DynamicConfigForm extends Component {
     const preloadPlugin = window.Grid.PluginHost.getPluginByName(
       pluginState.selected
     )
-    this.setState({ editGeneratedFlags: checked })
+    this.setState({ isEditingFlags: checked })
     if (!checked) {
       dispatch(setFlags(preloadPlugin, config))
     }
@@ -57,36 +50,25 @@ class DynamicConfigForm extends Component {
   }
 
   wrapFormItem = item => {
-    const {
-      pluginState,
-      plugin,
-      isPluginRunning,
-      handlePluginConfigChanged
-    } = this.props
-    const { editGeneratedFlags } = this.state
+    const { plugin, isPluginRunning, handlePluginConfigChanged } = this.props
+    const { isEditingFlags } = this.state
     return (
       <FormItem
         key={item.id}
         itemKey={item.id}
         item={item}
-        plugin={pluginState}
         pluginName={plugin.name}
         isPluginRunning={isPluginRunning}
         handlePluginConfigChanged={handlePluginConfigChanged}
-        editGeneratedFlags={editGeneratedFlags}
+        isEditingFlags={isEditingFlags}
       />
     )
   }
 
-  handleRestoreDefaultSettings = () => {
-    const { dispatch, plugin } = this.props
-    dispatch(restoreDefaultSettings(plugin))
-  }
-
   render() {
-    const { settings, pluginState, isPluginRunning } = this.props
-    const { editGeneratedFlags } = this.state
-    const { flags } = pluginState[pluginState.selected]
+    const { settings, plugin, pluginState, isPluginRunning } = this.props
+    const { isEditingFlags } = this.state
+    const { config, flags } = pluginState[pluginState.selected]
 
     if (!settings) return <h4>No configuration settings found</h4>
 
@@ -108,18 +90,13 @@ class DynamicConfigForm extends Component {
         <div style={{ marginTop: 25 }}>
           <FlagPreview
             flags={flags}
-            plugin={pluginState}
-            isEditingFlags={editGeneratedFlags}
+            config={config}
+            plugin={plugin}
+            isEditingFlags={isEditingFlags}
             toggleEditGeneratedFlags={this.toggleEditGeneratedFlags}
             isPluginRunning={isPluginRunning}
           />
         </div>
-        <Button
-          style={{ float: 'right' }}
-          onClick={this.handleRestoreDefaultSettings}
-        >
-          Restore Defaults
-        </Button>
       </div>
     )
   }

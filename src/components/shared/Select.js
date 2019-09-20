@@ -13,7 +13,7 @@ export default class Select extends Component {
   static propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
-    defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onChange: PropTypes.func,
     options: PropTypes.array,
     disabled: PropTypes.bool
@@ -28,7 +28,7 @@ export default class Select extends Component {
     super(props)
 
     this.state = {
-      value: props.defaultValue || '',
+      value: props.value || '',
       labelWidth: 0
     }
   }
@@ -44,9 +44,7 @@ export default class Select extends Component {
     const { onChange } = this.props
 
     this.setState({ value: e.target.value }, () => {
-      if (onChange) {
-        onChange(e.target.value)
-      }
+      if (onChange) onChange(e.target.value)
     })
   }
 

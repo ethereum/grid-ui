@@ -42,8 +42,7 @@ const buildPluginSettings = (plugin, restoreDefaults = false) => {
 
 export const getGeneratedFlags = (plugin, config) => {
   const settings = getPluginSettingsConfig(plugin)
-  const flags = generateFlags(config, settings)
-  return flags
+  return generateFlags(config, settings)
 }
 
 export const initPlugin = plugin => {

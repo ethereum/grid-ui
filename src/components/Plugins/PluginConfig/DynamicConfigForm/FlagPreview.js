@@ -10,12 +10,16 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import {
   dismissFlagWarning,
+  restoreDefaultSettings,
   setCustomFlags
 } from '../../../../store/plugin/actions'
+import { getDefaultFlags } from '../../../../lib/utils'
 
 class FlagPreview extends Component {
   static propTypes = {
+    config: PropTypes.object,
     plugin: PropTypes.object,
+    pluginName: PropTypes.string,
     isPluginRunning: PropTypes.bool,
     flags: PropTypes.array,
     isEditingFlags: PropTypes.bool,
@@ -28,47 +32,60 @@ class FlagPreview extends Component {
 
   constructor(props) {
     super(props)
-
     // NOTE: for performance, form fields are populated by local state.
     // Redux state doesn't need to update on every keystroke.
     this.updateRedux = debounce(this.updateRedux, 500)
+    this.defaultFlags = getDefaultFlags(props.plugin, props.config).join(' ')
     this.state = {
       flags: props.flags.join(' '),
       warningHasBeenShown: false
     }
   }
 
-  componentDidUpdate = () => {
-    const { warningHasBeenShown } = this.state
-    const {
-      isEditingFlags,
-      showWarning,
-      enqueueSnackbar,
-      closeSnackbar
-    } = this.props
+  componentDidUpdate() {
+    const { flags: localFlags, warningHasBeenShown } = this.state
+    const { flags, isEditingFlags, showWarning } = this.props
+
     if (isEditingFlags && showWarning && !warningHasBeenShown) {
-      this.setState({ warningHasBeenShown: true }, () => {
-        enqueueSnackbar("Use caution! Don't take flags from strangers.", {
-          variant: 'warning',
-          onClose: () => {
-            this.dismissFlagWarning()
-          },
-          action: key => (
-            <Fragment>
-              <Button
-                style={{ color: '#000' }}
-                onClick={() => {
-                  closeSnackbar(key)
-                  this.dismissFlagWarning()
-                }}
-              >
-                {'Dismiss'}
-              </Button>
-            </Fragment>
-          )
-        })
-      })
+      this.handleShowWarning()
     }
+
+    // If props update from outside of this component,
+    // e.g. restore defaults, update local state
+    const newFlags = flags.join(' ')
+    if (localFlags !== newFlags && !isEditingFlags) {
+      this.setState({ flags: newFlags })
+    }
+  }
+
+  componentWillUnmount() {
+    this.updateRedux.cancel()
+  }
+
+  handleShowWarning = () => {
+    const { closeSnackbar, enqueueSnackbar } = this.props
+
+    this.setState({ warningHasBeenShown: true }, () => {
+      enqueueSnackbar("Use caution! Don't take flags from strangers.", {
+        variant: 'warning',
+        onClose: () => {
+          this.dismissFlagWarning()
+        },
+        action: key => (
+          <Fragment>
+            <Button
+              style={{ color: '#000' }}
+              onClick={() => {
+                closeSnackbar(key)
+                this.dismissFlagWarning()
+              }}
+            >
+              {'Dismiss'}
+            </Button>
+          </Fragment>
+        )
+      })
+    })
   }
 
   toggleEdit = event => {
@@ -77,9 +94,8 @@ class FlagPreview extends Component {
   }
 
   handleChange = event => {
-    const { plugin } = this.props
-    const pluginName = plugin[plugin.selected].name
     const flags = event.target.value
+    const { pluginName } = this.props
     this.setState({ flags })
     this.updateRedux(pluginName, flags)
   }
@@ -92,6 +108,13 @@ class FlagPreview extends Component {
   dismissFlagWarning = () => {
     const { dispatch } = this.props
     dispatch(dismissFlagWarning())
+  }
+
+  handleRestoreDefaultSettings = () => {
+    const { dispatch, plugin } = this.props
+    this.setState({ flags: this.defaultFlags }, () => {
+      dispatch(restoreDefaultSettings(plugin))
+    })
   }
 
   render() {
@@ -123,6 +146,14 @@ class FlagPreview extends Component {
             label="Use custom flags"
           />
         </FormGroup>
+
+        <Button
+          style={{ float: 'right' }}
+          color="primary"
+          onClick={this.handleRestoreDefaultSettings}
+        >
+          Restore Defaults
+        </Button>
       </React.Fragment>
     )
   }
@@ -130,6 +161,7 @@ class FlagPreview extends Component {
 
 function mapStateToProps(state) {
   return {
+    pluginName: state.plugin.selected,
     showWarning: state.plugin.showCustomFlagWarning
   }
 }
