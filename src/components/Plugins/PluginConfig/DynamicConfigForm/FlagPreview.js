@@ -111,9 +111,28 @@ class FlagPreview extends Component {
   }
 
   handleRestoreDefaultSettings = () => {
-    const { dispatch, plugin } = this.props
+    const { dispatch, plugin, closeSnackbar, enqueueSnackbar } = this.props
     this.setState({ flags: this.defaultFlags }, () => {
       dispatch(restoreDefaultSettings(plugin))
+      enqueueSnackbar('Default settings restored!', {
+        variant: 'success',
+        onClose: () => {
+          this.dismissFlagWarning()
+        },
+        action: key => (
+          <Fragment>
+            <Button
+              style={{ color: '#000' }}
+              onClick={() => {
+                closeSnackbar(key)
+                this.dismissFlagWarning()
+              }}
+            >
+              {'Dismiss'}
+            </Button>
+          </Fragment>
+        )
+      })
     })
   }
 
