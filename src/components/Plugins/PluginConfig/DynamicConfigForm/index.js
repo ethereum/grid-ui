@@ -86,8 +86,8 @@ class DynamicConfigForm extends Component {
         >
           {formItems}
         </Grid>
-        <hr />
-        <div style={{ marginTop: 25 }}>
+        <hr style={{ opacity: 0.7 }} />
+        <div style={{ marginTop: 30 }}>
           <FlagPreview
             flags={flags}
             config={config}

@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
+import Grid from '@material-ui/core/Grid'
 import {
   dismissFlagWarning,
   restoreDefaultSettings,
@@ -156,27 +157,32 @@ class FlagPreview extends Component {
             disabled={isPluginRunning || !isEditingFlags}
             fullWidth
           />
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="primary"
-                checked={isEditingFlags}
-                onChange={this.toggleEdit}
-                disabled={isPluginRunning}
-                style={{ marginLeft: 10 }}
-              />
-            }
-            label="Use custom flags"
-          />
         </FormGroup>
-
-        <Button
-          style={{ float: 'right' }}
-          color="primary"
-          onClick={this.handleRestoreDefaultSettings}
-        >
-          Restore Defaults
-        </Button>
+        <Grid container style={{ marginTop: 5, marginBottom: 15 }}>
+          <Grid item xs={6}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={isEditingFlags}
+                  onChange={this.toggleEdit}
+                  disabled={isPluginRunning}
+                  style={{ marginLeft: 10 }}
+                />
+              }
+              label="Use custom flags"
+            />
+          </Grid>
+          <Grid item xs={6} style={{ textAlign: 'right' }}>
+            <Button
+              style={{ marginTop: 5 }}
+              color="primary"
+              onClick={this.handleRestoreDefaultSettings}
+            >
+              Restore Defaults
+            </Button>
+          </Grid>
+        </Grid>
       </React.Fragment>
     )
   }
