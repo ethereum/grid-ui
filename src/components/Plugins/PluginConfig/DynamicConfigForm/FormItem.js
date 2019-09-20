@@ -33,6 +33,13 @@ class DynamicConfigFormItem extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { itemValue } = this.props
+    if (prevProps.itemValue !== itemValue) {
+      this.setState({ fieldValue: itemValue })
+    }
+  }
+
   componentWillUnmount() {
     this.updateRedux.cancel()
   }

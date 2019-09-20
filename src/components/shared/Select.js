@@ -26,11 +26,7 @@ export default class Select extends Component {
 
   constructor(props) {
     super(props)
-
-    this.state = {
-      value: props.value || '',
-      labelWidth: 0
-    }
+    this.state = { labelWidth: 0 }
   }
 
   componentDidMount() {
@@ -40,17 +36,9 @@ export default class Select extends Component {
     })
   }
 
-  handleChange = e => {
-    const { onChange } = this.props
-
-    this.setState({ value: e.target.value }, () => {
-      if (onChange) onChange(e.target.value)
-    })
-  }
-
   render() {
-    const { name, id, options, disabled } = this.props
-    const { labelWidth, value } = this.state
+    const { name, id, onChange, options, disabled, value } = this.props
+    const { labelWidth } = this.state
 
     const opts = options.map(option => (
       <MenuItem key={option.value} value={option.value}>
@@ -74,7 +62,7 @@ export default class Select extends Component {
         </InputLabel>
         <MuiSelect
           value={value}
-          onChange={this.handleChange}
+          onChange={e => onChange(e.target.value)}
           input={<OutlinedInput labelWidth={labelWidth} name={name} id={id} />}
         >
           {opts}
