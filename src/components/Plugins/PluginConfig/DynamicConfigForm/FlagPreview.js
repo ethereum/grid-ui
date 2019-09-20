@@ -54,12 +54,16 @@ class FlagPreview extends Component {
     // e.g. restore defaults, update local state
     const newFlags = flags.join(' ')
     if (localFlags !== newFlags && !isEditingFlags) {
-      this.setState({ flags: newFlags })
+      this.updateFlags(newFlags)
     }
   }
 
   componentWillUnmount() {
     this.updateRedux.cancel()
+  }
+
+  updateFlags = flags => {
+    this.setState({ flags })
   }
 
   handleShowWarning = () => {

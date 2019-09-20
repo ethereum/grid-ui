@@ -36,12 +36,16 @@ class DynamicConfigFormItem extends Component {
   componentDidUpdate(prevProps) {
     const { itemValue } = this.props
     if (prevProps.itemValue !== itemValue) {
-      this.setState({ fieldValue: itemValue })
+      this.updateField(itemValue)
     }
   }
 
   componentWillUnmount() {
     this.updateRedux.cancel()
+  }
+
+  updateField = fieldValue => {
+    this.setState({ fieldValue })
   }
 
   showOpenDialog = key => async event => {
