@@ -14,11 +14,11 @@ class DynamicConfigFormItem extends Component {
     itemKey: PropTypes.string,
     itemValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     item: PropTypes.object,
-    plugin: PropTypes.object,
+    pluginState: PropTypes.object,
     pluginName: PropTypes.string,
     isPluginRunning: PropTypes.bool,
     handlePluginConfigChanged: PropTypes.func,
-    editGeneratedFlags: PropTypes.bool
+    isEditingFlags: PropTypes.bool
   }
 
   constructor(props) {
@@ -33,22 +33,31 @@ class DynamicConfigFormItem extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { itemValue } = this.props
+    if (prevProps.itemValue !== itemValue) {
+      this.updateField(itemValue)
+    }
+  }
+
   componentWillUnmount() {
     this.updateRedux.cancel()
+  }
+
+  updateField = fieldValue => {
+    this.setState({ fieldValue })
   }
 
   showOpenDialog = key => async event => {
     const { showOpenDialog } = GridAPI
     // If we don't have showOpenDialog from Grid,
     // return true to continue with native file dialog
-    if (!showOpenDialog) {
-      return true
-    }
+    if (!showOpenDialog) return true
     // Continue with Grid.showOpenDialog()
     event.preventDefault()
-    const { plugin, pluginName, item } = this.props
+    const { pluginState, pluginName, item } = this.props
     const { type } = item
-    const defaultPath = plugin[pluginName].config[key]
+    const defaultPath = pluginState[pluginName].config[key]
     const pathType = type.replace('_multiple', '')
     const selectMultiple = type.includes('multiple')
     const path = await showOpenDialog(pathType, selectMultiple, defaultPath)
@@ -68,9 +77,9 @@ class DynamicConfigFormItem extends Component {
 
   render() {
     const { fieldValue } = this.state
-    const { itemKey, item, isPluginRunning, editGeneratedFlags } = this.props
+    const { itemKey, item, isPluginRunning, isEditingFlags } = this.props
     const label = item.label || itemKey
-    const disabled = isPluginRunning || editGeneratedFlags
+    const disabled = isPluginRunning || isEditingFlags
     let { type } = item
     if (!type) type = item.options ? 'select' : 'text'
     let options
@@ -86,7 +95,7 @@ class DynamicConfigFormItem extends Component {
             optionLabel = el
             optionValue = el
           } else if (typeof el === 'object') {
-            // eg: [{label: 'Ropsten test network', value: 'Ropsten', flag: '--testnet'}]
+            // eg: [{ label: 'Ropsten (testnet)', value: 'Ropsten', flag: '--testnet' }]
             optionLabel = el.label
             optionValue = el.value
           } else {
@@ -100,7 +109,7 @@ class DynamicConfigFormItem extends Component {
           <div data-test-id={`input-select-${item.id}`}>
             <Select
               name={label}
-              defaultValue={fieldValue}
+              value={fieldValue}
               options={options}
               disabled={disabled}
               onChange={value => this.handleChange(itemKey, value)}
@@ -177,6 +186,7 @@ function mapStateToProps(state, ownProps) {
   const selectedPlugin = state.plugin.selected
 
   return {
+    pluginState: state.plugin,
     itemValue: state.plugin[selectedPlugin].config[ownProps.itemKey]
   }
 }

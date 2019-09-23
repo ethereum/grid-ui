@@ -1,5 +1,6 @@
 import React from 'react'
 import { Grid } from '../API'
+import { generateFlags } from './flags'
 
 // calling styled(without('unneededProp')(TheComponent))
 // helps satisfy error of extra StyledComponents props passing into children
@@ -51,6 +52,18 @@ export const getDefaultSetting = (plugin, id) => {
   } catch (e) {
     return ''
   }
+}
+
+export const getDefaultFlags = (plugin, config) => {
+  const pluginDefaults = {}
+  const pluginSettings = getPluginSettingsConfig(plugin)
+  pluginSettings.forEach(setting => {
+    if ('default' in setting) {
+      pluginDefaults[setting.id] = setting.default
+    }
+  })
+
+  return generateFlags(pluginDefaults, pluginSettings)
 }
 
 export const getSettingsIds = plugin => {

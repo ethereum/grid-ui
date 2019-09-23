@@ -290,7 +290,7 @@ class PluginConfig extends Component {
           <TabContainer>
             <ErrorBoundary>
               <DynamicConfigForm
-                pluginName={plugin.name}
+                plugin={plugin}
                 settings={getPluginSettingsConfig(plugin)}
                 handlePluginConfigChanged={this.handlePluginConfigChanged}
                 isPluginRunning={isRunning}

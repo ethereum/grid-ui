@@ -13,7 +13,7 @@ export default class Select extends Component {
   static propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
-    defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onChange: PropTypes.func,
     options: PropTypes.array,
     disabled: PropTypes.bool
@@ -26,11 +26,7 @@ export default class Select extends Component {
 
   constructor(props) {
     super(props)
-
-    this.state = {
-      value: props.defaultValue || '',
-      labelWidth: 0
-    }
+    this.state = { labelWidth: 0 }
   }
 
   componentDidMount() {
@@ -40,19 +36,9 @@ export default class Select extends Component {
     })
   }
 
-  handleChange = e => {
-    const { onChange } = this.props
-
-    this.setState({ value: e.target.value }, () => {
-      if (onChange) {
-        onChange(e.target.value)
-      }
-    })
-  }
-
   render() {
-    const { name, id, options, disabled } = this.props
-    const { labelWidth, value } = this.state
+    const { name, id, onChange, options, disabled, value } = this.props
+    const { labelWidth } = this.state
 
     const opts = options.map(option => (
       <MenuItem key={option.value} value={option.value}>
@@ -76,7 +62,7 @@ export default class Select extends Component {
         </InputLabel>
         <MuiSelect
           value={value}
-          onChange={this.handleChange}
+          onChange={e => onChange(e.target.value)}
           input={<OutlinedInput labelWidth={labelWidth} name={name} id={id} />}
         >
           {opts}

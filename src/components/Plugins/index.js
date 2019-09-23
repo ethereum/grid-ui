@@ -71,13 +71,13 @@ class PluginsTab extends Component {
     const { pluginState, dispatch } = this.props
     const { plugins } = this.state
 
-    const plugin = plugins.filter(c => c.name === pluginState.selected)[0]
+    const activePlugin = plugins.filter(p => p.name === pluginState.selected)[0]
 
     const { config } = pluginState[pluginState.selected]
     const newConfig = { ...config }
     newConfig[key] = value
 
-    dispatch(setConfig(plugin, newConfig))
+    dispatch(setConfig(activePlugin, newConfig))
   }
 
   handleReleaseSelect = release => {
