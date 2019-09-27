@@ -41,7 +41,17 @@ export default class VersionListItem extends Component {
     const { plugin } = this.props
     const { displayName } = plugin
     const { platform, arch, displayVersion } = release
-    return `${displayName} ${displayVersion} - ${platform} (${arch})`
+
+    let metadata
+    if (!platform) {
+      metadata = ''
+    } else if (!arch) {
+      metadata = ` - ${platform}`
+    } else {
+      metadata = ` - ${platform} (${arch})`
+    }
+
+    return `${displayName} ${displayVersion}${metadata}`
   }
 
   downloadRelease = release => {
