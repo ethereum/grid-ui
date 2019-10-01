@@ -16,7 +16,7 @@ const styles = () => ({
   }
 })
 
-class PluginView extends Component {
+class Metadata extends Component {
   static propTypes = {
     classes: PropTypes.object,
     plugin: PropTypes.object.isRequired
@@ -169,4 +169,4 @@ class PluginView extends Component {
   }
 }
 
-export default withStyles(styles)(PluginView)
+export default withStyles(styles)(Metadata)
