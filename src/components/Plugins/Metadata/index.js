@@ -39,10 +39,11 @@ class Metadata extends Component {
       // remote,
       verificationResult
     } = metadata
-    const { signers, isTrusted, isValid } = verificationResult
+    const { signers, /* isTrusted, */ isValid } = verificationResult
 
     return (
       <Fragment>
+        {/*
         <Grid item xs={4}>
           <TextField
             disabled
@@ -53,6 +54,7 @@ class Metadata extends Component {
             margin="normal"
           />
         </Grid>
+        */}
         <Grid item xs={4}>
           <TextField
             disabled
@@ -93,6 +95,7 @@ class Metadata extends Component {
             margin="normal"
           />
         </Grid>
+        {/*
         <Grid item xs={4}>
           <TextField
             disabled
@@ -103,6 +106,7 @@ class Metadata extends Component {
             margin="normal"
           />
         </Grid>
+        */}
         <Grid item xs={4}>
           <TextField
             disabled
