@@ -1,6 +1,6 @@
 {
   "name": "grid-ui",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "main": "./app/shell-electron.js",
   "homepage": "./",
