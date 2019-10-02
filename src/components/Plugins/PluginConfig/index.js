@@ -14,7 +14,7 @@ import DynamicConfigForm from './DynamicConfigForm'
 import AboutPlugin from './AboutPlugin'
 import Terminal from '../Terminal'
 import NodeInfo from '../NodeInfo'
-import PluginView from '../PluginView'
+import Metadata from '../Metadata'
 import {
   clearError,
   selectTab,
@@ -290,7 +290,7 @@ class PluginConfig extends Component {
           <TabContainer>
             <ErrorBoundary>
               <DynamicConfigForm
-                pluginName={plugin.name}
+                plugin={plugin}
                 settings={getPluginSettingsConfig(plugin)}
                 handlePluginConfigChanged={this.handlePluginConfigChanged}
                 isPluginRunning={isRunning}
@@ -304,7 +304,7 @@ class PluginConfig extends Component {
         </TabContainer>
         {selectedTab === 4 && (
           <TabContainer>
-            <PluginView plugin={plugin} />
+            <Metadata plugin={plugin} />
           </TabContainer>
         )}
       </Fragment>

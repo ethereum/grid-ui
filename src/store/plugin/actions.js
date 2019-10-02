@@ -12,19 +12,21 @@ export const onConnectionUpdate = (pluginName, status) => {
   return { type: 'PLUGIN:STATUS_UPDATE', payload: { pluginName, status } }
 }
 
-const buildPluginDefaults = plugin => {
+const buildPluginSettings = (plugin, restoreDefaults = false) => {
   const pluginDefaults = {}
-  const settingsIds = getSettingsIds(plugin)
 
-  // Handle rehydration: if config.json has settings already, use them.
-  const persistedSettings = getPersistedPluginSettings(plugin.name)
-  if (settingsIds.length && persistedSettings) {
-    if (Object.keys(persistedSettings).length) {
-      settingsIds.forEach(id => {
-        pluginDefaults[id] =
-          persistedSettings[id] || getDefaultSetting(plugin, id)
-      })
-      return pluginDefaults
+  if (!restoreDefaults) {
+    const settingsIds = getSettingsIds(plugin)
+    // Handle rehydration: if config.json has settings already, use them.
+    const persistedSettings = getPersistedPluginSettings(plugin.name)
+    if (settingsIds.length && persistedSettings) {
+      if (Object.keys(persistedSettings).length) {
+        settingsIds.forEach(id => {
+          pluginDefaults[id] =
+            persistedSettings[id] || getDefaultSetting(plugin, id)
+        })
+        return pluginDefaults
+      }
     }
   }
 
@@ -40,13 +42,12 @@ const buildPluginDefaults = plugin => {
 
 export const getGeneratedFlags = (plugin, config) => {
   const settings = getPluginSettingsConfig(plugin)
-  const flags = generateFlags(config, settings)
-  return flags
+  return generateFlags(config, settings)
 }
 
 export const initPlugin = plugin => {
   return dispatch => {
-    const config = buildPluginDefaults(plugin)
+    const config = buildPluginSettings(plugin)
     const pluginData = plugin.plugin.config
     const flags =
       getPersistedFlags(plugin.name) || getGeneratedFlags(plugin, config)
@@ -193,6 +194,13 @@ export const setConfig = (plugin, config) => {
       payload: { pluginName, config }
     })
     dispatch(setFlags(plugin, config))
+  }
+}
+
+export const restoreDefaultSettings = plugin => {
+  return dispatch => {
+    const config = buildPluginSettings(plugin, true)
+    dispatch(setConfig(plugin, config))
   }
 }
 
