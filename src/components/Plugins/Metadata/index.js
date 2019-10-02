@@ -16,7 +16,7 @@ const styles = () => ({
   }
 })
 
-class PluginView extends Component {
+class Metadata extends Component {
   static propTypes = {
     classes: PropTypes.object,
     plugin: PropTypes.object.isRequired
@@ -39,10 +39,11 @@ class PluginView extends Component {
       // remote,
       verificationResult
     } = metadata
-    const { signers, isTrusted, isValid } = verificationResult
+    const { signers, /* isTrusted, */ isValid } = verificationResult
 
     return (
       <Fragment>
+        {/*
         <Grid item xs={4}>
           <TextField
             disabled
@@ -53,6 +54,7 @@ class PluginView extends Component {
             margin="normal"
           />
         </Grid>
+        */}
         <Grid item xs={4}>
           <TextField
             disabled
@@ -93,6 +95,7 @@ class PluginView extends Component {
             margin="normal"
           />
         </Grid>
+        {/*
         <Grid item xs={4}>
           <TextField
             disabled
@@ -103,6 +106,7 @@ class PluginView extends Component {
             margin="normal"
           />
         </Grid>
+        */}
         <Grid item xs={4}>
           <TextField
             disabled
@@ -169,4 +173,4 @@ class PluginView extends Component {
   }
 }
 
-export default withStyles(styles)(PluginView)
+export default withStyles(styles)(Metadata)
