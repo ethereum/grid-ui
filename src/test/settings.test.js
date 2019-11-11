@@ -210,6 +210,23 @@ describe('generateFlags', () => {
     expect(flags).toEqual([])
   })
 
+  it('should output flag if value is a space and ignoreIfEmpty is true', () => {
+    const input = { dataDir: ' ' }
+    const settings = [
+      {
+        id: 'dataDir',
+        default: '',
+        label: 'Data Directory',
+        flag: '--datadir %s',
+        type: 'directory',
+        ignoreIfEmpty: true
+      }
+    ]
+
+    const flags = generateFlags(input, settings)
+    expect(flags).toEqual(['--datadir', ' '])
+  })
+
   it('should not ignore empty setting if ignoreIfEmpty is undefined', () => {
     const input = { dataDir: '' }
     const settings = [
