@@ -45,10 +45,14 @@ export default class VersionListItem extends Component {
     let metadata
     if (!platform) {
       metadata = ''
-    } else if (!arch) {
-      metadata = ` - ${platform}`
     } else {
-      metadata = ` - ${platform} (${arch})`
+      const platformCapitalized =
+        platform.charAt(0).toUpperCase() + platform.slice(1)
+      if (!arch) {
+        metadata = ` - ${platformCapitalized}`
+      } else {
+        metadata = ` - ${platformCapitalized} (${arch})`
+      }
     }
 
     return `${displayName} ${displayVersion}${metadata}`
@@ -202,7 +206,6 @@ const ListItemTextVersion = styled(({ isLocalRelease, children, ...rest }) => (
     {children}
   </ListItemText>
 ))`
-  text-transform: capitalize;
   ${props =>
     props.isLocalRelease &&
     css`
