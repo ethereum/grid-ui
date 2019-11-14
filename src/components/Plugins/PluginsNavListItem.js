@@ -37,34 +37,15 @@ class PluginsNavListItem extends Component {
     appBadges: PropTypes.object
   }
 
-  state = {
-    isToggled: false
-  }
-
   badgeContent = () => {
     const { appBadges } = this.props
     return Object.values(appBadges).reduce((a, b) => a + b, 0)
   }
 
-  toggleOff = plugin => newState => {
-    if (['started', 'connected', 'stopped'].includes(newState)) {
-      this.setState({ isToggled: false })
-      plugin.off('newState', this.toggleOff)
-    }
-  }
-
-  handleSwitch = plugin => {
-    const { handleToggle } = this.props
-    this.setState({ isToggled: true }, () => {
-      plugin.on('newState', this.toggleOff(plugin))
-    })
-    handleToggle(plugin)
-  }
-
   render() {
-    const { isToggled } = this.state
     const {
       classes,
+      handleToggle,
       handleSelectPlugin,
       isRunning,
       isSelected,
@@ -104,9 +85,8 @@ class PluginsNavListItem extends Component {
           <span>
             <Switch
               color="primary"
-              onChange={() => this.handleSwitch(plugin)}
+              onChange={() => handleToggle(plugin)}
               checked={isRunning}
-              disabled={isToggled}
               data-test-id={`switch-${plugin.name}`}
             />
           </span>
