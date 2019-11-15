@@ -47,7 +47,7 @@ class PluginsNavListItem extends Component {
   }
 
   toggleOff = plugin => newState => {
-    if (['started', 'connected', 'stopped'].includes(newState)) {
+    if (['started', 'connected', 'stopped', 'error'].includes(newState)) {
       this.setState({ isToggled: false })
       plugin.off('newState', this.toggleOff)
     }
