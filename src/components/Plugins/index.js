@@ -88,7 +88,9 @@ class PluginsTab extends Component {
 
   handleToggle = plugin => {
     const { pluginState, dispatch } = this.props
-    // TODO: refactor to only require pluginName to toggle?
+    // TODO: refactor to only require pluginName to toggle,
+    // then function can be placed in PlguinsNavListItem.js
+    // instead of needing to be passed through props.
     dispatch(togglePlugin(plugin, pluginState[plugin.name].release))
   }
 
