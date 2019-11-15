@@ -128,6 +128,9 @@ class DynamicConfigFormItem extends Component {
               label={item.label}
               value={fieldValue || ''}
               onChange={event => this.handleChange(itemKey, event.target.value)}
+              placeholder={
+                item.ignoreIfEmpty ? '(Leave empty to use default)' : ''
+              }
               disabled={disabled}
               InputProps={{
                 endAdornment: (
