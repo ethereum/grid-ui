@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import NodeInfoDot from './NodeInfoDot'
 import NodeInfoBox from './NodeInfoBox'
@@ -18,13 +18,13 @@ class NodeInfo extends Component {
 
   state = {
     showSubmenu: false,
-    diffTimestamp: moment().unix()
+    diffTimestamp: dayjs().unix()
   }
 
   componentDidMount() {
     // diffTimestamp used to calculate time since last block
     this.diffInterval = setInterval(() => {
-      this.setState({ diffTimestamp: moment().unix() })
+      this.setState({ diffTimestamp: dayjs().unix() })
     }, 1000)
   }
 

@@ -8,9 +8,12 @@ import CardMedia from '@material-ui/core/CardMedia'
 import CardActions from '@material-ui/core/CardActions'
 import Badge from '@material-ui/core/Badge'
 import Typography from '@material-ui/core/Typography'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import advancedFormat from 'dayjs/plugin/advancedFormat'
 import Button from '../shared/Button'
 import Grid from '../../API/Grid'
+
+dayjs.extend(advancedFormat)
 
 const styles = {
   card: {
@@ -52,7 +55,7 @@ class AppItem extends React.Component {
       <Card className={classes.card}>
         <CardHeader
           title={name}
-          subheader={moment(lastUpdated).format('MMMM Do YYYY')}
+          subheader={dayjs(lastUpdated).format('MMMM Do YYYY')}
           titleTypographyProps={{ style: { fontSize: '22px' } }}
           subheaderTypographyProps={{ style: { fontSize: '14px' } }}
         />

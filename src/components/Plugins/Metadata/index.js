@@ -6,9 +6,12 @@ import TextField from '@material-ui/core/TextField'
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material.css'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import advancedFormat from 'dayjs/plugin/advancedFormat'
 
 require('codemirror/mode/javascript/javascript')
+
+dayjs.extend(advancedFormat)
 
 const styles = () => ({
   pluginCode: {
@@ -70,7 +73,7 @@ class Metadata extends Component {
             disabled
             id="standard-disabled"
             label="Published"
-            value={moment(publishedDate).format('MMMM Do YYYY')}
+            value={dayjs(publishedDate).format('MMMM Do YYYY')}
             className={classes.textField}
             margin="normal"
           />

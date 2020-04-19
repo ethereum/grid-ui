@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import PropTypes from 'prop-types'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import PieChart from 'react-minimal-pie-chart'
 
 const colorMainnet = '#7ed321'
@@ -65,8 +65,8 @@ class NodeInfoDot extends Component {
   secondsSinceLastBlock = () => {
     const { plugin, diffTimestamp } = this.props
     const { timestamp } = plugin
-    const lastBlock = moment.unix(timestamp) // eslint-disable-line
-    return moment.unix(diffTimestamp).diff(lastBlock, 'seconds')
+    const lastBlock = dayjs.unix(timestamp) // eslint-disable-line
+    return dayjs.unix(diffTimestamp).diff(lastBlock, 'seconds')
   }
 
   render() {

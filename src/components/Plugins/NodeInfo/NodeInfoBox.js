@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna'
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt'
@@ -106,8 +106,8 @@ class NodeInfoBox extends Component {
 
     const formattedBlockNumber = numberWithCommas(blockNumber)
 
-    const timeSince = moment.unix(timestamp)
-    const diff = moment.unix(diffTimestamp).diff(timeSince, 'seconds')
+    const timeSince = dayjs.unix(timestamp)
+    const diff = dayjs.unix(diffTimestamp).diff(timeSince, 'seconds')
 
     return (
       <div>
